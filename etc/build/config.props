@@ -1,0 +1,11 @@
+//
+// Config: build
+//
+// History:
+//   23 Feb 2022  Brian Frank  Creation
+//
+
+buildVersion=1.0.1
+fan.depend=1.0
+proto.depend=1.0.1
+
