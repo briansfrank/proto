@@ -19,6 +19,7 @@ class Build : BuildGroup
     childrenScripts =
     [
       `proto/build.fan`,
+      `protoc/build.fan`,
       `testProto/build.fan`,
     ]
   }
