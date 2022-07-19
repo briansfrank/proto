@@ -25,5 +25,7 @@ internal class CLib
   const Loc loc       // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)
+
+  CProto? proto       // created in Parse step
 }
 

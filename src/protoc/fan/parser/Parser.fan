@@ -39,14 +39,14 @@ internal class Parser
 //////////////////////////////////////////////////////////////////////////
 
   ** Parse the file
-  Void parse(CProto parent)
+  Void parse(CProto libProto)
   {
     try
     {
       //pragma = parsePragma
       while (true)
       {
-        proto := parseNamedProto(parent)
+        proto := parseNamedProto(libProto)
         if (proto == null) break
       }
       verify(Token.eof)

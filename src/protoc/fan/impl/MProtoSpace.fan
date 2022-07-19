@@ -13,12 +13,12 @@ using proto
 **
 internal const class MProtoSpace : ProtoSpace
 {
-  new make(Str:ProtoLib libsMap, Proto root)
+  new make(Proto root, Str:ProtoLib libsMap)
   {
+    this.root    = root
     this.libs    = libsMap.vals.sort |a, b| { a.name <=> b.name }
     this.libsMap = libsMap
     this.sys     = libsMap.getChecked("sys")
-    this.root    = root
     this.obj     = sys->Obj
     this.marker  = sys->Marker
     this.str     = sys->Str

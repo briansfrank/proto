@@ -6,49 +6,46 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
-using concurrent
+using proto
 
 **
 ** AST proto
 **
 internal class CProto
 {
-  new make(Loc loc, Str name, Str? doc := null, CName? type := null, Str? val := null)
+  new make(Loc loc, Str name, Str? doc := null, CName? type := null)
   {
-    this.loc    = loc
-    this.name   = name
-    this.doc    = doc
-    this.type   = type
-    this.val    = val
+    this.loc      = loc
+    this.name     = name
+    this.doc      = doc
+    this.type     = type
+    this.children = noChildren
   }
-
-  const Loc loc
-  const Str name
-  Str? doc
-  CProto? parent
-  Str? val
-  Str:CProto children := noChildren
-  CName? type
 
   Void each(|CProto| f) { children.each(f) }
 
   CProto? child(Str name) { children.get(name, null) }
 
-  // Assmemble step
-  MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
-  internal MProto? asmRef
-
   Bool isRoot() { parent == null }
 
-  override Str toStr()
-  {
-    if (isRoot) return "__root__"
-    if (parent.isRoot) return name
-    return parent.toStr + "." + name
-  }
+  once Path path() { isRoot ? Path.root : parent.path.add(name) }
+
+  override Str toStr() { isRoot ? "_root_" : path.toStr }
 
   Bool isObj() { name == "Obj" && parent?.name == "lang" }
 
+  MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
+
   static const Str:CProto noChildren := [:]
+
+  const Loc loc           // ctor
+  const Str name          // ctor
+  Str? doc                // ctor or Parser for suffix docs
+  CProto? parent          // Step.addSlot
+  Str:CProto children     // Step.addSlot
+  Str? val                // Parser
+  CName? type             // Parser or Resolve
+  Bool isLib              // Parse.parseLib
+  MProto? asmRef          // Assemble.asm
 }
 

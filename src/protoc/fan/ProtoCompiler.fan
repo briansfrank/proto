@@ -47,9 +47,9 @@ internal class ProtoCompiler
     run([
        InitLibs(),
        Parse(),
+       Assemble(),
       ])
     log.info("compileSpace [$duration.toLocale]")
-throw Err("TODO")
     return ps
   }
 

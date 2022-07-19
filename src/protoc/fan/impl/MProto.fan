@@ -25,7 +25,7 @@ internal const class MProto : Proto
 
   override const Path path
 
-  override const MProto? type
+  override const Proto? type
 
   override Str? val(Bool checked := true)
   {

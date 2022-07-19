@@ -21,20 +21,23 @@ internal class Parse : Step
   private Void parseLib(CLib lib)
   {
     // build path of protos to lib itself
-    parent := compiler.root
+    libProto := compiler.root
     lib.name.each |n|
     {
-      x := parent.child(n)
-      if (x == null) addSlot(parent, x = CProto(Loc.synthetic, n))
-      parent = x
+      x := libProto.child(n)
+      if (x == null) addSlot(libProto, x = CProto(Loc.synthetic, n))
+      libProto = x
     }
-    lib.src.each |file| { parseFile(parent, file) }
+
+    lib.proto = libProto
+    lib.proto.isLib = true
+    lib.src.each |file| { parseFile(libProto, file) }
   }
 
-  private Void parseFile(CProto parent, File file)
+  private Void parseFile(CProto libProto, File file)
   {
     try
-      Parser(this, file).parse(parent)
+      Parser(this, file).parse(libProto)
     catch (Err e)
       err("Cannot parse file", Loc(file), e)
   }
