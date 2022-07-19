@@ -6,6 +6,8 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using proto
+
 **
 ** Initialize the input libNames to CLibs
 **
@@ -13,10 +15,21 @@ internal class InitLibs : Step
 {
   override Void run()
   {
+    checkDups
     acc := CLib[,] { it.capacity = libNames.size }
     libNames.each |name| { acc.addNotNull(init(name)) }
     compiler.libs = acc
     bombIfErr
+  }
+
+  private Void checkDups()
+  {
+    names := Str:Str[:]
+    libNames.each |name|
+    {
+      if (names[name] != null) err("Duplicate lib name: $name", Loc.inputs)
+      names[name] = name
+    }
   }
 
   private CLib? init(Str name)
@@ -31,6 +44,6 @@ internal class InitLibs : Step
     if (libFile == null) { err("Missing lib.pog: $name", Loc(dir)); return null }
     src.moveTo(libFile, 0)
 
-    return CLib(name, dir, src)
+    return CLib(Path(name), dir, src)
   }
 }

@@ -30,18 +30,18 @@ abstract const class ProtoEnv
     }
   }
 
-  ** List the library names installed by this environment
-  abstract Str[] installed()
-
   ** Search path of directories from lowest to highest priority.  Standard
   ** behavior is to map 'pog/' directory of the Fantom `sys::Env` path.
   abstract File[] path()
 
-  ** Return root directory for the given library name.  The result
+  ** List the library dotted path names installed by this environment
+  abstract Str[] installed()
+
+  ** Return root directory for the given library dotted path name.  The result
   ** might be on the local file system or a directory within a pod file.
   abstract File? libDir(Str name, Bool checked := true)
 
-  ** Compile a new namespace from a list of library names.
+  ** Compile a new namespace from a list of library dotted path names.
   ** Raise exception if there are any compiler errors.
   abstract ProtoSpace compile(Str[] libNames)
 

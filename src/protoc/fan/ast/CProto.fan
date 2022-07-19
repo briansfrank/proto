@@ -13,17 +13,18 @@ using concurrent
 **
 internal class CProto
 {
-  new make(Loc loc, CProto? parent, Str name, CName? type := null, Str? val := null)
+  new make(Loc loc, Str name, Str? doc := null, CName? type := null, Str? val := null)
   {
     this.loc    = loc
     this.name   = name
-    this.parent = parent
+    this.doc    = doc
     this.type   = type
     this.val    = val
   }
 
   const Loc loc
   const Str name
+  Str? doc
   CProto? parent
   Str? val
   Str:CProto children := noChildren
@@ -37,9 +38,13 @@ internal class CProto
   MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
   internal MProto? asmRef
 
+  Bool isRoot() { parent == null }
+
   override Str toStr()
   {
-    parent == null ? name : parent.toStr + "." + name
+    if (isRoot) return "__root__"
+    if (parent.isRoot) return name
+    return parent.toStr + "." + name
   }
 
   Bool isObj() { name == "Obj" && parent?.name == "lang" }

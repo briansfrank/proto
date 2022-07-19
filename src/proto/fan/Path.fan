@@ -92,6 +92,12 @@ const mixin Path
     return make(names.getRange(range))
   }
 
+  ** Iterate each name in the path
+  Void each(|Str name, Int i| f)
+  {
+    for (i := 0; i<size; ++i) f(get(i), i)
+  }
+
   ** Hash code is based on toStr
   override Int hash() { toStr.hash }
 

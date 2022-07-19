@@ -6,14 +6,14 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
-using concurrent
+using proto
 
 **
 ** AST library
 **
 internal class CLib
 {
-  new make(Str name, File dir, File[] src)
+  new make(Path name, File dir, File[] src)
   {
     this.loc  = Loc(dir)
     this.name = name
@@ -21,7 +21,7 @@ internal class CLib
     this.src  = src
   }
 
-  const Str name      // library name
+  const Path name     // library dotted name
   const Loc loc       // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)

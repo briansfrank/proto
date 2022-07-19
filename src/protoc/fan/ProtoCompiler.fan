@@ -46,6 +46,7 @@ internal class ProtoCompiler
   {
     run([
        InitLibs(),
+       Parse(),
       ])
     log.info("compileSpace [$duration.toLocale]")
 throw Err("TODO")
@@ -118,6 +119,7 @@ throw Err("TODO")
   internal CompilerErr[] errs := [,]     // err
   internal Duration? duration            // run
   internal CLib[]? libs                  // InitLibs
+  internal CProto? root                  // Parse
   internal MProtoSpace? ps               // Assemble
 }
 

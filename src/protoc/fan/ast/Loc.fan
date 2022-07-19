@@ -19,6 +19,9 @@ const class Loc
   ** Compiler inputs
   static const Loc inputs := make("inputs", 0)
 
+  ** Compiler synthetic protos
+  static const Loc synthetic := make("synthetic", 0)
+
   ** Constructor for file
   static new makeFile(File file)
   {

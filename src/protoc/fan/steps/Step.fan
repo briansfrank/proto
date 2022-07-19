@@ -23,6 +23,23 @@ abstract internal class Step
 
   CLib[] libs() { compiler.libs }
 
+  internal Void addSlot(CProto parent, CProto child)
+  {
+    if (child.parent != null) throw Err()
+    child.parent = parent
+    if (parent.children.isRO)
+    {
+      parent.children = Str:CProto[:]
+      parent.children.ordered = true
+    }
+    else
+    {
+      if (parent.children[child.name] != null)
+        err("Duplicate slot name $child.name", child.loc)
+    }
+    parent.children.add(child.name, child)
+  }
+
   Void info(Str msg) { compiler.info(msg) }
 
   CompilerErr err(Str msg, Loc loc, Err? err := null) { compiler.err(msg, loc, err) }
