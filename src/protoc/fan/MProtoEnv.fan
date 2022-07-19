@@ -25,7 +25,7 @@ internal const class MProtoEnv : ProtoEnv
   private static File[] initPath()
   {
     fanPath := (Env.cur as PathEnv)?.path ?: File[Env.cur.homeDir]
-    return fanPath.map |dir->File| { dir.plus(`pio/`) }
+    return fanPath.map |dir->File| { dir.plus(`pog/`) }
   }
 
   private static Str:File initInstalled(File[] path)
@@ -37,7 +37,7 @@ internal const class MProtoEnv : ProtoEnv
 
   private static Void doInitInstalled(Str:File acc, Str path, File dir)
   {
-    hasLib := dir.plus(`lib.pio`).exists
+    hasLib := dir.plus(`lib.pog`).exists
     if (hasLib && !path.isEmpty)
     {
       dup := acc[path]
@@ -56,7 +56,7 @@ internal const class MProtoEnv : ProtoEnv
   const override Str[] installed
 
   ** Search path of directories from lowest to highest priority.  Standard
-  ** behavior is to map 'pio/' directory of the Fantom `sys::Env` path.
+  ** behavior is to map 'pog/' directory of the Fantom `sys::Env` path.
   const override File[] path
 
   ** Install lib name to directory mapping

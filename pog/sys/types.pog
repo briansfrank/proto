@@ -1,0 +1,81 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   2 May 2022  Brian Frank  Creation
+//
+
+// Root type for all objects
+Obj : <
+  type: Obj   // Inheritance prototype
+  doc: Str    // Documentation for object
+>
+
+// Nothing is the bottom type with no values
+Nothing : Obj
+
+// Marker labels a dict with typing information
+Marker : Obj
+
+// Data value type
+Val : Obj
+
+// Scalar is an atomic value kind
+Scalar : Val
+
+// Boolean value either true or false
+Bool : Scalar
+
+// Boolean true value
+True : Bool "true"
+
+// Boolean false value
+False : Bool "false"
+
+// Integer or floating point numbers annotated with an optional unit
+Number : Scalar <
+  minVal: Number   // Inclusive minimum value
+  maxVal: Number   // Inclusive maximum value
+>
+
+// Unitless integer number
+Int : Number
+
+// Number with a unit of time
+Duration : Number
+
+// Unicode string of characters
+Str : Scalar
+
+// Version string formatted as decimal digits separated by a dot
+Version : Scalar
+
+// Universal resource identifier
+Uri : Scalar
+
+// ISO 8601 date as year, month, day: '2011-06-07'
+Date : Scalar
+
+// ISO 8601 time as hour, minute, seconds: '09:51:27.354'
+Time : Scalar
+
+// ISO 8601 timestamp followed by timezone identifier
+DateTime : Scalar
+
+// Collection type
+Collection : Val
+
+// Ordered list of zero or more values
+List : Collection <
+  of: Obj    // Item type for list
+>
+
+// Hashmap of name/value tag pairs
+Dict : Collection <
+  of: Obj    // Item type for dict values
+>
+
+
+
+

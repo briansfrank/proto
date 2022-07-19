@@ -1,0 +1,20 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Jul 2022  Brian Frank  Creation
+//
+
+// Library module meta data
+Lib : {
+  version: Version   // Current version of the library
+  org: Org           // Organization meta data for the library
+}
+
+// Organization meta data
+Org : {
+  dis : Str     // Display name for the organization
+  uri : Uri     // URI for organization website
+}
+

@@ -1,0 +1,18 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Jul 2022  Brian Frank  Creation
+//
+
+// Project haystack core library
+ph : Lib {
+  version: "0.9.1"
+  org: {
+    dis: "Project Haystack"
+    uri: "https://project-haystack.org/"
+  }
+}
+
+

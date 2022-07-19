@@ -34,7 +34,7 @@ abstract const class ProtoEnv
   abstract Str[] installed()
 
   ** Search path of directories from lowest to highest priority.  Standard
-  ** behavior is to map 'pio/' directory of the Fantom `sys::Env` path.
+  ** behavior is to map 'pog/' directory of the Fantom `sys::Env` path.
   abstract File[] path()
 
   ** Return root directory for the given library name.  The result
