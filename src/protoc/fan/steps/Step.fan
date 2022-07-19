@@ -1,0 +1,33 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   4 Mar 2022  Brian Frank  Creation
+//
+
+using proto
+
+**
+** Base class for ProtoCompiler steps
+**
+abstract internal class Step
+{
+  ProtoCompiler? compiler
+
+  abstract Void run()
+
+  ProtoEnv env() { compiler.env }
+
+  Str[] libNames() { compiler.libNames }
+
+  CLib[] libs() { compiler.libs }
+
+  Void info(Str msg) { compiler.info(msg) }
+
+  CompilerErr err(Str msg, Loc loc, Err? err := null) { compiler.err(msg, loc, err) }
+
+  CompilerErr err2(Str msg, Loc loc1, Loc loc2, Err? err := null) { compiler.err2(msg, loc1, loc2, err) }
+
+  Void bombIfErr() { if (!compiler.errs.isEmpty) throw compiler.errs.first }
+}

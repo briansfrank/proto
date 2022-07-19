@@ -39,8 +39,11 @@ abstract const class ProtoEnv
 
   ** Return root directory for the given library name.  The result
   ** might be on the local file system or a directory within a pod file.
-  ** Raise exception if library name is not installed.
-  abstract File libDir(Str name)
+  abstract File? libDir(Str name, Bool checked := true)
+
+  ** Compile a new namespace from a list of library names.
+  ** Raise exception if there are any compiler errors.
+  abstract ProtoSpace compile(Str[] libNames)
 
   ** Debug dump
   @NoDoc abstract Void dump(OutStream out := Env.cur.out)

@@ -10,11 +10,8 @@
 ** Prototype object.
 **
 @Js
-mixin Proto
+const mixin Proto
 {
-  ** Parent object or null if this is the root object
-  abstract Proto? parent()
-
   ** Simple name within parent
   abstract Str name()
 
@@ -23,9 +20,6 @@ mixin Proto
 
   ** Prototype this object inherits from.  Return null if this 'Obj' itself.
   abstract Proto? type()
-
-  ** Point in time transaction id
-  abstract Int tx()
 
   ** Value of the object
   abstract Str? val(Bool checked := true)

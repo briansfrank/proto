@@ -9,10 +9,17 @@
 **
 ** ProtoSpace models a namespace tree of protos.
 **
-mixin ProtoSpace
+@Js
+const mixin ProtoSpace
 {
-  ** The core language library
-  abstract Proto lang()
+  ** The core system library
+  abstract ProtoLib sys()
+
+  ** Libraries used by this namespace
+  abstract ProtoLib[] libs()
+
+  ** Lookup a library by its root name
+  abstract ProtoLib? lib(Str name, Bool checked := true)
 
   ** The object type from which all other objects inherit
   abstract Proto obj()
@@ -28,15 +35,6 @@ mixin ProtoSpace
 
   ** Get the proto at the given path
   @Operator abstract Proto? get(Path path, Bool checked := true)
-
-  ** Libraries used by this namespace
-  abstract ProtoLib[] libs()
-
-  ** Lookup a library by its root name
-  abstract ProtoLib? lib(Str name, Bool checked := true)
-
-  ** Current point in time transaction id.
-  abstract Int tx()
 }
 
 

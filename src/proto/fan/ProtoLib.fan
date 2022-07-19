@@ -9,11 +9,9 @@
 **
 ** Proto library is a root object of versioned prototypes
 **
-mixin ProtoLib : Proto
+@Js
+const mixin ProtoLib : Proto
 {
-  ** Fantom pod which defines the library
-  abstract Pod pod()
-
   ** Version of the library
   abstract Version version()
 }

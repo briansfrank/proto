@@ -65,9 +65,24 @@ internal const class MProtoEnv : ProtoEnv
   ** Return root directory for the given library name.  The result
   ** might be on the local file system or a directory within a pod file.
   ** Raise exception if library name is not installed.
-  override File libDir(Str name)
+  override File? libDir(Str name, Bool checked := true)
   {
-    installedMap[name] ?: throw UnknownLibErr("Not installed: $name")
+    dir := installedMap[name]
+    if (dir != null) return dir
+    if (checked) throw UnknownLibErr("Not installed: $name")
+    return null
+  }
+
+  ** Compile a new namespace from a list of library names.
+  ** Raise exception if there are any compiler errors.
+  override ProtoSpace compile(Str[] libNames)
+  {
+    c := ProtoCompiler
+    {
+      it.env = this
+      it.libNames = libNames
+    }
+    return c.compileSpace
   }
 
   ** Debug dump

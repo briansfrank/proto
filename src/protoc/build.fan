@@ -29,6 +29,9 @@ class Build : BuildPod
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
                "proto @{proto.depend}"]
-    srcDirs = [`fan/`]
+    srcDirs = [`fan/`,
+               `fan/ast/`,
+               `fan/impl/`,
+               `fan/steps/`]
   }
 }
