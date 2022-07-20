@@ -22,7 +22,6 @@ internal class Parser
     this.step = step
     this.file = file
     this.fileLoc = Loc(file)
-    //this.pragma = Pragma(fileLoc)
 
     this.tokenizer = Tokenizer(file.in)
     {
@@ -39,14 +38,14 @@ internal class Parser
 //////////////////////////////////////////////////////////////////////////
 
   ** Parse the file
-  Void parse(CProto libProto)
+  Void parse(CLib lib)
   {
     try
     {
-      //pragma = parsePragma
+      pragma = parsePragma(lib)
       while (true)
       {
-        proto := parseNamedProto(libProto)
+        proto := parseNamedProto(lib.proto)
         if (proto == null) break
       }
       verify(Token.eof)
@@ -61,12 +60,11 @@ internal class Parser
 // Pramga
 //////////////////////////////////////////////////////////////////////////
 
-/* TODO
-  private Pragma parsePragma()
+  private CPragma parsePragma(CLib lib)
   {
-    Pragma(fileLoc)
+    // TODO
+    CPragma(fileLoc, lib)
   }
-*/
 
 //////////////////////////////////////////////////////////////////////////
 // Protos
@@ -108,6 +106,7 @@ internal class Parser
 
     // now we can initialize this proto instance
     proto := CProto(loc, name, doc, type)
+    proto.pragma = this.pragma
 
     // parse <meta>
     parseChildren(proto, Token.lt, Token.gt, true)
@@ -252,6 +251,7 @@ internal class Parser
   private File file
   private Loc fileLoc
   private Tokenizer tokenizer
+  private CPragma? pragma
 
   private Token cur      // current token
   private Obj? curVal    // current token value

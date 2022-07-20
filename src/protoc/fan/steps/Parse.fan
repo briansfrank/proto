@@ -31,13 +31,13 @@ internal class Parse : Step
 
     lib.proto = libProto
     lib.proto.isLib = true
-    lib.src.each |file| { parseFile(libProto, file) }
+    lib.src.each |file| { parseFile(lib, file) }
   }
 
-  private Void parseFile(CProto libProto, File file)
+  private Void parseFile(CLib lib, File file)
   {
     try
-      Parser(this, file).parse(libProto)
+      Parser(this, file).parse(lib)
     catch (Err e)
       err("Cannot parse file", Loc(file), e)
   }

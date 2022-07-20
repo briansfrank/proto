@@ -6,6 +6,7 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using concurrent
 using proto
 
 **
@@ -20,16 +21,18 @@ internal class Assemble : Step
 
   private MProto asm(CProto x)
   {
-    path := x.path
-    type := null // TODO
-    kids := x.children.map |kid->Proto| { asm(kid) }
-    val  := x.val
+    if (x.isAssembled) return x.asm
+
+    path    := x.path
+    typeRef := x.isObj ? AtomicRef() : x.type.deref.asmRef
+    kids    := x.children.map |kid->Proto| { asm(kid) }
+    val     := x.val
 
     m := x.isLib ?
-         MProtoLib(path, type, val, kids) :
-         MProto(path, type, val, kids)
+         MProtoLib(path, typeRef, val, kids) :
+         MProto(path, typeRef, val, kids)
 
-    x.asmRef = m
+    x.asmRef.val = m
     return m
   }
 

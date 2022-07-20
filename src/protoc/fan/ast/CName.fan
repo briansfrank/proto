@@ -20,6 +20,8 @@ internal class CName
   const Loc loc
   const Str name   // simple or dotted name
 
+  Bool isResolved() { resolved != null }
+
   CProto deref() { resolved ?: throw Err("Not resolved yet: $name") }
 
   override Str toStr() { name }

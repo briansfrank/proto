@@ -18,7 +18,7 @@ const mixin ProtoSpace
   ** Libraries used by this namespace
   abstract ProtoLib[] libs()
 
-  ** Lookup a library by its root name
+  ** Lookup a library by its dotted qualified name
   abstract ProtoLib? lib(Str name, Bool checked := true)
 
   ** The object type from which all other objects inherit

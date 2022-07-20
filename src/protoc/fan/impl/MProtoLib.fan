@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using concurrent
 using proto
 
 **
@@ -13,8 +14,8 @@ using proto
 **
 internal const class MProtoLib : MProto, ProtoLib
 {
-  new make(Path path, MProto? type, Str? val, Str:MProto children)
-    : super(path, type, val, children)
+  new make(Path path, AtomicRef typeRef, Str? val, Str:MProto children)
+    : super(path, typeRef, val, children)
   {
   }
 

@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using concurrent
 using proto
 
 **
@@ -20,6 +21,7 @@ internal class CProto
     this.doc      = doc
     this.type     = type
     this.children = noChildren
+    this.asmRef   = AtomicRef()
   }
 
   Void each(|CProto| f) { children.each(f) }
@@ -30,22 +32,25 @@ internal class CProto
 
   once Path path() { isRoot ? Path.root : parent.path.add(name) }
 
+  once Bool isObj() { path.toStr == "sys.Obj" }
+
   override Str toStr() { isRoot ? "_root_" : path.toStr }
 
-  Bool isObj() { name == "Obj" && parent?.name == "lang" }
+  Bool isAssembled() { asmRef.val != null }
 
-  MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
+  MProto asm() { asmRef.val ?: throw Err("Not assembled yet [$name]") }
 
   static const Str:CProto noChildren := [:]
 
   const Loc loc           // ctor
   const Str name          // ctor
+  const AtomicRef asmRef  // Assemble.asm
   Str? doc                // ctor or Parser for suffix docs
+  CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot
   Str? val                // Parser
   CName? type             // Parser or Resolve
   Bool isLib              // Parse.parseLib
-  MProto? asmRef          // Assemble.asm
 }
 

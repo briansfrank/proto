@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using concurrent
 using proto
 
 **
@@ -13,10 +14,10 @@ using proto
 **
 internal const class MProto : Proto
 {
-  new make(Path path, MProto? type, Str? val, Str:MProto children)
+  new make(Path path, AtomicRef typeRef, Str? val, Str:MProto children)
   {
     this.path     = path
-    this.type     = type
+    this.typeRef  = typeRef
     this.valRef   = val
     this.children = children
   }
@@ -25,7 +26,8 @@ internal const class MProto : Proto
 
   override const Path path
 
-  override const Proto? type
+  override Proto? type() { typeRef.val }
+  private const AtomicRef typeRef
 
   override Str? val(Bool checked := true)
   {
@@ -84,9 +86,9 @@ internal const class MProto : Proto
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     indent := opts?.get("indent") as Str ?: ""
-    out.print(indent).print(name).print(" : ")
-    if (type != null) out.print(type)
-    if (valRef != null) out.print(" = ").print(valRef.toCode)
+    out.print(indent).print(name)
+    if (type != null) out.print(" : ").print(type)
+    if (valRef != null) out.print(" ").print(valRef.toCode)
     if (children.size == 0) out.printLine
     else
     {

@@ -23,6 +23,12 @@ abstract internal class Step
 
   CLib[] libs() { compiler.libs }
 
+  CProto root() { compiler.root }
+
+  CSys sys() { compiler.sys }
+
+  MProtoSpace ps() { compiler.ps }
+
   internal Void addSlot(CProto parent, CProto child)
   {
     if (child.parent != null) throw Err()

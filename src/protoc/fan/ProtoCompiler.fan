@@ -47,6 +47,9 @@ internal class ProtoCompiler
     run([
        InitLibs(),
        Parse(),
+       ResolveSys(),
+       Resolve(),
+       Inherit(),
        Assemble(),
       ])
     log.info("compileSpace [$duration.toLocale]")
@@ -120,6 +123,7 @@ internal class ProtoCompiler
   internal Duration? duration            // run
   internal CLib[]? libs                  // InitLibs
   internal CProto? root                  // Parse
+  internal CSys? sys                     // ResolveSys
   internal MProtoSpace? ps               // Assemble
 }
 
