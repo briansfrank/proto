@@ -15,11 +15,15 @@ internal class InitLibs : Step
 {
   override Void run()
   {
+    createRoot
     checkDups
-    acc := CLib[,] { it.capacity = libNames.size }
-    libNames.each |name| { acc.addNotNull(init(name)) }
-    compiler.libs = acc
+    initLibs
     bombIfErr
+  }
+
+  private Void createRoot()
+  {
+    compiler.root = CProto(Loc.synthetic, "")
   }
 
   private Void checkDups()
@@ -32,7 +36,14 @@ internal class InitLibs : Step
     }
   }
 
-  private CLib? init(Str name)
+  private Void initLibs()
+  {
+    acc := CLib[,] { it.capacity = libNames.size }
+    libNames.dup.sort.each |name| { acc.addNotNull(initLib(name)) }
+    compiler.libs = acc
+  }
+
+  private CLib? initLib(Str name)
   {
     // resolve lib name to its source directory
     dir := env.libDir(name, false)
@@ -44,6 +55,30 @@ internal class InitLibs : Step
     if (libFile == null) { err("Missing lib.pog: $name", Loc(dir)); return null }
     src.moveTo(libFile, 0)
 
-    return CLib(Path(name), dir, src)
+    // create lib and its proto
+    lib := CLib(Path(name), dir, src)
+    lib.proto = initProto(lib)
+    return lib
+  }
+
+  private CProto initProto(CLib lib)
+  {
+    // build path of generic protos to base of lib itself
+    libBase := root
+    path := lib.name
+    for (i := 0; i<path.size-1; ++i)
+    {
+      n := path[i]
+      x := libBase.child(n)
+      if (x == null) addSlot(libBase, x = CProto(Loc.synthetic, n))
+      libBase = x
+    }
+
+    // build Lib object itself
+    loc := lib.loc
+    proto := CProto(loc, path.name, null, CName(loc, "sys.Lib"))
+    proto.isLib = true
+    addSlot(libBase, proto)
+    return proto
   }
 }

@@ -19,7 +19,11 @@ class CompileTest : Test
     ps := ProtoEnv.cur.compile(["sys"])
     ps.root.dump
 
-    sys    := verifyLib(ps, "sys", "0.9.1")
+    sys := verifyLib(ps, "sys", "0.9.1")
+    verifyEq(ps.libs.size, 1)
+    verifySame(ps.libs[0], sys)
+    verifySame(ps.root->sys, sys)
+
     obj    := verifyProto(ps, "sys.Obj",    null,   null)
     marker := verifyProto(ps, "sys.Marker", obj,    null)
     val    := verifyProto(ps, "sys.Val",    obj,    null)
@@ -45,8 +49,9 @@ class CompileTest : Test
     path := Path(name)
     lib := ps.lib(name)
     verifySame(lib, ps.get(Path(name)))
-    // TODO
-    //verifyProto(ps, name, ps.get(Path("sys.Lib")), null)
+    verifyProto(ps, name, ps.sys->Lib, null)
+    verifyProto(ps, name+"._version", ps.sys->Lib->_version, version)
+    verifyEq(lib.version, Version(version))
     return lib
   }
 

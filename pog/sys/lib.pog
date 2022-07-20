@@ -6,8 +6,8 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
-// System library of built-in prototypes
-sys : Lib <
+#<
+  doc: "System library of built-in prototypes"
   version: "0.9.1"
   org: {
     dis: "Project Haystack"

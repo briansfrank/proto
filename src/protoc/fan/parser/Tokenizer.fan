@@ -197,6 +197,10 @@ internal class Tokenizer
       case '?':  return Token.question
       case '&':  return Token.amp
       case '|':  return Token.pipe
+      case '#':
+        if (cur == '<') { consume; return Token.libMeta }
+        if (cur == '{') { consume; return Token.pragma }
+        return Token.pound
       case 0:    return Token.eof
     }
 

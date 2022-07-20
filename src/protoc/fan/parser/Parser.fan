@@ -42,7 +42,7 @@ internal class Parser
   {
     try
     {
-      pragma = parsePragma(lib)
+      parsePragma(lib)
       while (true)
       {
         proto := parseNamedProto(lib.proto)
@@ -60,10 +60,23 @@ internal class Parser
 // Pramga
 //////////////////////////////////////////////////////////////////////////
 
-  private CPragma parsePragma(CLib lib)
+  private Void parsePragma(CLib lib)
   {
+    if (file.name == "lib.pog")
+    {
+      parseLibMeta(lib)
+      lib.proto.pragma = CPragma(fileLoc, lib)
+    }
+
     // TODO
-    CPragma(fileLoc, lib)
+    pragma = CPragma(fileLoc, lib)
+  }
+
+  private Void parseLibMeta(CLib lib)
+  {
+    doc := parseLeadingDoc
+    if (cur !== Token.libMeta) throw err("Expecting #<> lib meta, not $curToStr")
+    parseChildren(lib.proto, Token.libMeta, Token.gt, true)
   }
 
 //////////////////////////////////////////////////////////////////////////
