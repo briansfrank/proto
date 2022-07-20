@@ -11,7 +11,7 @@ using proto
 **
 ** Resolve all unresolved names in the AST
 **
-internal class Resolve : Step
+internal class ResolveNames : Step
 {
   override Void run()
   {

@@ -48,12 +48,13 @@ internal class ProtoCompiler
        InitLibs(),
        Parse(),
        ResolveSys(),
-       Resolve(),
+       ResolveDepends(),
+       ResolveNames(),
        AddMeta(),
        Inherit(),
        Assemble(),
       ])
-    log.info("compileSpace [$duration.toLocale]")
+    log.info("compileSpace [$ps.libs.size libs, $duration.toLocale]")
     return ps
   }
 

@@ -15,7 +15,7 @@ internal class ResolveSys : Step
 {
   override Void run()
   {
-    lib := libs.find |lib| { lib.name.toStr == "sys" }
+    lib := libs.find |lib| { lib.isSys }
     if (lib == null) throw err("Sys lib not found", Loc.inputs)
 
     compiler.sys = CSys

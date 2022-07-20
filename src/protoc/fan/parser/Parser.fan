@@ -115,7 +115,7 @@ internal class Parser
     // type
     type := null
     if (cur === Token.id)
-      type = parseInherits
+      type = parseName
 
     // now we can initialize this proto instance
     proto := CProto(loc, name, doc, type)
@@ -153,10 +153,15 @@ internal class Parser
     return proto
   }
 
-  private CName parseInherits()
+  private CName parseName()
   {
     loc := curToLoc
     name := consumeName
+    while (cur == Token.dot)
+    {
+      consume
+      name += "." + consumeName
+    }
     return CName(loc, name)
   }
 

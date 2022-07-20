@@ -39,7 +39,7 @@ internal class Assemble : Step
   private Str:ProtoLib asmLibs()
   {
     acc := Str:ProtoLib[:]
-    libs.each |x| { acc.add(x.name.toStr, (MProtoLib)x.proto.asm) }
+    libs.each |x| { acc.add(x.path.toStr, (MProtoLib)x.proto.asm) }
     return acc
   }
 }

@@ -30,29 +30,30 @@ internal class CPragma
 
   private CProto[] doResolve(ProtoCompiler c, Str name)
   {
-    // TODO
-    path := Path.fromStr(name)
-    acc := CProto[,]
-    acc.addNotNull(doResolveIn(c.root, path))
-    acc.addNotNull(doResolveIn(c.root, Path("sys", name)))
-    /*
-    c.depends.each |depend|
-    {
-      acc.addNotNull(doResolveIn(depend as IProto, path))
-    }
-    */
-    return acc
+    name.contains(".") ? resolveQualified(c, name) : resolveUnqualified(c, name)
   }
 
-  private CProto? doResolveIn(CProto? root, Path path)
+  private CProto[] resolveQualified(ProtoCompiler c, Str name)
   {
-    p := root
+    path := Path(name)
+    CProto? p := c.root
     for (i := 0; i<path.size; ++i)
     {
       p = p.child(path[i])
-      if (p == null) return null
+      if (p == null) return CProto#.emptyList
     }
-    return p
+    return CProto[p]
+  }
+
+  private CProto[] resolveUnqualified(ProtoCompiler c, Str name)
+  {
+    acc := CProto[,]
+    acc.addNotNull(lib.proto.child(name))
+    lib.depends.each |depend|
+    {
+      acc.addNotNull(depend.proto.child(name))
+    }
+    return acc
   }
 
   private Str:CProto[] cache := Str:CProto[][:]

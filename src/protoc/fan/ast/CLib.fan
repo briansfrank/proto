@@ -13,19 +13,22 @@ using proto
 **
 internal class CLib
 {
-  new make(Path name, File dir, File[] src)
+  new make(Loc loc, Path path, File dir, File[] src, CProto proto)
   {
-    this.loc  = Loc(dir)
-    this.name = name
-    this.dir  = dir
-    this.src  = src
+    this.loc   = loc
+    this.path  = path
+    this.dir   = dir
+    this.src   = src
+    this.isSys = path.toStr == "sys"
+    this.proto = proto
   }
 
-  const Path name     // library dotted name
+  const Path path     // library dotted name
   const Loc loc       // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)
-
-  CProto? proto       // created in Parse step
+  const Bool isSys    // is this the sys lib
+  CProto? proto       // proto cloned from sys.Lib
+  CLib[]? depends     // ResolveDepends
 }
 

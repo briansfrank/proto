@@ -56,16 +56,15 @@ internal class InitLibs : Step
     src.moveTo(libFile, 0)
 
     // create lib and its proto
-    lib := CLib(Path(name), dir, src)
-    lib.proto = initProto(lib)
-    return lib
+    loc := Loc(dir)
+    path := Path(name)
+    return CLib(loc, path, dir, src, initProto(loc, path))
   }
 
-  private CProto initProto(CLib lib)
+  private CProto initProto(Loc loc, Path path)
   {
     // build path of generic protos to base of lib itself
     libBase := root
-    path := lib.name
     for (i := 0; i<path.size-1; ++i)
     {
       n := path[i]
@@ -75,7 +74,6 @@ internal class InitLibs : Step
     }
 
     // build Lib object itself
-    loc := lib.loc
     proto := CProto(loc, path.name, null, CName(loc, "sys.Lib"))
     proto.isLib = true
     addSlot(libBase, proto)
