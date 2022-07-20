@@ -32,8 +32,7 @@ internal class Inherit : Step
     {
       if (p.type == null)
         p.type = CName(p.loc, base)
-      else
-        echo("TODO: check $p.type fits $base")
+      //else echo("TODO: check $p.type fits $base")
     }
     else
     {
@@ -52,7 +51,7 @@ internal class Inherit : Step
   private CProto infer(CProto p)
   {
     if (p.val is Str) return sys.str
-    return sys.obj
+    return sys.dict
   }
 
 }

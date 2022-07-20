@@ -7,10 +7,10 @@
 //
 
 // Library module meta data
-Lib : {
+Lib : <
   version: Version   // Current version of the library
   org: Org           // Organization meta data for the library
-}
+>
 
 // Organization meta data
 Org : {

@@ -11,8 +11,8 @@ Obj : <
   // Inheritance prototype
   type: Obj
 
-   // Documentation for object
-  doc: "Root type for all objects"
+  // Documentation for object
+  doc: Str "Root type for all objects"
 >
 
 // Nothing is the bottom type with no values

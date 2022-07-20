@@ -22,6 +22,7 @@ internal class ResolveSys : Step
     {
       it.obj    = resolve(lib.proto, "Obj")
       it.str    = resolve(lib.proto, "Str")
+      it.dict   = resolve(lib.proto, "Dict")
       it.objDoc = resolve(obj, "_doc")
     }
     bombIfErr

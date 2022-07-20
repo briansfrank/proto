@@ -30,6 +30,7 @@ class CompileTest : Test
     str    := verifyProto(ps, "sys.Str",    scalar, null)
 
     objDoc    := verifyProto(ps, "sys.Obj._doc", str, "Root type for all objects")
+    objDocDoc := verifyProto(ps, "sys.Obj._doc._doc", str, "Documentation for object")
     valDoc    := verifyProto(ps, "sys.Val._doc", objDoc, "Data value type")
     scalarDoc := verifyProto(ps, "sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
 

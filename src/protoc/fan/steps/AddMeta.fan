@@ -21,8 +21,16 @@ internal class AddMeta : Step
 
   private Void addMeta(CProto p)
   {
-    if (p.doc != null && p.child("_doc") == null) add(p, "_doc", sys.objDoc, p.doc)
+    addDoc(p)
     p.each |kid| { addMeta(kid) }
+  }
+
+  private Void addDoc(CProto p)
+  {
+    if (p.doc == null) return
+    if (p.child("_doc") != null) return
+    type := p === sys.objDoc ? sys.str : sys.objDoc
+    add(p, "_doc", type, p.doc)
   }
 
   private Void add(CProto x, Str name, CProto type, Str val)

@@ -7,12 +7,12 @@
 //
 
 // System library of built-in prototypes
-sys : Lib {
+sys : Lib <
   version: "0.9.1"
   org: {
     dis: "Project Haystack"
     uri: "https://project-haystack.org/"
   }
-}
+>
 
 
