@@ -8,8 +8,11 @@
 
 // Root type for all objects
 Obj : <
-  type: Obj   // Inheritance prototype
-  doc: Str    // Documentation for object
+  // Inheritance prototype
+  type: Obj
+
+   // Documentation for object
+  doc: "Root type for all objects"
 >
 
 // Nothing is the bottom type with no values

@@ -20,15 +20,16 @@ internal class ResolveSys : Step
 
     compiler.sys = CSys
     {
-      it.obj = resolve(lib, "Obj")
-      it.str = resolve(lib, "Str")
+      it.obj    = resolve(lib.proto, "Obj")
+      it.str    = resolve(lib.proto, "Str")
+      it.objDoc = resolve(obj, "_doc")
     }
     bombIfErr
   }
 
-  private CProto resolve(CLib lib, Str name)
+  private CProto resolve(CProto parent, Str name)
   {
-    lib.proto.child(name) ?: throw err("Sys type not found: sys.$name", lib.loc)
+    parent.child(name) ?: throw err("Sys type not found: ${parent.path}.$name", parent.loc)
   }
 }
 

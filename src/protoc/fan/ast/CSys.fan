@@ -14,6 +14,8 @@ using proto
 internal class CSys
 {
   new make(|This| f) { f(this) }
-  CProto obj
-  CProto str
+
+  CProto obj        // sys.Obj
+  CProto str        // sys.Str
+  CProto objDoc     // sys.Obj._doc
 }

@@ -29,14 +29,12 @@ class CompileTest : Test
     boolF  := verifyProto(ps, "sys.False",  bool,   "false")
     str    := verifyProto(ps, "sys.Str",    scalar, null)
 
-/*
-    objDoc    := verifyProto(ps, "sys.Obj._doc", str, null) // TODO "Root type for all objects")
+    objDoc    := verifyProto(ps, "sys.Obj._doc", str, "Root type for all objects")
     valDoc    := verifyProto(ps, "sys.Val._doc", objDoc, "Data value type")
-    scalarDoc := verifyProto(ps, "sys.Scalar._doc", valDoc, "Scalar is an atomic value kind")
+    scalarDoc := verifyProto(ps, "sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
 
     verifySame(sys->Obj, obj)
     verifySame(obj->_doc, objDoc)
-*/
     verifyErr(UnknownProtoErr#) { sys->Foo }
     verifyErr(UnknownProtoErr#) { obj->foo }
   }

@@ -49,6 +49,7 @@ internal class ProtoCompiler
        Parse(),
        ResolveSys(),
        Resolve(),
+       AddMeta(),
        Inherit(),
        Assemble(),
       ])

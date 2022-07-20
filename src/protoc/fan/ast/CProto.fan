@@ -14,12 +14,13 @@ using proto
 **
 internal class CProto
 {
-  new make(Loc loc, Str name, Str? doc := null, CName? type := null)
+  new make(Loc loc, Str name, Str? doc := null, CName? type := null, Str? val := null)
   {
     this.loc      = loc
     this.name     = name
     this.doc      = doc
     this.type     = type
+    this.val      = val
     this.children = noChildren
     this.asmRef   = AtomicRef()
   }
@@ -45,11 +46,11 @@ internal class CProto
   const Loc loc           // ctor
   const Str name          // ctor
   const AtomicRef asmRef  // Assemble.asm
-  Str? doc                // ctor or Parser for suffix docs
   CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot
-  Str? val                // Parser
+  Str? doc                // ctor or Parser for suffix docs
+  Str? val                // ctor or Parser
   CName? type             // Parser or Resolve
   Bool isLib              // Parse.parseLib
 }
