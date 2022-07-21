@@ -22,6 +22,7 @@ internal const class MProtoSpace : ProtoSpace
     this.obj     = sys->Obj
     this.marker  = sys->Marker
     this.str     = sys->Str
+    this.dict    = sys->Dict
   }
 
   override const Proto root
@@ -30,6 +31,7 @@ internal const class MProtoSpace : ProtoSpace
   override const Proto obj
   override const Proto marker
   override const Proto str
+  override const Proto dict
   const Str:ProtoLib libsMap
 
   override ProtoLib? lib(Str name, Bool checked := true)

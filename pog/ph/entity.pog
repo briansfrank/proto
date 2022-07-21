@@ -9,9 +9,6 @@
 // Top-level dicts with a unique identifier.
 Entity : Dict {
 
-  // Entity marker
-  entity: Marker
-
   // Defines the unique identifier of an entity in system using a `ref` value
   // type. The scope of an entity is undefined, but must be unique with a
   // given system or project. This identifier may be used by other entities

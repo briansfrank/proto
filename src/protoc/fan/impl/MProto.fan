@@ -42,6 +42,18 @@ internal const class MProto : Proto
     get(name, true)
   }
 
+  override Bool has(Str name)
+  {
+    if (hasOwn(name)) return true
+    if (type == null) return false
+    return type.has(name)
+  }
+
+  override Bool hasOwn(Str name)
+  {
+    children.containsKey(name)
+  }
+
   @Operator override Proto? get(Str name, Bool checked := true)
   {
     child := children.get(name, null)
@@ -52,7 +64,13 @@ internal const class MProto : Proto
     return null
   }
 
-  override Proto? declared(Str name) { children.get(name, null) }
+  override Proto? getOwn(Str name, Bool checked := true)
+  {
+    child := children.get(name, null)
+    if (child != null) return child
+    if (checked) throw UnknownProtoErr(name)
+    return null
+  }
 
   private const Str:MProto children
 
@@ -73,6 +91,11 @@ internal const class MProto : Proto
       f(kid)
     }
     doEach(seen, p.type, f)
+  }
+
+  override Void eachOwn(|Proto| f)
+  {
+    children.each(f)
   }
 
   override Obj? eachWhile(|Proto->Obj?| f)

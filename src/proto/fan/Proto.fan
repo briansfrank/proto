@@ -24,20 +24,29 @@ const mixin Proto
   ** Value of the object
   abstract Str? val(Bool checked := true)
 
-  ** Get the inherited child mapped by the given name.  If it is not
+  ** Does this object contain an effective child with the given name.
+  abstract Bool has(Str name)
+
+  ** Does this object contain a non-inherited child with the given name.
+  abstract Bool hasOwn(Str name)
+
+  ** Get the effective child mapped by the given name.  If it is not
   ** mapped to a non-null value, then throw an UnknownProtoErr.
   override abstract Obj? trap(Str name, Obj?[]? args := null)
 
-  ** Get inherited child object by name or return null if not found
+  ** Get effective child object by name.
   @Operator abstract Proto? get(Str name, Bool checked := true)
 
-  ** Get a declared child object by name or return null if not found
-  abstract Proto? declared(Str name)
+  ** Get a non-inherited child object by name.
+  abstract Proto? getOwn(Str name, Bool checked := true)
 
-  ** Iterate the children objects
+  ** Iterate the effective children objects
   abstract Void each(|Proto| f)
 
-  ** Iterate through the children until the given function returns
+  ** Iterate the non-inherited children objects.
+  abstract Void eachOwn(|Proto| f)
+
+  ** Iterate through the effective children until the given function returns
   ** non-null, then break the iteration and return resulting object.
   ** Return null if function returns null for every child.
   abstract Obj? eachWhile(|Proto->Obj?| f)

@@ -30,6 +30,9 @@ const mixin ProtoSpace
   ** The marker type object
   abstract Proto marker()
 
+  ** The dict type object
+  abstract Proto dict()
+
   ** Root object for this space
   abstract Proto root()
 
