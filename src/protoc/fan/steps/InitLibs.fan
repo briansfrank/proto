@@ -47,7 +47,12 @@ internal class InitLibs : Step
   {
     // resolve lib name to its source directory
     dir := env.libDir(name, false)
-    if (dir == null) { err("Lib not installed: $name", Loc.inputs); return null }
+    if (dir == null)
+    {
+      if (name.contains("#")) return initSrcLib(name)
+      err("Lib not installed: $name", Loc.inputs)
+      return null
+    }
 
     // resolve source files
     src := dir.list.findAll |f| { f.ext == "pog" }
@@ -59,6 +64,19 @@ internal class InitLibs : Step
     loc := Loc(dir)
     path := Path(name)
     return CLib(loc, path, dir, src, initProto(loc, path))
+  }
+
+  private CLib initSrcLib(Str src)
+  {
+    // this is backdoor hook to pass the source string for as lib
+    // formatted as "libName #<> ...."
+    pound := src.index("#")
+    name := src[0..<pound].trim
+    file := src[pound..-1].toBuf.toFile(`lib.pog`)
+
+    loc := Loc("memory")
+    path := Path(name)
+    return CLib(loc, path, Env.cur.workDir, [file], initProto(loc, path))
   }
 
   private CProto initProto(Loc loc, Path path)
@@ -74,7 +92,7 @@ internal class InitLibs : Step
     }
 
     // build Lib object itself
-    proto := CProto(loc, path.name, null, CName(loc, "sys.Lib"))
+    proto := CProto(loc, path.name, null, CType(loc, "sys.Lib"))
     proto.isLib = true
     addSlot(libBase, proto)
     return proto

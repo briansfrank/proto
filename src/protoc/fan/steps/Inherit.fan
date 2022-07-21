@@ -31,14 +31,14 @@ internal class Inherit : Step
     if (base != null)
     {
       if (p.type == null)
-        p.type = CName(p.loc, base)
+        p.type = CType(p.loc, base)
       //else echo("TODO: check $p.type fits $base")
     }
     else
     {
       // infer from value
       if (p.type == null && !p.isObj)
-        p.type = CName(p.loc, infer(p))
+        p.type = CType(p.loc, infer(p))
     }
   }
 

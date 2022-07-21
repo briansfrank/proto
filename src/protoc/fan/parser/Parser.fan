@@ -100,12 +100,13 @@ internal class Parser
     if (cur !== Token.colon)
     {
       // marker
-      throw err("TODO marker")
+      return addProto(parent, loc, name, doc, CType(loc, "sys.Marker"))
     }
     else
     {
       // proto value
       consume(Token.colon)
+      skipNewlines
       return parseProtoX(parent, loc, doc, name)
     }
   }
@@ -115,11 +116,10 @@ internal class Parser
     // type
     type := null
     if (cur === Token.id)
-      type = parseName
+      type = parseType
 
     // now we can initialize this proto instance
-    proto := CProto(loc, name, doc, type)
-    proto.pragma = this.pragma
+    proto := addProto(parent, loc, name, doc, type)
 
     // parse <meta>
     parseChildren(proto, Token.lt, Token.gt, true)
@@ -147,13 +147,18 @@ internal class Parser
     // skip any trailing newlines
     skipNewlines
 
-    // add proto into its parent namespace
-    step.addSlot(parent, proto)
-
     return proto
   }
 
-  private CName parseName()
+  private CProto addProto(CProto parent, Loc loc, Str name, Str? doc, CType? type)
+  {
+    proto := CProto(loc, name, doc, type)
+    proto.pragma = this.pragma
+    step.addSlot(parent, proto)
+    return proto
+  }
+
+  private CType parseType()
   {
     loc := curToLoc
     name := consumeName
@@ -162,17 +167,22 @@ internal class Parser
       consume
       name += "." + consumeName
     }
-    return CName(loc, name)
+    return CType(loc, name)
   }
 
   private Void parseChildren(CProto parent, Token open, Token close, Bool isMeta)
   {
+    skipNewlines
     if (cur === open)
     {
       consume
       while (cur !== close)
+      {
         parseNamedProto(parent, isMeta)
+        skipComma
+      }
       consume
+      skipNewlines
     }
   }
 
@@ -218,6 +228,11 @@ internal class Parser
   private Void skipNewlines()
   {
     while (cur === Token.nl) consume
+  }
+
+  private Void skipComma()
+  {
+    if (cur === Token.comma) consume
   }
 
   private Void verify(Token expected)

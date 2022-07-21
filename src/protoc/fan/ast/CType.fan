@@ -11,7 +11,7 @@ using concurrent
 **
 ** Named reference to a proto
 **
-internal class CName
+internal class CType
 {
   new makeUnresolved(Loc loc, Str name) { this.loc = loc; this.name = name }
 

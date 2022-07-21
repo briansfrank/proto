@@ -14,7 +14,7 @@ using proto
 **
 internal class CProto
 {
-  new make(Loc loc, Str name, Str? doc := null, CName? type := null, Str? val := null)
+  new make(Loc loc, Str name, Str? doc := null, CType? type := null, Str? val := null)
   {
     this.loc      = loc
     this.name     = name
@@ -51,7 +51,7 @@ internal class CProto
   Str:CProto children     // Step.addSlot
   Str? doc                // ctor or Parser for suffix docs
   Str? val                // ctor or Parser
-  CName? type             // Parser or Resolve
+  CType? type             // Parser or Resolve
   Bool isLib              // Parse.parseLib
 }
 

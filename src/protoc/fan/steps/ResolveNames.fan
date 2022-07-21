@@ -28,7 +28,7 @@ internal class ResolveNames : Step
     p.each |kid| { resolveProto(kid) }
   }
 
-  private Void resolve(CProto p, CName? ref)
+  private Void resolve(CProto p, CType? ref)
   {
     if (ref == null || ref.isResolved) return
 

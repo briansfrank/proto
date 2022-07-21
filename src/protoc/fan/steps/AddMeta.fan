@@ -35,6 +35,6 @@ internal class AddMeta : Step
 
   private Void add(CProto x, Str name, CProto type, Str val)
   {
-    addSlot(x, CProto(x.loc, name, null, CName(x.loc, type), val))
+    addSlot(x, CProto(x.loc, name, null, CType(x.loc, type), val))
   }
 }

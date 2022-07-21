@@ -14,16 +14,22 @@ using proto
 class CompileTest : Test
 {
 
+  ProtoSpace? ps
+
+//////////////////////////////////////////////////////////////////////////
+// Basics
+//////////////////////////////////////////////////////////////////////////
+
   Void testBasics()
   {
     // just sys
-    ps := ProtoEnv.cur.compile(["sys"])
+    compile(["sys"])
     verifyEq(ps.libs.size, 1)
     verifySame(ps.libs[0], ps.lib("sys"))
     verifySys(ps)
 
     // sys + ph
-    ps = ProtoEnv.cur.compile(["sys", "ph"])
+    compile(["sys", "ph"])
     verifyEq(ps.libs.size, 2)
     verifySame(ps.libs[0], ps.lib("ph"))
     verifySame(ps.libs[1], ps.lib("sys"))
@@ -36,19 +42,19 @@ class CompileTest : Test
     sys := verifyLib(ps, "sys", "0.9.1")
     verifySame(ps.root->sys, sys)
 
-    obj    := verifyProto(ps, "sys.Obj",    null,   null)
-    marker := verifyProto(ps, "sys.Marker", obj,    null)
-    val    := verifyProto(ps, "sys.Val",    obj,    null)
-    scalar := verifyProto(ps, "sys.Scalar", val,    null)
-    bool   := verifyProto(ps, "sys.Bool",   scalar, null)
-    boolT  := verifyProto(ps, "sys.True",   bool,   "true")
-    boolF  := verifyProto(ps, "sys.False",  bool,   "false")
-    str    := verifyProto(ps, "sys.Str",    scalar, null)
+    obj    := verifyProto("sys.Obj",    null,   null)
+    marker := verifyProto("sys.Marker", obj,    null)
+    val    := verifyProto("sys.Val",    obj,    null)
+    scalar := verifyProto("sys.Scalar", val,    null)
+    bool   := verifyProto("sys.Bool",   scalar, null)
+    boolT  := verifyProto("sys.True",   bool,   "true")
+    boolF  := verifyProto("sys.False",  bool,   "false")
+    str    := verifyProto("sys.Str",    scalar, null)
 
-    objDoc    := verifyProto(ps, "sys.Obj._doc", str, "Root type for all objects")
-    objDocDoc := verifyProto(ps, "sys.Obj._doc._doc", str, "Documentation for object")
-    valDoc    := verifyProto(ps, "sys.Val._doc", objDoc, "Data value type")
-    scalarDoc := verifyProto(ps, "sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
+    objDoc    := verifyProto("sys.Obj._doc", str, "Root type for all objects")
+    objDocDoc := verifyProto("sys.Obj._doc._doc", str, "Documentation for object")
+    valDoc    := verifyProto("sys.Val._doc", objDoc, "Data value type")
+    scalarDoc := verifyProto("sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
 
     verifySame(sys->Obj, obj)
     verifySame(obj->_doc, objDoc)
@@ -63,29 +69,258 @@ class CompileTest : Test
 
     sys := ps.root->sys
 
-    na     := verifyProto(ps, "ph.Na",     sys->Obj)
-    remove := verifyProto(ps, "ph.Remove", sys->Obj)
-    ref    := verifyProto(ps, "ph.Ref",    sys->Scalar)
-    grid   := verifyProto(ps, "ph.Grid",   sys->Collection)
-    entity := verifyProto(ps, "ph.Entity", sys->Dict)
-    id     := verifyProto(ps, "ph.Entity.id", ph->Ref)
-    str    := verifyProto(ps, "ph.Entity.dis", sys->Str)
+    na     := verifyProto("ph.Na",     sys->Obj)
+    remove := verifyProto("ph.Remove", sys->Obj)
+    ref    := verifyProto("ph.Ref",    sys->Scalar)
+    grid   := verifyProto("ph.Grid",   sys->Collection)
+    entity := verifyProto("ph.Entity", sys->Dict)
+    id     := verifyProto("ph.Entity.id", ph->Ref)
+    str    := verifyProto("ph.Entity.dis", sys->Str)
   }
 
-  ProtoLib verifyLib(ProtoSpace ps, Str name, Str version)
+//////////////////////////////////////////////////////////////////////////
+// Inherit
+//////////////////////////////////////////////////////////////////////////
+
+  Void testInherit()
+  {
+    compileSrc(
+    Str<|Alpha : {
+           a: "av"
+           b: "bv"
+           c: "cv"
+         }
+
+         Beta : Alpha {
+           b: "bv"
+           c: "cv"
+         }
+
+         Charlie : Beta {
+           c: "cv"
+         }
+         |>)
+
+    a := get("test.Alpha")
+    b := get("test.Beta")
+    c := get("test.Charlie")
+
+    verifyInherit(a, "a,b,c", ["Alpha.a", "Alpha.b", "Alpha.c"])
+    verifyInherit(b, "b,c",   ["Alpha.a", "Beta.b",  "Beta.c"])
+    verifyInherit(c, "c",     ["Alpha.a", "Beta.b",  "Charlie.c"])
+  }
+
+  private Void verifyInherit(Proto p, Str declared, Str[] slots)
+  {
+    // echo("--- $p "); p.dump
+
+    // has
+    verifyEq(p.has("a"), true)
+    verifyEq(p.has("b"), true)
+    verifyEq(p.has("c"), true)
+
+    // get as operator
+    verifyEq(p["a"].val, "av")
+    verifyEq(p["b"].val, "bv")
+    verifyEq(p["c"].val, "cv")
+
+    // get as method
+    verifyEq(p.get("a").val, "av")
+    verifyEq(p.get("b").val, "bv")
+    verifyEq(p.get("c").val, "cv")
+
+    // get path of each slot
+    verifyEq(p.get("a").path.toStr, "test." + slots[0])
+    verifyEq(p.get("b").path.toStr, "test." + slots[1])
+    verifyEq(p.get("c").path.toStr, "test." + slots[2])
+
+    // each
+    map := Str:Str[:] { ordered = true }
+    p.each |kid|
+    {
+      if (kid.name.startsWith("_")) return
+      map[kid.name] = kid.val
+    }
+    verifyEq(map, ["a":"av", "b":"bv", "c":"cv"])
+
+    // each - declared only
+    map.clear
+    p.each |kid|
+    {
+      if (kid.name.startsWith("_")) return
+      if (p.hasOwn(kid.name))
+      {
+        verifySame(p.get(kid.name), p.getOwn(kid.name))
+        map[kid.name] = kid.val
+      }
+      else
+      {
+        verifyEq(p.getOwn(kid.name, false), null)
+        verifyErr(UnknownProtoErr#) { p.getOwn(kid.name) }
+        verifyErr(UnknownProtoErr#) { p.getOwn(kid.name, true) }
+      }
+    }
+    verifyEq(map.keys.join(","), declared)
+
+    // bad
+    verifyEq(p.has("bad"), false)
+    verifyEq(p.hasOwn("bad"), false)
+    verifyEq(p.get("bad", false), null)
+    verifyEq(p.getOwn("bad", false), null)
+    verifyErr(UnknownProtoErr#) { p.get("bad") }
+    verifyErr(UnknownProtoErr#) { p.get("bad", true) }
+    verifyErr(UnknownProtoErr#) { p.getOwn("bad") }
+    verifyErr(UnknownProtoErr#) { p.getOwn("bad", true) }
+  }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Syntax
+//////////////////////////////////////////////////////////////////////////
+
+  Void testSyntax()
+  {
+    // try various different empty <> and {}
+    compileSrc(
+    Str<|A : <>
+         B : {}
+         C : <> {}
+         D :
+         <>
+         {}
+
+         E :
+         <
+         >
+         {
+         }
+
+         F :
+
+         <
+
+
+         >
+
+         {
+
+
+         }
+         |>)
+    verifySyntax1
+
+    // try various meta slots
+    compileSrc(
+    Str<|A : < foo:"x" bar:"y" baz >
+         B : < foo:"x",  bar:"y" ,  baz >
+         C : <
+           foo:"x"
+           bar:"y"
+           baz
+           >
+         D : <
+
+           foo:"x",
+
+           bar:"y" ,
+
+           baz,
+
+           >
+        |>)
+    verifySyntax2
+
+    // try various data slots
+    compileSrc(
+    Str<|A : { foo:"x" bar:"y" baz }
+         B : { foo:"x",  bar:"y" ,  baz }
+         C : {
+           foo:"x"
+           bar:"y"
+           baz
+           }
+         D : {
+
+           foo:"x",
+
+           bar:"y" ,
+
+           baz,
+
+           }
+        |>)
+    verifySyntax3
+  }
+
+  private Void verifySyntax1()
+  {
+    ps.lib("test").eachOwn |x|
+    {
+      if (x.name[0] == '_') return // TODO
+      verifySame(x.type, ps.dict)
+    }
+  }
+
+  private Void verifySyntax2()
+  {
+    ps.lib("test").eachOwn |x|
+    {
+      if (x.name[0] == '_') return // TODO
+      verifyEq(x.get("_foo").val, "x")
+      verifyEq(x.get("_bar").val, "y")
+      verifySame(x.get("_baz").type, ps.marker)
+    }
+  }
+
+  private Void verifySyntax3()
+  {
+    ps.lib("test").eachOwn |x|
+    {
+      if (x.name[0] == '_') return // TODO
+      verifyEq(x.get("foo").val, "x")
+      verifyEq(x.get("bar").val, "y")
+      verifySame(x.get("baz").type, ps.marker)
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  private Proto get(Str path)
+  {
+    ps.get(Path(path))
+  }
+
+  private ProtoSpace compile(Str[] libs)
+  {
+    this.ps = ProtoEnv.cur.compile(libs)
+  }
+
+  private ProtoSpace compileSrc(Str src)
+  {
+    prelude :=
+     Str<|test #<
+            version: "0.0.1"
+          >
+         |>
+    return compile(["sys", prelude + src])
+  }
+
+  private ProtoLib verifyLib(ProtoSpace ps, Str name, Str version)
   {
     path := Path(name)
     lib := ps.lib(name)
     verifySame(lib, ps.get(Path(name)))
-    verifyProto(ps, name, ps.sys->Lib, null)
-    verifyProto(ps, name+"._version", ps.sys->Lib->_version, version)
+    verifyProto(name, ps.sys->Lib, null)
+    verifyProto(name+"._version", ps.sys->Lib->_version, version)
     verifyEq(lib.version, Version(version))
     return lib
   }
 
-  Proto verifyProto(ProtoSpace ps, Str path, Proto? type, Obj? val := null)
+  private Proto verifyProto(Str path, Proto? type, Obj? val := null)
   {
-    p := ps.get(Path(path))
+    p := get(path)
     verifyEq(p.name, path.split('.').last)
     verifyEq(p.path.toStr, path)
     verifySame(p.type, type)
