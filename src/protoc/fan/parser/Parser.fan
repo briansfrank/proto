@@ -123,6 +123,7 @@ internal class Parser
 
     // parse <meta>
     parseChildren(proto, Token.lt, Token.gt, true)
+    trailingDocOk := !skipNewlines
 
     // parse value | {children}
     if (cur.isLiteral)
@@ -136,7 +137,7 @@ internal class Parser
     }
 
     // trailing comment
-    if (cur === Token.comment)
+    if (cur === Token.comment && trailingDocOk)
     {
       doc = curVal.toStr.trimToNull
       if (doc != null && proto.doc == null)
@@ -172,7 +173,6 @@ internal class Parser
 
   private Void parseChildren(CProto parent, Token open, Token close, Bool isMeta)
   {
-    skipNewlines
     if (cur === open)
     {
       consume
@@ -182,7 +182,6 @@ internal class Parser
         skipComma
       }
       consume
-      skipNewlines
     }
   }
 
@@ -225,9 +224,11 @@ internal class Parser
 // Char Reads
 //////////////////////////////////////////////////////////////////////////
 
-  private Void skipNewlines()
+  private Bool skipNewlines()
   {
+    if (cur !== Token.nl) return false
     while (cur === Token.nl) consume
+    return true
   }
 
   private Void skipComma()
