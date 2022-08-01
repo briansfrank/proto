@@ -9,6 +9,7 @@
 **
 ** Proto utilities
 **
+@Js
 const class ProtoUtil
 {
   **
@@ -21,6 +22,11 @@ const class ProtoUtil
     if (n.isEmpty || !n[0].isAlpha) return false
     return n.all |c| { c.isAlphaNum || c == '_' }
   }
+
+  **
+  ** Parse qname into its dotted path segments
+  **
+  static Str[] qnamePath(Str qname) { qname.split('.') }
 }
 
 

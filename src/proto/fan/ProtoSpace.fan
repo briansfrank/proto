@@ -36,8 +36,8 @@ const mixin ProtoSpace
   ** Root object for this space
   abstract Proto root()
 
-  ** Get the proto at the given path
-  @Operator abstract Proto? get(Path path, Bool checked := true)
+  ** Get the proto with the fully qualified name
+  @Operator abstract Proto? get(Str qname, Bool checked := true)
 }
 
 

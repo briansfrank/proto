@@ -15,10 +15,10 @@ const mixin Proto
   ** Simple name within parent
   abstract Str name()
 
-  ** Full dotted path from root
-  abstract Path path()
+  ** Fully qualified name as dotted path from root
+  abstract Str qname()
 
-  ** Prototype this object inherits from.  Return null if this 'Obj' itself.
+  ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
   abstract Proto? type()
 
   ** Value of the object

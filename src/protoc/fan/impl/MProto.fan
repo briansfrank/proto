@@ -24,7 +24,9 @@ internal const class MProto : Proto
 
   override Str name() { path.name }
 
-  override const Path path
+  override Str qname() { path.toStr }
+
+  const Path path
 
   override Proto? type() { typeRef.val }
   private const AtomicRef typeRef

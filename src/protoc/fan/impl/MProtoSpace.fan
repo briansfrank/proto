@@ -43,8 +43,9 @@ internal const class MProtoSpace : ProtoSpace
 
   }
 
-  @Operator override Proto? get(Path path, Bool checked := true)
+  @Operator override Proto? get(Str qname, Bool checked := true)
   {
+    path := Path(qname)
     Proto? p := root
     for (i := 0; p != null && i<path.size; ++i)
       p = p.get(path[i], checked)

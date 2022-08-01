@@ -7,6 +7,7 @@
 //
 
 using proto
+using protoc
 
 **
 ** Misc API tests

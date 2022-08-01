@@ -27,7 +27,8 @@ class Build : BuildPod
                "vcs.uri":      "https://github.com//briansfrank/proto"]
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
-               "proto @{proto.depend}"]
+               "proto @{proto.depend}",
+               "protoc @{proto.depend}"]
     srcDirs = [`fan/`]
   }
 }

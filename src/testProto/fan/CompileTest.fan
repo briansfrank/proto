@@ -130,9 +130,9 @@ class CompileTest : Test
     verifyEq(p.get("c").val, "cv")
 
     // get path of each slot
-    verifyEq(p.get("a").path.toStr, "test." + slots[0])
-    verifyEq(p.get("b").path.toStr, "test." + slots[1])
-    verifyEq(p.get("c").path.toStr, "test." + slots[2])
+    verifyEq(p.get("a").qname, "test." + slots[0])
+    verifyEq(p.get("b").qname, "test." + slots[1])
+    verifyEq(p.get("c").qname, "test." + slots[2])
 
     // each
     map := Str:Str[:] { ordered = true }
@@ -287,9 +287,9 @@ class CompileTest : Test
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
-  private Proto get(Str path)
+  private Proto get(Str qname)
   {
-    ps.get(Path(path))
+    ps.get(qname)
   }
 
   private ProtoSpace compile(Str[] libs)
@@ -307,13 +307,12 @@ class CompileTest : Test
     return compile(["sys", prelude + src])
   }
 
-  private ProtoLib verifyLib(ProtoSpace ps, Str name, Str version)
+  private ProtoLib verifyLib(ProtoSpace ps, Str qname, Str version)
   {
-    path := Path(name)
-    lib := ps.lib(name)
-    verifySame(lib, ps.get(Path(name)))
-    verifyProto(name, ps.sys->Lib, null)
-    verifyProto(name+"._version", ps.sys->Lib->_version, version)
+    lib := ps.lib(qname)
+    verifySame(lib, ps.get(qname))
+    verifyProto(qname, ps.sys->Lib, null)
+    verifyProto(qname+"._version", ps.sys->Lib->_version, version)
     verifyEq(lib.version, Version(version))
     return lib
   }
@@ -322,7 +321,7 @@ class CompileTest : Test
   {
     p := get(path)
     verifyEq(p.name, path.split('.').last)
-    verifyEq(p.path.toStr, path)
+    verifyEq(p.qname, path)
     verifySame(p.type, type)
     verifyEq(p.toStr, path)
     if (val != null)
