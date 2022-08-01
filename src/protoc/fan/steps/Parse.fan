@@ -26,6 +26,8 @@ internal class Parse : Step
   {
     try
       Parser(this, file).parse(lib)
+    catch (CompilerErr e)
+      throw e
     catch (Err e)
       err("Cannot parse file", Loc(file), e)
   }

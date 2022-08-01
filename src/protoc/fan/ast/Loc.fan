@@ -47,7 +47,7 @@ const class Loc
   override Str toStr()
   {
     if (line <= 0) return file
-    return "$file (Line $line)"
+    return "$file($line)"
   }
 
 }

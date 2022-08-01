@@ -25,9 +25,6 @@ internal class ProtoCompiler
 // Inputs
 //////////////////////////////////////////////////////////////////////////
 
-  ** Info, warning, and error logging
-  const Log log := Log.get("protoc")
-
   ** Install environment
   const ProtoEnv env := ProtoEnv.cur
 
@@ -36,6 +33,9 @@ internal class ProtoCompiler
 
   ** Output directory for compiler/documentation results
   const File? outDir
+
+  ** Info, warning, and error logging
+  Logger logger := Logger.makeOutStream
 
 //////////////////////////////////////////////////////////////////////////
 // Pipelines
@@ -54,7 +54,7 @@ internal class ProtoCompiler
        Inherit(),
        Assemble(),
       ])
-    log.info("compileSpace [$ps.libs.size libs, $duration.toLocale]")
+    info("compileSpace [$ps.libs.size libs, $duration.toLocale]")
     return ps
   }
 
@@ -90,13 +90,13 @@ internal class ProtoCompiler
   ** Log info message
   Void info(Str msg)
   {
-    log.info(msg)
+    logger.info(msg)
   }
 
   ** Log warning message
   Void warn(Str msg, Loc loc, Err? cause := null)
   {
-    log.warn("$msg [$loc]", cause)
+    logger.warn(msg, loc, cause)
   }
 
   ** Log err message
@@ -104,7 +104,7 @@ internal class ProtoCompiler
   {
     err := CompilerErr(msg, loc, cause)
     errs.add(err)
-    log.err("$msg [$loc]", cause)
+    logger.err(msg, loc, cause)
     return err
   }
 
@@ -113,7 +113,7 @@ internal class ProtoCompiler
   {
     err := CompilerErr(msg, loc1, cause)
     errs.add(err)
-    log.err("$msg [$loc1, $loc2]", cause)
+    logger.err("$msg [$loc2]", loc1, cause)
     return err
   }
 
