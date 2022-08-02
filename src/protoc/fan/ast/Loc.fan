@@ -31,10 +31,11 @@ const class Loc
   }
 
   ** Constructor for file and line
-  new make(Str file, Int line := 0)
+  new make(Str file, Int line := 0, Int col := 0)
   {
     this.file = file
     this.line = line
+    this.col  = col
   }
 
   ** Filename location
@@ -43,11 +44,15 @@ const class Loc
   ** Line number or zero if unknown
   const Int line
 
+  ** Column number or zero if unknown
+  const Int col
+
   ** Return string representation
   override Str toStr()
   {
     if (line <= 0) return file
-    return "$file($line)"
+    if (col <= 0) return "$file($line)"
+    return "$file($line,$col)"
   }
 
 }

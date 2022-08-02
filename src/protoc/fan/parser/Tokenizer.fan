@@ -41,6 +41,9 @@ internal class Tokenizer
   ** One based line number for current token
   Int line := 1
 
+  ** One based column number for current token
+  Int col := 1
+
   ** Tokenize and return slash-slash comments
   Bool keepComments := true
 
@@ -73,12 +76,13 @@ internal class Tokenizer
     {
       if (cur == '\r' && peek == '\n') consume
       consume
+      col = 1
       line++
       return tok = Token.nl
     }
 
     // handle various starting chars
-    if (cur.isAlpha || cur == '_') return tok = id
+    if (cur.isAlpha) return tok = id
     if (cur == '"')  return tok = str
 
     // operator
@@ -277,6 +281,7 @@ internal class Tokenizer
   {
     cur  = peek
     peek = in.readChar ?: 0
+    col++
   }
 
 //////////////////////////////////////////////////////////////////////////

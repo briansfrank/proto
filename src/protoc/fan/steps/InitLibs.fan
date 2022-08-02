@@ -72,7 +72,7 @@ internal class InitLibs : Step
     // formatted as "libName #<> ...."
     pound := src.index("#")
     name := src[0..<pound].trim
-    file := src[pound..-1].toBuf.toFile(`lib.pog`)
+    file := src[pound..-1].toBuf.toFile(`${name}.pog`)
 
     loc := Loc("memory")
     path := Path(name)

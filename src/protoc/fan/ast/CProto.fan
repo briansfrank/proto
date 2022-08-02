@@ -46,6 +46,7 @@ internal class CProto
   const Loc loc           // ctor
   const Str name          // ctor
   const AtomicRef asmRef  // Assemble.asm
+  Int nameCounter         // Parser
   CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot

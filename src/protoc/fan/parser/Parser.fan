@@ -38,16 +38,12 @@ internal class Parser
 //////////////////////////////////////////////////////////////////////////
 
   ** Parse the file
-  Void parse(CLib lib)
+  Void parse(CLib lib, Bool isLibMetaFile)
   {
     try
     {
-      parsePragma(lib)
-      while (true)
-      {
-        proto := parseNamedProto(lib.proto)
-        if (proto == null) break
-      }
+      parsePragma(lib, isLibMetaFile)
+      parseProtos(lib.proto, false)
       verify(Token.eof)
     }
     finally
@@ -60,9 +56,9 @@ internal class Parser
 // Pramga
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parsePragma(CLib lib)
+  private Void parsePragma(CLib lib, Bool isLibMetaFile)
   {
-    if (file.name == "lib.pog")
+    if (isLibMetaFile)
     {
       parseLibMeta(lib)
       lib.proto.pragma = CPragma(fileLoc, lib)
@@ -76,14 +72,45 @@ internal class Parser
   {
     doc := parseLeadingDoc
     if (cur !== Token.libMeta) throw err("Expecting #<> lib meta, not $curToStr")
-    parseChildren(lib.proto, Token.libMeta, Token.gt, true)
+    parseProtoChildren(lib.proto, Token.libMeta, Token.gt, true)
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Protos
 //////////////////////////////////////////////////////////////////////////
 
-  private CProto? parseNamedProto(CProto parent, Bool isMeta := false)
+  private Void parseProtos(CProto parent, Bool isMeta)
+  {
+    while (true)
+    {
+      proto := parseProto(parent, isMeta)
+      if (proto == null) break
+      parseEndOfProto
+    }
+  }
+
+  private Void parseEndOfProto()
+  {
+    if (cur === Token.comma)
+    {
+      consume
+      skipNewlines
+      return
+    }
+
+    if (cur === Token.nl)
+    {
+      skipNewlines
+      return
+    }
+
+    if (cur === Token.rbrace) return
+    if (cur === Token.gt) return
+
+    throw err("Expecting end of proto: comma or newline, not $curToStr")
+  }
+
+  private CProto? parseProto(CProto parent, Bool isMeta)
   {
     // leading comment
     doc := parseLeadingDoc
@@ -93,74 +120,63 @@ internal class Parser
     if (cur === Token.rbrace) return null
     if (cur === Token.gt) return null
 
-    // name: proto
+    // this token is start of our proto production
     loc := curToLoc
-    name := consumeName
-    if (isMeta) name = StrBuf(name.size+1).addChar('_').add(name).toStr
-    if (cur !== Token.colon)
+
+    // parse name+type productions as one of three cases:
+    //  1) <name> only as shortcut for name:Marker (if lowercase name only)
+    //  2) <name> ":" for named child
+    //  3) unnamed child, auto assign name using "_digits"
+    Str? name
+    CType? type
+    if (cur === Token.id && peek !== Token.colon && curVal.toStr[0].isLower)
     {
-      // marker
-      return addProto(parent, loc, name, doc, CType(loc, "sys.Marker"))
+      // 1) <name> only as shortcut for name:Marker (if lowercase name only)
+      name = parseProtoName(isMeta)
+      type = CType(loc, "sys.Marker")
     }
-    else
+    else if (cur === Token.id && peek === Token.colon)
     {
-      // proto value
+      // 2) <name> ":" for named child
+      name = parseProtoName(isMeta)
       consume(Token.colon)
       skipNewlines
-      return parseProtoX(parent, loc, doc, name)
-    }
-  }
-
-  private CProto parseProtoX(CProto parent, Loc loc, Str? doc, Str name)
-  {
-    // type
-    type := null
-    if (cur === Token.id)
-      type = parseType
-
-    // now we can initialize this proto instance
-    proto := addProto(parent, loc, name, doc, type)
-
-    // parse <meta>
-    parseChildren(proto, Token.lt, Token.gt, true)
-    trailingDocOk := !skipNewlines
-
-    // parse value | {children}
-    if (cur.isLiteral)
-    {
-      proto.val = curVal
-      consume
+      type = parseProtoType
     }
     else
     {
-      parseChildren(proto, Token.lbrace, Token.rbrace, false)
+      // 3) unnamed child, auto assign name using "_digits"
+      name = "_" + (parent.nameCounter++)
+      type = parseProtoType
     }
 
-    // trailing comment
-    if (cur === Token.comment && trailingDocOk)
-    {
-      doc = curVal.toStr.trimToNull
-      if (doc != null && proto.doc == null)
-        proto.doc = doc
-      consume
-    }
+    // create the proto
+    proto := addProto(parent, loc, name, doc, type)
 
-    // skip any trailing newlines
-    skipNewlines
+    // proto body <meta> {data} "val"
+    hasType := proto.type != null
+    hasMeta := parseProtoMeta(proto)
+    hasData := parseProtoData(proto)
+    hasVal  := parseProtoVal(proto)
+    parseTrailingDoc(parent)
+
+    // verify we had one production: type |meta | data | val
+    if (!(hasType || hasMeta || hasData || hasVal))
+      throw err("Expecting proto body", loc)
 
     return proto
   }
 
-  private CProto addProto(CProto parent, Loc loc, Str name, Str? doc, CType? type)
+  private Str parseProtoName(Bool isMeta)
   {
-    proto := CProto(loc, name, doc, type)
-    proto.pragma = this.pragma
-    step.addSlot(parent, proto)
-    return proto
+    name := consumeName
+    if (isMeta) name = StrBuf(name.size+1).addChar('_').add(name).toStr
+    return name
   }
 
-  private CType parseType()
+  private CType? parseProtoType()
   {
+    if (cur !== Token.id) return null
     loc := curToLoc
     name := consumeName
     while (cur == Token.dot)
@@ -171,18 +187,41 @@ internal class Parser
     return CType(loc, name)
   }
 
-  private Void parseChildren(CProto parent, Token open, Token close, Bool isMeta)
+  private Bool parseProtoMeta(CProto parent)
   {
-    if (cur === open)
-    {
-      consume
-      while (cur !== close)
-      {
-        parseNamedProto(parent, isMeta)
-        skipComma
-      }
-      consume
-    }
+    parseProtoChildren(parent, Token.lt, Token.gt, true)
+  }
+
+  private Bool parseProtoData(CProto parent)
+  {
+    parseProtoChildren(parent, Token.lbrace, Token.rbrace, false)
+  }
+
+  private Bool parseProtoChildren(CProto parent, Token open, Token close, Bool isMeta)
+  {
+    if (cur !== open) return false
+    consume
+    skipNewlines
+    parseProtos(parent, isMeta)
+    //while (cur !== close) parseProto(parent, isMeta)
+    consume(close)
+    return true
+  }
+
+  private Bool parseProtoVal(CProto proto)
+  {
+    if (!cur.isLiteral) return false
+    proto.val = curVal
+    consume
+    return true
+  }
+
+  private CProto addProto(CProto parent, Loc loc, Str name, Str? doc, CType? type)
+  {
+    proto := CProto(loc, name, doc, type)
+    proto.pragma = this.pragma
+    step.addSlot(parent, proto)
+    return proto
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -220,6 +259,17 @@ internal class Parser
     return doc
   }
 
+  private Void parseTrailingDoc(CProto proto)
+  {
+    if (cur === Token.comment)
+    {
+      doc := curVal.toStr.trimToNull
+      if (doc != null && proto.doc == null)
+        proto.doc = doc
+      consume
+    }
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Char Reads
 //////////////////////////////////////////////////////////////////////////
@@ -231,11 +281,6 @@ internal class Parser
     return true
   }
 
-  private Void skipComma()
-  {
-    if (cur === Token.comma) consume
-  }
-
   private Void verify(Token expected)
   {
     if (cur !== expected) throw err("Expected $expected not $curToStr")
@@ -243,7 +288,7 @@ internal class Parser
 
   private Loc curToLoc()
   {
-    Loc(fileLoc.file, tokenizer.line)
+    Loc(fileLoc.file, curLine, curCol)
   }
 
   private Str curToStr()
@@ -266,10 +311,12 @@ internal class Parser
     cur      = peek
     curVal   = peekVal
     curLine  = peekLine
+    curCol   = peekCol
 
     peek     = tokenizer.next
     peekVal  = tokenizer.val
     peekLine = tokenizer.line
+    peekCol  = tokenizer.col
   }
 
   private Err err(Str msg, Loc loc := curToLoc)
@@ -290,8 +337,10 @@ internal class Parser
   private Token cur      // current token
   private Obj? curVal    // current token value
   private Int curLine    // current token line number
+  private Int curCol     // current token col number
 
   private Token peek     // next token
   private Obj? peekVal   // next token value
   private Int peekLine   // next token line number
+  private Int peekCol    // next token col number
 }

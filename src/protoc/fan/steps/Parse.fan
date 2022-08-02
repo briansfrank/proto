@@ -19,13 +19,13 @@ internal class Parse : Step
 
   private Void parseLib(CLib lib)
   {
-    lib.src.each |file| { parseFile(lib, file) }
+    lib.src.each |file| { parseFile(lib, file, lib.isLibMetaFile(file)) }
   }
 
-  private Void parseFile(CLib lib, File file)
+  private Void parseFile(CLib lib, File file, Bool isLibMetaFile)
   {
     try
-      Parser(this, file).parse(lib)
+      Parser(this, file).parse(lib, isLibMetaFile)
     catch (CompilerErr e)
       throw e
     catch (Err e)

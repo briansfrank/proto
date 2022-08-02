@@ -211,7 +211,7 @@ class CompileTest : Test
 
     // try various meta slots
     compileSrc(
-    Str<|A : < foo:"x" bar:"y" baz >
+    Str<|A : <foo:"x",bar:"y",baz,>
          B : < foo:"x",  bar:"y" ,  baz >
          C : <
            foo:"x"
@@ -232,8 +232,8 @@ class CompileTest : Test
 
     // try various data slots
     compileSrc(
-    Str<|A : { foo:"x" bar:"y" baz }
-         B : { foo:"x",  bar:"y" ,  baz }
+    Str<|A : {foo:"x",bar:"y",baz,}
+         B : { foo  :  "x"  ,  bar : "y" ,   baz }
          C : {
            foo:"x"
            bar:"y"
@@ -284,6 +284,30 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Unnamed
+//////////////////////////////////////////////////////////////////////////
+
+  Void testUnnamed()
+  {
+    // try various different empty <> and {}
+    compileSrc(
+    Str<|Box : Dict {}
+
+         A : {
+           a:Box {}
+           b:Box, c:Box
+         }
+
+         b : {
+           Box {}
+           Box, Box
+         }
+         |>)
+
+    ps.root.dump
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
@@ -304,7 +328,16 @@ class CompileTest : Test
             version: "0.0.1"
           >
          |>
-    return compile(["sys", prelude + src])
+    src = prelude + src
+
+    if (true)
+    {
+      echo("---")
+      src.splitLines.each |line, i| { echo("${i+1}: $line") }
+      echo("---")
+    }
+
+    return compile(["sys", src])
   }
 
   private ProtoLib verifyLib(ProtoSpace ps, Str qname, Str version)
