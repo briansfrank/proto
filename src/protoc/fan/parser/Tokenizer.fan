@@ -54,7 +54,6 @@ internal class Tokenizer
     val = null
 
     // skip non-meaningful whitespace and comments
-    startLine := line
     while (true)
     {
       // treat space, tab, non-breaking space as whitespace
@@ -63,7 +62,7 @@ internal class Tokenizer
       // comments
       if (cur == '/')
       {
-        if (peek == '/' && keepComments) return tok = parseComment
+        if (peek == '/' && keepComments) { lockLoc; return tok = parseComment }
         if (peek == '/') { skipCommentSL; continue }
         if (peek == '*') { skipCommentML; continue }
       }
@@ -71,13 +70,14 @@ internal class Tokenizer
       break
     }
 
+    // lock in location
+    lockLoc
+
     // newlines
     if (cur == '\n' || cur == '\r')
     {
       if (cur == '\r' && peek == '\n') consume
       consume
-      col = 1
-      line++
       return tok = Token.nl
     }
 
@@ -87,6 +87,13 @@ internal class Tokenizer
 
     // operator
     return tok = operator
+  }
+
+  ** Lock in location of start of token
+  private Void lockLoc()
+  {
+    this.line = curLine
+    this.col  = curCol
   }
 
   ** Close
@@ -257,7 +264,6 @@ internal class Tokenizer
     {
       if (cur == '*' && peek == '/') { consume; consume; depth--; if (depth <= 0) break }
       if (cur == '/' && peek == '*') { consume; consume; depth++; continue }
-      if (cur == '\n') ++line
       if (cur == 0) break
       consume
     }
@@ -270,7 +276,7 @@ internal class Tokenizer
   ParseErr err(Str msg)
   {
     this.val = msg
-    return ParseErr("$msg [line $line]")
+    return ParseErr(msg)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -279,16 +285,24 @@ internal class Tokenizer
 
   private Void consume()
   {
-    cur  = peek
+    cur     = peek
+    curLine = peekLine
+    curCol  = peekCol
+
     peek = in.readChar ?: 0
-    col++
+    if (peek == '\n') { peekLine++; peekCol = 0 }
+    else { peekCol++ }
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  private InStream in  // underlying stream
-  private Int cur      // current char
-  private Int peek     // next char
+  private InStream in       // underlying stream
+  private Int cur           // current char
+  private Int peek          // next char
+  private Int peekLine := 1
+  private Int peekCol
+  private Int curLine
+  private Int curCol
 }

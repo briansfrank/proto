@@ -46,6 +46,10 @@ internal class Parser
       parseProtos(lib.proto, false)
       verify(Token.eof)
     }
+    catch (ParseErr e)
+    {
+      throw err(e.msg, curToLoc)
+    }
     finally
     {
       tokenizer.close
