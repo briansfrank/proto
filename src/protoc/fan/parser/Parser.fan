@@ -89,6 +89,7 @@ internal class Parser
     {
       proto := parseProto(parent, isMeta)
       if (proto == null) break
+      addProto(parent, proto)
       parseEndOfProto
     }
   }
@@ -116,6 +117,43 @@ internal class Parser
   }
 
   private CProto? parseProto(CProto parent, Bool isMeta)
+  {
+    parseUnion(parent, isMeta)
+  }
+
+  private CProto? parseUnion(CProto parent, Bool isMeta)
+  {
+    p := parseSimple(parent, isMeta)
+    if (p == null || cur !== Token.pipe) return p
+
+    // allocate new sys.Union object to replace proto we just parsed
+    loc := p.loc
+    union := makeProto(loc, p.name, p.doc, CType(loc, "sys.Union"))
+
+    // allocate <of> object
+    of := makeProto(loc, "_of", null, CType(loc, "sys.List"))
+    addProto(union, of)
+
+    // now re-create the proto we just parsed as _0 as first item of <of>
+    first := makeProto(loc, of.assignName, null, p.type)
+    first.children = p.children
+    first.val = p.val
+    addProto(of, first)
+
+    while (cur === Token.pipe)
+    {
+      pipeLoc := curToLoc
+      consume(Token.pipe)
+      skipNewlines
+      p = parseSimple(of, false)
+      if (p == null) throw err("Expecting proto after | in union type, not $curToStr", pipeLoc)
+      if (p != null) addProto(of, p)
+    }
+
+    return union
+  }
+
+  private CProto? parseSimple(CProto parent, Bool isMeta)
   {
     // leading comment
     doc := parseLeadingDoc
@@ -163,13 +201,13 @@ internal class Parser
     else
     {
       // 3) unnamed child, auto assign name using "_digits"
-      name = "_" + (parent.nameCounter++)
+      name = parent.assignName
       type = parseProtoType
     }
 
     // create the proto
-    proto := addProto(parent, loc, name, doc, type)
-    if (optional) addProto(proto, loc, "_optional", null, CType(loc, "sys.Marker"))
+    proto := makeProto(loc, name, doc, type)
+    if (optional) addMarker(proto, "_optional")
 
     // proto body <meta> {data} "val"
     hasType := proto.type != null
@@ -234,12 +272,26 @@ internal class Parser
     return true
   }
 
-  private CProto addProto(CProto parent, Loc loc, Str name, Str? doc, CType? type)
+//////////////////////////////////////////////////////////////////////////
+// AST Manipulation
+//////////////////////////////////////////////////////////////////////////
+
+  private CProto makeProto(Loc loc, Str name, Str? doc, CType? type)
   {
     proto := CProto(loc, name, doc, type)
     proto.pragma = this.pragma
-    step.addSlot(parent, proto)
     return proto
+  }
+
+  private Void addMarker(CProto parent, Str name)
+  {
+    loc := parent.loc
+    addProto(parent, makeProto(loc, name, null, CType(loc, "sys.Marker")))
+  }
+
+  private Void addProto(CProto parent, CProto child)
+  {
+    step.addSlot(parent, child)
   }
 
 //////////////////////////////////////////////////////////////////////////

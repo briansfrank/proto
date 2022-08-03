@@ -43,10 +43,12 @@ internal class CProto
 
   static const Str:CProto noChildren := [:]
 
+  Str assignName() { "_" + nameCounter++ }
+  private Int nameCounter
+
   const Loc loc           // ctor
   const Str name          // ctor
   const AtomicRef asmRef  // Assemble.asm
-  Int nameCounter         // Parser
   CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot

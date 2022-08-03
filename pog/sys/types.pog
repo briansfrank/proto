@@ -79,6 +79,16 @@ Dict : Collection <
   of: Obj    // Item type for dict values
 >
 
+// Union type is a choice between one of multiple types
+Union : Collection <
+  of: List   // List of choices
+>
+
+// Intersection type is a combination of multiple types
+Intersection : Collection <
+  of: List   // List of types to combine
+>
+
 
 
 

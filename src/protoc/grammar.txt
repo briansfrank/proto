@@ -10,33 +10,35 @@
 Productions [#productions]
 **************************
 
-  <file>          :=  <pragma> <protos>
-  <pragma>        :=  "#<" <protos> ">"
-  <protos>        :=  [<proto> <endOfProto>]*
-  <endOfProto>    :=  ( [","] <nl> ) | ","
+  <file>             :=  <pragma> <protos>
+  <pragma>           :=  "#<" <protos> ">"
+  <protos>           :=  [<proto> <endOfProto>]*
+  <endOfProto>       :=  ( [","] <nl> ) | ","
 
-  <proto>         :=  [<leadingDoc>] <protoBody> [<trailingDoc>]
-  <protoBody>     :=  <protoMarker> | <protoNamed> | <protoOptional> | <protoUnnamed>
-  <protoMarker>   :=  <markerName>
-  <protoNamed>    :=  <name> ":" <protoUnnamed>
-  <protoOptional> :=  <name> "?" ":" <protoUnnamed>
-  <protoUnnamed>  :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
-  <protoType>     :=  <qname>
-  <protoMeta>     :=  "<" <protos> ">"
-  <protoData>     :=  "{" <protos> "}"
-  <protoVal>      :=  double quoted string literal
+  <proto>            :=  [<leadingDoc>] <protoIntersction> [<trailingDoc>]
+  <protoIntersction> :=  <protoUnion>  ["&" <protoUnion>]*
+  <protoUnion>       :=  <protoSimple> ["|" <protoSimple>]*
+  <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoOptional> | <protoUnnamed>
+  <protoMarker>      :=  <markerName>
+  <protoNamed>       :=  <name> ":" <protoUnnamed>
+  <protoOptional>    :=  <name> "?" ":" <protoUnnamed>
+  <protoUnnamed>     :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
+  <protoType>        :=  <qname>
+  <protoMeta>        :=  "<" <protos> ">"
+  <protoData>        :=  "{" <protos> "}"
+  <protoVal>         :=  double quoted string literal
 
-  <leadingDoc>   := (<lineComment>)*
-  <trailingDoc>  := <lineComment>
+  <leadingDoc>       := (<lineComment>)*
+  <trailingDoc>      := <lineComment>
 
-  <qname>        :=  <name> ("." <name>)*
-  <name>         :=  <alpha> (<nameRest>)*
-  <markerName>   :=  <alphaLower> (<nameRest>)*
-  <nameRest>     :=  alpha | digit | '_'
-  <alpha>        :=  alphaLower | alphaUpper
-  <alphaLower>   :=  'a' - 'z'
-  <alphaUpper>   :=  'A' - 'Z'
-  <digit>        :=  '0' - '9'
+  <qname>            :=  <name> ("." <name>)*
+  <name>             :=  <alpha> (<nameRest>)*
+  <markerName>       :=  <alphaLower> (<nameRest>)*
+  <nameRest>         :=  alpha | digit | '_'
+  <alpha>            :=  alphaLower | alphaUpper
+  <alphaLower>       :=  'a' - 'z'
+  <alphaUpper>       :=  'A' - 'Z'
+  <digit>            :=  '0' - '9'
 
 Legend [#legend]
 ****************

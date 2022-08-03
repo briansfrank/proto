@@ -317,6 +317,43 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Union
+//////////////////////////////////////////////////////////////////////////
+
+  Void testUnion()
+  {
+    compileSrc(
+     Str<|A : {}
+          B : {}
+          C : {}
+          D : {}
+
+          U1 : A|B
+          U2 : A  |  B  |  C
+          U3 : A  |  B  |  C | D
+          U4 : A |
+               B |
+               C
+          |>)
+
+     verifyUnion("U1", "A|B")
+     verifyUnion("U2", "A|B|C")
+     verifyUnion("U3", "A|B|C|D")
+     verifyUnion("U4", "A|B|C")
+  }
+
+  Void verifyUnion(Str name, Str pattern)
+  {
+    u := ps.root->test.trap(name)
+    verifySame(u.type, ps.get("sys.Union"))
+    of := u->_of
+    verifyEq(of.qname, "test.${name}._of")
+    actual := StrBuf()
+    of.eachOwn |x| { actual.join(x.type.name, "|") }
+    verifyEq(actual.toStr, pattern)
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Unnamed
 //////////////////////////////////////////////////////////////////////////
 
