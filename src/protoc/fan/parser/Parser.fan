@@ -110,6 +110,7 @@ internal class Parser
 
     if (cur === Token.rbrace) return
     if (cur === Token.gt) return
+    if (cur === Token.eof) return
 
     throw err("Expecting end of proto: comma or newline, not $curToStr")
   }
@@ -128,24 +129,36 @@ internal class Parser
     loc := curToLoc
 
     // parse name+type productions as one of three cases:
-    //  1) <name> only as shortcut for name:Marker (if lowercase name only)
-    //  2) <name> ":" for named child
-    //  3) unnamed child, auto assign name using "_digits"
+    //  1) <name> ":" for named child
+    //  2) <name> "? :" for optional named child
+    //  3) <name> only as shortcut for name:Marker (if lowercase name only)
+    //  4) unnamed child, auto assign name using "_digits"
     Str? name
     CType? type
-    if (cur === Token.id && peek !== Token.colon && curVal.toStr[0].isLower)
+    optional := false
+    if (cur === Token.id && peek === Token.colon)
     {
-      // 1) <name> only as shortcut for name:Marker (if lowercase name only)
-      name = parseProtoName(isMeta)
-      type = CType(loc, "sys.Marker")
-    }
-    else if (cur === Token.id && peek === Token.colon)
-    {
-      // 2) <name> ":" for named child
+      // 1) <name> ":" for named child
       name = parseProtoName(isMeta)
       consume(Token.colon)
       skipNewlines
       type = parseProtoType
+    }
+    else if (cur === Token.id && peek === Token.question)
+    {
+      // 2) <name> "? :" for optional named child
+      name = parseProtoName(isMeta)
+      optional = true
+      consume(Token.question)
+      consume(Token.colon)
+      skipNewlines
+      type = parseProtoType
+    }
+    else if (cur === Token.id && peek !== Token.colon && curVal.toStr[0].isLower)
+    {
+      // 3) <name> only as shortcut for name:Marker (if lowercase name only)
+      name = parseProtoName(isMeta)
+      type = CType(loc, "sys.Marker")
     }
     else
     {
@@ -156,6 +169,7 @@ internal class Parser
 
     // create the proto
     proto := addProto(parent, loc, name, doc, type)
+    if (optional) addProto(proto, loc, "_optional", null, CType(loc, "sys.Marker"))
 
     // proto body <meta> {data} "val"
     hasType := proto.type != null

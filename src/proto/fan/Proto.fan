@@ -21,6 +21,9 @@ const mixin Proto
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
   abstract Proto? type()
 
+  ** Return if this object is optional within its parent
+  abstract Bool isOptional()
+
   ** Value of the object
   abstract Str? val(Bool checked := true)
 
@@ -32,7 +35,7 @@ const mixin Proto
 
   ** Get the effective child mapped by the given name.  If it is not
   ** mapped to a non-null value, then throw an UnknownProtoErr.
-  override abstract Obj? trap(Str name, Obj?[]? args := null)
+  override abstract Proto? trap(Str name, Obj?[]? args := null)
 
   ** Get effective child object by name.
   @Operator abstract Proto? get(Str name, Bool checked := true)

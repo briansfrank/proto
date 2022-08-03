@@ -8,11 +8,11 @@
 
 // Root type for all objects
 Obj : <
-  // Inheritance prototype
-  type: Obj
-
   // Documentation for object
   doc: Str "Root type for all objects"
+
+  // Indicates this object is optional in its parent type
+  optional: Marker
 >
 
 // Nothing is the bottom type with no values
@@ -38,8 +38,8 @@ False : Bool "false"
 
 // Integer or floating point numbers annotated with an optional unit
 Number : Scalar <
-  minVal: Number   // Inclusive minimum value
-  maxVal: Number   // Inclusive maximum value
+  minVal?: Number   // Inclusive minimum value
+  maxVal?: Number   // Inclusive maximum value
 >
 
 // Unitless integer number

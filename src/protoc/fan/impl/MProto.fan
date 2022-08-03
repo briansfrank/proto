@@ -31,6 +31,11 @@ internal const class MProto : Proto
   override Proto? type() { typeRef.val }
   private const AtomicRef typeRef
 
+  override Bool isOptional()
+  {
+    hasOwn("_optional")
+  }
+
   override Str? val(Bool checked := true)
   {
     if (valRef != null) return valRef
@@ -39,7 +44,7 @@ internal const class MProto : Proto
   }
   private const Str? valRef
 
-  override final Obj? trap(Str name, Obj?[]? args := null)
+  override final Proto? trap(Str name, Obj?[]? args := null)
   {
     get(name, true)
   }

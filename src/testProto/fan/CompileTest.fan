@@ -274,6 +274,7 @@ class CompileTest : Test
 
   private Void verifySyntax3()
   {
+    //ps.lib("test").dump
     ps.lib("test").eachOwn |x|
     {
       if (x.name[0] == '_') return // TODO
@@ -284,12 +285,43 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Optional
+//////////////////////////////////////////////////////////////////////////
+
+  Void testOptional()
+  {
+    compileSrc(
+     Str<|A : { ctrl: {}, foo?:{}, bar?:"" }
+          B : {
+           ctrl: {}
+           foo  ?  :  {}
+           bar  ?  :  ""
+          }|>)
+
+    ps.lib("test").eachOwn |x|
+    {
+      if (x.name[0] == '_') return // TODO
+
+      ctrl := x->ctrl
+      verifyEq(ctrl.isOptional, false)
+      verifyEq(ctrl->_optional.qname, "sys.Obj._optional")
+
+      foo := x->foo
+      verifyEq(foo.isOptional, true)
+      verifyEq(x->foo->_optional.qname, "test.${x.name}.foo._optional")
+
+      bar := x->bar
+      verifyEq(bar.isOptional, true)
+      verifyEq(x->bar->_optional.qname, "test.${x.name}.bar._optional")
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Unnamed
 //////////////////////////////////////////////////////////////////////////
 
   Void testUnnamed()
   {
-    // try various different empty <> and {}
     compileSrc(
     Str<|Box : Dict {}
 
@@ -298,13 +330,17 @@ class CompileTest : Test
            b:Box, c:Box
          }
 
-         b : {
+         B : {
            Box {}
            Box, Box
          }
          |>)
 
-    ps.root.dump
+    b := ps.lib("test")->B
+    kids := Proto[,]
+    b.eachOwn |x| { kids.add(x) }
+    verifyEq(kids.size, 3)
+    kids.each |kid| { verifyEq(kid.type.qname, "test.Box") }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -330,7 +366,7 @@ class CompileTest : Test
          |>
     src = prelude + src
 
-    if (true)
+    if (false)
     {
       echo("---")
       src.splitLines.each |line, i| { echo("${i+1}: $line") }

@@ -14,6 +14,10 @@ const mixin ProtoLib : Proto
 {
   ** Version of the library
   abstract Version version()
+
+  ** Get the effective child mapped by the given name.  If it is not
+  ** mapped to a non-null value, then throw an UnknownProtoErr.
+  override abstract Proto? trap(Str name, Obj?[]? args := null)
 }
 
 
