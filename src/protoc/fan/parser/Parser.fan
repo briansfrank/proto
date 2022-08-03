@@ -118,7 +118,23 @@ internal class Parser
 
   private CProto? parseProto(CProto parent, Bool isMeta)
   {
-    parseUnion(parent, isMeta)
+    p := parseUnion(parent, isMeta)
+    if (p == null || cur !== Token.amp) return p
+
+    intersection := hoistCompound(p, "sys.Intersection")
+    of := intersection.child("_of") ?: throw err("Missing _of")
+
+    while (cur === Token.amp)
+    {
+      ampLoc := curToLoc
+      consume(Token.amp)
+      skipNewlines
+      p = parseSimple(of, false)
+      if (p == null) throw err("Expecting proto after & in intersection type, not $curToStr", ampLoc)
+      if (p != null) addProto(of, p)
+    }
+
+    return intersection
   }
 
   private CProto? parseUnion(CProto parent, Bool isMeta)
@@ -126,19 +142,8 @@ internal class Parser
     p := parseSimple(parent, isMeta)
     if (p == null || cur !== Token.pipe) return p
 
-    // allocate new sys.Union object to replace proto we just parsed
-    loc := p.loc
-    union := makeProto(loc, p.name, p.doc, CType(loc, "sys.Union"))
-
-    // allocate <of> object
-    of := makeProto(loc, "_of", null, CType(loc, "sys.List"))
-    addProto(union, of)
-
-    // now re-create the proto we just parsed as _0 as first item of <of>
-    first := makeProto(loc, of.assignName, null, p.type)
-    first.children = p.children
-    first.val = p.val
-    addProto(of, first)
+    union := hoistCompound(p, "sys.Union")
+    of := union.child("_of") ?: throw err("Missing _of")
 
     while (cur === Token.pipe)
     {
@@ -149,7 +154,6 @@ internal class Parser
       if (p == null) throw err("Expecting proto after | in union type, not $curToStr", pipeLoc)
       if (p != null) addProto(of, p)
     }
-
     return union
   }
 
@@ -292,6 +296,27 @@ internal class Parser
   private Void addProto(CProto parent, CProto child)
   {
     step.addSlot(parent, child)
+  }
+
+  private CProto hoistCompound(CProto p, Str type)
+  {
+    // this method hoists P to Union <of:List { _0: P }>
+
+    // allocate new sys.Union/Intersection object to replace proto we just parsed
+    loc := p.loc
+    compound := makeProto(loc, p.name, p.doc, CType(loc, type))
+
+    // allocate <of> object
+    of := makeProto(loc, "_of", null, CType(loc, "sys.List"))
+    addProto(compound, of)
+
+    // now re-create the proto we just parsed as _0 as first item of <of>
+    first := makeProto(loc, of.assignName, null, p.type)
+    first.children = p.children
+    first.val = p.val
+    addProto(of, first)
+
+    return compound
   }
 
 //////////////////////////////////////////////////////////////////////////

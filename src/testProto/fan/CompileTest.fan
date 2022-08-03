@@ -317,10 +317,14 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Union
+// Union/Intersection
 //////////////////////////////////////////////////////////////////////////
 
-  Void testUnion()
+  Void testIntersection() { doCompound("sys.Intersection", "&") }
+
+  Void testUnion() { doCompound("sys.Union", "|") }
+
+  Void doCompound(Str type, Str symbol)
   {
     compileSrc(
      Str<|A : {}
@@ -334,22 +338,35 @@ class CompileTest : Test
           U4 : A |
                B |
                C
-          |>)
+          U5 : "a" | "b" | "c"
+          U6 : A "a" | B "b" | C "c"
+          U7 : A {x} | B {y} | C <z>
+          |>
+          .replace("|", symbol)
+          )
 
-     verifyUnion("U1", "A|B")
-     verifyUnion("U2", "A|B|C")
-     verifyUnion("U3", "A|B|C|D")
-     verifyUnion("U4", "A|B|C")
+     verifyCompound(type, "U1", "A | B")
+     verifyCompound(type, "U2", "A | B | C")
+     verifyCompound(type, "U3", "A | B | C | D")
+     verifyCompound(type, "U4", "A | B | C")
+     verifyCompound(type, "U5", "Str a | Str b | Str c")
+     verifyCompound(type, "U6", "A a | B b | C c")
+     verifyCompound(type, "U7", "A | B | C")
   }
 
-  Void verifyUnion(Str name, Str pattern)
+  Void verifyCompound(Str type, Str name, Str pattern)
   {
     u := ps.root->test.trap(name)
-    verifySame(u.type, ps.get("sys.Union"))
+    verifySame(u.type, ps.get(type))
     of := u->_of
     verifyEq(of.qname, "test.${name}._of")
     actual := StrBuf()
-    of.eachOwn |x| { actual.join(x.type.name, "|") }
+    of.eachOwn |x|
+    {
+      s := x.type.name
+      if (x.val(false) != null) s += " " + x.val
+      actual.join(s, " | ")
+    }
     verifyEq(actual.toStr, pattern)
   }
 
