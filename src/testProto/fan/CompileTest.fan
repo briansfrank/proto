@@ -76,6 +76,10 @@ class CompileTest : Test
     entity := verifyProto("ph.Entity", sys->Dict)
     id     := verifyProto("ph.Entity.id", ph->Ref)
     str    := verifyProto("ph.Entity.dis", sys->Str)
+
+    depends := verifyProto("ph._depends", sys->Lib->_depends)
+    verifyProto("ph._depends._0", sys->Depend)
+    verifyProto("ph._depends._0.lib", sys->Depend->lib, "sys")
   }
 
 //////////////////////////////////////////////////////////////////////////

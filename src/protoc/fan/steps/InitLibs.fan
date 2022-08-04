@@ -23,7 +23,7 @@ internal class InitLibs : Step
 
   private Void createRoot()
   {
-    compiler.root = CProto(Loc.synthetic, "")
+    compiler.root = CProto(Loc.synthetic, "", null)
   }
 
   private Void checkDups()
@@ -86,7 +86,7 @@ internal class InitLibs : Step
     for (i := 0; i<path.size-1; ++i)
     {
       n := path[i]
-      x := libBase.child(n)
+      x := libBase.getOwn(n, false)
       if (x == null) addSlot(libBase, x = CProto(Loc.synthetic, n))
       libBase = x
     }

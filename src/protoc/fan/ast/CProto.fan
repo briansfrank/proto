@@ -27,13 +27,41 @@ internal class CProto
 
   Void each(|CProto| f) { children.each(f) }
 
-  CProto? child(Str name) { children.get(name, null) }
+  CProto? get(Str name, Bool checked := true)
+  {
+    kid := children.get(name, null)
+    if (kid != null) return kid
+    if (type != null) return type.deref.get(name, checked)
+    if (checked) throw UnknownProtoErr(qname + "." + name)
+    return null
+  }
+
+  CProto? getOwn(Str name, Bool checked := true)
+  {
+    kid := children.get(name, null)
+    if (kid != null) return kid
+    if (checked) throw UnknownProtoErr(qname + "." + name)
+    return null
+  }
 
   Bool isRoot() { parent == null }
 
+  Str qname() { path.toStr }
+
   once Path path() { isRoot ? Path.root : parent.path.add(name) }
 
-  once Bool isObj() { path.toStr == "sys.Obj" }
+  once Bool isObj() { qname == "sys.Obj" }
+
+  Bool fitsList() { fits("sys.List") }
+
+  Bool fitsDict() { fits("sys.Dict") }
+
+  Bool fits(Str qname)
+  {
+    if (this.qname == qname) return true
+    if (type == null) return false
+    return type.deref.fits(qname)
+  }
 
   override Str toStr() { isRoot ? "_root_" : path.toStr }
 

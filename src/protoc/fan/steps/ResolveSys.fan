@@ -25,12 +25,15 @@ internal class ResolveSys : Step
       it.dict   = resolve(lib.proto, "Dict")
       it.objDoc = resolve(obj, "_doc")
     }
+
+    root.type = CType(root.loc, sys.dict)
+
     bombIfErr
   }
 
   private CProto resolve(CProto parent, Str name)
   {
-    parent.child(name) ?: throw err("Sys type not found: ${parent.path}.$name", parent.loc)
+    parent.getOwn(name, false) ?: throw err("Sys type not found: ${parent.path}.$name", parent.loc)
   }
 }
 

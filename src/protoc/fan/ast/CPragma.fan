@@ -39,7 +39,7 @@ internal class CPragma
     CProto? p := c.root
     for (i := 0; i<path.size; ++i)
     {
-      p = p.child(path[i])
+      p = p.getOwn(path[i], false)
       if (p == null) return CProto#.emptyList
     }
     return CProto[p]
@@ -48,10 +48,10 @@ internal class CPragma
   private CProto[] resolveUnqualified(ProtoCompiler c, Str name)
   {
     acc := CProto[,]
-    acc.addNotNull(lib.proto.child(name))
+    acc.addNotNull(lib.proto.getOwn(name, false))
     lib.depends.each |depend|
     {
-      acc.addNotNull(depend.proto.child(name))
+      acc.addNotNull(depend.proto.getOwn(name, false))
     }
     return acc
   }

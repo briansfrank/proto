@@ -62,14 +62,12 @@ internal class Parser
 
   private Void parsePragma(CLib lib, Bool isLibMetaFile)
   {
+    pragma = CPragma(fileLoc, lib)
     if (isLibMetaFile)
     {
       parseLibMeta(lib)
       lib.proto.pragma = CPragma(fileLoc, lib)
     }
-
-    // TODO
-    pragma = CPragma(fileLoc, lib)
   }
 
   private Void parseLibMeta(CLib lib)
@@ -122,7 +120,7 @@ internal class Parser
     if (p == null || cur !== Token.amp) return p
 
     intersection := hoistCompound(p, "sys.Intersection")
-    of := intersection.child("_of") ?: throw err("Missing _of")
+    of := intersection.getOwn("_of")
 
     while (cur === Token.amp)
     {
@@ -143,7 +141,7 @@ internal class Parser
     if (p == null || cur !== Token.pipe) return p
 
     union := hoistCompound(p, "sys.Union")
-    of := union.child("_of") ?: throw err("Missing _of")
+    of := union.getOwn("_of")
 
     while (cur === Token.pipe)
     {

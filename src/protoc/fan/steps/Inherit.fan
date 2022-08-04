@@ -45,13 +45,31 @@ internal class Inherit : Step
   private CProto? findBase(CProto? p, Str name)
   {
     if (p == null || p.type == null) return null
-    return p.type.deref.child(name)
+    return p.type.deref.getOwn(name, false)
   }
 
   private CProto infer(CProto p)
   {
     if (p.val is Str) return sys.str
+    if (p.parent.fitsList)
+    {
+       of := inferParentOf(p, "sys.List._of")
+       if (of != null) return of
+    }
+    if (p.parent.fitsDict)
+    {
+       of := inferParentOf(p, "sys.Dict._of")
+       if (of != null) return of
+    }
     return sys.dict
+  }
+
+  private CProto? inferParentOf(CProto p, Str rootOf)
+  {
+    of := p.parent.get("_of", false)
+    if (of == null || of.type == null) return null
+    if (of.qname == rootOf) return null
+    return of.type.deref
   }
 
 }

@@ -8,9 +8,15 @@
 
 // Library module meta data
 Lib : <
-  version: Version   // Current version of the library
-  org: Org           // Organization meta data for the library
+  version: Version           // Current version of the library
+  org: Org                   // Organization meta data for the library
+  depends: List <of:Depend>  // Library dependency
 >
+
+// Library dependency
+Depend : {
+  lib: Str   // Library qualified dotted name
+}
 
 // Organization meta data
 Org : {

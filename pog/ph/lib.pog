@@ -9,6 +9,9 @@
 #<
   doc: "Project haystack core library"
   version: "0.9.1"
+  depends: {
+    { lib: "sys" }
+  }
   org: {
     dis: "Project Haystack"
     uri: "https://project-haystack.org/"

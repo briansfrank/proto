@@ -28,7 +28,7 @@ internal class AddMeta : Step
   private Void addDoc(CProto p)
   {
     if (p.doc == null) return
-    if (p.child("_doc") != null) return
+    if (p.getOwn("_doc", false) != null) return
     type := p === sys.objDoc ? sys.str : sys.objDoc
     add(p, "_doc", type, p.doc)
   }
