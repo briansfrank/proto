@@ -44,21 +44,40 @@ internal class ProtoCompiler
   ** Compile input libs to a ProtoSpace
   ProtoSpace compileSpace()
   {
-    run([
-       InitLibs(),
-       Parse(),
-       ResolveSys(),
-       ResolveDepends(),
-       ResolveNames(),
-       AddMeta(),
-       Inherit(),
-       Assemble(),
-      ])
-    info("compileSpace [$ps.libs.size libs, $duration.toLocale]")
-    return ps
+    run(frontend).ps
   }
 
-   ** Run the pipeline with the given steps
+  ** Compile list of output files for command line main
+  ProtoSpace compileMain(Str[] outputs)
+  {
+    steps := frontend.dup
+    outputs.each |o|
+    {
+      switch (o)
+      {
+        case "json": steps.add(GenJson())
+        default: throw err("Unknown output format: $o", Loc.inputs)
+      }
+    }
+    return run(steps).ps
+  }
+
+  ** List of front end steps to compile to the ProtoSpace
+  private Step[] frontend()
+  {
+    return [
+      InitLibs(),
+      Parse(),
+      ResolveSys(),
+      ResolveDepends(),
+      ResolveNames(),
+      AddMeta(),
+      Inherit(),
+      Assemble(),
+    ]
+  }
+
+  ** Run the pipeline with the given steps
   internal This run(Step[] steps)
   {
     try
@@ -71,6 +90,7 @@ internal class ProtoCompiler
       }
       t2 := Duration.now
       duration = t2 - t1
+      info("ok [$ps.libs.size libs, $duration.toLocale]")
       return this
     }
     catch (CompilerErr e)

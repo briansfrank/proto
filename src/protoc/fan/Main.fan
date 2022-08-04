@@ -26,8 +26,14 @@ class Main : AbstractMain
   @Opt { help = "Comma separated list of input library names (defaults to all installed)" }
   Str? libs
 
+  @Opt { help = "Comma separated outputs: json" }
+  Str output := ""
+
   @Opt { help = "Dump the proto tree" }
   Bool dump
+
+  @Opt { help = "Comma separated outputs: json" }
+  Str json := ""
 
   ProtoEnv env := ProtoEnv.cur
 
@@ -46,7 +52,7 @@ class Main : AbstractMain
 
     try
     {
-      ps := c.compileSpace
+      ps := c.compileMain(output.split(','))
       if (dump) ps.root.dump
       return 0
     }
