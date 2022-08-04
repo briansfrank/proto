@@ -36,6 +36,8 @@ internal const class MProto : Proto
     hasOwn("_optional")
   }
 
+  override Bool hasVal() { valRef != null }
+
   override Str? val(Bool checked := true)
   {
     if (valRef != null) return valRef
@@ -109,6 +111,18 @@ internal const class MProto : Proto
   {
     children.eachWhile(f)
     // TODO: lame
+  }
+
+  override Proto[] list()
+  {
+    acc := Proto[,]
+    each |x| { acc.add(x) }
+    return acc
+  }
+
+  override Proto[] listOwn()
+  {
+    children.vals
   }
 
   override Str toStr() { path.toStr }

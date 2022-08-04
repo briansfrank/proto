@@ -24,7 +24,10 @@ const mixin Proto
   ** Return if this object is optional within its parent
   abstract Bool isOptional()
 
-  ** Value of the object
+  ** Does this proto have a scalar value
+  abstract Bool hasVal()
+
+  ** Scalar value string of the object
   abstract Str? val(Bool checked := true)
 
   ** Does this object contain an effective child with the given name.
@@ -53,6 +56,14 @@ const mixin Proto
   ** non-null, then break the iteration and return resulting object.
   ** Return null if function returns null for every child.
   abstract Obj? eachWhile(|Proto->Obj?| f)
+
+  ** Return a list of this object effective children.
+  ** It is preferable to to use `each`.
+  abstract Proto[] list()
+
+  ** Return a list of this object non-inherited children.
+  ** It is preferable to to use `eachOwn`.
+  abstract Proto[] listOwn()
 
   ** Debug dump with some pretty print
   @NoDoc abstract Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
