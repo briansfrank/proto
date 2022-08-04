@@ -74,6 +74,8 @@ internal class CProto
   Str assignName() { "_" + nameCounter++ }
   private Int nameCounter
 
+  Void eachOwn(|CProto| f) { children.each(f) }
+
   const Loc loc           // ctor
   const Str name          // ctor
   const AtomicRef asmRef  // Assemble.asm

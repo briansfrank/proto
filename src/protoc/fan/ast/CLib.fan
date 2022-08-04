@@ -17,13 +17,15 @@ internal class CLib
   {
     this.loc   = loc
     this.path  = path
+    this.qname = path.toStr
     this.dir   = dir
     this.src   = src
-    this.isSys = path.toStr == "sys"
+    this.isSys = qname == "sys"
     this.proto = proto
   }
 
   const Path path     // library dotted name
+  const Str qname     // dotted qualified name
   const Loc loc       // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)

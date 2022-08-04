@@ -20,6 +20,7 @@ internal class ResolveSys : Step
 
     compiler.sys = CSys
     {
+      it.sys    = lib
       it.obj    = resolve(lib.proto, "Obj")
       it.str    = resolve(lib.proto, "Str")
       it.dict   = resolve(lib.proto, "Dict")

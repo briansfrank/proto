@@ -15,6 +15,7 @@ internal class CSys
 {
   new make(|This| f) { f(this) }
 
+  CLib sys          // sys library itself
   CProto obj        // sys.Obj
   CProto str        // sys.Str
   CProto dict       // sys.Dict
