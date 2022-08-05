@@ -52,7 +52,7 @@ class Main : AbstractMain
 
     try
     {
-      ps := c.compileMain(output.split(','))
+      ps := c.compileMain(output.split(',').findAll { !it.isEmpty })
       if (dump) ps.root.dump
       return 0
     }
