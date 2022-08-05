@@ -41,7 +41,10 @@ abstract internal class Step
     else
     {
       if (parent.children[child.name] != null)
+      {
         err("Duplicate slot name $child.name", child.loc)
+        return
+      }
     }
     parent.children.add(child.name, child)
   }
