@@ -85,9 +85,9 @@ internal const class MProto : Proto
 
   override Void each(|Proto| f)
   {
-    // TODO: need a better mechanism
+    // expensive
     seen := Str:Str[:]
-    doEach(seen, this,f)
+    doEach(seen, this, f)
   }
 
   private static Void doEach(Str:Str seen, MProto? p, |Proto| f)
@@ -105,12 +105,6 @@ internal const class MProto : Proto
   override Void eachOwn(|Proto| f)
   {
     children.each(f)
-  }
-
-  override Obj? eachWhile(|Proto->Obj?| f)
-  {
-    children.eachWhile(f)
-    // TODO: lame
   }
 
   override Proto[] list()

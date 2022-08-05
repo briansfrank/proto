@@ -46,19 +46,15 @@ const mixin Proto
   ** Get a non-inherited child object by name.
   abstract Proto? getOwn(Str name, Bool checked := true)
 
-  ** Iterate the effective children objects
+  ** Iterate the effective children objects.  This iteration includes
+  ** inherited children and can be very expensive; prefer `eachOwn()`.
   abstract Void each(|Proto| f)
 
   ** Iterate the non-inherited children objects.
   abstract Void eachOwn(|Proto| f)
 
-  ** Iterate through the effective children until the given function returns
-  ** non-null, then break the iteration and return resulting object.
-  ** Return null if function returns null for every child.
-  abstract Obj? eachWhile(|Proto->Obj?| f)
-
-  ** Return a list of this object effective children.
-  ** It is preferable to to use `each`.
+  ** Return a list of this object effective children.  This iteration includes
+  ** inherited children and can be very expensive; prefer `listOwn()`.
   abstract Proto[] list()
 
   ** Return a list of this object non-inherited children.
