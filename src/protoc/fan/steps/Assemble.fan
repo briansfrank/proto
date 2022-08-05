@@ -25,7 +25,7 @@ internal class Assemble : Step
 
     path    := x.path
     typeRef := x.isObj ? AtomicRef() : x.type.deref.asmRef
-    kids    := x.children.map |kid->Proto| { asm(kid) }
+    kids    := asmChildren(x.children)
     val     := x.val
 
     m := x.isLib ?
@@ -36,10 +36,22 @@ internal class Assemble : Step
     return m
   }
 
+  private Str:MProto asmChildren(Str:CProto children)
+  {
+    if (children.isEmpty) return noChildren
+    acc := Str:MProto[:]
+    acc.ordered = true
+    children.each |kid| { acc.add(kid.name, asm(kid)) }
+    return acc.toImmutable
+  }
+
   private Str:ProtoLib asmLibs()
   {
     acc := Str:ProtoLib[:]
     libs.each |x| { acc.add(x.path.toStr, (MProtoLib)x.proto.asm) }
     return acc
   }
+
+
+  private static const Str:MProto noChildren := [:]
 }
