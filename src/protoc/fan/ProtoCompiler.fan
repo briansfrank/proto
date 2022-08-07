@@ -11,7 +11,7 @@ using proto
 **
 ** Proto compiler
 **
-internal class ProtoCompiler
+class ProtoCompiler
 {
 
 //////////////////////////////////////////////////////////////////////////

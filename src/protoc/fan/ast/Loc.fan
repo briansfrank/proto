@@ -23,11 +23,11 @@ const class Loc
   static const Loc synthetic := make("synthetic", 0)
 
   ** Constructor for file
-  static new makeFile(File file)
+  static new makeFile(File file, Int line := 0, Int col := 0)
   {
     uri := file.uri
     name := uri.scheme == "fan" ? "$uri.host::$uri.pathStr" : file.pathStr
-    return make(name)
+    return make(name, line, col)
   }
 
   ** Constructor for file and line

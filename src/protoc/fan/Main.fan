@@ -69,6 +69,7 @@ class Main : AbstractMain
     out.printLine("Examples:")
     out.printLine("  protoc               // compile all installed libs and report errors")
     out.printLine("  protoc -libs sys,ph  // compile only sys and ph libs")
+    out.printLine("  protoc -output json  // compile all libs to protos.json")
     out.printLine("  protoc -dump         // compile all libs and dump to stdout")
     return r
   }
@@ -76,7 +77,7 @@ class Main : AbstractMain
   private Int printVersion(OutStream out)
   {
     out.printLine
-    out.printLine("Protoc Compiler")
+    out.printLine("Proto Compiler")
     out.printLine
     out.printLine("protoc.version:   " + typeof.pod.version)
     out.printLine("java.version:     " + Env.cur.vars["java.version"])
