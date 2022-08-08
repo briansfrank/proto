@@ -27,6 +27,14 @@ const class ProtoUtil
   ** Parse qname into its dotted path segments
   **
   static Str[] qnamePath(Str qname) { qname.split('.') }
+
+  **
+  ** Map proto dotted qualified name to camel case name
+  **
+  @NoDoc static Str qnameToCamelCase(Str qname)
+  {
+    qname.split('.').map |n,i| { i == 0 ? n : n.capitalize }.join("")
+  }
 }
 
 
