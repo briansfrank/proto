@@ -7,15 +7,16 @@
 //
 
 using proto
+using util
 
 **
 ** Pragma from a single source file
 **
 internal class CPragma
 {
-  new make(Loc loc, CLib lib) { this.loc = loc; this.lib = lib  }
+  new make(FileLoc loc, CLib lib) { this.loc = loc; this.lib = lib  }
 
-  const Loc loc
+  const FileLoc loc
   CLib lib
 
   CProto[] resolve(ProtoCompiler c, Str name)

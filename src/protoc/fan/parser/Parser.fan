@@ -6,6 +6,8 @@
 //   5 May 2022  Brian Frank  Creation
 //
 
+using util
+
 **
 ** Parse a pog file into CProto AST nodes
 **
@@ -21,7 +23,7 @@ internal class Parser
   {
     this.step = step
     this.file = file
-    this.fileLoc = Loc(file)
+    this.fileLoc = FileLoc(file)
 
     this.tokenizer = Tokenizer(file.in)
     {
@@ -278,7 +280,7 @@ internal class Parser
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private CProto makeProto(Loc loc, Str name, Str? doc, CType? type)
+  private CProto makeProto(FileLoc loc, Str name, Str? doc, CType? type)
   {
     proto := CProto(loc, name, doc, type)
     proto.pragma = this.pragma
@@ -379,9 +381,9 @@ internal class Parser
     if (cur !== expected) throw err("Expected $expected not $curToStr")
   }
 
-  private Loc curToLoc()
+  private FileLoc curToLoc()
   {
-    Loc(fileLoc.file, curLine, curCol)
+    FileLoc(fileLoc.file, curLine, curCol)
   }
 
   private Str curToStr()
@@ -412,7 +414,7 @@ internal class Parser
     peekCol  = tokenizer.col
   }
 
-  private Err err(Str msg, Loc loc := curToLoc)
+  private Err err(Str msg, FileLoc loc := curToLoc)
   {
     step.err(msg, loc)
   }
@@ -423,7 +425,7 @@ internal class Parser
 
   private Parse step
   private File file
-  private Loc fileLoc
+  private FileLoc fileLoc
   private Tokenizer tokenizer
   private CPragma? pragma
 

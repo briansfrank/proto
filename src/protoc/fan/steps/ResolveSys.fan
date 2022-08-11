@@ -6,6 +6,7 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -16,7 +17,7 @@ internal class ResolveSys : Step
   override Void run()
   {
     lib := libs.find |lib| { lib.isSys }
-    if (lib == null) throw err("Must include 'sys' lib", Loc.inputs)
+    if (lib == null) throw err("Must include 'sys' lib", FileLoc.inputs)
 
     compiler.sys = CSys
     {

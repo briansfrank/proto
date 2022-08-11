@@ -7,17 +7,18 @@
 //
 
 using concurrent
+using util
 
 **
 ** Named reference to a proto
 **
 internal class CType
 {
-  new makeUnresolved(Loc loc, Str name) { this.loc = loc; this.name = name }
+  new makeUnresolved(FileLoc loc, Str name) { this.loc = loc; this.name = name }
 
-  new makeResolved(Loc loc, CProto c) { this.loc = loc; this.name = c.name; this.resolved = c }
+  new makeResolved(FileLoc loc, CProto c) { this.loc = loc; this.name = c.name; this.resolved = c }
 
-  const Loc loc
+  const FileLoc loc
   const Str name   // simple or dotted name
 
   Bool isResolved() { resolved != null }

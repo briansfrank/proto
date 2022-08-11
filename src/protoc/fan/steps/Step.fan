@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -51,9 +52,9 @@ abstract internal class Step
 
   Void info(Str msg) { compiler.info(msg) }
 
-  CompilerErr err(Str msg, Loc loc, Err? err := null) { compiler.err(msg, loc, err) }
+  CompilerErr err(Str msg, FileLoc loc, Err? err := null) { compiler.err(msg, loc, err) }
 
-  CompilerErr err2(Str msg, Loc loc1, Loc loc2, Err? err := null) { compiler.err2(msg, loc1, loc2, err) }
+  CompilerErr err2(Str msg, FileLoc loc1, FileLoc loc2, Err? err := null) { compiler.err2(msg, loc1, loc2, err) }
 
   Void bombIfErr() { if (!compiler.errs.isEmpty) throw compiler.errs.first }
 }

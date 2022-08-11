@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -56,7 +57,7 @@ class ProtoCompiler
       switch (o)
       {
         case "json": steps.add(GenJson())
-        default: throw err("Unknown output format: $o", Loc.inputs)
+        default: throw err("Unknown output format: $o", FileLoc.inputs)
       }
     }
     return run(steps).ps
@@ -99,7 +100,7 @@ class ProtoCompiler
     }
     catch (Err e)
     {
-      throw err("Internal compiler error", Loc.none, e)
+      throw err("Internal compiler error", FileLoc.unknown, e)
     }
   }
 
@@ -114,13 +115,13 @@ class ProtoCompiler
   }
 
   ** Log warning message
-  Void warn(Str msg, Loc loc, Err? cause := null)
+  Void warn(Str msg, FileLoc loc, Err? cause := null)
   {
     logger.warn(msg, loc, cause)
   }
 
   ** Log err message
-  CompilerErr err(Str msg, Loc loc, Err? cause := null)
+  CompilerErr err(Str msg, FileLoc loc, Err? cause := null)
   {
     err := CompilerErr(msg, loc, cause)
     errs.add(err)
@@ -129,7 +130,7 @@ class ProtoCompiler
   }
 
   ** Log err message with two locations of duplicate identifiers
-  CompilerErr err2(Str msg, Loc loc1, Loc loc2, Err? cause := null)
+  CompilerErr err2(Str msg, FileLoc loc1, FileLoc loc2, Err? cause := null)
   {
     err := CompilerErr(msg, loc1, cause)
     errs.add(err)

@@ -6,6 +6,8 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using util
+
 **
 ** Parse all source files into AST nodes
 **
@@ -29,6 +31,6 @@ internal class Parse : Step
     catch (CompilerErr e)
       throw e
     catch (Err e)
-      err("Cannot parse file", Loc(file), e)
+      err("Cannot parse file", FileLoc(file), e)
   }
 }

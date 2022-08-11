@@ -7,6 +7,7 @@
 //
 
 using concurrent
+using util
 using proto
 
 **
@@ -14,7 +15,7 @@ using proto
 **
 internal class CProto
 {
-  new make(Loc loc, Str name, Str? doc := null, CType? type := null, Str? val := null)
+  new make(FileLoc loc, Str name, Str? doc := null, CType? type := null, Str? val := null)
   {
     this.loc      = loc
     this.name     = name
@@ -76,7 +77,7 @@ internal class CProto
 
   Void eachOwn(|CProto| f) { children.each(f) }
 
-  const Loc loc           // ctor
+  const FileLoc loc       // ctor
   const Str name          // ctor
   const AtomicRef asmRef  // Assemble.asm
   CPragma? pragma         // Parser

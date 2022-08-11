@@ -6,6 +6,7 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -23,7 +24,7 @@ internal class InitLibs : Step
 
   private Void createRoot()
   {
-    compiler.root = CProto(Loc.synthetic, "", null)
+    compiler.root = CProto(FileLoc.synthetic, "", null)
   }
 
   private Void checkDups()
@@ -31,7 +32,7 @@ internal class InitLibs : Step
     names := Str:Str[:]
     libNames.each |name|
     {
-      if (names[name] != null) err("Duplicate lib name: $name", Loc.inputs)
+      if (names[name] != null) err("Duplicate lib name: $name", FileLoc.inputs)
       names[name] = name
     }
   }
@@ -50,18 +51,18 @@ internal class InitLibs : Step
     if (dir == null)
     {
       if (name.contains("#")) return initSrcLib(name)
-      err("Lib not installed: $name", Loc.inputs)
+      err("Lib not installed: $name", FileLoc.inputs)
       return null
     }
 
     // resolve source files
     src := dir.list.findAll |f| { f.ext == "pog" }
     libFile := src.find |f| { f.name == "lib.pog" }
-    if (libFile == null) { err("Missing lib.pog: $name", Loc(dir)); return null }
+    if (libFile == null) { err("Missing lib.pog: $name", FileLoc(dir)); return null }
     src.moveTo(libFile, 0)
 
     // create lib and its proto
-    loc := Loc(dir)
+    loc := FileLoc(dir)
     path := Path(name)
     return CLib(loc, path, dir, src, initProto(loc, path))
   }
@@ -74,12 +75,12 @@ internal class InitLibs : Step
     name := src[0..<pound].trim
     file := src[pound..-1].toBuf.toFile(`${name}.pog`)
 
-    loc := Loc("memory")
+    loc := FileLoc("memory")
     path := Path(name)
     return CLib(loc, path, Env.cur.workDir, [file], initProto(loc, path))
   }
 
-  private CProto initProto(Loc loc, Path path)
+  private CProto initProto(FileLoc loc, Path path)
   {
     // build path of generic protos to base of lib itself
     libBase := root
@@ -87,7 +88,7 @@ internal class InitLibs : Step
     {
       n := path[i]
       x := libBase.getOwn(n, false)
-      if (x == null) addSlot(libBase, x = CProto(Loc.synthetic, n))
+      if (x == null) addSlot(libBase, x = CProto(FileLoc.synthetic, n))
       libBase = x
     }
 

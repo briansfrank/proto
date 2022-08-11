@@ -6,6 +6,7 @@
 //   1 Aug 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -30,16 +31,16 @@ abstract class Logger
   static new makeLog(Log log) { LogLogger(log) }
 
   ** Report info level
-  Void info(Str msg) { log(LogLevel.info, msg, Loc.none, null) }
+  Void info(Str msg) { log(LogLevel.info, msg, FileLoc.unknown, null) }
 
   ** Report warning level
-  Void warn(Str msg, Loc loc, Err? cause := null) { log(LogLevel.warn, msg, loc, cause) }
+  Void warn(Str msg, FileLoc loc, Err? cause := null) { log(LogLevel.warn, msg, loc, cause) }
 
   ** Report err level
-  Void err(Str msg, Loc loc, Err? cause := null) { log(LogLevel.err, msg, loc, cause) }
+  Void err(Str msg, FileLoc loc, Err? cause := null) { log(LogLevel.err, msg, loc, cause) }
 
   ** Report log message
-  abstract Void log(LogLevel level, Str msg, Loc loc, Err? cause)
+  abstract Void log(LogLevel level, Str msg, FileLoc loc, Err? cause)
 }
 
 **************************************************************************
@@ -50,9 +51,9 @@ internal class OutStreamLogger : Logger
 {
   new make(OutStream out) { this.out = out }
 
-  override Void log(LogLevel level, Str msg,  Loc loc, Err? cause)
+  override Void log(LogLevel level, Str msg,  FileLoc loc, Err? cause)
   {
-    if (loc !== Loc.none) out.print(loc).print(": ")
+    if (loc !== FileLoc.unknown) out.print(loc).print(": ")
     if (level == LogLevel.warn) out.print("WARN ")
     out.printLine(msg)
     if (cause != null) cause.trace(out)
@@ -71,7 +72,7 @@ internal class LogLogger : Logger
 
   const Log wrap
 
-  override Void log(LogLevel level, Str msg,  Loc loc, Err? cause)
+  override Void log(LogLevel level, Str msg,  FileLoc loc, Err? cause)
   {
     wrap.log(LogRec(DateTime.now, level, wrap.name, msg, cause))
   }

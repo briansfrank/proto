@@ -6,6 +6,7 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+using util
 using proto
 
 **
@@ -13,7 +14,7 @@ using proto
 **
 internal class CLib
 {
-  new make(Loc loc, Path path, File dir, File[] src, CProto proto)
+  new make(FileLoc loc, Path path, File dir, File[] src, CProto proto)
   {
     this.loc   = loc
     this.path  = path
@@ -26,7 +27,7 @@ internal class CLib
 
   const Path path     // library dotted name
   const Str qname     // dotted qualified name
-  const Loc loc       // location of directory
+  const FileLoc loc   // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)
   const Bool isSys    // is this the sys lib
