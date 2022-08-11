@@ -7,6 +7,7 @@
 //
 
 using concurrent
+using util
 using proto
 
 **
@@ -14,8 +15,8 @@ using proto
 **
 internal const class MProtoLib : MProto, ProtoLib
 {
-  new make(Path path, AtomicRef typeRef, Str? val, Str:MProto children)
-    : super(path, typeRef, val, children)
+  new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)
+    : super(loc, path, typeRef, val, children)
   {
     // TODO: should be Version already once we reach here
     version = Version(get("_version").val)

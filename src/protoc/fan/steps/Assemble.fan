@@ -29,8 +29,8 @@ internal class Assemble : Step
     val     := x.val
 
     m := x.isLib ?
-         MProtoLib(path, typeRef, val, kids) :
-         MProto(path, typeRef, val, kids)
+         MProtoLib(x.loc, path, typeRef, val, kids) :
+         MProto(x.loc, path, typeRef, val, kids)
 
     x.asmRef.val = m
     return m

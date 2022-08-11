@@ -447,6 +447,7 @@ class CompileTest : Test
   private Proto verifyProto(Str path, Proto? type, Obj? val := null)
   {
     p := get(path)
+    // echo("$p.loc [$p.qname]")
     verifyEq(p.name, path.split('.').last)
     verifyEq(p.qname, path)
     verifySame(p.type, type)

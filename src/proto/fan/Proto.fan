@@ -6,6 +6,8 @@
 //   23 Feb 2022  Brian Frank  Creation
 //
 
+using util
+
 **
 ** Prototype object.
 **
@@ -60,6 +62,9 @@ const mixin Proto
   ** Return a list of this object non-inherited children.
   ** It is preferable to to use `eachOwn`.
   abstract Proto[] listOwn()
+
+  ** Source file location if support or unknown
+  abstract FileLoc loc()
 
   ** Debug dump with some pretty print
   @NoDoc abstract Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)

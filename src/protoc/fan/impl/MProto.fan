@@ -6,6 +6,7 @@
 //   4 Mar 2022  Brian Frank  Creation
 //
 
+using util
 using concurrent
 using proto
 
@@ -14,13 +15,16 @@ using proto
 **
 internal const class MProto : Proto
 {
-  new make(Path path, AtomicRef typeRef, Str? val, Str:MProto children)
+  new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)
   {
+    this.loc      = loc
     this.path     = path
     this.typeRef  = typeRef
     this.valRef   = val
     this.children = children
   }
+
+  override const FileLoc loc
 
   override Str name() { path.name }
 
