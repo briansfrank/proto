@@ -45,6 +45,9 @@ Number : Scalar <
 // Unitless integer number
 Int : Number
 
+// Unitless floating point number
+Float : Number
+
 // Number with a unit of time
 Duration : Number
 
