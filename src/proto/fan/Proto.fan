@@ -63,6 +63,13 @@ const mixin Proto
   ** It is preferable to to use `eachOwn`.
   abstract Proto[] listOwn()
 
+  ** Does this proto fit the given proto from a nominal type perspective
+  ** Examples:
+  **   Str.fits(Str)     >>>  true
+  **   Str.fits(Scalar)  >>>  true
+  **   Scalar.fits(Str)  >>>  false
+  abstract Bool fits(Proto base)
+
   ** Source file location if support or unknown
   abstract FileLoc loc()
 

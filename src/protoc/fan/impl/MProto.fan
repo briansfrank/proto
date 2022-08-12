@@ -125,6 +125,14 @@ internal const class MProto : Proto
 
   override Str toStr() { path.toStr }
 
+  override Bool fits(Proto base)
+  {
+    // TODO: need to handle union/intersectio
+    if (this === base) return true
+    if (type == null) return false
+    return type.fits(base)
+  }
+
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     indent := opts?.get("indent") as Str ?: ""
