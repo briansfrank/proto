@@ -11,6 +11,7 @@ using proto
 **
 ** ProtoSpace implementation
 **
+@Js
 internal const class MProtoSpace : ProtoSpace
 {
   new make(Proto root, Str:ProtoLib libsMap)
@@ -40,7 +41,6 @@ internal const class MProtoSpace : ProtoSpace
     if (lib != null) return lib
     if (checked) throw UnknownLibErr(name)
     return null
-
   }
 
   @Operator override Proto? get(Str qname, Bool checked := true)
@@ -50,6 +50,11 @@ internal const class MProtoSpace : ProtoSpace
     for (i := 0; p != null && i<path.size; ++i)
       p = p.get(path[i], checked)
     return p
+  }
+
+  override Void encodeJson(OutStream out)
+  {
+    JsonProtoEncoder(out).encode(this)
   }
 
 }

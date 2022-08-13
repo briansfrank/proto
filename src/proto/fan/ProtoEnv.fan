@@ -45,6 +45,10 @@ abstract const class ProtoEnv
   ** Raise exception if there are any compiler errors.
   abstract ProtoSpace compile(Str[] libNames)
 
+  ** Decode space from pre-compiled JSON.  Also see `ProtoSpace.decodeJson`.
+  ** Stream is guaranteed to be closed.
+  abstract ProtoSpace decodeJson(InStream in)
+
   ** Debug dump
   @NoDoc abstract Void dump(OutStream out := Env.cur.out)
 }

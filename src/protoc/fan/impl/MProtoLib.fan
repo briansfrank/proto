@@ -13,6 +13,7 @@ using proto
 **
 ** ProtoLib implementation
 **
+@Js
 internal const class MProtoLib : MProto, ProtoLib
 {
   new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)

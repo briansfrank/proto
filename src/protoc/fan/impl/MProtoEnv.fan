@@ -85,6 +85,13 @@ internal const class MProtoEnv : ProtoEnv
     return c.compileSpace
   }
 
+  ** Decode space from pre-compiled JSON.  Also see `ProtoSpace.decodeJson`.
+  ** Stream is guaranteed to be closed.
+  override ProtoSpace decodeJson(InStream in)
+  {
+    JsonProtoDecoder.decode(in)
+  }
+
   ** Debug dump
   override Void dump(OutStream out := Env.cur.out)
   {

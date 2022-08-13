@@ -36,6 +36,9 @@ const mixin ProtoSpace
   ** Root object for this space
   abstract Proto root()
 
+  ** Encode the entire space to a JSON file.  Also see `ProtoEnv.decodeJson`.
+  abstract Void encodeJson(OutStream out)
+
   ** Get the proto with the fully qualified name
   @Operator abstract Proto? get(Str qname, Bool checked := true)
 }

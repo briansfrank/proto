@@ -38,7 +38,7 @@ internal class Assemble : Step
 
   private Str:MProto asmChildren(Str:CProto children)
   {
-    if (children.isEmpty) return noChildren
+    if (children.isEmpty) return MProto.noChildren
     acc := Str:MProto[:]
     acc.ordered = true
     children.each |kid| { acc.add(kid.name, asm(kid)) }
@@ -52,6 +52,4 @@ internal class Assemble : Step
     return acc
   }
 
-
-  private static const Str:MProto noChildren := [:]
 }

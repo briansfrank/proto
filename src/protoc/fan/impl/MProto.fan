@@ -13,6 +13,7 @@ using proto
 **
 ** Proto implementation
 **
+@Js
 internal const class MProto : Proto
 {
   new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)
@@ -148,6 +149,8 @@ internal const class MProto : Proto
       out.print(indent).printLine("}")
     }
   }
+
+  static const Str:MProto noChildren := [:]
 
 }
 

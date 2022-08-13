@@ -35,6 +35,17 @@ class CompileTest : Test
     verifySame(ps.libs[1], ps.lib("sys"))
     verifySys(ps)
     verifyPh(ps)
+
+    // now test JSON
+    sb := StrBuf()
+    ps.encodeJson(sb.out)
+    json := sb.toStr
+    ps = ProtoEnv.cur.decodeJson(json.in)
+    verifyEq(ps.libs.size, 2)
+    verifySame(ps.libs[0], ps.lib("ph"))
+    verifySame(ps.libs[1], ps.lib("sys"))
+    verifySys(ps)
+    verifyPh(ps)
   }
 
   private Void verifySys(ProtoSpace ps)
