@@ -21,7 +21,10 @@ abstract const class ProtoEnv
   {
     try
     {
-      curRef = Type.find("protoc::MProtoEnv").make
+      if (Env.cur.runtime == "js")
+        curRef = JsProtoEnv()
+      else
+        curRef = Type.find("protoc::MProtoEnv").make
     }
     catch (Err e)
     {
@@ -50,6 +53,31 @@ abstract const class ProtoEnv
   abstract ProtoSpace decodeJson(InStream in)
 
   ** Debug dump
-  @NoDoc abstract Void dump(OutStream out := Env.cur.out)
+  @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
 }
+
+**************************************************************************
+** JsProtoEnv
+**************************************************************************
+
+**
+** JsProtoEnv is stub implementation for browser environments
+**
+@Js
+internal const class JsProtoEnv : ProtoEnv
+{
+  override File[] path() { File[,] }
+
+  override Str[] installed() { Str[,] }
+
+  override File? libDir(Str name, Bool checked := true) { throw UnsupportedErr() }
+
+  override ProtoSpace compile(Str[] libNames) { throw UnsupportedErr() }
+
+  override ProtoSpace decodeJson(InStream in)
+  {
+    Slot.findMethod("protoc::JsonProtoDecoder.decode").call(in)
+  }
+}
+
 
