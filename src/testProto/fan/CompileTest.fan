@@ -413,6 +413,70 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// NestedSets
+//////////////////////////////////////////////////////////////////////////
+
+  Void testNestedSets()
+  {
+    compileSrc(
+     Str<|Ahu : {
+            discharge: Duct
+          }
+
+          Duct : {
+            dis: Str
+            fan: Fan
+            temp: Temp
+          }
+
+          Fan : {
+            dis: Str
+          }
+
+          Temp : {
+            dis: Str
+          }
+
+          ahu1 : Ahu {
+            discharge : {
+              dis:"ahu1-discharge",
+              fan: { dis:"ahu1-discharge-fan" }
+              temp: { dis:"ahu1-discharge-temp" }
+            }
+          }
+
+          ahu2 : Ahu {
+            discharge.dis: "ahu2-discharge"
+            discharge.fan.dis: "ahu2-discharge-fan"
+            discharge.temp.dis: "ahu2-discharge-temp"
+          }
+
+         |>)
+
+    test := ps.lib("test")
+
+    verifyNestedSet(test->ahu1, "ahu1")
+    verifyNestedSet(test->ahu2, "ahu2")
+  }
+
+  Void verifyNestedSet(Proto p, Str dis)
+  {
+p.dump
+    verifyEq(p.type.qname, "test.Ahu")
+
+    d := p->discharge
+    verifyEq(d->dis.val, "$dis-discharge")
+    verifyEq(d.type.qname, "test.Ahu.discharge")
+
+    df := d->fan
+    verifyEq(df->dis.val, "$dis-discharge-fan")
+    //verifyEq(df.type.qname, "test.Fan")  TODO need type inference here
+
+    dt := d->temp
+    verifyEq(dt->dis.val, "$dis-discharge-temp")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
 

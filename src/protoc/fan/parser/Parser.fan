@@ -172,9 +172,10 @@ internal class Parser
 
     // parse name+type productions as one of three cases:
     //  1) <name> ":" for named child
-    //  2) <name> "? :" for optional named child
-    //  3) <name> only as shortcut for name:Marker (if lowercase name only)
-    //  4) unnamed child, auto assign name using "_digits"
+    //  2) <name> "." for qnamed child
+    //  3) <name> "? :" for optional named child
+    //  4) <name> only as shortcut for name:Marker (if lowercase name only)
+    //  5) unnamed child, auto assign name using "_digits"
     Str? name
     CType? type
     optional := false
@@ -186,9 +187,23 @@ internal class Parser
       skipNewlines
       type = parseProtoType
     }
+    else if (cur === Token.id && peek === Token.dot)
+    {
+      // 2) <name> "." for qnamed child
+      sb := StrBuf().add(parseProtoName(isMeta))
+      while (cur === Token.dot)
+      {
+        consume
+        sb.addChar('.').add(consumeName)
+      }
+      name = sb.toStr
+      consume(Token.colon)
+      skipNewlines
+      type = parseProtoType
+    }
     else if (cur === Token.id && peek === Token.question)
     {
-      // 2) <name> "? :" for optional named child
+      // 3) <name> "? :" for optional named child
       name = parseProtoName(isMeta)
       optional = true
       consume(Token.question)
@@ -198,13 +213,13 @@ internal class Parser
     }
     else if (cur === Token.id && peek !== Token.colon && curVal.toStr[0].isLower)
     {
-      // 3) <name> only as shortcut for name:Marker (if lowercase name only)
+      // 4) <name> only as shortcut for name:Marker (if lowercase name only)
       name = parseProtoName(isMeta)
       type = CType(loc, "sys.Marker")
     }
     else
     {
-      // 3) unnamed child, auto assign name using "_digits"
+      // 5) unnamed child, auto assign name using "_digits"
       name = parent.assignName
       type = parseProtoType
     }

@@ -71,6 +71,7 @@ class ProtoCompiler
       Parse(),
       ResolveSys(),
       ResolveDepends(),
+      ExpandNested(),
       ResolveNames(),
       AddMeta(),
       Inherit(),

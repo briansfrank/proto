@@ -26,6 +26,18 @@ internal class CProto
     this.asmRef   = AtomicRef()
   }
 
+  new makeRename(CProto old, Str name)
+  {
+    this.loc      = old.loc
+    this.name     = name
+    this.doc      = old.doc
+    this.type     = old.type
+    this.val      = old.val
+    this.children = old.children
+    this.asmRef   = old.asmRef
+    this.pragma   = old.pragma
+  }
+
   Void each(|CProto| f) { children.each(f) }
 
   CProto? get(Str name, Bool checked := true)

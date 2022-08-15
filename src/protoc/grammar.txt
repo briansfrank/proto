@@ -20,7 +20,7 @@ Productions [#productions]
   <protoUnion>       :=  <protoSimple> ["|" <protoSimple>]*
   <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoOptional> | <protoUnnamed>
   <protoMarker>      :=  <markerName>
-  <protoNamed>       :=  <name> ":" <protoUnnamed>
+  <protoNamed>       :=  <qname> ":" <protoUnnamed>
   <protoOptional>    :=  <name> "?" ":" <protoUnnamed>
   <protoUnnamed>     :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
   <protoType>        :=  <qname>
