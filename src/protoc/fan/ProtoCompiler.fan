@@ -142,7 +142,7 @@ class ProtoCompiler
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  internal CompilerErr[] errs := [,]     // err
+  CompilerErr[] errs := [,]              // err
   internal Duration? duration            // run
   internal CLib[]? libs                  // InitLibs
   internal CProto? root                  // Parse
