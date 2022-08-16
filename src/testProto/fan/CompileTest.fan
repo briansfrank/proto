@@ -461,7 +461,6 @@ class CompileTest : Test
 
   Void verifyNestedSet(Proto p, Str dis)
   {
-p.dump
     verifyEq(p.type.qname, "test.Ahu")
 
     d := p->discharge
