@@ -17,7 +17,7 @@ internal const class MProtoSpace : ProtoSpace
   new make(Proto root, Str:ProtoLib libsMap)
   {
     this.root    = root
-    this.libs    = libsMap.vals.sort |a, b| { a.name <=> b.name }
+    this.libs    = libsMap.vals.sort |a, b| { a.qname <=> b.qname }
     this.libsMap = libsMap
     this.sys     = libsMap.getChecked("sys")
     this.obj     = sys->Obj
