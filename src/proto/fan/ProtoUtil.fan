@@ -29,6 +29,15 @@ const class ProtoUtil
   static Str[] qnamePath(Str qname) { qname.split('.') }
 
   **
+  ** Join two qnames together
+  **
+  static Str qnameJoin(Str parent, Str child)
+  {
+    if (parent.isEmpty) return child
+    return StrBuf(parent.size+1+child.size).add(parent).addChar('.').add(child).toStr
+  }
+
+  **
   ** Map proto dotted qualified name to camel case name
   **
   @NoDoc static Str qnameToCamelCase(Str qname)

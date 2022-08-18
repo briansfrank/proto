@@ -47,7 +47,7 @@ internal const class MProtoEnv : ProtoEnv
     dir.listDirs.each |kid|
     {
       if (!ProtoUtil.isName(kid.name)) return
-      kidPath := StrBuf().add(path).join(kid.name, ".").toStr
+      kidPath := ProtoUtil.qnameJoin(path, kid.name)
       doInitInstalled(acc, kidPath, kid)
     }
   }
