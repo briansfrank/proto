@@ -15,8 +15,8 @@ Obj : <
   optional: Marker
 >
 
-// Nothing is the bottom type with no values
-Nothing : Obj
+// None is the bottom type with no values
+None : Obj
 
 // Marker labels a dict with typing information
 Marker : Obj
