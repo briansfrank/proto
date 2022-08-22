@@ -40,7 +40,7 @@ internal class CPragma
     CProto? p := c.root
     for (i := 0; i<path.size; ++i)
     {
-      p = p.getOwn(path[i], false)
+      p = p.get(path[i], false)
       if (p == null) return CProto#.emptyList
     }
     return CProto[p]
