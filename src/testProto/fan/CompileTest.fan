@@ -482,19 +482,20 @@ class CompileTest : Test
   Void testInheritBinding()
   {
     compileSrc(
-    Str<|Foo : {
+    Str<|foo2 : Foo  { something: "else" }
+         bar2 : { bind:test.foo2.a }
+
+         Foo : {
            a: Str
          }
 
          SubFoo : Foo
 
          foo1 : Foo
-         foo2 : Foo  { something: "else" }
          foo3 : SubFoo
 
          bar0 : { bind:test.Foo.a }
          bar1 : { bind:test.foo1.a }
-         bar2 : { bind:test.foo2.a }
          bar3 : { bind:test.foo3.a }
          |>)
 
