@@ -33,6 +33,7 @@ internal class CLib
   const Bool isSys    // is this the sys lib
   CProto? proto       // proto cloned from sys.Lib
   CLib[]? depends     // ResolveDepends
+  Bool resolvedNames  // ResolveNames
 
   Bool isLibMetaFile(File f) { f === src.first }
 }

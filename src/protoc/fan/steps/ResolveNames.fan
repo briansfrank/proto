@@ -16,8 +16,25 @@ internal class ResolveNames : Step
 {
   override Void run()
   {
-    resolveProto(root)
-    bombIfErr
+    // resolve libs in dependency order
+    libs.each |lib|
+    {
+      resolveLib(lib)
+      bombIfErr
+    }
+  }
+
+  private Void resolveLib(CLib lib)
+  {
+    // if already resolved skip
+    if (lib.resolvedNames) return
+    lib.resolvedNames = true
+
+    // make sure libs depends are resolved first
+    lib.depends.each |depend| { resolveLib(depend) }
+
+    // now resolve this lib's proto tree
+    resolveProto(lib.proto)
   }
 
   private Void resolveProto(CProto p)
