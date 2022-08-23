@@ -100,34 +100,43 @@ class CompileTest : Test
   Void testInherit()
   {
     compileSrc(
-    Str<|Alpha : {
+    Str<|MyScalar: Scalar
+
+         Alpha : {
+           a: MyScalar "av"
+           b: MyScalar "bv"
+           c: MyScalar "cv"
+         }
+
+         Bravo : Alpha {
+           b: "bv"
+           c: "cv"
+         }
+
+         Charlie : Bravo {
+           c: "cv"
+         }
+
+         Delta : Charlie {
            a: "av"
            b: "bv"
-           c: "cv"
-         }
-
-         Beta : Alpha {
-           b: "bv"
-           c: "cv"
-         }
-
-         Charlie : Beta {
-           c: "cv"
          }
          |>)
 
     a := get("test.Alpha")
-    b := get("test.Beta")
+    b := get("test.Bravo")
     c := get("test.Charlie")
+    d := get("test.Delta")
 
     verifyInherit(a, "a,b,c", ["Alpha.a", "Alpha.b", "Alpha.c"])
-    verifyInherit(b, "b,c",   ["Alpha.a", "Beta.b",  "Beta.c"])
-    verifyInherit(c, "c",     ["Alpha.a", "Beta.b",  "Charlie.c"])
+    verifyInherit(b, "b,c",   ["Alpha.a", "Bravo.b", "Bravo.c"])
+    verifyInherit(c, "c",     ["Alpha.a", "Bravo.b", "Charlie.c"])
+    verifyInherit(d, "a,b",   ["Delta.a", "Delta.b", "Charlie.c"])
   }
 
   private Void verifyInherit(Proto p, Str declared, Str[] slots)
   {
-    // echo("--- $p "); p.dump
+echo("--- $p "); p.dump
 
     // has
     verifyEq(p.has("a"), true)
@@ -138,6 +147,12 @@ class CompileTest : Test
     verifyEq(p["a"].val, "av")
     verifyEq(p["b"].val, "bv")
     verifyEq(p["c"].val, "cv")
+
+    // make sure everything subtypes from MyScalar
+    myScalar := ps.get("test.MyScalar")
+    verifyEq(p->a.fits(myScalar), true, "a: " + p->a.type)
+    verifyEq(p->b.fits(myScalar), true, "b: " + p->b.type)
+    verifyEq(p->c.fits(myScalar), true, "c: " + p->c.type)
 
     // get as method
     verifyEq(p.get("a").val, "av")

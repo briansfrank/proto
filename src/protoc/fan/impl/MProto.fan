@@ -128,7 +128,7 @@ internal const class MProto : Proto
 
   override Bool fits(Proto base)
   {
-    // TODO: need to handle union/intersectio
+    // TODO: need to handle union/intersection
     if (this === base) return true
     if (type == null) return false
     return type.fits(base)
