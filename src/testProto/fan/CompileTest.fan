@@ -476,6 +476,45 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Inherited Bindings
+//////////////////////////////////////////////////////////////////////////
+
+  Void testInheritBinding()
+  {
+    compileSrc(
+    Str<|Foo : {
+           a: Str
+         }
+
+         SubFoo : Foo
+
+         foo1 : Foo
+         foo2 : Foo  { something: "else" }
+         foo3 : SubFoo
+
+         bar0 : { bind:test.Foo.a }
+         bar1 : { bind:test.foo1.a }
+         bar2 : { bind:test.foo2.a }
+         bar3 : { bind:test.foo3.a }
+         |>)
+
+    x := ps.lib("test")
+    //x.dump
+    verifyEq(x->bar0->bind.type.qname, "test.Foo.a")
+    verifyEq(x->bar1->bind.type.qname, "test.foo1.a")
+    verifyEq(x->bar2->bind.type.qname, "test.foo2.a")
+    verifyEq(x->bar3->bind.type.qname, "test.foo3.a")
+
+    verifyEq(x->foo1.getOwn("a").qname, "test.foo1.a")
+    verifyEq(x->foo2.getOwn("a").qname, "test.foo2.a")
+    verifyEq(x->foo3.getOwn("a").qname, "test.foo3.a")
+
+    verifySame(x->foo1.getOwn("a").type, ps.get("test.Foo.a"))
+    verifySame(x->foo2.getOwn("a").type, ps.get("test.Foo.a"))
+    verifySame(x->foo3.getOwn("a").type, ps.get("test.Foo.a"))
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
 

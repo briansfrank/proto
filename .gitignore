@@ -4,6 +4,8 @@ Thumbs.db
 .DS_Store
 fan.props
 
+/out/
+
 # lib/
 /lib/fan/*.pod
 /lib/tmp/

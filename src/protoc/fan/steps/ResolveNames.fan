@@ -33,7 +33,7 @@ internal class ResolveNames : Step
     if (ref == null || ref.isResolved) return
 
     pragma := p.pragma ?: throw Err("No pragma: $p")
-    x := pragma.resolve(compiler, ref.name)
+    x := pragma.resolve(this, ref.name)
     if (x.size == 1)
       ref.resolved = x[0]
     else if (x.size == 0)

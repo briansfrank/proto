@@ -19,34 +19,47 @@ internal class CPragma
   const FileLoc loc
   CLib lib
 
-  CProto[] resolve(ProtoCompiler c, Str name)
+  CProto[] resolve(Step step, Str name)
   {
     x := cache[name]
     if (x != null) return x
 
-    x = doResolve(c, name)
+    x = doResolve(step, name)
     cache[name] = x
     return x
   }
 
-  private CProto[] doResolve(ProtoCompiler c, Str name)
+  private CProto[] doResolve(Step step, Str name)
   {
-    name.contains(".") ? resolveQualified(c, name) : resolveUnqualified(c, name)
+    name.contains(".") ? resolveQualified(step, name) : resolveUnqualified(step, name)
   }
 
-  private CProto[] resolveQualified(ProtoCompiler c, Str name)
+  private CProto[] resolveQualified(Step step, Str qname)
   {
-    path := Path(name)
-    CProto? p := c.root
+    path := Path(qname)
+    CProto? p := step.root
     for (i := 0; i<path.size; ++i)
     {
-      p = p.get(path[i], false)
-      if (p == null) return CProto#.emptyList
+      name := path[i]
+
+      // check own name
+      x := p.getOwn(name, false)
+      if (x == null)
+      {
+        // check if inherited, and if so we need to create
+        // override in the parent as place holder with proper qname
+        x = p.get(name, false)
+        if (x != null)
+          x = stubPath(step, p, x)
+      }
+
+      if (x == null) return CProto#.emptyList
+      p = x
     }
     return CProto[p]
   }
 
-  private CProto[] resolveUnqualified(ProtoCompiler c, Str name)
+  private CProto[] resolveUnqualified(Step step, Str name)
   {
     acc := CProto[,]
     acc.addNotNull(lib.proto.getOwn(name, false))
@@ -55,6 +68,13 @@ internal class CPragma
       acc.addNotNull(depend.proto.getOwn(name, false))
     }
     return acc
+  }
+
+  private CProto stubPath(Step step, CProto parent, CProto inherited)
+  {
+    child := CProto(FileLoc.synthetic, inherited.name, null, CType(FileLoc.synthetic, inherited), null)
+    step.addSlot(parent, child)
+    return child
   }
 
   private Str:CProto[] cache := Str:CProto[][:]
