@@ -88,6 +88,10 @@ internal class ResolveNames : Step
       x := p.getOwn(name, false)
       if (x == null)
       {
+        // we may need to resolve type to check inheritance
+        // TODO: this can cause circular loop we need to check
+        resolve(p, p.type)
+
         // check if inherited, and if so we need to create
         // override in the parent as place holder with proper qname
         x = p.get(name, false)
