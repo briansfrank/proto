@@ -9,7 +9,7 @@
 // Singleton for not available to indicate invalid or missing data.
 Na : Obj
 
-//  Singleton for remove operation.
+// Singleton for remove operation.
 Remove : Obj
 
 // Reference to an entity. Ref values are ASCII strings limited to the
@@ -22,6 +22,9 @@ Symbol : Scalar
 
 // Geographic coordinate in latitude/longitude in decimal degrees.
 Coord : Scalar
+
+// Extended string - type name and string value encoding.
+XStr : Scalar
 
 // Two dimension table of columns and rows.
 Grid : Collection
