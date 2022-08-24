@@ -75,7 +75,7 @@ class CompileTest : Test
 
   private Void verifyPh(ProtoSpace ps)
   {
-    ph := verifyLib(ps, "ph", "0.9.1")
+    ph := verifyLib(ps, "ph", "3.9.12")
     verifySame(ps.root->ph, ph)
 
     sys := ps.root->sys
@@ -85,8 +85,8 @@ class CompileTest : Test
     ref    := verifyProto("ph.Ref",    sys->Scalar)
     grid   := verifyProto("ph.Grid",   sys->Collection)
     entity := verifyProto("ph.Entity", sys->Dict)
-    id     := verifyProto("ph.Entity.id", ph->Ref)
-    str    := verifyProto("ph.Entity.dis", sys->Str)
+    id     := verifyProto("ph.Entity.id", ph->Tag->id)
+    str    := verifyProto("ph.Entity.dis", ph->Tag->dis)
 
     depends := verifyProto("ph._depends", sys->Lib->_depends)
     verifyProto("ph._depends._0", sys->Depend)
@@ -136,7 +136,7 @@ class CompileTest : Test
 
   private Void verifyInherit(Proto p, Str declared, Str[] slots)
   {
-echo("--- $p "); p.dump
+   // echo("--- $p "); p.dump
 
     // has
     verifyEq(p.has("a"), true)
