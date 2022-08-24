@@ -197,9 +197,19 @@ internal class Parser
         sb.addChar('.').add(consumeName)
       }
       name = sb.toStr
-      consume(Token.colon)
-      skipNewlines
-      type = parseProtoType
+      if (cur === Token.colon)
+      {
+        // name: ....
+        consume(Token.colon)
+        skipNewlines
+        type = parseProtoType
+      }
+      else
+      {
+        // no colon is unnamed, and name is the qualified type
+        type = CType(loc, name)
+        name = parent.assignName
+      }
     }
     else if (cur === Token.id && peek === Token.question)
     {
