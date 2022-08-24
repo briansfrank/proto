@@ -21,6 +21,7 @@ class Build : BuildGroup
     [
       `proto/build.fan`,
       `protoc/build.fan`,
+      `ph2pog/build.fan`,
       `testProto/build.fan`,
     ]
   }
