@@ -1,0 +1,654 @@
+// Auto-generated 24-Aug-2022
+
+// Top-level dicts with a unique identifier.
+// See `docHaystack::Ontology#entities` chapter.
+Entity: Dict {
+  dis?: ph.Tag.dis
+  id?:  ph.Tag.id
+}
+
+// AC Electricity meter.
+// See `docHaystack::Meters` chapter.
+AcElecMeter: ElecMeter {
+}
+
+// Equipment to move or control a mechanism.  Actuators may be manually
+// operated or automated via a control system to convert an energy source
+// into mechanical energy.  Typically the energy source is electricity,
+// hydraulics, or pneumatics.
+Actuator: Equip {
+}
+
+// Air Handling Unit: An enclosure with a fan that delivers air to a space
+// via ductwork and performs one or more of the functions of cleaning,
+// heating, cooling, humidifying, dehumidifying, ventilating or circulating
+// the air.  See `docHaystack::AHUs` chapter.
+Ahu: AirHandlingEquip {
+}
+
+// HVAC equipment that conditions and delivers air via one or more fans.
+// Conditioning of air includes heating, cooling, humidification,
+// dehumidification, and ventilation. See `docHaystack::AHUs` chapter.
+AirHandlingEquip: Equip {
+  ahuZoneDelivery?:        ph.Tag.ahuZoneDelivery
+  airVolumeAdjustability?: ph.Tag.airVolumeAdjustability
+  coolingProcess?:         ph.Tag.coolingProcess
+  ductConfig?:             ph.Tag.ductConfig
+  ductDeck?:               ph.Tag.ductDeck
+  heatingProcess?:         ph.Tag.heatingProcess
+}
+
+// Entity with logical grouping of zone air quality points.
+// See `docHaystack::Zones#airQuality` chapter.
+AirQualityZonePoints: PointGroup {
+}
+
+// Equipment in air distribution systems which terminate at the space.
+// Terminal units receive air from `airHandlingEquip` which have the
+// primarily responsibility to condition air.  Terminal units are primarily
+// responsible for delivery of air to the space and tempering the temperature.
+AirTerminalUnit: Equip {
+  ductConfig?: ph.Tag.ductConfig
+}
+
+// Aquifer Thermal Energy Storage system.
+// See `docHaystack::ATES` chapter.
+Ates: Equip {
+  atesDesign?: ph.Tag.atesDesign
+}
+
+// Equipment used to store electric energy
+Battery: Equip {
+}
+
+// Equipment to generate hot water or steam for heating
+Boiler: Equip {
+  heatingProcess?: ph.Tag.heatingProcess
+}
+
+// Branch selector used for heat recovery in a VRF system.  These are
+// control devices directing the liquid refrigerant or gas refrigerant
+// to zones requiring cooling or heating.
+BranchSelector: VrfEquip {
+}
+
+// Constant air volume terminal unit.  CAV systems use a constant
+// air flow rate with a variable air temperature.
+Cav: AirTerminalUnit {
+}
+
+// Plant used to generate chilled water for cooling.
+// See `docHaystack::Plants`.
+ChilledWaterPlant: Plant {
+  condenserLoop?: ph.Tag.condenserLoop
+}
+
+// Conditions a space using a heat exchanger integrated into the ceiling
+ChilledBeam: RadiantEquip {
+  coolingProcess?: ph.Tag.coolingProcess
+  heatingProcess?: ph.Tag.heatingProcess
+}
+
+// Equipment to remove heat from a liquid.  Chillers typically use a vapor
+// compression or an absorption refrigeration cycle.
+Chiller: Equip {
+  coolingCapacity?: ph.Tag.coolingCapacity
+}
+
+// Electrical circuit and its associated components such as breakers.
+// See `docHaystack::ElecPanels#circuits` chapter.
+Circuit: Equip {
+}
+
+// Heat exchanger used to heat or cool air.  Coils are sub-components
+// of HVAC equipment such as `airHandlingEquip`.
+Coil: HeatExchanger {
+}
+
+// General purpose computer.
+Computer: Device {
+}
+
+// Duct, pipe, or cable to convey a substance or phenomenon
+Conduit: Equip {
+}
+
+// Microprocessor based device used in a control system.  Controllers
+// interact with the physical world through direct I/O to sensors and
+// actuators or via network [protocols]`protocol`.
+Controller: Device {
+  equipRef?: ph.Tag.equipRef
+}
+
+// Panel housing controllers and networking gear
+ControlsPanel: Panel {
+}
+
+// Coil used to cool air.
+CoolingCoil: Coil {
+  coolingProcess?: ph.Tag.coolingProcess
+}
+
+// Equipment to transfer waste heat into the atmosphere
+CoolingTower: Equip {
+}
+
+// Computer Room Air Conditioner: An FCU designed to condition a computer
+// room.  See `docHaystack::AHUs` and `docHaystack::DataCenters` chapters.
+Crac: Fcu {
+}
+
+// Point with support to report a "real-time" current value.  By real-time
+// we typically mean freshness within the order of a few seconds or at
+// most a few minutes.  For systems with direct I/O the current value is
+// typically driven by the I/O scan rate. For overlay systems which acquire
+// data via a protocol such as BACnet or Modbus then the current value
+// is typically refreshed using polling or subscription over a network.
+// Also see `docHaystack::Points#cur` chapter.
+CurPoint: Point {
+  curErr?:    ph.Tag.curErr
+  curStatus?: ph.Tag.curStatus
+  curVal?:    ph.Tag.curVal
+}
+
+// Actuator to regulate the flow of air.
+DamperActuator: Actuator {
+  ductSection?: ph.Tag.ductSection
+}
+
+// Space used to house computer and networking gear.
+// See `docHaystack::DataCenters` chapter.
+DataCenter: Space {
+}
+
+// DC Electricity meter.
+// See `docHaystack::Meters` chapter.
+DcElecMeter: ElecMeter {
+}
+
+// Microprocessor based hardware device.  This is the general term for
+// all computers, mobile phones, controllers, and I/O modules.
+// See `docHaystack::Devices#networks` chapter.
+Device: Entity {
+}
+
+// Dedicated Outside Air System: An AHU that brings in 100% outside air and
+// no recirculated air in order to provide ventilation to spaces.
+// See `docHaystack::AHUs` chapter.
+Doas: Ahu {
+}
+
+// Conduit used to convey air for HVAC
+Duct: Conduit {
+  ductDeck?:    ph.Tag.ductDeck
+  ductSection?: ph.Tag.ductSection
+}
+
+// Electricity meter
+ElecMeter: Meter {
+}
+
+// Physical housing for electrical circuits, fuses, and breakers.
+// See `docHaystack::ElecPanels#panels` chapter.
+ElecPanel: Panel {
+}
+
+// Enclosure used to move people between floors.
+Elevator: VerticalTransport {
+}
+
+// Equipment asset.
+// See `docHaystack::Equips` chapter.
+Equip: Entity {
+  equipRef?: ph.Tag.equipRef
+  siteRef?:  ph.Tag.siteRef
+  spaceRef?: ph.Tag.spaceRef
+}
+
+// Moving staircase used to move people between floors.
+Escalator: VerticalTransport {
+}
+
+// Motor used with a fan to create air flow.
+// See `docHaystack::Motors` chapter.
+FanMotor: Motor {
+  ductSection?: ph.Tag.ductSection
+}
+
+// Fan Coil Unit: A unitary, factory-made enclosure with a fan and coil
+// that recirculates air in a space and performs one or more of the
+// functions of cleaning, heating, cooling, humidifying, dehumidifying,
+// or ventilating the air. Unit heaters are examples of FCUs.
+// See `docHaystack::AHUs` chapter.
+Fcu: AirHandlingEquip {
+}
+
+// Storey of a building.  See `docHaystack::Spaces#floors` chapter.
+Floor: Space {
+  floorNum?: ph.Tag.floorNum
+}
+
+// Meter to measure flow rate and total volume of fluid.
+// See `docHaystack::Meters` chapter.
+FlowMeter: Meter {
+}
+
+// System to change direction of substance flow 
+FlowInverter: Equip {
+}
+
+// Ventilation equipment to limit exposure to hazardous fumes.
+FumeHood: Equip {
+}
+
+// Floor at ground level.  In North America this is typically called
+// the first floor, but in Europe its often labeled as floor zero.
+// If `floorNum` is defined, then it must be set to zero.
+GroundFloor: Floor {
+}
+
+// Equipment to transfer heat between two working fluids.
+HeatExchanger: Equip {
+}
+
+// Heat pump: An air handling equipment which employs a vapor compression
+// cycle with a reversing valve to provide heating or cooling to a space.
+// See `docHaystack::AHUs` chapter.
+HeatPump: AirHandlingEquip {
+}
+
+// Coil used to heat air.
+HeatingCoil: Coil {
+  heatingProcess?: ph.Tag.heatingProcess
+}
+
+// Historized point with a history log of timestamp/value pairs.  Points
+// marked as historized indicate the system can response to queries via
+// the 'hisRead' operation to return a trend log of timestamp/value pairs.
+// 
+// There are typically two mechanisms for historization:
+//   - the local system performs the historization by logging the
+//     point's `curVal` to local storage
+//   - in overlay systems a downstream device performs the historization
+//     and the local system synchronizes the history data in batch on
+//     a periodic basis
+// 
+// Also see `docHaystack::Points#his` chapter.
+HisPoint: Point {
+  hisErr?:       ph.Tag.hisErr
+  hisMode?:      ph.Tag.hisMode
+  hisStatus?:    ph.Tag.hisStatus
+  hisTotalized?: ph.Tag.hisTotalized
+}
+
+// Boiler which outputs hot water
+HotWaterBoiler: Boiler {
+}
+
+// Plant used to generate hot water for heating.
+// See `docHaystack::Plants`.
+HotWaterPlant: Plant {
+}
+
+// Equipment which adds moisture to air to increase humidity
+HumidifierEquip: Equip {
+}
+
+// Zone related to conditioning of a space's air temperature and quality.
+// See `docHaystack::Spaces#zones` and `docHaystack::Zones#hvac` chapters.
+HvacZoneSpace: ZoneSpace {
+}
+
+// Entity with logical grouping of zone HVAC air points.
+// See `docHaystack::Zones#hvac` chapter.
+HvacZonePoints: PointGroup {
+}
+
+// Portable laptop computer.
+Laptop: Computer {
+}
+
+// Zone related to lighting system.
+// See `docHaystack::Spaces#zones` and `docHaystack::Zones#lighting` chapters.
+LightingZoneSpace: ZoneSpace {
+}
+
+// Entity with logical grouping of lighting points.
+// See `docHaystack::Zones#lighting` chapter.
+LightingZonePoints: PointGroup {
+}
+
+// Light fixture using electricity to provide illumination
+Luminaire: Equip {
+}
+
+// Makeup Air Unit: A DOAS that provides make-up air for a separate, dedicated
+// exhaust system. That is, this equip does not contain an exhaust air section.
+// See `docHaystack::AHUs` chapter.
+Mau: Doas {
+}
+
+// Equipment to meter a substance or phenomenon.
+// See `docHaystack::Meters` chapter.
+Meter: Equip {
+  meterScope?: ph.Tag.meterScope
+  submeterOf?: ph.Tag.submeterOf
+}
+
+// Cellular phone providing telecommunication over radio links.
+MobilePhone: Phone {
+}
+
+// Equipment that converts electrical energy into mechanical energy.
+// See `docHaystack::Motors` chapter.
+Motor: Equip {
+  vfd?: ph.Tag.vfd
+}
+
+// Conveyor to move people across a horizontal or inclined plane.
+MovingWalkway: VerticalTransport {
+}
+
+// Logical communications network between two or more devices.
+// See `docHaystack::Devices#networks` chapter.
+Network: Entity {
+}
+
+// Microprocessor device used to establish networks.
+NetworkingDevice: Device {
+}
+
+// Networking device used to route data between different networks.
+NetworkingRouter: NetworkingDevice {
+}
+
+// Networking device used to connect devices on the same network.
+NetworkingSwitch: NetworkingDevice {
+}
+
+// Enclosure for electrical and control equipment.  Panels may be
+// used to isolate electrical connections and provide environmental
+// protection.
+Panel: Equip {
+}
+
+// Telephone used for voice telecommunication.
+Phone: Device {
+}
+
+// Conduit used to convey a fluid
+Pipe: Conduit {
+  pipeFluid?:   ph.Tag.pipeFluid
+  pipeSection?: ph.Tag.pipeSection
+  plantLoop?:   ph.Tag.plantLoop
+}
+
+// Central plant used to generate a substance for a process.
+// See `docHaystack::Plants`.
+Plant: Equip {
+}
+
+// Data point such as a sensor or actuator.
+// See `docHaystack::Points` chapter.
+Point: Entity {
+  cur?:           ph.Tag.cur
+  enum?:          ph.Tag.enum
+  equipRef?:      ph.Tag.equipRef
+  his?:           ph.Tag.his
+  kind?:          ph.Tag.kind
+  maxVal?:        ph.Tag.maxVal
+  minVal?:        ph.Tag.minVal
+  pointFunction?: ph.Tag.pointFunction
+  pointQuantity?: ph.Tag.pointQuantity
+  pointSubject?:  ph.Tag.pointSubject
+  siteRef?:       ph.Tag.siteRef
+  spaceRef?:      ph.Tag.spaceRef
+  tz?:            ph.Tag.tz
+  unit?:          ph.Tag.unit
+  vfd?:           ph.Tag.vfd
+  writable?:      ph.Tag.writable
+}
+
+// Grouping of children points used by spaces and equipment
+PointGroup: Entity {
+}
+
+// Motor used with a pump to move fluid.
+// See `docHaystack::Motors` chapter.
+PumpMotor: Motor {
+  pipeFluid?:   ph.Tag.pipeFluid
+  pipeSection?: ph.Tag.pipeSection
+}
+
+// Enclosure or chassis used to mount computer and networking gear.
+// Devices are mounted to rails of a standard width, typically 19 or 23
+// inches.  Height is measured in *rack units* where one 1U is 1.75 inches.
+// A full rack has a height of 42U.
+// See `docHaystack::DataCenters#racks` chapter.
+Rack: Equip {
+}
+
+// HVAC equipment that conditions a space without forced air.
+RadiantEquip: Equip {
+}
+
+// Heats a space using pipes or cables embedded beneath floor.
+RadiantFloor: RadiantEquip {
+  heatingProcess?: ph.Tag.heatingProcess
+}
+
+// Heats a space using exposed pipes or coils.  Hot water and steam
+// radiators are often cast iron and installed directly in the space
+// or along the baseboard.  Electric radiators are typically installed
+// on the baseboard.
+Radiator: RadiantEquip {
+  heatingProcess?: ph.Tag.heatingProcess
+}
+
+// The roof floor is the topmost level of a building.  It is often
+// where HVAC equipment is located such as rooftop AHUs.
+RoofFloor: Floor {
+}
+
+// Enclosed room of a building
+Room: Space {
+}
+
+// Roof Top Unit: A unitary AHU that is weatherized for outdoor use.
+// See `docHaystack::AHUs` chapter.
+Rtu: Ahu {
+}
+
+// General purpose computer used as a server.  Typically servers are rack mounted.
+ServerComputer: Computer {
+}
+
+// Site is a geographic location of the built environment.
+// Typically site maps to one building with its own unique
+// street address.  See `docHaystack::Sites` chapter.
+Site: Entity {
+  area?:              ph.Tag.area
+  primaryFunction?:   ph.Tag.primaryFunction
+  tz?:                ph.Tag.tz
+  weatherStationRef?: ph.Tag.weatherStationRef
+  yearBuilt?:         ph.Tag.yearBuilt
+}
+
+// Space is a three-dimensional volume in the built environment.
+// See `docHaystack::Spaces` chapter.
+Space: Entity {
+  area?:     ph.Tag.area
+  siteRef?:  ph.Tag.siteRef
+  spaceRef?: ph.Tag.spaceRef
+}
+
+// Boiler which outputs steam
+SteamBoiler: Boiler {
+}
+
+// Plant used to generate steam for heating.
+// See `docHaystack::Plants`.
+SteamPlant: Plant {
+}
+
+// Floor below ground level.  Subterranean floors are also known as
+// basements, lower levels, or cellars.
+SubterraneanFloor: Floor {
+}
+
+// TODO: placeholder for system entities to be finalized in WG Labs
+System: Entity {
+}
+
+// Mobile device with touch screen for user input.
+Tablet: Device {
+}
+
+// Tank used to store a substance for temporary holding
+Tank: Equip {
+  tankSubstance?: ph.Tag.tankSubstance
+}
+
+// Senses and controls temperature of space in HVAC system.  Thermostats
+// may provide an interface for setpoint control.
+Thermostat: Equip {
+}
+
+// Unit Ventilator: An FCU that has direct access to outside air to provide
+// the space with ventilation.  See `docHaystack::AHUs` chapter.
+UnitVent: Fcu {
+}
+
+// Uninterruptible power supply
+Ups: Equip {
+}
+
+// Actuator to regulate the flow of fluid.
+ValveActuator: Actuator {
+  pipeFluid?:   ph.Tag.pipeFluid
+  pipeSection?: ph.Tag.pipeSection
+}
+
+// Variable air volume terminal unit.  VAV systems use a constant air
+// temperature with a variable air flow rate.  See `docHaystack::VAVs` chapter.
+Vav: AirTerminalUnit {
+  heatingProcess?: ph.Tag.heatingProcess
+  vavModulation?:  ph.Tag.vavModulation
+}
+
+// Equipment to move humans and materials
+VerticalTransport: Equip {
+}
+
+// Cooling only VRF system can only cool; heating is not available
+VrfCoolingOnlySystem: VrfSystem {
+}
+
+// Equipment used in VRF systems
+VrfEquip: Equip {
+}
+
+// Heat pump VRF system can either heat, or cool, but not at the same time.
+// TODO: using heatPump here will not work, but I've left this based on
+// if we make the term heatPump more generic....
+VrfHeatPumpSystem: VrfSystem {
+}
+
+// Heat recovery VRF system can operate cooling and heating by each indoor unit
+// independently, at the same time. Heat recovery VRF systems have branch selectors
+// to control how much, and which (hot gas or subcooled liquid) refrigerant
+// goes to each indoor unit.
+// NOTE: is this the only VRF system type with branch selectors?
+VrfHeatRecoverySystem: VrfSystem {
+}
+
+// Indoor unit in a VRF system.  Indoor units operate to satisfy a heating
+// or cooling load.
+VrfIndoorUnit: VrfEquip {
+}
+
+// Indoor unit fan coil unit in a VRF system.  This includes but is not
+// limited to: ducted-type and non-ducted types such as wall-mount,
+// floor-mount, ceiling-mount and cassettes.  Indoor unit fan coils operate
+// to satisfy a heating  or cooling load in a zone based on a zone thermostat
+// temperature set point.
+VrfIndoorUnitFcu: VrfIndoorUnit {
+}
+
+// Outdoor unit with one or more compressors in a VRF system. As each indoor
+// unit sends a demand to the outdoor unit, outdoor unit delivers the amount
+// of refrigerant needed to meet the individual requirements of each indoor
+// unit.
+VrfOutdoorUnit: VrfEquip {
+}
+
+// Group of outdoor units in a VRF system.
+VrfRefrigPlant: Plant {
+}
+
+// Variable refigerant flow system.  The system contains the indoor
+// units, outdoor units, and branch selectors.
+VrfSystem: System {
+}
+
+// Weather station observation point.
+// See `docHaystack::Weather#points` chapter.
+WeatherPoint: Point {
+  weatherStationRef?: ph.Tag.weatherStationRef
+}
+
+// Logical weather station and its measurement points.
+// See `docHaystack::Weather#stations` chapter.
+WeatherStation: Entity {
+  tz?: ph.Tag.tz
+}
+
+// A well is a source of groundwater and potentially thermal energy.  When
+// used within an [ATES]`docHaystack::ATES` system, the well facilitates thermal
+// energy exchange with the ground warm and cool water sources. In this case, a
+// well can be either a closed system that transports water through pipes in the
+// ground, or an open system that pumps up and returns ground water.
+Well: Equip {
+}
+
+// Cabling used to convey electricity or data
+Wire: Conduit {
+}
+
+// Point with writable output using 16-level priority array.  Writable
+// points typically are a setpoint or actuator command.  Haystack writable
+// points are modeled on the BACnet 16-level priority array with a
+// relinquish default which effectively acts as level 17.
+// 
+// The following levels have special behavior:
+//  - **Level 1**: highest priority reserved for emergency overrides
+//  - **Level 8**: manual override with ability to set timer to expire back to auto
+//  - **Default**: implicitly acts as level 17 for relinquish default
+// 
+// The priority array provides for contention resolution when many different
+// control applications may be vying for control of a given point. Low level
+// applications like scheduling typically control levels 14, 15, or 16. Then
+// users can override at level 8. But a higher levels like 2 to 7 can be used
+// to trump a user override (for example a demand response energy routine
+// that requires higher priority).
+// 
+// The actual value to write is resolved by starting at level 1 and working down
+// to relinquish default to find the first non-null value. It is possible for
+// all levels to be null, in which case the overall write output is null (which
+// in turn may be auto/null to another system). Anytime a null value is written
+// to a priority level, we say that level has been set to auto or released (this
+// allows the next highest level to take command of the output).
+// 
+// Also see `docHaystack::Points#writable` chapter.
+WritablePoint: Point {
+  writeErr?:    ph.Tag.writeErr
+  writeLevel?:  ph.Tag.writeLevel
+  writeStatus?: ph.Tag.writeStatus
+  writeVal?:    ph.Tag.writeVal
+}
+
+// Space associated with a specific system.
+// See `docHaystack::Spaces#zones` and `docHaystack::Zones` chapters.
+ZoneSpace: Space {
+}
+
