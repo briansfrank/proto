@@ -164,6 +164,7 @@ class Converter
         name := toEntityName(def)
         type := toEntityType(def)
         out.printLine("$name: $type {")
+        writeEntityUsage(out, def)
         writeEntityTags(out, def)
         out.printLine("}")
         out.printLine
@@ -189,6 +190,41 @@ class Converter
     if (def.name == "entity") return "Dict"
     supers := def["is"] as Symbol[]
     return toEntityName(ns.def(supers.first.toStr))
+  }
+
+  private Void writeEntityUsage(OutStream out, Def entity)
+  {
+    symbol := entity.symbol
+    name := symbol.name
+
+    // not sure how to best handle this, but for now just
+    // consider these tags as abstract
+    if (name == "airHandlingEquip" ||
+        name == "airQualityZonePoints" ||
+        name == "airTerminalUnit" ||
+        name == "conduit" ||
+        name == "coil" ||
+        name == "entity" ||
+        name == "radiantEquip" ||
+        name == "verticalTransport")
+      return
+
+    if (symbol.type.isTag)
+    {
+      // simple name
+      out.printLine("  $symbol")
+      return
+    }
+    else
+    {
+      // conjunct (but only entity tags we don't inherit)
+      bases := ns.supertypes(entity).findAll |x| { ns.fits(x, ns.def("entity")) }
+      symbol.eachPart |part|
+      {
+        if (bases.any { it.symbol.hasTermName(part) }) return
+        out.printLine("  $part")
+      }
+    }
   }
 
   private Void writeEntityTags(OutStream out, Def entity)
