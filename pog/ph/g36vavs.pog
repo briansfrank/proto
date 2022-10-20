@@ -54,3 +54,35 @@ G36DualDuctVavOutlet : {
   {zone, air, temp, sp, override, cmd, point}
   {zone, air, co2, sensor, point}
 }
+
+// Variable Air Volume Box With Reheat
+
+G36ReheatVav : {
+  vav
+  {damper, cmd, point}
+  {hot, water, heat, valve, cmd, point}
+  {discharge, air, flow, sensor, point}
+  {discharge, air, temp, sensor, point}
+  {zone, air, temp, sensor, point}
+  {zone, air, temp, override, cmd, point}
+  {occupied, sensor, point}
+  {window, override, cmd, point}
+  {zone, air, temp, override, sp, point}
+  {zone, air, co2, sensor, point}
+
+}
+
+// Cooling Only VAV
+
+G36CoolingOnlyVav : {
+  vav
+  {cmd, damper, point}
+  {discharge, air, flow, sensor, point}
+  {zone, air, temp, sensor, point}
+  {zone, air, temp, override, cmd, point}
+  {occupied, senor, point}
+  {window, override, cmd, point}
+  {zone, air, temp, override, sp, point}
+  {zone, air, co2, sensor, point}
+
+}
