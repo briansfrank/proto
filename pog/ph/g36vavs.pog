@@ -23,3 +23,34 @@ G36FanPoweredTerminalUnit : {
   {zone, air, temp, override, sp, point}
   {zone, air, co2, sensor, point}
 }
+
+// Dual-Duct Terminal Unit with Inlet Sensors
+
+G36DualDuctVavInlet : {
+  vav
+  {coldDeck, damper, cmd, point}
+  {hotDeck, damper, cmd, point}
+  {coldDeck, discharge, air, flow, sensor, point}
+  {hotDeck, discharge, air, flow, sensor, point}
+  {zone, air, temp, sensor, point}
+  {zone, air, temp, override, cmd, point}
+  {occupied, sensor, point}
+  {window, override, cmd, point}
+  {zone, air, temp, sp, override, cmd, point}
+  {zone, air, co2, sensor, point}
+}
+
+// Dual-Duct Terminal Unit with Discharge Sensor
+
+G36DualDuctVavOutlet : {
+  vav
+  {coldDeck, damper, cmd, point}
+  {hotDeck, damper, cmd, point}
+  {discharge, air, flow, sensor, point}
+  {zone, air, temp, sensor, point}
+  {zone, air, temp, override, cmd, point}
+  {occupied, sensor, point}
+  {window, override, cmd, point}
+  {zone, air, temp, sp, override, cmd, point}
+  {zone, air, co2, sensor, point}
+}
