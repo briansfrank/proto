@@ -1,0 +1,25 @@
+// This file includes five VAV templates from ASHRAE Guideline 36
+// Author: Avijit Saha, Jaime Gagne, Maggie Sullivan
+
+// Suggested Marker Tags in the tags.pog file
+// override: Marker
+// window: Marker
+
+// Fan Powered Terminal Unit
+
+G36FanPoweredTerminalUnit : {
+  airTerminalUnit
+  {discharge, air, fan, speed, cmd, point}
+  {discharge, air, fan, run, cmd, point}
+  {discharge, air, fan, run, sensor, point}
+  {damper, cmd, point}
+  {hot, water, heat, valve, cmd, point}
+  {discharge, air, flow, sensor, point}
+  {discharge, air, temp, sensor, point}
+  {zone, air, temp, sensor, point}
+  {zone, air, temp, override, cmd, point}
+  {zone, occupied, sensor, point}
+  {window, override, cmd, point}
+  {zone, air, temp, override, sp, point}
+  {zone, air, co2, sensor, point}
+}
