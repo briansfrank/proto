@@ -1,5 +1,10 @@
+//
+// Copyright (c) 2022, Project-Haystack
+// Licensed under the Academic Free License version 3.0
+//
 // This file includes five VAV templates from ASHRAE Guideline 36
 // Author: Avijit Saha, Jaime Gagne, Maggie Sullivan
+//
 
 // Suggested Marker Tags in the tags.pog file
 // override: Marker
@@ -20,13 +25,13 @@ G36FanPoweredTerminalUnit : G36Vav {
   {discharge, air, fan, run, sensor, point}
   {damper, cmd, point}
   {hot, water, heat, valve, cmd, point}
-  {discharge, air, flow, sensor, point}
-  {discharge, air, temp, sensor, point}
-  {zone, air, temp, sensor, point}
-  {zone, air, temp, override, cmd, point}
-  {zone, occupied, sensor, point}
-  {zone, air, temp, override, sp, point}
-  {zone, air, co2, sensor, point}
+  FlowPoint {discharge, air, sensor }
+  TempPoint {discharge, air, sensor}
+  TempPoint {zone, air, sensor}
+  TempPoint {zone, air, override, cmd}
+  TempPoint {zone, air, override, sp}
+  OccupiedPoint {zone, sensor}
+  Co2Point {zone, air, sensor}
   //{window, override, cmd, point}
 }
 
@@ -37,11 +42,11 @@ G36DualDuctVavInlet : G36Vav {
   {hotDeck, damper, cmd, point}
   {coldDeck, discharge, air, flow, sensor, point}
   {hotDeck, discharge, air, flow, sensor, point}
-  {zone, air, temp, sensor, point}
-  {zone, air, temp, override, cmd, point}
-  {occupied, sensor, point}
-  {zone, air, temp, sp, override, cmd, point}
-  {zone, air, co2, sensor, point}
+  TempPoint {zone, air, sensor}
+  TempPoint {zone, air, override, cmd}
+  TempPoint {zone, air, sp, override, cmd}
+  OccupiedPoint {zone, sensor}
+  Co2Point {zone, air, sensor}
   //{window, override, cmd, point}
 }
 
@@ -50,12 +55,12 @@ G36DualDuctVavOutlet : G36Vav {
   dualDuct
   {coldDeck, damper, cmd, point}
   {hotDeck, damper, cmd, point}
-  {discharge, air, flow, sensor, point}
-  {zone, air, temp, sensor, point}
-  {zone, air, temp, override, cmd, point}
-  {occupied, sensor, point}
-  {zone, air, temp, sp, override, cmd, point}
-  {zone, air, co2, sensor, point}
+  FlowPoint {discharge, air, sensor}
+  TempPoint {zone, air, sensor, point}
+  TempPoint {zone, air, override, cmd}
+  TempPoint {zone, air, sp, override, cmd}
+  OccupiedPoint {zone, sensor}
+  Co2Point {zone, air, sensor}
   //{window, override, cmd, point}
 }
 
@@ -65,13 +70,13 @@ G36ReheatVav : G36Vav {
   singleDuct
   {damper, cmd, point}
   {hot, water, heat, valve, cmd, point}
-  {discharge, air, flow, sensor, point}
-  {discharge, air, temp, sensor, point}
-  {zone, air, temp, sensor, point}
-  {zone, air, temp, override, cmd, point}
-  {occupied, sensor, point}
-  {zone, air, temp, override, sp, point}
-  {zone, air, co2, sensor, point}
+  FlowPoint {discharge, air, sensor}
+  TempPoint {discharge, air, temp, sensor}
+  TempPoint {zone, air, sensor, point}
+  TempPoint {zone, air, override, cmd}
+  TempPoint {zone, air, override, sp}
+  OccupiedPoint {zone, sensor}
+  Co2Point {zone, air, sensor}
   //{window, override, cmd, point}
 }
 
@@ -79,11 +84,11 @@ G36ReheatVav : G36Vav {
 G36CoolingOnlyVav : G36Vav {
   singleDuct
   {cmd, damper, point}
-  {discharge, air, flow, sensor, point}
-  {zone, air, temp, sensor, point}
-  {zone, air, temp, override, cmd, point}
-  {occupied, senor, point}
-  {zone, air, temp, override, sp, point}
-  {zone, air, co2, sensor, point}
+  FlowPoint {discharge, air, sensor}
+  TempPoint {zone, air, sensor}
+  TempPoint {zone, air, override, cmd}
+  TempPoint {zone, air, override, sp}
+  OccupiedPoint {zone, sensor}
+  Co2Point {zone, air, sensor}
   //{window, override, cmd, point}
 }
