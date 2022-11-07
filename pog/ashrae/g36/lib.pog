@@ -12,6 +12,7 @@
   depends: {
     { lib: "sys" }
     { lib: "ph" }
+    { lib: "phx" }
   }
   org: {
     dis: "Project Haystack"
