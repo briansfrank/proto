@@ -166,6 +166,7 @@ class Converter
         out.printLine("$name: $type {")
         writeEntityUsage(out, def)
         writeEntityTags(out, def)
+        writeEntityChildren(out, def)
         out.printLine("}")
         out.printLine
       }
@@ -245,6 +246,13 @@ class Converter
     {
       out.printLine("  $tag?: " + Str.spaces(maxNameSize-tag.toStr.size) + "ph.Tag.$tag")
     }
+  }
+
+  private Void writeEntityChildren(OutStream out, Def entity)
+  {
+    // for right now, add points for equip
+    if (entity.name == "equip")
+      out.printLine("  points: Dict<of:Point>")
   }
 
   private Bool isInherited(Def entity, Def tag)

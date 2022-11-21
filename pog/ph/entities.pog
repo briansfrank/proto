@@ -1,4 +1,4 @@
-// Auto-generated 05-Sep-2022
+// Auto-generated 21-Nov-2022
 
 // Top-level dicts with a unique identifier.
 // See `docHaystack::Ontology#entities` chapter.
@@ -70,13 +70,6 @@ Battery: Equip {
 Boiler: Equip {
   boiler
   heatingProcess?: ph.Tag.heatingProcess
-}
-
-// Branch selector used for heat recovery in a VRF system.  These are
-// control devices directing the liquid refrigerant or gas refrigerant
-// to zones requiring cooling or heating.
-BranchSelector: VrfEquip {
-  branchSelector
 }
 
 // Constant air volume terminal unit.  CAV systems use a constant
@@ -233,6 +226,7 @@ Equip: Entity {
   equipRef?: ph.Tag.equipRef
   siteRef?:  ph.Tag.siteRef
   spaceRef?: ph.Tag.spaceRef
+  points: Dict<of:Point>
 }
 
 // Moving staircase used to move people between floors.
@@ -577,11 +571,6 @@ SubterraneanFloor: Floor {
   subterranean
 }
 
-// TODO: placeholder for system entities to be finalized in WG Labs
-System: Entity {
-  system
-}
-
 // Mobile device with touch screen for user input.
 Tablet: Device {
   tablet
@@ -627,66 +616,6 @@ Vav: AirTerminalUnit {
 
 // Equipment to move humans and materials
 VerticalTransport: Equip {
-}
-
-// Cooling only VRF system can only cool; heating is not available
-VrfCoolingOnlySystem: VrfSystem {
-  coolingOnly
-}
-
-// Equipment used in VRF systems
-VrfEquip: Equip {
-  vrf
-}
-
-// Heat pump VRF system can either heat, or cool, but not at the same time.
-// TODO: using heatPump here will not work, but I've left this based on
-// if we make the term heatPump more generic....
-VrfHeatPumpSystem: VrfSystem {
-  heatPump
-}
-
-// Heat recovery VRF system can operate cooling and heating by each indoor unit
-// independently, at the same time. Heat recovery VRF systems have branch selectors
-// to control how much, and which (hot gas or subcooled liquid) refrigerant
-// goes to each indoor unit.
-// NOTE: is this the only VRF system type with branch selectors?
-VrfHeatRecoverySystem: VrfSystem {
-  heatRecovery
-}
-
-// Indoor unit in a VRF system.  Indoor units operate to satisfy a heating
-// or cooling load.
-VrfIndoorUnit: VrfEquip {
-  indoorUnit
-}
-
-// Indoor unit fan coil unit in a VRF system.  This includes but is not
-// limited to: ducted-type and non-ducted types such as wall-mount,
-// floor-mount, ceiling-mount and cassettes.  Indoor unit fan coils operate
-// to satisfy a heating  or cooling load in a zone based on a zone thermostat
-// temperature set point.
-VrfIndoorUnitFcu: VrfIndoorUnit {
-}
-
-// Outdoor unit with one or more compressors in a VRF system. As each indoor
-// unit sends a demand to the outdoor unit, outdoor unit delivers the amount
-// of refrigerant needed to meet the individual requirements of each indoor
-// unit.
-VrfOutdoorUnit: VrfEquip {
-  outdoorUnit
-}
-
-// Group of outdoor units in a VRF system.
-VrfRefrigPlant: Plant {
-  vrf
-  refrig
-}
-
-// Variable refigerant flow system.  The system contains the indoor
-// units, outdoor units, and branch selectors.
-VrfSystem: System {
-  vrf
 }
 
 // Weather station observation point.

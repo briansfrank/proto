@@ -1,4 +1,4 @@
-// Auto-generated 05-Sep-2022
+// Auto-generated 21-Nov-2022
 
 // All standard tags defined by Project Haystack
 Tag : {
@@ -145,11 +145,6 @@ boiler: Marker
 // Boolean value 'true' or 'false'.
 // See [Kinds chapter]`docHaystack::Kinds#bool`.
 bool: Bool
-
-// Branch selector used for heat recovery in a VRF system.  These are
-// control devices directing the liquid refrigerant or gas refrigerant
-// to zones requiring cooling or heating.
-branchSelector: Marker
 
 // Pipe used to bypass an equipment
 bypass: Marker
@@ -758,9 +753,6 @@ heatExchanger: Marker
 // See `docHaystack::AHUs` chapter.
 heatPump: Marker
 
-// Transfer of heat from one substance to another to reduce energy consumption.
-heatRecovery: Marker
-
 // Boolean point indicating command state of AHU's heat wheel.
 heatWheel: Marker
 
@@ -848,9 +840,6 @@ imbalance: Marker
 
 // Received into a system
 import: Marker
-
-// Operates inside the conditioned space
-indoorUnit: Marker
 
 // Permeation of a substance into another substance
 infiltration: Marker
@@ -1100,9 +1089,6 @@ of: Symbol
 // User interfaces should support data entry for arbitrary strings, but
 // also provide a dropdown for the predefined enumeration.
 openEnum: Marker
-
-// operates outside the conditioned space
-outdoorUnit: Marker
 
 // Entity outputs a substance with flows to other entities
 output: Marker
@@ -1441,9 +1427,6 @@ switch: Marker
 // See [Kinds chapter]`docHaystack::Kinds#symbol`.
 symbol: Symbol
 
-// TODO: placeholder for system entities to be finalized in WG Labs
-system: Marker
-
 // Mobile device with touch screen for user input.
 tablet: Marker
 
@@ -1565,9 +1548,6 @@ volt: Marker
 
 // Three dimensional space occupied by a substance
 volume: Marker
-
-// Variable refigerant flow
-vrf: Marker
 
 // Relatively warm in comparison to another substance, without being
 // actively heated. The substance can be used as a source of energy for
