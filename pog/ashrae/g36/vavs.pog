@@ -40,6 +40,7 @@ G36FanPoweredTerminalUnit : G36Vav {
 // Guidline 36 Dual-Duct Terminal Unit with Inlet Sensors
 G36DualDuctVavInlet : G36Vav {
   dualDuct
+  coolingOnly
   points: {
     ColdDeckDischargeDamperCmd
     HotDeckDischargeDamperCmd
@@ -51,6 +52,7 @@ G36DualDuctVavInlet : G36Vav {
 //  Guidline 36  Dual-Duct Terminal Unit with Discharge Sensor
 G36DualDuctVavOutlet : G36Vav {
   dualDuct
+  coolingOnly
   points: {
     ColdDeckDischargeDamperCmd
     HotDeckDischargeDamperCmd
@@ -73,6 +75,7 @@ G36ReheatVav : G36Vav {
 //  Guidline 36 Cooling Only VAV
 G36CoolingOnlyVav : G36Vav {
   singleDuct
+  coolingOnly
   points: {
     DischargeDamperCmd
     DischargeAirFlowSensor
