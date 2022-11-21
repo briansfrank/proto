@@ -81,6 +81,51 @@ HotDeckDischargeAirFlowSensor : DischargeAirFlowSensor { hotDeck }
 // Setpoint for volumetric air flow in hot deck discharge duct
 HotDeckDischargeAirFlowSp : DischargeAirFlowSp { hotDeck }
 
+// --- Economizing ---
+
+// Sensor for volumetric air flow in economizing duct.
+// Used when there are separate ducts for minimum fresh air vs economizing.
+EconomizingAirFlowSensor : AirFlowSensor { economizing }
+
+// Setpoint for volumetric air flow in economizing duct.
+EconomizingAirFlowSp : AirFlowSp { economizing }
+
+// --- Exhaust ---
+
+// Sensor for volumetric air flow in exhaust duct
+ExhaustAirFlowSensor : AirFlowSensor { exhaust }
+
+// Setpoint for volumetric air flow in exhaust duct
+ExhaustAirFlowSp : AirFlowSp { exhaust }
+
+// --- Outside ---
+
+// Sensor for volumetric air flow in outside duct.
+// Used when there one duct for both minimum fresh air and economizing.
+OutsideAirFlowSensor : AirFlowSensor { outside }
+
+// Setpoint for volumetric air flow in outside duct.
+// Used when there one duct for both minimum fresh air and economizing.
+OutsideAirFlowSp : AirFlowSp { outside }
+
+// --- Return ---
+
+// Sensor for volumetric air flow in return duct
+ReturnAirFlowSensor : AirFlowSensor { return }
+
+// Setpoint for volumetric air flow in return duct
+ReturnAirFlowSp : AirFlowSp { return }
+
+// --- Ventilation ---
+
+// Sensor for volumetric air flow in ventilation or minimum fresh air duct.
+// Used when there are separate ducts for minimum fresh air vs economizing.
+VentilationAirFlowSensor : AirFlowSensor { ventilation }
+
+// Setpoint for volumetric air flow in ventilation or minimum fresh air duct.
+// Used when there are separate ducts for minimum fresh air vs economizing.
+VentilationAirFlowSp : AirFlowSp { ventilation }
+
 //////////////////////////////////////////////////////////////////////////
 // Air Fan
 //////////////////////////////////////////////////////////////////////////
@@ -128,6 +173,59 @@ DischargeFanSpeedSensor : FanSpeedSensor { discharge }
 
 // Command for speed of a fan as percentage 0% off and 100% full speed in discharge duct
 DischargeFanSpeedCmd : FanSpeedCmd { discharge }
+
+// --- Return ---
+
+// Sensor for primary on/off state of fan in return duct
+ReturnFanRunSensor : FanRunSensor { return }
+
+// Command for primary on/off state of fan in return duct
+ReturnFanRunCmd : FanRunCmd { return }
+
+// Sensor for secondary on/off state of fan in return duct
+ReturnFanEnableSensor : FanEnableSensor { return }
+
+// Command for secondary on/off state of fan in return duct
+ReturnFanEnableCmd : FanEnableCmd { return }
+
+// Sensor for speed of a fan as percentage 0% off and 100% full speed in return duct
+ReturnFanSpeedSensor : FanSpeedSensor { return }
+
+// Command for speed of a fan as percentage 0% off and 100% full speed in return duct
+ReturnFanSpeedCmd : FanSpeedCmd { return }
+
+//////////////////////////////////////////////////////////////////////////
+// Air Pressure
+//////////////////////////////////////////////////////////////////////////
+
+// Point associated with static air pressure
+AirPressurePoint : NumberPoint <abstract> {
+  air
+  pressure
+  unit: "Pa" | "kPa" | "inH₂O"
+}
+
+// Sensor for static air pressure
+AirPressureSensor : AirPressurePoint & Sensor <abstract>
+
+// Setpoint for static air pressure
+AirPressureSp : AirPressurePoint & Sp <abstract>
+
+// --- Discharge ---
+
+// Sensor for static air pressure in discharge duct
+DischargeAirPressureSensor : AirPressureSensor { discharge }
+
+// Setpoint for static air pressure in discharge duct
+DischargeAirPressureSp : AirPressureSp { discharge }
+
+// --- Return ---
+
+// Sensor for static air pressure in return duct
+ReturnAirPressureSensor : AirPressureSensor { return }
+
+// Setpoint for static air pressure in return duct
+ReturnAirPressureSp : AirPressureSp { return }
 
 //////////////////////////////////////////////////////////////////////////
 // Air Temp
@@ -213,7 +311,7 @@ DamperCmd : DamperPoint & Cmd <abstract>
 // Damper position sensor in dischage duct
 DischargeDamperSensor : DamperSensor { discharge }
 
-// Damper position comamnd in dischage duct
+// Damper position command in dischage duct
 DischargeDamperCmd : DamperCmd { discharge }
 
 // --- Cold Deck Discharge ---
@@ -221,7 +319,7 @@ DischargeDamperCmd : DamperCmd { discharge }
 // Damper position sensor in cold deck dischage duct
 ColdDeckDischargeDamperSensor : DischargeDamperSensor { coldDeck }
 
-// Damper position comamnd in cold deck dischage duct
+// Damper position command in cold deck dischage duct
 ColdDeckDischargeDamperCmd : DischargeDamperCmd { coldDeck }
 
 // --- Hot Deck Discharge ---
@@ -229,8 +327,62 @@ ColdDeckDischargeDamperCmd : DischargeDamperCmd { coldDeck }
 // Damper position sensor in hot deck dischage duct
 HotDeckDischargeDamperSensor : DischargeDamperSensor { hotDeck }
 
-// Damper position comamnd in hot deck dischage duct
+// Damper position command in hot deck dischage duct
 HotDeckDischargeDamperCmd : DischargeDamperCmd { hotDeck }
+
+// --- Economizing ---
+
+// Damper position sensor in economizing duct.
+// Used when there are separate ducts for minimum fresh air vs economizing.
+EconomizingDamperSensor : DamperSensor { economizing }
+
+// Damper position command in economizing duct.
+// Used when there are separate ducts for minimum fresh air vs economizing.
+EconomizingDamperCmd : DamperCmd { economizing }
+
+// --- Exhaust ---
+
+// Damper position sensor in exhaust duct
+ExhaustDamperSensor : DamperSensor { Exhaust }
+
+// Damper position command in exhaust duct
+ExhaustDamperCmd : DamperCmd { Exhaust }
+
+// --- Mixed ---
+
+// Damper position sensor in mixed air duct
+MixedDamperSensor : DamperSensor { mixed }
+
+// Damper position command in mixed duct
+MixedDamperCmd : DamperCmd { mixed }
+
+// --- Outdoor ---
+
+// Damper position sensor in outdoor duct
+// Used when there one duct for both minimum fresh air and economizing.
+OutdoorDamperSensor : DamperSensor { outdoor }
+
+// Damper position command in outdoor duct
+// Used when there one duct for both minimum fresh air and economizing.
+OutdoorDamperCmd : DamperCmd { outdoor }
+
+// --- Return ---
+
+// Damper position sensor in return duct
+ReturnDamperSensor : DamperSensor { return }
+
+// Damper position command in return duct
+ReturnDamperCmd : DamperCmd { return }
+
+// --- Ventilation ---
+
+// Damper position sensor in ventilation or minimum fresh air duct
+// Used when there are separate ducts for minimum fresh air vs economizing.
+VentilationDamperSensor : DamperSensor { ventilation }
+
+// Damper position command in ventilation or minimum fresh air duct
+// Used when there are separate ducts for minimum fresh air vs economizing.
+VentilationDamperCmd : DamperCmd { ventilation }
 
 //////////////////////////////////////////////////////////////////////////
 // Motors
