@@ -410,6 +410,61 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Union/Intersection
+//////////////////////////////////////////////////////////////////////////
+
+  Void testCombo()
+  {
+    compileSrc(
+    Str<|A : Dict
+         B : Dict
+         C : Dict
+         D : Dict
+         T1 : A | B
+         T2 : A | B | C
+         T3 : A | B & C
+         T4 : A & B | C
+         T5 : A & B | C & D
+         T6 : A | B & C | D
+         T7 : A | B | C & D
+         T8 : A|B|C&D
+         T9 : A? | B? & C | D
+         |>)
+
+    test := ps.root->test
+
+    verifyCombo(test->T1, Obj["|", "A", "B"])
+    verifyCombo(test->T2, Obj["|", "A", "B", "C"])
+    verifyCombo(test->T3, Obj["|", "A", ["&", "B", "C"]])
+    verifyCombo(test->T4, Obj["|", ["&", "A", "B"], "C"])
+    verifyCombo(test->T5, Obj["|", ["&", "A", "B"], ["&", "C", "D"]])
+    verifyCombo(test->T6, Obj["|", "A", ["&", "B", "C"], "D"])
+    verifyCombo(test->T7, Obj["|", "A", "B", ["&", "C", "D"]])
+    verifyCombo(test->T8, Obj["|", "A", "B", ["&", "C", "D"]])
+    verifyCombo(test->T9, Obj["|", "A?", ["&", "B?", "C"], "D"])
+  }
+
+  Void verifyCombo(Proto p, Obj[] expected)
+  {
+    actual := doCombo(p)
+    verifyEq(actual.toStr, expected.toStr)
+  }
+
+  Obj doCombo(Proto p)
+  {
+    if (p.type.qname == "sys.Intersection")
+      return Obj["&"].addAll(p->_of.listOwn.map { doCombo(it) })
+
+    if (p.type.qname == "sys.Union")
+      return Obj["|"].addAll(p->_of.listOwn.map { doCombo(it) })
+
+    if (p.type.qname == "sys.Maybe")
+      return p->_of.type.name + "?"
+
+    return p.type.name
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Unnamed
 //////////////////////////////////////////////////////////////////////////
 

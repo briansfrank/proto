@@ -118,28 +118,12 @@ internal class Parser
 
   private CProto? parseProto(CProto parent, Bool isMeta)
   {
-    p := parseUnion(parent, isMeta)
-    if (p == null || cur !== Token.amp) return p
-
-    intersection := hoistCompound(p, "sys.Intersection")
-    of := intersection.getOwn("_of")
-
-    while (cur === Token.amp)
-    {
-      ampLoc := curToLoc
-      consume(Token.amp)
-      skipNewlines
-      p = parseUnion(of, false)
-      if (p == null) throw err("Expecting proto after & in intersection type, not $curToStr", ampLoc)
-      if (p != null) addProto(of, p)
-    }
-
-    return intersection
+    parseUnion(parent, isMeta)
   }
 
   private CProto? parseUnion(CProto parent, Bool isMeta)
   {
-    p := parseMaybe(parent, isMeta)
+    p := parseIntersection(parent, isMeta)
     if (p == null || cur !== Token.pipe) return p
 
     union := hoistCompound(p, "sys.Union")
@@ -150,11 +134,32 @@ internal class Parser
       pipeLoc := curToLoc
       consume(Token.pipe)
       skipNewlines
-      p = parseMaybe(of, false)
+      p = parseIntersection(of, false)
       if (p == null) throw err("Expecting proto after | in union type, not $curToStr", pipeLoc)
       if (p != null) addProto(of, p)
     }
     return union
+  }
+
+  private CProto? parseIntersection(CProto parent, Bool isMeta)
+  {
+    p := parseMaybe(parent, isMeta)
+    if (p == null || cur !== Token.amp) return p
+
+    intersection := hoistCompound(p, "sys.Intersection")
+    of := intersection.getOwn("_of")
+
+    while (cur === Token.amp)
+    {
+      ampLoc := curToLoc
+      consume(Token.amp)
+      skipNewlines
+      p = parseMaybe(of, false)
+      if (p == null) throw err("Expecting proto after & in intersection type, not $curToStr", ampLoc)
+      if (p != null) addProto(of, p)
+    }
+
+    return intersection
   }
 
   private CProto? parseMaybe(CProto parent, Bool isMeta)
