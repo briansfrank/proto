@@ -38,8 +38,8 @@ False : Bool "false"
 
 // Integer or floating point numbers annotated with an optional unit
 Number : Scalar <
-  minVal?: Number   // Inclusive minimum value
-  maxVal?: Number   // Inclusive maximum value
+  minVal: Number?   // Inclusive minimum value
+  maxVal: Number?   // Inclusive maximum value
 >
 
 // Unitless integer number
@@ -80,6 +80,11 @@ List : Collection <
 // Hashmap of name/value tag pairs
 Dict : Collection <
   of: Obj    // Item type for dict values
+>
+
+// Maybe is the option type.  It contains some value or None.
+Maybe : Collection <
+  of: Obj   // Optional value
 >
 
 // Union type is a choice between one of multiple types

@@ -244,7 +244,7 @@ class Converter
 
     tags.each |tag|
     {
-      out.printLine("  $tag?: " + Str.spaces(maxNameSize-tag.toStr.size) + "ph.Tag.$tag")
+      out.printLine("  $tag: " + Str.spaces(maxNameSize-tag.toStr.size) + "ph.Tag.$tag?")
     }
   }
 

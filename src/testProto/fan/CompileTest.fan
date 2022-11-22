@@ -315,35 +315,40 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Optional
+// Maybe
 //////////////////////////////////////////////////////////////////////////
 
-  Void testOptional()
+  Void testMaybe()
   {
     compileSrc(
-     Str<|A : { ctrl: {}, foo?:{}, bar?:"" }
-          B : {
-           ctrl: {}
-           foo  ?  :  {}
-           bar  ?  :  ""
+     Str<|A : Dict
+          B : A?
+          C : {
+           a: A?
+           s: Str? "foo"
+           d: Dict? {foo, bar}
           }|>)
 
-    ps.lib("test").eachOwn |x|
-    {
-      if (x.name[0] == '_') return // TODO
 
-      ctrl := x->ctrl
-      verifyEq(ctrl.isOptional, false)
-      verifyEq(ctrl->_optional.qname, "sys.Obj._optional")
+    test := ps.root->test
+    verifyMaybe(test->B,    "test.A")
+    verifyMaybe(test->C->a, "test.A")
+    verifyMaybe(test->C->s, "sys.Str", "foo")
+    verifyMaybe(test->C->d, "sys.Dict", null, "foo,bar")
+  }
 
-      foo := x->foo
-      verifyEq(foo.isOptional, true)
-      verifyEq(x->foo->_optional.qname, "test.${x.name}.foo._optional")
+  Void verifyMaybe(Proto p, Str type, Str? val := null, Str? kids := null)
+  {
+    verifyEq(p.type.qname, "sys.Maybe")
+    verifySame(p.type, ps.root->sys->Maybe)
+    of := p->_of
+    verifyEq(of.type.qname, type)
 
-      bar := x->bar
-      verifyEq(bar.isOptional, true)
-      verifyEq(x->bar->_optional.qname, "test.${x.name}.bar._optional")
-    }
+    if (val == null) verifyEq(of.hasVal, false)
+    else verifyEq(of.val, val)
+
+    if (kids == null) verifyEq(of.listOwn.size, 0)
+    else verifyEq(of.listOwn.join(","), kids)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -356,7 +361,7 @@ class CompileTest : Test
 
   Void doCompound(Str type, Str symbol)
   {
-    compileSrc(
+    src :=
      Str<|A : {}
           B : {}
           C : {}
@@ -371,9 +376,11 @@ class CompileTest : Test
           U5 : "a" | "b" | "c"
           U6 : A "a" | B "b" | C "c"
           U7 : A {x} | B {y} | C <z>
+          U8 : A? | B? {y} | C? <z>
           |>
           .replace("|", symbol)
-          )
+
+    compileSrc(src)
 
      verifyCompound(type, "U1", "A | B")
      verifyCompound(type, "U2", "A | B | C")
@@ -382,6 +389,7 @@ class CompileTest : Test
      verifyCompound(type, "U5", "Str a | Str b | Str c")
      verifyCompound(type, "U6", "A a | B b | C c")
      verifyCompound(type, "U7", "A | B | C")
+     verifyCompound(type, "U8", "A? | B? | C?")
   }
 
   Void verifyCompound(Str type, Str name, Str pattern)
@@ -394,6 +402,7 @@ class CompileTest : Test
     of.eachOwn |x|
     {
       s := x.type.name
+      if (s == "Maybe") s = x->_of.type.name + "?"
       if (x.val(false) != null) s += " " + x.val
       actual.join(s, " | ")
     }

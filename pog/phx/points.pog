@@ -275,10 +275,10 @@ EconomizingDamperCmd : DamperCmd { economizing }
 // --- Exhaust ---
 
 // Damper position sensor in exhaust duct
-ExhaustDamperSensor : DamperSensor { Exhaust }
+ExhaustDamperSensor : DamperSensor { exhaust }
 
 // Damper position command in exhaust duct
-ExhaustDamperCmd : DamperCmd { Exhaust }
+ExhaustDamperCmd : DamperCmd { exhaust }
 
 // --- Mixed ---
 

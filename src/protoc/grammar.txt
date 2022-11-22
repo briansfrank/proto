@@ -18,12 +18,13 @@ Productions [#productions]
   <proto>            :=  [<leadingDoc>] <protoIntersction> [<trailingDoc>]
   <protoIntersction> :=  <protoUnion>  ["&" <protoUnion>]*
   <protoUnion>       :=  <protoSimple> ["|" <protoSimple>]*
-  <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoOptional> | <protoUnnamed>
+  <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoUnnamed>
   <protoMarker>      :=  <markerName>
   <protoNamed>       :=  <qname> ":" <protoUnnamed>
-  <protoOptional>    :=  <name> "?" ":" <protoUnnamed>
   <protoUnnamed>     :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
-  <protoType>        :=  <qname>
+  <protoType>        :=  <protoMaybeType> | <protoTypeName>
+  <protoMaybe>       :=  <protoTypeName> "?"
+  <protoTypeName>    :=  <qname>
   <protoMeta>        :=  "<" <protos> ">"
   <protoData>        :=  "{" <protos> "}"
   <protoVal>         :=  double quoted string literal

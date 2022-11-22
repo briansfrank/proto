@@ -23,9 +23,6 @@ const mixin Proto
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
   abstract Proto? type()
 
-  ** Return if this object is optional within its parent
-  abstract Bool isOptional()
-
   ** Does this proto have a scalar value
   abstract Bool hasVal()
 

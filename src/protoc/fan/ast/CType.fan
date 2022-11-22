@@ -28,5 +28,6 @@ internal class CType
   override Str toStr() { name }
 
   CProto? resolved  // Resolve step
+  Bool isMaybe      // Parse if names ends with question
 }
 

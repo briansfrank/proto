@@ -1,16 +1,17 @@
-// Auto-generated 21-Nov-2022
+// Auto-generated 22-Nov-2022
 
 // Top-level dicts with a unique identifier.
 // See `docHaystack::Ontology#entities` chapter.
 Entity: Dict {
-  dis?: ph.Tag.dis
-  id?:  ph.Tag.id
+  dis: ph.Tag.dis?
+  id:  ph.Tag.id?
 }
 
 // AC Electricity meter.
 // See `docHaystack::Meters` chapter.
 AcElecMeter: ElecMeter {
   ac
+  phaseCount: ph.Tag.phaseCount?
 }
 
 // Equipment to move or control a mechanism.  Actuators may be manually
@@ -33,12 +34,12 @@ Ahu: AirHandlingEquip {
 // Conditioning of air includes heating, cooling, humidification,
 // dehumidification, and ventilation. See `docHaystack::AHUs` chapter.
 AirHandlingEquip: Equip {
-  ahuZoneDelivery?:        ph.Tag.ahuZoneDelivery
-  airVolumeAdjustability?: ph.Tag.airVolumeAdjustability
-  coolingProcess?:         ph.Tag.coolingProcess
-  ductConfig?:             ph.Tag.ductConfig
-  ductDeck?:               ph.Tag.ductDeck
-  heatingProcess?:         ph.Tag.heatingProcess
+  ahuZoneDelivery:        ph.Tag.ahuZoneDelivery?
+  airVolumeAdjustability: ph.Tag.airVolumeAdjustability?
+  coolingProcess:         ph.Tag.coolingProcess?
+  ductConfig:             ph.Tag.ductConfig?
+  ductDeck:               ph.Tag.ductDeck?
+  heatingProcess:         ph.Tag.heatingProcess?
 }
 
 // Entity with logical grouping of zone air quality points.
@@ -51,14 +52,14 @@ AirQualityZonePoints: PointGroup {
 // primarily responsibility to condition air.  Terminal units are primarily
 // responsible for delivery of air to the space and tempering the temperature.
 AirTerminalUnit: Equip {
-  ductConfig?: ph.Tag.ductConfig
+  ductConfig: ph.Tag.ductConfig?
 }
 
 // Aquifer Thermal Energy Storage system.
 // See `docHaystack::ATES` chapter.
 Ates: Equip {
   ates
-  atesDesign?: ph.Tag.atesDesign
+  atesDesign: ph.Tag.atesDesign?
 }
 
 // Equipment used to store electric energy
@@ -69,7 +70,15 @@ Battery: Equip {
 // Equipment to generate hot water or steam for heating
 Boiler: Equip {
   boiler
-  heatingProcess?: ph.Tag.heatingProcess
+  heatingProcess: ph.Tag.heatingProcess?
+}
+
+// Branch selector used for heat recovery in a VRF system.  These are
+// control devices directing the liquid refrigerant or gas refrigerant
+// to zones requiring cooling or heating. See `docHaystack::VRF#branchSelector`
+// chapter.
+BranchSelector: VrfEquip {
+  branchSelector
 }
 
 // Constant air volume terminal unit.  CAV systems use a constant
@@ -83,21 +92,21 @@ Cav: AirTerminalUnit {
 ChilledWaterPlant: Plant {
   chilled
   water
-  condenserLoop?: ph.Tag.condenserLoop
+  condenserLoop: ph.Tag.condenserLoop?
 }
 
 // Conditions a space using a heat exchanger integrated into the ceiling
 ChilledBeam: RadiantEquip {
   chilledBeam
-  coolingProcess?: ph.Tag.coolingProcess
-  heatingProcess?: ph.Tag.heatingProcess
+  coolingProcess: ph.Tag.coolingProcess?
+  heatingProcess: ph.Tag.heatingProcess?
 }
 
 // Equipment to remove heat from a liquid.  Chillers typically use a vapor
 // compression or an absorption refrigeration cycle.
 Chiller: Equip {
   chiller
-  coolingCapacity?: ph.Tag.coolingCapacity
+  coolingCapacity: ph.Tag.coolingCapacity?
 }
 
 // Electrical circuit and its associated components such as breakers.
@@ -125,7 +134,7 @@ Conduit: Equip {
 // actuators or via network [protocols]`protocol`.
 Controller: Device {
   controller
-  equipRef?: ph.Tag.equipRef
+  equipRef: ph.Tag.equipRef?
 }
 
 // Panel housing controllers and networking gear
@@ -136,7 +145,7 @@ ControlsPanel: Panel {
 // Coil used to cool air.
 CoolingCoil: Coil {
   coolingCoil
-  coolingProcess?: ph.Tag.coolingProcess
+  coolingProcess: ph.Tag.coolingProcess?
 }
 
 // Equipment to transfer waste heat into the atmosphere
@@ -159,15 +168,15 @@ Crac: Fcu {
 // Also see `docHaystack::Points#cur` chapter.
 CurPoint: Point {
   cur
-  curErr?:    ph.Tag.curErr
-  curStatus?: ph.Tag.curStatus
-  curVal?:    ph.Tag.curVal
+  curErr:    ph.Tag.curErr?
+  curStatus: ph.Tag.curStatus?
+  curVal:    ph.Tag.curVal?
 }
 
 // Actuator to regulate the flow of air.
 DamperActuator: Actuator {
   damper
-  ductSection?: ph.Tag.ductSection
+  ductSection: ph.Tag.ductSection?
 }
 
 // Space used to house computer and networking gear.
@@ -199,8 +208,8 @@ Doas: Ahu {
 // Conduit used to convey air for HVAC
 Duct: Conduit {
   duct
-  ductDeck?:    ph.Tag.ductDeck
-  ductSection?: ph.Tag.ductSection
+  ductDeck:    ph.Tag.ductDeck?
+  ductSection: ph.Tag.ductSection?
 }
 
 // Electricity meter
@@ -223,9 +232,10 @@ Elevator: VerticalTransport {
 // See `docHaystack::Equips` chapter.
 Equip: Entity {
   equip
-  equipRef?: ph.Tag.equipRef
-  siteRef?:  ph.Tag.siteRef
-  spaceRef?: ph.Tag.spaceRef
+  equipRef:  ph.Tag.equipRef?
+  siteRef:   ph.Tag.siteRef?
+  spaceRef:  ph.Tag.spaceRef?
+  systemRef: ph.Tag.systemRef?
   points: Dict<of:Point>
 }
 
@@ -238,7 +248,7 @@ Escalator: VerticalTransport {
 // See `docHaystack::Motors` chapter.
 FanMotor: Motor {
   fan
-  ductSection?: ph.Tag.ductSection
+  ductSection: ph.Tag.ductSection?
 }
 
 // Fan Coil Unit: A unitary, factory-made enclosure with a fan and coil
@@ -253,7 +263,7 @@ Fcu: AirHandlingEquip {
 // Storey of a building.  See `docHaystack::Spaces#floors` chapter.
 Floor: Space {
   floor
-  floorNum?: ph.Tag.floorNum
+  floorNum: ph.Tag.floorNum?
 }
 
 // Meter to measure flow rate and total volume of fluid.
@@ -284,17 +294,10 @@ HeatExchanger: Equip {
   heatExchanger
 }
 
-// Heat pump: An air handling equipment which employs a vapor compression
-// cycle with a reversing valve to provide heating or cooling to a space.
-// See `docHaystack::AHUs` chapter.
-HeatPump: AirHandlingEquip {
-  heatPump
-}
-
 // Coil used to heat air.
 HeatingCoil: Coil {
   heatingCoil
-  heatingProcess?: ph.Tag.heatingProcess
+  heatingProcess: ph.Tag.heatingProcess?
 }
 
 // Historized point with a history log of timestamp/value pairs.  Points
@@ -311,10 +314,10 @@ HeatingCoil: Coil {
 // Also see `docHaystack::Points#his` chapter.
 HisPoint: Point {
   his
-  hisErr?:       ph.Tag.hisErr
-  hisMode?:      ph.Tag.hisMode
-  hisStatus?:    ph.Tag.hisStatus
-  hisTotalized?: ph.Tag.hisTotalized
+  hisErr:       ph.Tag.hisErr?
+  hisMode:      ph.Tag.hisMode?
+  hisStatus:    ph.Tag.hisStatus?
+  hisTotalized: ph.Tag.hisTotalized?
 }
 
 // Boiler which outputs hot water
@@ -380,8 +383,8 @@ Mau: Doas {
 // See `docHaystack::Meters` chapter.
 Meter: Equip {
   meter
-  meterScope?: ph.Tag.meterScope
-  submeterOf?: ph.Tag.submeterOf
+  meterScope: ph.Tag.meterScope?
+  submeterOf: ph.Tag.submeterOf?
 }
 
 // Cellular phone providing telecommunication over radio links.
@@ -393,7 +396,8 @@ MobilePhone: Phone {
 // See `docHaystack::Motors` chapter.
 Motor: Equip {
   motor
-  vfd?: ph.Tag.vfd
+  phaseCount: ph.Tag.phaseCount?
+  vfd:        ph.Tag.vfd?
 }
 
 // Conveyor to move people across a horizontal or inclined plane.
@@ -437,9 +441,9 @@ Phone: Device {
 // Conduit used to convey a fluid
 Pipe: Conduit {
   pipe
-  pipeFluid?:   ph.Tag.pipeFluid
-  pipeSection?: ph.Tag.pipeSection
-  plantLoop?:   ph.Tag.plantLoop
+  pipeFluid:   ph.Tag.pipeFluid?
+  pipeSection: ph.Tag.pipeSection?
+  plantLoop:   ph.Tag.plantLoop?
 }
 
 // Central plant used to generate a substance for a process.
@@ -452,22 +456,23 @@ Plant: Equip {
 // See `docHaystack::Points` chapter.
 Point: Entity {
   point
-  cur?:           ph.Tag.cur
-  enum?:          ph.Tag.enum
-  equipRef?:      ph.Tag.equipRef
-  his?:           ph.Tag.his
-  kind?:          ph.Tag.kind
-  maxVal?:        ph.Tag.maxVal
-  minVal?:        ph.Tag.minVal
-  pointFunction?: ph.Tag.pointFunction
-  pointQuantity?: ph.Tag.pointQuantity
-  pointSubject?:  ph.Tag.pointSubject
-  siteRef?:       ph.Tag.siteRef
-  spaceRef?:      ph.Tag.spaceRef
-  tz?:            ph.Tag.tz
-  unit?:          ph.Tag.unit
-  vfd?:           ph.Tag.vfd
-  writable?:      ph.Tag.writable
+  cur:           ph.Tag.cur?
+  enum:          ph.Tag.enum?
+  equipRef:      ph.Tag.equipRef?
+  his:           ph.Tag.his?
+  kind:          ph.Tag.kind?
+  maxVal:        ph.Tag.maxVal?
+  minVal:        ph.Tag.minVal?
+  pointFunction: ph.Tag.pointFunction?
+  pointQuantity: ph.Tag.pointQuantity?
+  pointSubject:  ph.Tag.pointSubject?
+  siteRef:       ph.Tag.siteRef?
+  spaceRef:      ph.Tag.spaceRef?
+  systemRef:     ph.Tag.systemRef?
+  tz:            ph.Tag.tz?
+  unit:          ph.Tag.unit?
+  vfd:           ph.Tag.vfd?
+  writable:      ph.Tag.writable?
 }
 
 // Grouping of children points used by spaces and equipment
@@ -479,8 +484,8 @@ PointGroup: Entity {
 // See `docHaystack::Motors` chapter.
 PumpMotor: Motor {
   pump
-  pipeFluid?:   ph.Tag.pipeFluid
-  pipeSection?: ph.Tag.pipeSection
+  pipeFluid:   ph.Tag.pipeFluid?
+  pipeSection: ph.Tag.pipeSection?
 }
 
 // Enclosure or chassis used to mount computer and networking gear.
@@ -499,7 +504,7 @@ RadiantEquip: Equip {
 // Heats a space using pipes or cables embedded beneath floor.
 RadiantFloor: RadiantEquip {
   radiantFloor
-  heatingProcess?: ph.Tag.heatingProcess
+  heatingProcess: ph.Tag.heatingProcess?
 }
 
 // Heats a space using exposed pipes or coils.  Hot water and steam
@@ -508,7 +513,7 @@ RadiantFloor: RadiantEquip {
 // on the baseboard.
 Radiator: RadiantEquip {
   radiator
-  heatingProcess?: ph.Tag.heatingProcess
+  heatingProcess: ph.Tag.heatingProcess?
 }
 
 // The roof floor is the topmost level of a building.  It is often
@@ -538,20 +543,20 @@ ServerComputer: Computer {
 // street address.  See `docHaystack::Sites` chapter.
 Site: Entity {
   site
-  area?:              ph.Tag.area
-  primaryFunction?:   ph.Tag.primaryFunction
-  tz?:                ph.Tag.tz
-  weatherStationRef?: ph.Tag.weatherStationRef
-  yearBuilt?:         ph.Tag.yearBuilt
+  area:              ph.Tag.area?
+  primaryFunction:   ph.Tag.primaryFunction?
+  tz:                ph.Tag.tz?
+  weatherStationRef: ph.Tag.weatherStationRef?
+  yearBuilt:         ph.Tag.yearBuilt?
 }
 
 // Space is a three-dimensional volume in the built environment.
 // See `docHaystack::Spaces` chapter.
 Space: Entity {
   space
-  area?:     ph.Tag.area
-  siteRef?:  ph.Tag.siteRef
-  spaceRef?: ph.Tag.spaceRef
+  area:     ph.Tag.area?
+  siteRef:  ph.Tag.siteRef?
+  spaceRef: ph.Tag.spaceRef?
 }
 
 // Boiler which outputs steam
@@ -571,6 +576,11 @@ SubterraneanFloor: Floor {
   subterranean
 }
 
+// Grouping of related equipment dedicated to a single application.
+System: Entity {
+  system
+}
+
 // Mobile device with touch screen for user input.
 Tablet: Device {
   tablet
@@ -579,7 +589,7 @@ Tablet: Device {
 // Tank used to store a substance for temporary holding
 Tank: Equip {
   tank
-  tankSubstance?: ph.Tag.tankSubstance
+  tankSubstance: ph.Tag.tankSubstance?
 }
 
 // Senses and controls temperature of space in HVAC system.  Thermostats
@@ -602,34 +612,94 @@ Ups: Equip {
 // Actuator to regulate the flow of fluid.
 ValveActuator: Actuator {
   valve
-  pipeFluid?:   ph.Tag.pipeFluid
-  pipeSection?: ph.Tag.pipeSection
+  pipeFluid:   ph.Tag.pipeFluid?
+  pipeSection: ph.Tag.pipeSection?
 }
 
 // Variable air volume terminal unit.  VAV systems use a constant air
 // temperature with a variable air flow rate.  See `docHaystack::VAVs` chapter.
 Vav: AirTerminalUnit {
   vav
-  heatingProcess?: ph.Tag.heatingProcess
-  vavModulation?:  ph.Tag.vavModulation
+  heatingProcess: ph.Tag.heatingProcess?
+  vavModulation:  ph.Tag.vavModulation?
 }
 
 // Equipment to move humans and materials
 VerticalTransport: Equip {
 }
 
+// Cooling only VRF system can only cool; heating is not available.
+// See `docHaystack::VRF#types` chapter.
+VrfCoolingOnlySystem: VrfSystem {
+  coolingOnly
+}
+
+// Equipment used in VRF systems.  See `docHaystack::VRF#equip` chapter.
+VrfEquip: Equip {
+  vrf
+}
+
+// Heat pump VRF system can either heat, or cool, but not at the same time.
+// See `docHaystack::VRF#types` chapter.
+VrfHeatPumpSystem: VrfSystem {
+  heatPump
+}
+
+// Heat recovery VRF system can operate cooling and heating by each indoor unit
+// independently, at the same time. Heat recovery VRF systems have branch selectors
+// to control how much, and which (hot gas or subcooled liquid) refrigerant
+// goes to each indoor unit.  See `docHaystack::VRF#types` chapter.
+VrfHeatRecoverySystem: VrfSystem {
+  heatRecovery
+}
+
+// Indoor unit in a VRF system.  Indoor units operate to satisfy a heating
+// or cooling load. See `docHaystack::VRF#indoorUnits` chapter.
+VrfIndoorUnit: VrfEquip {
+  indoorUnit
+}
+
+// Indoor unit fan coil unit in a VRF system.  This includes but is not
+// limited to: ducted-type and non-ducted types such as wall-mount,
+// floor-mount, ceiling-mount and cassettes.  Indoor unit fan coils operate
+// to satisfy a heating  or cooling load in a zone based on a zone thermostat
+// temperature set point.
+VrfIndoorUnitFcu: VrfIndoorUnit {
+}
+
+// Outdoor unit with one or more compressors in a VRF system. As each indoor
+// unit sends a demand to the outdoor unit, outdoor unit delivers the amount
+// of refrigerant needed to meet the individual requirements of each indoor
+// unit.  See `docHaystack::VRF#outdoorUnits` chapter.
+VrfOutdoorUnit: VrfEquip {
+  outdoorUnit
+}
+
+// Group of outdoor units in a VRF system.  See `docHaystack::VRF#refrigPlant`.
+VrfRefrigPlant: Plant {
+  vrf
+  refrig
+}
+
+// Variable refigerant flow system.  The system contains the indoor
+// units, outdoor units, and branch selectors.  See `docHaystack::VRF#types`
+// chapter.
+VrfSystem: System {
+  vrf
+}
+
 // Weather station observation point.
 // See `docHaystack::Weather#points` chapter.
 WeatherPoint: Point {
   weather
-  weatherStationRef?: ph.Tag.weatherStationRef
+  weatherStationRef: ph.Tag.weatherStationRef?
 }
 
 // Logical weather station and its measurement points.
 // See `docHaystack::Weather#stations` chapter.
 WeatherStation: Entity {
   weatherStation
-  tz?: ph.Tag.tz
+  tz: ph.Tag.tz?
 }
 
 // A well is a source of groundwater and potentially thermal energy.  When
@@ -673,10 +743,10 @@ Wire: Conduit {
 // Also see `docHaystack::Points#writable` chapter.
 WritablePoint: Point {
   writable
-  writeErr?:    ph.Tag.writeErr
-  writeLevel?:  ph.Tag.writeLevel
-  writeStatus?: ph.Tag.writeStatus
-  writeVal?:    ph.Tag.writeVal
+  writeErr:    ph.Tag.writeErr?
+  writeLevel:  ph.Tag.writeLevel?
+  writeStatus: ph.Tag.writeStatus?
+  writeVal:    ph.Tag.writeVal?
 }
 
 // Space associated with a specific system.

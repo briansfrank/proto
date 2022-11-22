@@ -1,4 +1,4 @@
-// Auto-generated 21-Nov-2022
+// Auto-generated 22-Nov-2022
 
 // All standard tags defined by Project Haystack
 Tag : {
@@ -146,6 +146,12 @@ boiler: Marker
 // See [Kinds chapter]`docHaystack::Kinds#bool`.
 bool: Bool
 
+// Branch selector used for heat recovery in a VRF system.  These are
+// control devices directing the liquid refrigerant or gas refrigerant
+// to zones requiring cooling or heating. See `docHaystack::VRF#branchSelector`
+// chapter.
+branchSelector: Marker
+
 // Pipe used to bypass an equipment
 bypass: Marker
 
@@ -234,6 +240,10 @@ cold: Marker
 
 // Duct carries air for cooling
 coldDeck: Marker
+
+// Device for mechanically increasing the pressure of a gas or refrigerant
+// vapor by reducing its volume.
+compressor: Marker
 
 // Indicates a definition which is computed.  Computed defs cannot be
 // used as tags themselves.
@@ -507,10 +517,12 @@ ductSection: Choice <of: ph.Tag.economizer | ph.Tag.flue | ph.Tag.inlet | ph.Tag
 // Number with a unit of time
 duration: Number
 
-// Cooling using direct expansion of a refrigerant vapor
+// Cooling using direct expansion of a refrigerant vapor.
+// Also see `dxHeating` and `heatPump`.
 dxCooling: Marker
 
-// Heating using direct expansion of a refrigerant vapor
+// Heating using direct expansion of a refrigerant vapor.
+// Also see `dxCooling` and `heatPump`.
 dxHeating: Marker
 
 // Duct to access fresh outside air only for economizing, not ventilation
@@ -525,7 +537,8 @@ effective: Marker
 // Efficiency point of a chiller measured in "COP" or "kW/ton".
 efficiency: Marker
 
-// Associated with electricity, electric charge
+// Associated with electricity or with electrical force, power, or energy.
+// This is often opposed to `mech` mechanical energy.
 elec: Marker
 
 // Heating by the conversion of electrical energy
@@ -748,10 +761,14 @@ heat: Marker
 // Equipment to transfer heat between two working fluids.
 heatExchanger: Marker
 
-// Heat pump: An air handling equipment which employs a vapor compression
-// cycle with a reversing valve to provide heating or cooling to a space.
-// See `docHaystack::AHUs` chapter.
+// Equipment that employs a vapor compression cycle with a reversing
+// valve to provide heating or cooling. For vapor compression heating
+// without a reversing valve, such as for a heat pump water heater,
+// see `dxHeating` which should be used.
 heatPump: Marker
+
+// Transfer of heat from one substance to another to reduce energy consumption.
+heatRecovery: Marker
 
 // Boolean point indicating command state of AHU's heat wheel.
 heatWheel: Marker
@@ -840,6 +857,9 @@ imbalance: Marker
 
 // Received into a system
 import: Marker
+
+// Operates inside the conditioned space
+indoorUnit: Marker
 
 // Permeation of a substance into another substance
 infiltration: Marker
@@ -950,6 +970,10 @@ max: Marker
 
 // Inclusive maximum for a numeric value.
 maxVal: Number
+
+// Associated with a machine or its mechanical force, torque, power, or energy.
+// This is often opposed to `elec` electrical energy.
+mech: Marker
 
 // Equipment to meter a substance or phenomenon.
 // See `docHaystack::Meters` chapter.
@@ -1090,6 +1114,9 @@ of: Symbol
 // also provide a dropdown for the predefined enumeration.
 openEnum: Marker
 
+// operates outside the conditioned space
+outdoorUnit: Marker
+
 // Entity outputs a substance with flows to other entities
 output: Marker
 
@@ -1120,6 +1147,10 @@ pfc: Marker
 
 // Phase measurement in a three-phase electrical system
 phase: Str
+
+// Number of phases for an AC electrical power system or
+// connected equipment: single-phase or three-phase.
+phaseCount: Choice <of: ph.Tag.threePhase | ph.Tag.singlePhase>
 
 // Aspect of scientific interest with measurable quantities
 phenomenon: Marker
@@ -1337,11 +1368,20 @@ series: Marker
 // Hardware or software which provides services for other programs or devices.
 server: Marker
 
+// Ratio of the maximum continuous output capacity at which a machine or
+// system may operate without damage to the machine or system’s nominal
+// output capacity.
+serviceFactor: Marker
+
 // Sulphur hexafluoride (SF₆)
 sf6: Marker
 
 // One single duct
 singleDuct: Marker
+
+// Single-phase AC electrical power. Power is provided by a
+// single AC voltage source.
+singlePhase: Marker
 
 // Site is a geographic location of the built environment.
 // Typically site maps to one building with its own unique
@@ -1427,6 +1467,12 @@ switch: Marker
 // See [Kinds chapter]`docHaystack::Kinds#symbol`.
 symbol: Symbol
 
+// Grouping of related equipment dedicated to a single application.
+system: Marker
+
+// Reference to system
+systemRef: Ref
+
 // Mobile device with touch screen for user input.
 tablet: Marker
 
@@ -1457,6 +1503,10 @@ thermal: Marker
 // Senses and controls temperature of space in HVAC system.  Thermostats
 // may provide an interface for setpoint control.
 thermostat: Marker
+
+// Three-phase AC electrical power. Power is provided by three AC voltage
+// sources, each separated from the others by a 120-degree phase angle.
+threePhase: Marker
 
 // ISO 8601 time as hour, minute, seconds: '09:51:27.354'.
 // See [Kinds chapter]`docHaystack::Kinds#time`.
@@ -1543,11 +1593,14 @@ vfd: Marker
 // Distance at which light can be clearly discerned
 visibility: Marker
 
-// Electrical voltage, potential difference
+// Electrical potential difference or electromotive force.
 volt: Marker
 
 // Three dimensional space occupied by a substance
 volume: Marker
+
+// Variable refigerant flow.  See `docHaystack::VRF` chapter.
+vrf: Marker
 
 // Relatively warm in comparison to another substance, without being
 // actively heated. The substance can be used as a source of energy for

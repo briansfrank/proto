@@ -36,11 +36,6 @@ internal const class MProto : Proto
   override Proto? type() { typeRef.val }
   private const AtomicRef typeRef
 
-  override Bool isOptional()
-  {
-    hasOwn("_optional")
-  }
-
   override Bool hasVal() { valRef != null }
 
   override Str? val(Bool checked := true)

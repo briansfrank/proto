@@ -129,7 +129,7 @@ internal class Parser
       ampLoc := curToLoc
       consume(Token.amp)
       skipNewlines
-      p = parseSimple(of, false)
+      p = parseUnion(of, false)
       if (p == null) throw err("Expecting proto after & in intersection type, not $curToStr", ampLoc)
       if (p != null) addProto(of, p)
     }
@@ -139,7 +139,7 @@ internal class Parser
 
   private CProto? parseUnion(CProto parent, Bool isMeta)
   {
-    p := parseSimple(parent, isMeta)
+    p := parseMaybe(parent, isMeta)
     if (p == null || cur !== Token.pipe) return p
 
     union := hoistCompound(p, "sys.Union")
@@ -150,11 +150,19 @@ internal class Parser
       pipeLoc := curToLoc
       consume(Token.pipe)
       skipNewlines
-      p = parseSimple(of, false)
+      p = parseMaybe(of, false)
       if (p == null) throw err("Expecting proto after | in union type, not $curToStr", pipeLoc)
       if (p != null) addProto(of, p)
     }
     return union
+  }
+
+  private CProto? parseMaybe(CProto parent, Bool isMeta)
+  {
+    p := parseSimple(parent, isMeta)
+    if (p == null || p.type == null || !p.type.isMaybe) return p
+
+    return hoistWrapper(p, "sys.Maybe")
   }
 
   private CProto? parseSimple(CProto parent, Bool isMeta)
@@ -173,9 +181,8 @@ internal class Parser
     // parse name+type productions as one of three cases:
     //  1) <name> ":" for named child
     //  2) <name> "." for qnamed child
-    //  3) <name> "? :" for optional named child
-    //  4) <name> only as shortcut for name:Marker (if lowercase name only)
-    //  5) unnamed child, auto assign name using "_digits"
+    //  3) <name> only as shortcut for name:Marker (if lowercase name only)
+    //  4) unnamed child, auto assign name using "_digits"
     Str? name
     CType? type
     optional := false
@@ -211,25 +218,15 @@ internal class Parser
         name = parent.assignName
       }
     }
-    else if (cur === Token.id && peek === Token.question)
-    {
-      // 3) <name> "? :" for optional named child
-      name = parseProtoName(isMeta)
-      optional = true
-      consume(Token.question)
-      consume(Token.colon)
-      skipNewlines
-      type = parseProtoType
-    }
     else if (cur === Token.id && peek !== Token.colon && curVal.toStr[0].isLower)
     {
-      // 4) <name> only as shortcut for name:Marker (if lowercase name only)
+      // 3) <name> only as shortcut for name:Marker (if lowercase name only)
       name = parseProtoName(isMeta)
       type = CType(loc, "sys.Marker")
     }
     else
     {
-      // 5) unnamed child, auto assign name using "_digits"
+      // 4) unnamed child, auto assign name using "_digits"
       name = parent.assignName
       type = parseProtoType
     }
@@ -264,12 +261,21 @@ internal class Parser
     if (cur !== Token.id) return null
     loc := curToLoc
     name := consumeName
-    while (cur == Token.dot)
+    while (cur === Token.dot)
     {
       consume
       name += "." + consumeName
     }
-    return CType(loc, name)
+
+    type := CType(loc, name)
+
+    if (cur === Token.question)
+    {
+      consume
+      type.isMaybe = true
+    }
+
+    return type
   }
 
   private Bool parseProtoMeta(CProto parent)
@@ -323,6 +329,19 @@ internal class Parser
     step.addSlot(parent, child)
   }
 
+  private CProto hoistWrapper(CProto p, Str type)
+  {
+    // allocate new sys.Maybe object to replace proto we just parsed
+    loc := p.loc
+    wrapper := makeProto(loc, p.name, p.doc, CType(loc, type))
+
+    // now re-create the proto we just parsed as "_of"
+    of := hoistRecreate(p, "_of")
+    addProto(wrapper, of)
+
+    return wrapper
+  }
+
   private CProto hoistCompound(CProto p, Str type)
   {
     // this method hoists P to Union <of:List { _0: P }>
@@ -336,12 +355,18 @@ internal class Parser
     addProto(compound, of)
 
     // now re-create the proto we just parsed as _0 as first item of <of>
-    first := makeProto(loc, of.assignName, null, p.type)
-    first.children = p.children
-    first.val = p.val
+    first := hoistRecreate(p, of.assignName)
     addProto(of, first)
 
     return compound
+  }
+
+  private CProto hoistRecreate(CProto p, Str newName)
+  {
+    x := makeProto(p.loc, newName, null, p.type)
+    x.children = p.children
+    x.val = p.val
+    return x
   }
 
 //////////////////////////////////////////////////////////////////////////
