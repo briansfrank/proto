@@ -85,8 +85,8 @@ class CompileTest : Test
     ref    := verifyProto("ph.Ref",    sys->Scalar)
     grid   := verifyProto("ph.Grid",   sys->Collection)
     entity := verifyProto("ph.Entity", sys->Dict)
-    id     := verifyProto("ph.Entity.id", ph->Tag->id)
-    str    := verifyProto("ph.Entity.dis", ph->Tag->dis)
+    id     := verifyProto("ph.Entity.id._of", ph->Tag->id)
+    str    := verifyProto("ph.Entity.dis._of", ph->Tag->dis)
 
     depends := verifyProto("ph._depends", sys->Lib->_depends)
     verifyProto("ph._depends._0", sys->Depend)
@@ -352,12 +352,12 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Union/Intersection
+// Or/And
 //////////////////////////////////////////////////////////////////////////
 
-  Void testIntersection() { doCompound("sys.Intersection", "&") }
+  Void testAnd() { doCompound("sys.And", "&") }
 
-  Void testUnion() { doCompound("sys.Union", "|") }
+  Void testOr() { doCompound("sys.Or", "|") }
 
   Void doCompound(Str type, Str symbol)
   {
@@ -410,7 +410,7 @@ class CompileTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Union/Intersection
+// Or/And/Maybe combination
 //////////////////////////////////////////////////////////////////////////
 
   Void testCombo()
@@ -452,10 +452,10 @@ class CompileTest : Test
 
   Obj doCombo(Proto p)
   {
-    if (p.type.qname == "sys.Intersection")
+    if (p.type.qname == "sys.And")
       return Obj["&"].addAll(p->_of.listOwn.map { doCombo(it) })
 
-    if (p.type.qname == "sys.Union")
+    if (p.type.qname == "sys.Or")
       return Obj["|"].addAll(p->_of.listOwn.map { doCombo(it) })
 
     if (p.type.qname == "sys.Maybe")

@@ -15,9 +15,9 @@ Productions [#productions]
   <protos>           :=  [<proto> <endOfProto>]*
   <endOfProto>       :=  ( [","] <nl> ) | ","
 
-  <proto>            :=  [<leadingDoc>] <protoUnion> [<trailingDoc>]
-  <protoUnion>       :=  <protoIntersction> ["|" <protoIntersction>]*
-  <protoIntersction> :=  <protoSimple> ["&" <protoSimple>]*
+  <proto>            :=  [<leadingDoc>] <protoOr> [<trailingDoc>]
+  <protoOr>          :=  <protoAnd> ["|" <protoAnd>]*
+  <protoAnd>         :=  <protoSimple> ["&" <protoSimple>]*
   <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoUnnamed>
   <protoMarker>      :=  <markerName>
   <protoNamed>       :=  <qname> ":" <protoUnnamed>

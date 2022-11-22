@@ -118,36 +118,36 @@ internal class Parser
 
   private CProto? parseProto(CProto parent, Bool isMeta)
   {
-    parseUnion(parent, isMeta)
+    parseOr(parent, isMeta)
   }
 
-  private CProto? parseUnion(CProto parent, Bool isMeta)
+  private CProto? parseOr(CProto parent, Bool isMeta)
   {
-    p := parseIntersection(parent, isMeta)
+    p := parseAnd(parent, isMeta)
     if (p == null || cur !== Token.pipe) return p
 
-    union := hoistCompound(p, "sys.Union")
-    of := union.getOwn("_of")
+    or := hoistCompound(p, "sys.Or")
+    of := or.getOwn("_of")
 
     while (cur === Token.pipe)
     {
       pipeLoc := curToLoc
       consume(Token.pipe)
       skipNewlines
-      p = parseIntersection(of, false)
-      if (p == null) throw err("Expecting proto after | in union type, not $curToStr", pipeLoc)
+      p = parseAnd(of, false)
+      if (p == null) throw err("Expecting proto after | in Or type, not $curToStr", pipeLoc)
       if (p != null) addProto(of, p)
     }
-    return union
+    return or
   }
 
-  private CProto? parseIntersection(CProto parent, Bool isMeta)
+  private CProto? parseAnd(CProto parent, Bool isMeta)
   {
     p := parseMaybe(parent, isMeta)
     if (p == null || cur !== Token.amp) return p
 
-    intersection := hoistCompound(p, "sys.Intersection")
-    of := intersection.getOwn("_of")
+    and := hoistCompound(p, "sys.And")
+    of := and.getOwn("_of")
 
     while (cur === Token.amp)
     {
@@ -155,11 +155,11 @@ internal class Parser
       consume(Token.amp)
       skipNewlines
       p = parseMaybe(of, false)
-      if (p == null) throw err("Expecting proto after & in intersection type, not $curToStr", ampLoc)
+      if (p == null) throw err("Expecting proto after & in And type, not $curToStr", ampLoc)
       if (p != null) addProto(of, p)
     }
 
-    return intersection
+    return and
   }
 
   private CProto? parseMaybe(CProto parent, Bool isMeta)
@@ -349,9 +349,9 @@ internal class Parser
 
   private CProto hoistCompound(CProto p, Str type)
   {
-    // this method hoists P to Union <of:List { _0: P }>
+    // this method hoists P to Or <of:List { _0: P }>
 
-    // allocate new sys.Union/Intersection object to replace proto we just parsed
+    // allocate new sys.Or/And object to replace proto we just parsed
     loc := p.loc
     compound := makeProto(loc, p.name, p.doc, CType(loc, type))
 
