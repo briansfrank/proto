@@ -17,7 +17,7 @@ internal class GenJson : Step
   {
     file := compiler.outDir + `protos.json`
 
-    JsonProtoEncoder(file.out).encode(ps).close
+    JsonProtoEncoder(file.out).encode(graph).close
 
     info("generated JSON [$file.osPath]")
   }

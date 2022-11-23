@@ -18,10 +18,10 @@ internal class JsonProtoEncoder : OutStream
 {
   new make(OutStream out) : super(out) {}
 
-  This encode(ProtoSpace ps)
+  This encode(ProtoGraph pg)
   {
     printLine("{")
-    kids := ps.root.listOwn
+    kids := pg.root.listOwn
     kids.each |kid, i|
     {
       doEncode(kid, i + 1 < kids.size)
@@ -74,7 +74,7 @@ internal class JsonProtoEncoder : OutStream
 @Js
 internal class JsonProtoDecoder
 {
-  static ProtoSpace decode(InStream in)
+  static ProtoGraph decode(InStream in)
   {
     try
     {
@@ -97,11 +97,11 @@ internal class JsonProtoDecoder
     return x
   }
 
-  private MProtoSpace asm()
+  private MProtoGraph asm()
   {
     root := asmProto(acc[""])
     libs := asmLibs
-    return MProtoSpace(root, libs)
+    return MProtoGraph(root, libs)
   }
 
   private MProto asmProto(JsonProto x)

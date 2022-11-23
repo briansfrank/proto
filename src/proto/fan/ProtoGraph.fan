@@ -7,10 +7,10 @@
 //
 
 **
-** ProtoSpace models a namespace tree of protos.
+** ProtoGraph models a self contained namespaced graph of protos.
 **
 @Js
-const mixin ProtoSpace
+const mixin ProtoGraph
 {
   ** The core system library
   abstract ProtoLib sys()

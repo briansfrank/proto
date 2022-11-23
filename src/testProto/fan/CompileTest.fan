@@ -22,36 +22,36 @@ class CompileTest : AbstractCompileTest
   {
     // just sys
     compile(["sys"])
-    verifyEq(ps.libs.size, 1)
-    verifySame(ps.libs[0], ps.lib("sys"))
-    verifySys(ps)
+    verifyEq(graph.libs.size, 1)
+    verifySame(graph.libs[0], graph.lib("sys"))
+    verifySys(graph)
 
     // sys + ph
     compile(["sys", "ph"])
-    verifyEq(ps.libs.size, 2)
-    verifySame(ps.libs[0], ps.lib("ph"))
-    verifySame(ps.libs[1], ps.lib("sys"))
-    verifySys(ps)
-    verifyPh(ps)
+    verifyEq(graph.libs.size, 2)
+    verifySame(graph.libs[0], graph.lib("ph"))
+    verifySame(graph.libs[1], graph.lib("sys"))
+    verifySys(graph)
+    verifyPh(graph)
 
     // now test JSON
 /* TODO
     sb := StrBuf()
-    ps.encodeJson(sb.out)
+    graph.encodeJson(sb.out)
     json := sb.toStr
     ps = ProtoEnv.cur.decodeJson(json.in)
-    verifyEq(ps.libs.size, 2)
-    verifySame(ps.libs[0], ps.lib("ph"))
-    verifySame(ps.libs[1], ps.lib("sys"))
+    verifyEq(graph.libs.size, 2)
+    verifySame(graph.libs[0], graph.lib("ph"))
+    verifySame(graph.libs[1], graph.lib("sys"))
     verifySys(ps)
     verifyPh(ps)
 */
   }
 
-  private Void verifySys(ProtoSpace ps)
+  private Void verifySys(ProtoGraph ps)
   {
     sys := verifyLib(ps, "sys", "0.9.1")
-    verifySame(ps.root->sys, sys)
+    verifySame(graph.root->sys, sys)
 
     obj    := verifyProto("sys.Obj",    null,   null)
     marker := verifyProto("sys.Marker", obj,    null)
@@ -73,12 +73,12 @@ class CompileTest : AbstractCompileTest
     verifyErr(UnknownProtoErr#) { obj->foo }
   }
 
-  private Void verifyPh(ProtoSpace ps)
+  private Void verifyPh(ProtoGraph ps)
   {
     ph := verifyLib(ps, "ph", "3.9.12")
-    verifySame(ps.root->ph, ph)
+    verifySame(graph.root->ph, ph)
 
-    sys := ps.root->sys
+    sys := graph.root->sys
 
     na     := verifyProto("ph.Na",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
@@ -173,33 +173,33 @@ class CompileTest : AbstractCompileTest
 
   private Void verifySyntax1()
   {
-    ps.lib("test").eachOwn |x|
+    graph.lib("test").eachOwn |x|
     {
       if (x.name[0] == '_') return // TODO
-      verifySame(x.type, ps.dict)
+      verifySame(x.type, graph.dict)
     }
   }
 
   private Void verifySyntax2()
   {
-    ps.lib("test").eachOwn |x|
+    graph.lib("test").eachOwn |x|
     {
       if (x.name[0] == '_') return // TODO
       verifyEq(x.get("_foo").val, "x")
       verifyEq(x.get("_bar").val, "y")
-      verifySame(x.get("_baz").type, ps.marker)
+      verifySame(x.get("_baz").type, graph.marker)
     }
   }
 
   private Void verifySyntax3()
   {
-    //ps.lib("test").dump
-    ps.lib("test").eachOwn |x|
+    //graph.lib("test").dump
+    graph.lib("test").eachOwn |x|
     {
       if (x.name[0] == '_') return // TODO
       verifyEq(x.get("foo").val, "x")
       verifyEq(x.get("bar").val, "y")
-      verifySame(x.get("baz").type, ps.marker)
+      verifySame(x.get("baz").type, graph.marker)
     }
   }
 
@@ -227,7 +227,7 @@ class CompileTest : AbstractCompileTest
   Void verifyMaybe(Proto p, Str type, Str? val := null, Str? kids := null)
   {
     verifyEq(p.type.qname, "sys.Maybe")
-    verifySame(p.type, ps.root->sys->Maybe)
+    verifySame(p.type, graph.root->sys->Maybe)
     of := p->_of
     verifyEq(of.type.qname, type)
 
@@ -305,8 +305,8 @@ class CompileTest : AbstractCompileTest
 
   Void verifyCompound(Str type, Str name, Str pattern)
   {
-    u := ps.root->test.trap(name)
-    verifySame(u.type, ps.get(type))
+    u := graph.root->test.trap(name)
+    verifySame(u.type, graph.get(type))
     of := u->_of
     verifyEq(of.qname, "test.${name}._of")
     actual := StrBuf()
@@ -498,21 +498,21 @@ class CompileTest : AbstractCompileTest
     verifyEq(x->foo2.getOwn("a").qname, "test.foo2.a")
     verifyEq(x->foo3.getOwn("a").qname, "test.foo3.a")
 
-    verifySame(x->foo1.getOwn("a").type, ps.get("test.Foo.a"))
-    verifySame(x->foo2.getOwn("a").type, ps.get("test.Foo.a"))
-    verifySame(x->foo3.getOwn("a").type, ps.get("test.Foo.a"))
+    verifySame(x->foo1.getOwn("a").type, graph.get("test.Foo.a"))
+    verifySame(x->foo2.getOwn("a").type, graph.get("test.Foo.a"))
+    verifySame(x->foo3.getOwn("a").type, graph.get("test.Foo.a"))
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
-  private ProtoLib verifyLib(ProtoSpace ps, Str qname, Str version)
+  private ProtoLib verifyLib(ProtoGraph ps, Str qname, Str version)
   {
-    lib := ps.lib(qname)
-    verifySame(lib, ps.get(qname))
-    verifyProto(qname, ps.sys->Lib, null)
-    verifyProto(qname+"._version", ps.sys->Lib->_version, version)
+    lib := graph.lib(qname)
+    verifySame(lib, graph.get(qname))
+    verifyProto(qname, graph.sys->Lib, null)
+    verifyProto(qname+"._version", graph.sys->Lib->_version, version)
     verifyEq(lib.version, Version(version))
     return lib
   }

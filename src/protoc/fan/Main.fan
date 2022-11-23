@@ -52,8 +52,8 @@ class Main : AbstractMain
 
     try
     {
-      ps := c.compileMain(output.split(',').findAll { !it.isEmpty })
-      if (dump) ps.root.dump
+      g := c.compileMain(output.split(',').findAll { !it.isEmpty })
+      if (dump) g.root.dump
       return 0
     }
     catch (CompilerErr e)

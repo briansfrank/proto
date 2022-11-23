@@ -42,14 +42,14 @@ class ProtoCompiler
 // Pipelines
 //////////////////////////////////////////////////////////////////////////
 
-  ** Compile input libs to a ProtoSpace
-  ProtoSpace compileSpace()
+  ** Compile input libs to a ProtoGraph
+  ProtoGraph compileGraph()
   {
-    run(frontend).ps
+    run(frontend).graph
   }
 
   ** Compile list of output files for command line main
-  ProtoSpace compileMain(Str[] outputs)
+  ProtoGraph compileMain(Str[] outputs)
   {
     steps := frontend.dup
     outputs.each |o|
@@ -60,10 +60,10 @@ class ProtoCompiler
         default: throw err("Unknown output format: $o", FileLoc.inputs)
       }
     }
-    return run(steps).ps
+    return run(steps).graph
   }
 
-  ** List of front end steps to compile to the ProtoSpace
+  ** List of front end steps to compile to the ProtoGraph
   private Step[] frontend()
   {
     return [
@@ -92,7 +92,7 @@ class ProtoCompiler
       }
       t2 := Duration.now
       duration = t2 - t1
-      info("ok [$ps.libs.size libs, $duration.toLocale]")
+      info("ok [$graph.libs.size libs, $duration.toLocale]")
       return this
     }
     catch (CompilerErr e)
@@ -148,7 +148,7 @@ class ProtoCompiler
   internal CLib[]? libs                  // InitLibs
   internal CProto? root                  // Parse
   internal CSys? sys                     // ResolveSys
-  internal MProtoSpace? ps               // Assemble
+  internal MProtoGraph? graph            // Assemble
 }
 
 

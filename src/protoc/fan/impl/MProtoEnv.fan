@@ -75,21 +75,14 @@ internal const class MProtoEnv : ProtoEnv
 
   ** Compile a new namespace from a list of library names.
   ** Raise exception if there are any compiler errors.
-  override ProtoSpace compile(Str[] libNames)
+  override ProtoGraph compile(Str[] libNames)
   {
     c := ProtoCompiler
     {
       it.env = this
       it.libNames = libNames
     }
-    return c.compileSpace
-  }
-
-  ** Decode space from pre-compiled JSON.  Also see `ProtoSpace.decodeJson`.
-  ** Stream is guaranteed to be closed.
-  override ProtoSpace decodeJson(InStream in)
-  {
-    JsonProtoDecoder.decode(in)
+    return c.compileGraph
   }
 
   ** Debug dump

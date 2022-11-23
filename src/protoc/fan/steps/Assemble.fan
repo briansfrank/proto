@@ -28,7 +28,7 @@ internal class Assemble : Step
     assignBase(compiler.root)
 
     // create space implementation
-    compiler.ps = MProtoSpace(root, asmLibs)
+    compiler.graph = MProtoGraph(root, asmLibs)
   }
 
 //////////////////////////////////////////////////////////////////////////

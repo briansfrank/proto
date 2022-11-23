@@ -9,10 +9,10 @@
 using proto
 
 **
-** ProtoSpace implementation
+** ProtoGraph implementation
 **
 @Js
-internal const class MProtoSpace : ProtoSpace
+internal const class MProtoGraph : ProtoGraph
 {
   new make(Proto root, Str:ProtoLib libsMap)
   {

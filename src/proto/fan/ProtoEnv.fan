@@ -37,20 +37,16 @@ abstract const class ProtoEnv
   ** behavior is to map 'pog/' directory of the Fantom `sys::Env` path.
   abstract File[] path()
 
-  ** List the library dotted path names installed by this environment
+  ** List the library qnames installed by this environment
   abstract Str[] installed()
 
-  ** Return root directory for the given library dotted path name.  The result
+  ** Return root directory for the given library qname.  The result
   ** might be on the local file system or a directory within a pod file.
-  abstract File? libDir(Str name, Bool checked := true)
+  abstract File? libDir(Str qname, Bool checked := true)
 
-  ** Compile a new namespace from a list of library dotted path names.
+  ** Compile a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
-  abstract ProtoSpace compile(Str[] libNames)
-
-  ** Decode space from pre-compiled JSON.  Also see `ProtoSpace.decodeJson`.
-  ** Stream is guaranteed to be closed.
-  abstract ProtoSpace decodeJson(InStream in)
+  abstract ProtoGraph compile(Str[] libNames)
 
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
@@ -72,12 +68,7 @@ internal const class JsProtoEnv : ProtoEnv
 
   override File? libDir(Str name, Bool checked := true) { throw UnsupportedErr() }
 
-  override ProtoSpace compile(Str[] libNames) { throw UnsupportedErr() }
-
-  override ProtoSpace decodeJson(InStream in)
-  {
-    Slot.findMethod("protoc::JsonProtoDecoder.decode").call(in)
-  }
+  override ProtoGraph compile(Str[] libNames) { throw UnsupportedErr() }
 }
 
 

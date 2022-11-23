@@ -14,16 +14,16 @@ using proto
 abstract class AbstractCompileTest : Test
 {
 
-  ProtoSpace? ps
+  ProtoGraph? graph
 
   Proto get(Str qname)
   {
-    ps.get(qname)
+    graph.get(qname)
   }
 
-  ProtoSpace compile(Str[] libs)
+  ProtoGraph compile(Str[] libs)
   {
-    this.ps = ProtoEnv.cur.compile(libs)
+    this.graph = ProtoEnv.cur.compile(libs)
   }
 
   ProtoLib compileSrc(Str src)
@@ -43,7 +43,7 @@ abstract class AbstractCompileTest : Test
     }
 
     compile(["sys", src])
-    return ps.lib("test")
+    return graph.lib("test")
   }
 }
 

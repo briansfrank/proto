@@ -71,7 +71,7 @@ class ReflectTest : AbstractCompileTest
     verifyEq(p["c"].val, "cv")
 
     // make sure everything subtypes from MyScalar
-    myScalar := ps.get("test.MyScalar")
+    myScalar := graph.get("test.MyScalar")
     verifyEq(p->a.fits(myScalar), true, "a: " + p->a.type)
     verifyEq(p->b.fits(myScalar), true, "b: " + p->b.type)
     verifyEq(p->c.fits(myScalar), true, "c: " + p->c.type)
