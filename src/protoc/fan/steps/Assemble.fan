@@ -14,25 +14,41 @@ using proto
 **
 internal class Assemble : Step
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Run
+//////////////////////////////////////////////////////////////////////////
+
   override Void run()
   {
-    compiler.ps = MProtoSpace(asm(compiler.root), asmLibs)
+    // assemble CProtos to MProtos
+    root := asm(compiler.root)
+
+    // assign base types
+    assignBase(compiler.root)
+
+    // create space implementation
+    compiler.ps = MProtoSpace(root, asmLibs)
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Assemble
+//////////////////////////////////////////////////////////////////////////
 
   private MProto asm(CProto x)
   {
     if (x.isAssembled) return x.asm
 
     path    := x.path
-    typeRef := x.isObj ? AtomicRef() : x.type.deref.asmRef
+    baseRef := x.baseRef
     kids    := asmChildren(x.children)
     val     := x.val
 
     m := x.isLib ?
-         MProtoLib(x.loc, path, typeRef, val, kids) :
-         MProto(x.loc, path, typeRef, val, kids)
+         MProtoLib(x.loc, path, baseRef, val, kids) :
+         MProto(x.loc, path, baseRef, val, kids)
 
-    x.asmRef.val = m
+    x.asmRef = m
     return m
   }
 
@@ -50,6 +66,29 @@ internal class Assemble : Step
     acc := Str:ProtoLib[:]
     libs.each |x| { acc.add(x.path.toStr, (MProtoLib)x.proto.asm) }
     return acc
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Base Types
+//////////////////////////////////////////////////////////////////////////
+
+  private Void assignBase(CProto x)
+  {
+    x.baseRef.val = toBase(x)
+    x.eachOwn |kid| { assignBase(kid) }
+  }
+
+  private MProtoBase toBase(CProto x)
+  {
+// TODO: validate And has two or more in list
+    if (x.isObj) return MNullBase()
+    if (x.type.deref.isAnd) return MAndBase(x.type.deref.asm, baseOfList(x))
+    return MSingleBase(x.type.deref.asm)
+  }
+
+  private MProto[] baseOfList(CProto x)
+  {
+    x.getOwn("_of").children.vals.map |kid->MProto| { kid.asm }
   }
 
 }

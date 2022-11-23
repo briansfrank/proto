@@ -23,7 +23,7 @@ internal class CProto
     this.type     = type
     this.val      = val
     this.children = noChildren
-    this.asmRef   = AtomicRef()
+    this.baseRef  = AtomicRef()
   }
 
   new makeRename(CProto old, Str name)
@@ -34,7 +34,7 @@ internal class CProto
     this.type     = old.type
     this.val      = old.val
     this.children = old.children
-    this.asmRef   = old.asmRef
+    this.baseRef  = old.baseRef
     this.pragma   = old.pragma
   }
 
@@ -63,7 +63,13 @@ internal class CProto
 
   once Path path() { isRoot ? Path.root : parent.path.add(name) }
 
-  once Bool isObj() { qname == "sys.Obj" }
+  Bool isObj() { qname == "sys.Obj" }
+
+  Bool isMaybe() { qname == "sys.Maybe" }
+
+  Bool isAnd() { qname == "sys.And" }
+
+  Bool isOr() { qname == "sys.Or" }
 
   Bool fitsList() { fits("sys.List") }
 
@@ -78,9 +84,9 @@ internal class CProto
 
   override Str toStr() { isRoot ? "_root_" : path.toStr }
 
-  Bool isAssembled() { asmRef.val != null }
+  Bool isAssembled() { asmRef != null }
 
-  MProto asm() { asmRef.val ?: throw Err("Not assembled yet [$name]") }
+  MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
 
   static const Str:CProto noChildren := [:]
 
@@ -91,7 +97,8 @@ internal class CProto
 
   const FileLoc loc       // ctor
   const Str name          // ctor
-  const AtomicRef asmRef  // Assemble.asm
+  const AtomicRef baseRef // ctor
+  MProto? asmRef          // Assemble.asm
   CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot

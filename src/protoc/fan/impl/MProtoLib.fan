@@ -16,8 +16,8 @@ using proto
 @Js
 internal const class MProtoLib : MProto, ProtoLib
 {
-  new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)
-    : super(loc, path, typeRef, val, children)
+  new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:MProto children)
+    : super(loc, path, baseRef, val, children)
   {
     // TODO: should be Version already once we reach here
     version = Version(get("_version").val)

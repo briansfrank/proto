@@ -11,10 +11,8 @@ using proto
 **
 ** Compile tests
 **
-class CompileTest : Test
+class CompileTest : AbstractCompileTest
 {
-
-  ProtoSpace? ps
 
 //////////////////////////////////////////////////////////////////////////
 // Basics
@@ -37,6 +35,7 @@ class CompileTest : Test
     verifyPh(ps)
 
     // now test JSON
+/* TODO
     sb := StrBuf()
     ps.encodeJson(sb.out)
     json := sb.toStr
@@ -46,6 +45,7 @@ class CompileTest : Test
     verifySame(ps.libs[1], ps.lib("sys"))
     verifySys(ps)
     verifyPh(ps)
+*/
   }
 
   private Void verifySys(ProtoSpace ps)
@@ -92,117 +92,6 @@ class CompileTest : Test
     verifyProto("ph._depends._0", sys->Depend)
     verifyProto("ph._depends._0.lib", sys->Depend->lib, "sys")
   }
-
-//////////////////////////////////////////////////////////////////////////
-// Inherit
-//////////////////////////////////////////////////////////////////////////
-
-  Void testInherit()
-  {
-    compileSrc(
-    Str<|MyScalar: Scalar
-
-         Alpha : {
-           a: MyScalar "av"
-           b: MyScalar "bv"
-           c: MyScalar "cv"
-         }
-
-         Bravo : Alpha {
-           b: "bv"
-           c: "cv"
-         }
-
-         Charlie : Bravo {
-           c: "cv"
-         }
-
-         Delta : Charlie {
-           a: "av"
-           b: "bv"
-         }
-         |>)
-
-    a := get("test.Alpha")
-    b := get("test.Bravo")
-    c := get("test.Charlie")
-    d := get("test.Delta")
-
-    verifyInherit(a, "a,b,c", ["Alpha.a", "Alpha.b", "Alpha.c"])
-    verifyInherit(b, "b,c",   ["Alpha.a", "Bravo.b", "Bravo.c"])
-    verifyInherit(c, "c",     ["Alpha.a", "Bravo.b", "Charlie.c"])
-    verifyInherit(d, "a,b",   ["Delta.a", "Delta.b", "Charlie.c"])
-  }
-
-  private Void verifyInherit(Proto p, Str declared, Str[] slots)
-  {
-   // echo("--- $p "); p.dump
-
-    // has
-    verifyEq(p.has("a"), true)
-    verifyEq(p.has("b"), true)
-    verifyEq(p.has("c"), true)
-
-    // get as operator
-    verifyEq(p["a"].val, "av")
-    verifyEq(p["b"].val, "bv")
-    verifyEq(p["c"].val, "cv")
-
-    // make sure everything subtypes from MyScalar
-    myScalar := ps.get("test.MyScalar")
-    verifyEq(p->a.fits(myScalar), true, "a: " + p->a.type)
-    verifyEq(p->b.fits(myScalar), true, "b: " + p->b.type)
-    verifyEq(p->c.fits(myScalar), true, "c: " + p->c.type)
-
-    // get as method
-    verifyEq(p.get("a").val, "av")
-    verifyEq(p.get("b").val, "bv")
-    verifyEq(p.get("c").val, "cv")
-
-    // get path of each slot
-    verifyEq(p.get("a").qname, "test." + slots[0])
-    verifyEq(p.get("b").qname, "test." + slots[1])
-    verifyEq(p.get("c").qname, "test." + slots[2])
-
-    // each
-    map := Str:Str[:] { ordered = true }
-    p.each |kid|
-    {
-      if (kid.name.startsWith("_")) return
-      map[kid.name] = kid.val
-    }
-    verifyEq(map, ["a":"av", "b":"bv", "c":"cv"])
-
-    // each - declared only
-    map.clear
-    p.each |kid|
-    {
-      if (kid.name.startsWith("_")) return
-      if (p.hasOwn(kid.name))
-      {
-        verifySame(p.get(kid.name), p.getOwn(kid.name))
-        map[kid.name] = kid.val
-      }
-      else
-      {
-        verifyEq(p.getOwn(kid.name, false), null)
-        verifyErr(UnknownProtoErr#) { p.getOwn(kid.name) }
-        verifyErr(UnknownProtoErr#) { p.getOwn(kid.name, true) }
-      }
-    }
-    verifyEq(map.keys.join(","), declared)
-
-    // bad
-    verifyEq(p.has("bad"), false)
-    verifyEq(p.hasOwn("bad"), false)
-    verifyEq(p.get("bad", false), null)
-    verifyEq(p.getOwn("bad", false), null)
-    verifyErr(UnknownProtoErr#) { p.get("bad") }
-    verifyErr(UnknownProtoErr#) { p.get("bad", true) }
-    verifyErr(UnknownProtoErr#) { p.getOwn("bad") }
-    verifyErr(UnknownProtoErr#) { p.getOwn("bad", true) }
-  }
-
 
 //////////////////////////////////////////////////////////////////////////
 // Syntax
@@ -320,7 +209,7 @@ class CompileTest : Test
 
   Void testMaybe()
   {
-    compileSrc(
+    test := compileSrc(
      Str<|A : Dict
           B : A?
           C : {
@@ -329,8 +218,6 @@ class CompileTest : Test
            d: Dict? {foo, bar}
           }|>)
 
-
-    test := ps.root->test
     verifyMaybe(test->B,    "test.A")
     verifyMaybe(test->C->a, "test.A")
     verifyMaybe(test->C->s, "sys.Str", "foo")
@@ -415,7 +302,7 @@ class CompileTest : Test
 
   Void testCombo()
   {
-    compileSrc(
+    test := compileSrc(
     Str<|A : Dict
          B : Dict
          C : Dict
@@ -430,8 +317,6 @@ class CompileTest : Test
          T8 : A|B|C&D
          T9 : A? | B? & C | D
          |>)
-
-    test := ps.root->test
 
     verifyCombo(test->T1, Obj["|", "A", "B"])
     verifyCombo(test->T2, Obj["|", "A", "B", "C"])
@@ -470,7 +355,7 @@ class CompileTest : Test
 
   Void testUnnamed()
   {
-    compileSrc(
+    test := compileSrc(
     Str<|Box : Dict {}
 
          A : {
@@ -484,7 +369,7 @@ class CompileTest : Test
          }
          |>)
 
-    b := ps.lib("test")->B
+    b := test->B
     kids := Proto[,]
     b.eachOwn |x| { kids.add(x) }
     verifyEq(kids.size, 3)
@@ -497,7 +382,7 @@ class CompileTest : Test
 
   Void testNestedSets()
   {
-    compileSrc(
+    test := compileSrc(
      Str<|Ahu : {
             discharge: Duct
           }
@@ -532,8 +417,6 @@ class CompileTest : Test
 
          |>)
 
-    test := ps.lib("test")
-
     verifyNestedSet(test->ahu1, "ahu1")
     verifyNestedSet(test->ahu2, "ahu2")
   }
@@ -560,7 +443,7 @@ class CompileTest : Test
 
   Void testInheritBinding()
   {
-    compileSrc(
+    x := compileSrc(
     Str<|foo2 : Foo  { something: "else" }
          bar2 : { bind:test.foo2.a }
 
@@ -578,8 +461,8 @@ class CompileTest : Test
          bar3 : { bind:test.foo3.a }
          |>)
 
-    x := ps.lib("test")
     //x.dump
+
     verifyEq(x->bar0->bind.type.qname, "test.Foo.a")
     verifyEq(x->bar1->bind.type.qname, "test.foo1.a")
     verifyEq(x->bar2->bind.type.qname, "test.foo2.a")
@@ -597,35 +480,6 @@ class CompileTest : Test
 //////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
-
-  private Proto get(Str qname)
-  {
-    ps.get(qname)
-  }
-
-  private ProtoSpace compile(Str[] libs)
-  {
-    this.ps = ProtoEnv.cur.compile(libs)
-  }
-
-  private ProtoSpace compileSrc(Str src)
-  {
-    prelude :=
-     Str<|test #<
-            version: "0.0.1"
-          >
-         |>
-    src = prelude + src
-
-    if (false)
-    {
-      echo("---")
-      src.splitLines.each |line, i| { echo("${i+1}: $line") }
-      echo("---")
-    }
-
-    return compile(["sys", src])
-  }
 
   private ProtoLib verifyLib(ProtoSpace ps, Str qname, Str version)
   {

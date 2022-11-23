@@ -16,11 +16,11 @@ using proto
 @Js
 internal const class MProto : Proto
 {
-  new make(FileLoc loc, Path path, AtomicRef typeRef, Str? val, Str:MProto children)
+  new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:MProto children)
   {
     this.loc      = loc
     this.path     = path
-    this.typeRef  = typeRef
+    this.baseRef  = baseRef
     this.valRef   = val
     this.children = children
   }
@@ -33,8 +33,10 @@ internal const class MProto : Proto
 
   const Path path
 
-  override Proto? type() { typeRef.val }
-  private const AtomicRef typeRef
+  override Proto? type() { base.proto }
+
+  MProtoBase base() { baseRef.val }
+  private const AtomicRef baseRef
 
   override Bool hasVal() { valRef != null }
 
@@ -54,8 +56,7 @@ internal const class MProto : Proto
   override Bool has(Str name)
   {
     if (hasOwn(name)) return true
-    if (type == null) return false
-    return type.has(name)
+    return base.has(name)
   }
 
   override Bool hasOwn(Str name)
@@ -65,9 +66,7 @@ internal const class MProto : Proto
 
   @Operator override Proto? get(Str name, Bool checked := true)
   {
-    child := children.get(name, null)
-    if (child != null) return child
-    child = type?.get(name, false)
+    child := children.get(name, null) ?: base.get(name)
     if (child != null) return child
     if (checked) throw UnknownProtoErr(name)
     return null
@@ -87,19 +86,18 @@ internal const class MProto : Proto
   {
     // expensive
     seen := Str:Str[:]
-    doEach(seen, this, f)
+    eachSeen(seen, f)
   }
 
-  private static Void doEach(Str:Str seen, MProto? p, |Proto| f)
+  Void eachSeen(Str:Str seen, |Proto| f)
   {
-    if (p == null) return
-    p.children.each |kid|
+    children.each |kid|
     {
       if (seen[kid.name] != null) return
       seen[kid.name] = kid.name
       f(kid)
     }
-    doEach(seen, p.type, f)
+    base.eachSeen(seen, f)
   }
 
   override Void eachOwn(|Proto| f)
@@ -121,12 +119,9 @@ internal const class MProto : Proto
 
   override Str toStr() { path.toStr }
 
-  override Bool fits(Proto base)
+  override Bool fits(Proto that)
   {
-    // TODO: need to handle or/and
-    if (this === base) return true
-    if (type == null) return false
-    return type.fits(base)
+    this === that || base.fits(that)
   }
 
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)

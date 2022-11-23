@@ -109,13 +109,15 @@ internal class JsonProtoDecoder
     if (x.isAssembled) return x.asm
 
     path    := x.path
-    typeRef := x.isObj ? AtomicRef() : acc.getChecked(x.type).asmRef
+    baseRef := AtomicRef()
     kids    := asmChildren(x.children)
     val     := x.map["_val"]
 
+throw Err("TODO")
+
      m := x.isLib ?
-       MProtoLib(FileLoc.unknown, path, typeRef, val, kids) :
-       MProto(FileLoc.unknown, path, typeRef, val, kids)
+       MProtoLib(FileLoc.unknown, path, baseRef, val, kids) :
+       MProto(FileLoc.unknown, path, baseRef, val, kids)
 
      x.asmRef.val = m
      return m
