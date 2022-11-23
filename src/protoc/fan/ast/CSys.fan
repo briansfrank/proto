@@ -19,5 +19,6 @@ internal class CSys
   CProto obj        // sys.Obj
   CProto str        // sys.Str
   CProto dict       // sys.Dict
+  CProto list       // sys.List
   CProto objDoc     // sys.Obj._doc
 }

@@ -69,6 +69,9 @@ internal class ResolveNames : Step
       err("Cannot resolve proto '$ref.name'", ref.loc)
     else
       err("Ambiguous proto name '$ref.name': $x", ref.loc)
+
+    // check sub-parts
+    if (ref.of != null) ref.of.each |of| { resolve(p, of) }
   }
 
   private CProto[] doResolve(CPragma pragma, Str name)

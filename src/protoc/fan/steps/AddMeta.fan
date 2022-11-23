@@ -14,6 +14,11 @@ using proto
 **
 internal class AddMeta : Step
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Run
+//////////////////////////////////////////////////////////////////////////
+
   override Void run()
   {
     addMeta(root)
@@ -21,9 +26,42 @@ internal class AddMeta : Step
 
   private Void addMeta(CProto p)
   {
+    addOf(p)
     addDoc(p)
     p.each |kid| { addMeta(kid) }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Of
+//////////////////////////////////////////////////////////////////////////
+
+  private Void addOf(CProto p)
+  {
+    // check if proto type was parsed with of list
+    ofTypes := p.type?.of
+    if (ofTypes == null) return
+
+    // Maybe wrapper type - type if the _of slot directly
+    if (p.type.deref.isMaybe)
+    {
+      ofType := ofTypes[0]
+      addSlot(p, CProto(ofType.loc, "_of", null, ofType, null))
+    }
+
+    // And/Or compound type - types are children of a _of list object
+    else
+    {
+      ofObj := add(p, "_of", sys.list, null)
+      ofTypes.each |t, i|
+      {
+        add(ofObj, "_${i}", t.deref, t.val)
+      }
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Doc
+//////////////////////////////////////////////////////////////////////////
 
   private Void addDoc(CProto p)
   {
@@ -33,8 +71,14 @@ internal class AddMeta : Step
     add(p, "_doc", type, p.doc)
   }
 
-  private Void add(CProto x, Str name, CProto type, Str val)
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  private CProto add(CProto x, Str name, CProto type, Str? val)
   {
-    addSlot(x, CProto(x.loc, name, null, CType(x.loc, type), val))
+    kid := CProto(x.loc, name, null, CType(x.loc, type), val)
+    addSlot(x, kid)
+    return kid
   }
 }

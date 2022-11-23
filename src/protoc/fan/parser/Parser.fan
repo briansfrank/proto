@@ -118,60 +118,6 @@ internal class Parser
 
   private CProto? parseProto(CProto parent, Bool isMeta)
   {
-    parseOr(parent, isMeta)
-  }
-
-  private CProto? parseOr(CProto parent, Bool isMeta)
-  {
-    p := parseAnd(parent, isMeta)
-    if (p == null || cur !== Token.pipe) return p
-
-    or := hoistCompound(p, "sys.Or")
-    of := or.getOwn("_of")
-
-    while (cur === Token.pipe)
-    {
-      pipeLoc := curToLoc
-      consume(Token.pipe)
-      skipNewlines
-      p = parseAnd(of, false)
-      if (p == null) throw err("Expecting proto after | in Or type, not $curToStr", pipeLoc)
-      if (p != null) addProto(of, p)
-    }
-    return or
-  }
-
-  private CProto? parseAnd(CProto parent, Bool isMeta)
-  {
-    p := parseMaybe(parent, isMeta)
-    if (p == null || cur !== Token.amp) return p
-
-    and := hoistCompound(p, "sys.And")
-    of := and.getOwn("_of")
-
-    while (cur === Token.amp)
-    {
-      ampLoc := curToLoc
-      consume(Token.amp)
-      skipNewlines
-      p = parseMaybe(of, false)
-      if (p == null) throw err("Expecting proto after & in And type, not $curToStr", ampLoc)
-      if (p != null) addProto(of, p)
-    }
-
-    return and
-  }
-
-  private CProto? parseMaybe(CProto parent, Bool isMeta)
-  {
-    p := parseSimple(parent, isMeta)
-    if (p == null || p.type == null || !p.type.isMaybe) return p
-
-    return hoistWrapper(p, "sys.Maybe")
-  }
-
-  private CProto? parseSimple(CProto parent, Bool isMeta)
-  {
     // leading comment
     doc := parseLeadingDoc
 
@@ -261,7 +207,80 @@ internal class Parser
     return name
   }
 
+  /*
+  <protoType>        :=  <protoTypeOr> | <protoTypeAnd> | <protoTypeMaybe> | <protoTypeSimple>
+  <protoTypeOr>      :=  <protoTypeOrPart> ("|" <protoTypeOrPart>)*
+  <protoTypeOrPart>  :=  [<protoTypeSimple>] [<protoVal>]  // must have at least one of these productions
+  <protoTypeAnd>     :=  <protoTypeSimple> ("&" <protoTypeSimple>)*
+  <protoMaybe>       :=  <protoTypeSimple> "?"
+  <protoTypeSimple>  :=  <qname>
+  */
   private CType? parseProtoType()
+  {
+    // special case for "foo" | "bar"
+     if (cur === Token.str && peek == Token.pipe)
+       return parseProtoTypeOr(parseProtoTypeOrPart)
+
+    // consume simple qname
+    simple := parseProtoTypeSimple
+    if (simple == null ) return simple
+
+    // now check for and/or/maybe
+    if (cur === Token.question) { consume; return CType.makeMaybe(simple) }
+    if (cur === Token.amp)  return parseProtoTypeAnd(simple)
+    if (cur === Token.pipe) return parseProtoTypeOr(simple)
+    if (cur === Token.str && peek === Token.pipe)  return parseProtoTypeOr(simple)
+    return simple
+  }
+
+  private CType parseProtoTypeOr(CType first)
+  {
+    // if first item is Str "val"
+    if (cur === Token.str)
+    {
+      val := curVal
+      consume
+      first = CType(first.loc, first.name, val)
+    }
+
+    of := [first]
+    while (cur === Token.pipe)
+    {
+      consume
+      skipNewlines
+      of.add(parseProtoTypeOrPart)
+    }
+    return CType.makeOr(of)
+  }
+
+  private CType parseProtoTypeOrPart()
+  {
+    loc := curToLoc
+    name := parseProtoTypeSimple?.name
+    val := null
+    if (cur === Token.str)
+    {
+      val = curVal
+      consume
+    }
+    if (name == null && val == null) throw err("Expecting name or value for or-part", loc)
+    return CType(loc, name ?: "sys.Str", val)
+  }
+
+  private CType parseProtoTypeAnd(CType first)
+  {
+    of := [first]
+    while (cur === Token.amp)
+    {
+      consume
+      skipNewlines
+      part := parseProtoTypeSimple ?: throw err("Expecting name for and-part")
+      of.add(part)
+    }
+    return CType.makeAnd(of)
+  }
+
+  private CType? parseProtoTypeSimple()
   {
     if (cur !== Token.id) return null
     loc := curToLoc
@@ -271,16 +290,7 @@ internal class Parser
       consume
       name += "." + consumeName
     }
-
-    type := CType(loc, name)
-
-    if (cur === Token.question)
-    {
-      consume
-      type.isMaybe = true
-    }
-
-    return type
+    return CType(loc, name)
   }
 
   private Bool parseProtoMeta(CProto parent)
@@ -332,46 +342,6 @@ internal class Parser
   private Void addProto(CProto parent, CProto child)
   {
     step.addSlot(parent, child)
-  }
-
-  private CProto hoistWrapper(CProto p, Str type)
-  {
-    // allocate new sys.Maybe object to replace proto we just parsed
-    loc := p.loc
-    wrapper := makeProto(loc, p.name, p.doc, CType(loc, type))
-
-    // now re-create the proto we just parsed as "_of"
-    of := hoistRecreate(p, "_of")
-    addProto(wrapper, of)
-
-    return wrapper
-  }
-
-  private CProto hoistCompound(CProto p, Str type)
-  {
-    // this method hoists P to Or <of:List { _0: P }>
-
-    // allocate new sys.Or/And object to replace proto we just parsed
-    loc := p.loc
-    compound := makeProto(loc, p.name, p.doc, CType(loc, type))
-
-    // allocate <of> object
-    of := makeProto(loc, "_of", null, CType(loc, "sys.List"))
-    addProto(compound, of)
-
-    // now re-create the proto we just parsed as _0 as first item of <of>
-    first := hoistRecreate(p, of.assignName)
-    addProto(of, first)
-
-    return compound
-  }
-
-  private CProto hoistRecreate(CProto p, Str newName)
-  {
-    x := makeProto(p.loc, newName, null, p.type)
-    x.children = p.children
-    x.val = p.val
-    return x
   }
 
 //////////////////////////////////////////////////////////////////////////

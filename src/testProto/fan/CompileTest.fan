@@ -231,52 +231,76 @@ class CompileTest : AbstractCompileTest
     of := p->_of
     verifyEq(of.type.qname, type)
 
-    if (val == null) verifyEq(of.hasVal, false)
-    else verifyEq(of.val, val)
+    if (val == null) verifyEq(p.hasVal, false)
+    else verifyEq(p.val, val)
 
-    if (kids == null) verifyEq(of.listOwn.size, 0)
-    else verifyEq(of.listOwn.join(","), kids)
+    list := p.listOwn.findAll { it.name != "_of" }
+    if (kids == null) verifyEq(list.size, 0)
+    else verifyEq(list.join(",") { it.name }, kids)
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Or/And
 //////////////////////////////////////////////////////////////////////////
 
-  Void testAnd() { doCompound("sys.And", "&") }
-
-  Void testOr() { doCompound("sys.Or", "|") }
-
-  Void doCompound(Str type, Str symbol)
+  Str srcForOr()
   {
-    src :=
      Str<|A : {}
           B : {}
           C : {}
           D : {}
 
-          U1 : A|B
-          U2 : A  |  B  |  C
-          U3 : A  |  B  |  C | D
-          U4 : A |
+          X1 : A|B
+          X2 : A  |  B  |  C
+          X3 : A  |  B  |  C | D
+          X4 : A |
                B |
                C
-          U5 : "a" | "b" | "c"
-          U6 : A "a" | B "b" | C "c"
-          U7 : A {x} | B {y} | C <z>
-          U8 : A? | B? {y} | C? <z>
+          X5 : test.A  |  test.B  |  test.C | test.D
+          X6 : "a" | "b" | "c"
+          X7 : Str "a" | sys.Str "b" | Str  "c"
+          X8 : A "a" | B "b" | C  "c"
+          X9 : test.A "a" | test.B "b" | test.C  "c"
+          X10 : "a" |
+               "b" |
+               "c"
+          X11 : test.A "a" |
+               "b" |
+               C "c"
           |>
-          .replace("|", symbol)
+  }
 
-    compileSrc(src)
+  Str srcForAnd()
+  {
+    srcForOr[0 ..< srcForOr.index("X6")].replace("|", "&")
+  }
 
-     verifyCompound(type, "U1", "A | B")
-     verifyCompound(type, "U2", "A | B | C")
-     verifyCompound(type, "U3", "A | B | C | D")
-     verifyCompound(type, "U4", "A | B | C")
-     verifyCompound(type, "U5", "Str a | Str b | Str c")
-     verifyCompound(type, "U6", "A a | B b | C c")
-     verifyCompound(type, "U7", "A | B | C")
-     verifyCompound(type, "U8", "A? | B? | C?")
+  Void testOr()
+  {
+    test := compileSrc(srcForOr)
+    type := "sys.Or"
+    verifyCompound(type, "X1", "A | B")
+    verifyCompound(type, "X2", "A | B | C")
+    verifyCompound(type, "X3", "A | B | C | D")
+    verifyCompound(type, "X4", "A | B | C")
+    verifyCompound(type, "X5", "A | B | C | D")
+    verifyCompound(type, "X6", "Str a | Str b | Str c")
+    verifyCompound(type, "X7", "Str a | Str b | Str c")
+    verifyCompound(type, "X8", "A a | B b | C c")
+    verifyCompound(type, "X9", "A a | B b | C c")
+    verifyCompound(type, "X10", "Str a | Str b | Str c")
+    verifyCompound(type, "X11", "A a | Str b | C c")
+  }
+
+  Void testAnd()
+  {
+    test := compileSrc(srcForAnd)
+    type := "sys.And"
+    verifyCompound(type, "X1", "A | B")
+    verifyCompound(type, "X2", "A | B | C")
+    verifyCompound(type, "X3", "A | B | C | D")
+    verifyCompound(type, "X4", "A | B | C")
+    verifyCompound(type, "X5", "A | B | C | D")
   }
 
   Void verifyCompound(Str type, Str name, Str pattern)
@@ -300,6 +324,7 @@ class CompileTest : AbstractCompileTest
 // Or/And/Maybe combination
 //////////////////////////////////////////////////////////////////////////
 
+  /* Current grammar disallows both and/or productions used together
   Void testCombo()
   {
     test := compileSrc(
@@ -348,6 +373,7 @@ class CompileTest : AbstractCompileTest
 
     return p.type.name
   }
+  */
 
 //////////////////////////////////////////////////////////////////////////
 // Unnamed

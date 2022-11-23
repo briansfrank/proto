@@ -15,16 +15,14 @@ Productions [#productions]
   <protos>           :=  [<proto> <endOfProto>]*
   <endOfProto>       :=  ( [","] <nl> ) | ","
 
-  <proto>            :=  [<leadingDoc>] <protoOr> [<trailingDoc>]
-  <protoOr>          :=  <protoAnd> ["|" <protoAnd>]*
-  <protoAnd>         :=  <protoSimple> ["&" <protoSimple>]*
-  <protoSimple>      :=  <protoMarker> | <protoNamed> | <protoUnnamed>
-  <protoMarker>      :=  <markerName>
-  <protoNamed>       :=  <qname> ":" <protoUnnamed>
-  <protoUnnamed>     :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
-  <protoType>        :=  <protoMaybeType> | <protoTypeName>
-  <protoMaybe>       :=  <protoTypeName> "?"
-  <protoTypeName>    :=  <qname>
+  <proto>            :=  [<leadingDoc>] <protoBody> [<trailingDoc>]
+  <protoBody>        :=  [<protoType>] [<protoMeta>] [<protoData>] [<protoVal>] // must have at least one of these productions
+  <protoType>        :=  <protoTypeOr> | <protoTypeAnd> | <protoTypeMaybe> | <protoTypeSimple>
+  <protoTypeOr>      :=  <protoTypeOrPart> ("|" <protoTypeOrPart>)*
+  <protoTypeOrPart>  :=  [<protoTypeSimple>] [<protoVal>]  // must have at least one of these productions
+  <protoTypeAnd>     :=  <protoTypeSimple> ("&" <protoTypeSimple>)*
+  <protoMaybe>       :=  <protoTypeSimple> "?"
+  <protoTypeSimple>  :=  <qname>
   <protoMeta>        :=  "<" <protos> ">"
   <protoData>        :=  "{" <protos> "}"
   <protoVal>         :=  double quoted string literal
