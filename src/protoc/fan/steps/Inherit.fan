@@ -45,7 +45,7 @@ internal class Inherit : Step
   private CProto? findBase(CProto? p, Str name)
   {
     if (p == null || p.type == null) return null
-    return p.type.deref.get(name, false)
+    return p.type.get(name)
   }
 
   private CProto infer(CProto p)

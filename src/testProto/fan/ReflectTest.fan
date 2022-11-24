@@ -160,6 +160,13 @@ class ReflectTest : AbstractCompileTest
            b: "abx.b"
            x: "abx.x"
          }
+
+         ABY: Alpha & Beta <foo, bar:"baz">
+
+         ABZ: Alpha & Beta <foo, bar:"baz"> {
+           c: "abz.c"
+           z: "abz.z"
+         }
          |>)
 
     // simple single inheritance
@@ -233,7 +240,12 @@ class ReflectTest : AbstractCompileTest
       ])
 
     // double inheritance with overrides
-    /* TODO
+    verifyFits(test->ABX, test->ABX,     true)
+    verifyFits(test->ABX, test->Alpha,   true)
+    verifyFits(test->ABX, test->Beta,    true)
+    verifyFits(test->ABX, test->Charlie, false)
+    verifyFits(test->ABX, test->AB,      false)
+    verifyFits(test->ABX, test->ABC,     false)
     verifyChildren(test->ABX, [
       ["test.ABX.b", "abx.b",     "test.Alpha.b"],
       ["test.ABX.x", "abx.x",     "sys.Str"],
@@ -241,7 +253,27 @@ class ReflectTest : AbstractCompileTest
       ["test.Alpha.c", "alpha.c", "sys.Str"],
       ["test.Beta.d",  "beta.d",  "sys.Str"],
       ])
-     */
+
+    // double inheritance with meta
+    verifyChildren(test->ABY, [
+      ["test.ABY._foo", null,      "sys.Marker"],
+      ["test.ABY._bar", "baz",     "sys.Str"],
+      ["test.Alpha.a",  "alpha.a", "sys.Str"],
+      ["test.Alpha.b",  "alpha.b", "sys.Str"],
+      ["test.Alpha.c",  "alpha.c", "sys.Str"],
+      ["test.Beta.d",   "beta.d",  "sys.Str"],
+      ])
+
+    // double inheritance with meta and children
+    verifyChildren(test->ABZ, [
+      ["test.ABZ._foo", null,      "sys.Marker"],
+      ["test.ABZ._bar", "baz",     "sys.Str"],
+      ["test.ABZ.c",    "abz.c",   "test.Alpha.c"],
+      ["test.ABZ.z",    "abz.z",    "sys.Str"],
+      ["test.Alpha.a",  "alpha.a", "sys.Str"],
+      ["test.Alpha.b",  "alpha.b", "sys.Str"],
+      ["test.Beta.d",   "beta.d",  "sys.Str"],
+      ])
   }
 
 //////////////////////////////////////////////////////////////////////////

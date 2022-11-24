@@ -58,6 +58,12 @@ internal class CType
 
   CProto deref() { resolved ?: throw Err("Not resolved yet: $name") }
 
+  CProto? get(Str name)
+  {
+    if (of == null) return deref.get(name, false)
+    return of.eachWhile |x| { x.get(name) }
+  }
+
   override Str toStr() { name }
 
   CProto? resolved  // Resolve step

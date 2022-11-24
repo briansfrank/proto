@@ -42,9 +42,8 @@ internal class CProto
 
   CProto? get(Str name, Bool checked := true)
   {
-    kid := children.get(name, null)
+    kid := children.get(name, null) ?: type?.get(name)
     if (kid != null) return kid
-    if (type != null) return type.deref.get(name, checked)
     if (checked) throw UnknownProtoErr(qname + "." + name)
     return null
   }
