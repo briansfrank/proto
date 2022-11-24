@@ -80,6 +80,48 @@ internal const class MAndBase : MProtoBase
   override Bool has(Str name) { get(name) != null }
   override Proto? get(Str name) { bases.eachWhile |b| { b.get(name, false) } }
   override Void eachSeen(Str:Str seen, |Proto| f) { bases.each |b| { b.eachSeen(seen, f) } }
-  override Bool fits(Proto base) { bases.any |b| { b.fits(base) } }
+  override Bool fits(Proto base) { proto.fits(base) || bases.any |b| { b.fits(base) } }
+  const MProto[] bases
+}
+
+**************************************************************************
+** MOrBase
+**************************************************************************
+
+**
+** MOrBase handles an Or construct with union all base types
+**
+internal const class MOrBase : MProtoBase
+{
+  new make(MProto and, MProto[] bases) { this.proto = and; this.bases = bases }
+  override const MProto? proto
+  override Bool has(Str name) { get(name) != null }
+  override Proto? get(Str name)
+  {
+    // the child must be the same in all bases
+    kid := bases[0].get(name, false)
+    if (kid == null) return null
+    for (i := 1; i<bases.size; ++i)
+    {
+      x := bases[i].get(name, false)
+      if (x !== kid) return null
+    }
+    return kid
+  }
+  override Void eachSeen(Str:Str seen, |Proto| f)
+  {
+    // TODO this is crazy expensive
+    bases[0].each |kid|
+    {
+      // only invoke callback for children which are same in all base types
+      name := kid.name
+      if (seen[name] == null && get(name) != null)
+      {
+        seen[name] = name
+        f(kid)
+      }
+    }
+  }
+  override Bool fits(Proto base) { proto.fits(base) || bases.all |b| { b.fits(base) } }
   const MProto[] bases
 }

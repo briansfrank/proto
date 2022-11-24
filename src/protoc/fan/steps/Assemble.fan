@@ -80,9 +80,11 @@ internal class Assemble : Step
 
   private MProtoBase toBase(CProto x)
   {
-// TODO: validate And has two or more in list
+// TODO: validate And / OR has two or more in list
+// TODO: we cannot allow OR if children with same name aren't compatible
     if (x.isObj) return MNullBase()
     if (x.type.deref.isAnd) return MAndBase(x.type.deref.asm, baseOfList(x))
+    if (x.type.deref.isOr)  return MOrBase(x.type.deref.asm, baseOfList(x))
     return MSingleBase(x.type.deref.asm)
   }
 

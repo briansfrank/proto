@@ -174,7 +174,10 @@ class ReflectTest : AbstractCompileTest
          }
          |>)
 
+    sys := graph.lib("sys")
+
     // simple single inheritance
+    verifyFits(test->A2, sys->And,      false)
     verifyFits(test->A2, test->A2,      true)
     verifyFits(test->A2, test->Alpha,   true)
     verifyFits(test->A2, test->AlphaX,  true)
@@ -190,6 +193,7 @@ class ReflectTest : AbstractCompileTest
       ])
 
     // double inheritance
+    verifyFits(test->AB, sys->And,      true)
     verifyFits(test->AB, test->AB,      true)
     verifyFits(test->AB, test->Alpha,   true)
     verifyFits(test->AB, test->AlphaX,  true)
@@ -294,6 +298,130 @@ class ReflectTest : AbstractCompileTest
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Or
+//////////////////////////////////////////////////////////////////////////
+
+  Void testOr()
+  {
+    test := compileSrc(
+    Str<|A: {a1:"A.a1", a2:"A.a2"}
+         B: {b1:"b1",   b2:"B.b2"}
+         C: {c1:"c1",   c2:"C.c2"}
+
+         X: {x1:"X.x1"}
+         Z: {z1:"Z.z1"}
+         AX: A & X
+         BX: B & X
+         AY: AX { y1:"AY.y1" }
+         BY: BX { y1:"BY.y1" }
+         AZ: Z & AY
+         BZ: BY & Z
+
+         AB : A | B
+         AXBX: AX | BX
+         AYBY: AY | BY
+         AZBZ: AZ | BZ
+
+         AZBZ_More: AZ | BZ <foo> { a1: "More.a1" }
+         |>)
+
+    sys := graph.lib("sys")
+
+    // A | B
+    cur := test->AB
+    verifyFits(cur, sys->Or,  true)
+    verifyFits(cur, test->AB, true)
+    verifyFits(cur, test->A,  false)
+    verifyFits(cur, test->B,  false)
+    verifyFits(cur, test->C,  false)
+    verifyFits(cur, test->AX, false)
+    verifyFits(cur, test->BX, false)
+    verifySame(cur.get("a1", false), null)
+    verifySame(cur.get("b1", false), null)
+    verifyChildren(cur, [
+      ,
+      ])
+
+    // AX | BX
+    cur = test->AXBX
+    verifyFits(cur, sys->Or,    true)
+    verifyFits(cur, test->AXBX, true)
+    verifyFits(cur, test->A,    false)
+    verifyFits(cur, test->B,    false)
+    verifyFits(cur, test->X,    true)
+    verifyFits(cur, test->AX,   false)
+    verifyFits(cur, test->BX,   false)
+    verifySame(cur.get("a1", false), null)
+    verifySame(cur.get("b1", false), null)
+    verifySame(cur.get("x1", false), test->X->x1)
+    verifyChildren(cur, [
+      ["test.X.x1",  "X.x1",  "sys.Str"],
+      ])
+
+    // AY | BY
+    cur = test->AYBY
+    verifyFits(cur, sys->Or,    true)
+    verifyFits(cur, test->AYBY, true)
+    verifyFits(cur, test->AXBX, false)
+    verifyFits(cur, test->A,    false)
+    verifyFits(cur, test->B,    false)
+    verifyFits(cur, test->X,    true)
+    verifyFits(cur, test->AX,   false)
+    verifyFits(cur, test->BX,   false)
+    verifySame(cur.get("a1", false), null)
+    verifySame(cur.get("b1", false), null)
+    verifySame(cur.get("x1", false), test->X->x1)
+    verifyChildren(cur, [
+      ["test.X.x1",  "X.x1",  "sys.Str"],
+      ])
+
+    // AZ | BZ
+    cur = test->AZBZ
+    verifyFits(cur, sys->Or,    true)
+    verifyFits(cur, test->AZBZ, true)
+    verifyFits(cur, test->AYBY, false)
+    verifyFits(cur, test->AXBX, false)
+    verifyFits(cur, test->A,    false)
+    verifyFits(cur, test->B,    false)
+    verifyFits(cur, test->X,    true)
+    verifyFits(cur, test->Z,    true)
+    verifyFits(cur, test->AX,   false)
+    verifyFits(cur, test->BX,   false)
+    verifySame(cur.get("a1", false), null)
+    verifySame(cur.get("b1", false), null)
+    verifySame(cur.get("x1", false), test->X->x1)
+    verifySame(cur.get("z1", false), test->Z->z1)
+    verifyChildren(cur, [
+      ["test.Z.z1",  "Z.z1",  "sys.Str"],
+      ["test.X.x1",  "X.x1",  "sys.Str"],
+      ])
+
+    // AZ | BZ with meta + children
+    cur = test->AZBZ_More
+    verifyFits(cur, sys->Or,    true)
+    verifyFits(cur, test->AZBZ_More, true)
+    verifyFits(cur, test->AZBZ, false)
+    verifyFits(cur, test->AYBY, false)
+    verifyFits(cur, test->AXBX, false)
+    verifyFits(cur, test->A,    false)
+    verifyFits(cur, test->B,    false)
+    verifyFits(cur, test->X,    true)
+    verifyFits(cur, test->Z,    true)
+    verifyFits(cur, test->AX,   false)
+    verifyFits(cur, test->BX,   false)
+    verifySame(cur.get("a1", false), cur->a1)
+    verifySame(cur.get("b1", false), null)
+    verifySame(cur.get("x1", false), test->X->x1)
+    verifySame(cur.get("z1", false), test->Z->z1)
+    verifyChildren(cur, [
+      ["test.AZBZ_More._foo", null,      "sys.Marker"],
+      ["test.AZBZ_More.a1",   "More.a1", "test.A.a1"],
+      ["test.Z.z1",           "Z.z1",    "sys.Str"],
+      ["test.X.x1",           "X.x1",    "sys.Str"],
+      ])
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
@@ -310,6 +438,7 @@ class ReflectTest : AbstractCompileTest
     {
       if (kid.name == "_of" || kid.qname.startsWith("sys.")) return
       e := expected[i++]
+      // echo(" >> $kid [$kid.type] ?= $e")
       verifyEq(kid.qname,       e[0])
       verifyEq(kid.val(false),  e[1])
       verifyEq(kid.type.qname,  e[2])
