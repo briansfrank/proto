@@ -132,13 +132,18 @@ class ReflectTest : AbstractCompileTest
   Void testAnd()
   {
     test := compileSrc(
-    Str<|Alpha : {
+    Str<|AlphaX: {}
+         BetaX: {}
+         BetaFoo: {}
+         BetaY : BetaFoo & BetaX {}
+
+         Alpha : AlphaX {
            a: "alpha.a"
            b: "alpha.b"
            c: "alpha.c"
          }
 
-         Beta : {
+         Beta : BetaY {
            b: "beta.b"
            c: "beta.c"
            d: "beta.d"
@@ -172,7 +177,9 @@ class ReflectTest : AbstractCompileTest
     // simple single inheritance
     verifyFits(test->A2, test->A2,      true)
     verifyFits(test->A2, test->Alpha,   true)
+    verifyFits(test->A2, test->AlphaX,  true)
     verifyFits(test->A2, test->Beta,    false)
+    verifyFits(test->A2, test->BetaX,   false)
     verifyFits(test->A2, test->Charlie, false)
     verifyFits(test->A2, test->AB,      false)
     verifyFits(test->A2, test->ABC,     false)
@@ -185,7 +192,9 @@ class ReflectTest : AbstractCompileTest
     // double inheritance
     verifyFits(test->AB, test->AB,      true)
     verifyFits(test->AB, test->Alpha,   true)
+    verifyFits(test->AB, test->AlphaX,  true)
     verifyFits(test->AB, test->Beta,    true)
+    verifyFits(test->AB, test->BetaX,   true)
     verifyFits(test->AB, test->Charlie, false)
     verifyFits(test->AB, test->BA,      false)
     verifyFits(test->AB, test->ABC,     false)
@@ -199,7 +208,9 @@ class ReflectTest : AbstractCompileTest
     // double inheritance - flip order
     verifyFits(test->BA, test->BA,      true)
     verifyFits(test->BA, test->Alpha,   true)
+    verifyFits(test->BA, test->AlphaX,  true)
     verifyFits(test->BA, test->Beta,    true)
+    verifyFits(test->BA, test->BetaX,   true)
     verifyFits(test->BA, test->Charlie, false)
     verifyFits(test->BA, test->AB,      false)
     verifyFits(test->BA, test->ABC,     false)
@@ -213,7 +224,9 @@ class ReflectTest : AbstractCompileTest
     // triple inheritance
     verifyFits(test->ABC, test->ABC,     true)
     verifyFits(test->ABC, test->Alpha,   true)
+    verifyFits(test->ABC, test->AlphaX,  true)
     verifyFits(test->ABC, test->Beta,    true)
+    verifyFits(test->ABC, test->BetaX,   true)
     verifyFits(test->ABC, test->Charlie, true)
     verifyFits(test->ABC, test->AB,      false)
     verifyFits(test->ABC, test->CBA,     false)
@@ -229,7 +242,9 @@ class ReflectTest : AbstractCompileTest
     verifyFits(test->CBA, test->CBA,     true)
     verifyFits(test->CBA, test->Charlie, true)
     verifyFits(test->CBA, test->Beta,    true)
+    verifyFits(test->CBA, test->BetaX,   true)
     verifyFits(test->CBA, test->Alpha,   true)
+    verifyFits(test->CBA, test->AlphaX,  true)
     verifyFits(test->CBA, test->AB,      false)
     verifyChildren(test->CBA, [
       ["test.Charlie.c", "charlie.c", "sys.Str"],
@@ -242,7 +257,9 @@ class ReflectTest : AbstractCompileTest
     // double inheritance with overrides
     verifyFits(test->ABX, test->ABX,     true)
     verifyFits(test->ABX, test->Alpha,   true)
+    verifyFits(test->ABX, test->AlphaX,  true)
     verifyFits(test->ABX, test->Beta,    true)
+    verifyFits(test->ABX, test->BetaX,   true)
     verifyFits(test->ABX, test->Charlie, false)
     verifyFits(test->ABX, test->AB,      false)
     verifyFits(test->ABX, test->ABC,     false)
