@@ -4,20 +4,20 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   24 Aug 2022  Brian Frank  Creation
+//   23 Feb 2022  Brian Frank  Creation
 //
 
 using build
 
 **
-** Build: ph2pog
+** Build: pogc
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "ph2pog"
-    summary = "Project Haystack def to pog converter"
+    podName = "pogc"
+    summary = "Proto object graph data type system compiler"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -28,10 +28,11 @@ class Build : BuildPod
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
-               "pog @{pog.depend}",
-               "haystack @{hx.depend}",
-               "def @{hx.depend}",
-               "defc @{hx.depend}"]
-    srcDirs = [`fan/`]
+               "pog @{pog.depend}"]
+    srcDirs = [`fan/`,
+               `fan/ast/`,
+               `fan/impl/`,
+               `fan/parser/`,
+               `fan/steps/`]
   }
 }

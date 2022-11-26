@@ -19,10 +19,10 @@ class Build : BuildGroup
   {
     childrenScripts =
     [
-      `proto/build.fan`,
-      `protoc/build.fan`,
+      `pog/build.fan`,
+      `pogc/build.fan`,
       `ph2pog/build.fan`,
-      `testProto/build.fan`,
+      `testPog/build.fan`,
     ]
   }
 
@@ -44,7 +44,7 @@ class Build : BuildGroup
   Void zip()
   {
     buildVersion := Version(config("buildVersion"))
-    moniker := "proto-$buildVersion"
+    moniker := "pog-$buildVersion"
 
     // top level dirs to include
     env := (PathEnv)Env.cur
