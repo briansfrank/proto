@@ -11,10 +11,10 @@ using util
 using proto
 
 **
-** ProtoLib implementation
+** Lib implementation
 **
 @Js
-internal const class MProtoLib : MProto, ProtoLib
+internal const class MLib : MProto, Lib
 {
   new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:MProto children)
     : super(loc, path, baseRef, val, children)

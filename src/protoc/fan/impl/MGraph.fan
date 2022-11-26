@@ -9,12 +9,12 @@
 using proto
 
 **
-** ProtoGraph implementation
+** Graph implementation
 **
 @Js
-internal const class MProtoGraph : ProtoGraph
+internal const class MGraph : Graph
 {
-  new make(Proto root, Str:ProtoLib libsMap)
+  new make(Proto root, Str:Lib libsMap)
   {
     this.root    = root
     this.libs    = libsMap.vals.sort |a, b| { a.qname <=> b.qname }
@@ -27,15 +27,15 @@ internal const class MProtoGraph : ProtoGraph
   }
 
   override const Proto root
-  override const ProtoLib[] libs
-  override const ProtoLib sys
+  override const Lib[] libs
+  override const Lib sys
   override const Proto obj
   override const Proto marker
   override const Proto str
   override const Proto dict
-  const Str:ProtoLib libsMap
+  const Str:Lib libsMap
 
-  override ProtoLib? lib(Str name, Bool checked := true)
+  override Lib? lib(Str name, Bool checked := true)
   {
     lib := libsMap[name]
     if (lib != null) return lib

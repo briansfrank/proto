@@ -7,19 +7,19 @@
 //
 
 **
-** ProtoGraph models a self contained namespaced graph of protos.
+** Graph models a self contained namespaced graph of protos.
 **
 @Js
-const mixin ProtoGraph
+const mixin Graph
 {
   ** The core system library
-  abstract ProtoLib sys()
+  abstract Lib sys()
 
   ** Libraries used by this namespace
-  abstract ProtoLib[] libs()
+  abstract Lib[] libs()
 
   ** Lookup a library by its dotted qualified name
-  abstract ProtoLib? lib(Str name, Bool checked := true)
+  abstract Lib? lib(Str name, Bool checked := true)
 
   ** The object type from which all other objects inherit
   abstract Proto obj()

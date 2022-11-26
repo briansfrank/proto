@@ -42,14 +42,14 @@ class ProtoCompiler
 // Pipelines
 //////////////////////////////////////////////////////////////////////////
 
-  ** Compile input libs to a ProtoGraph
-  ProtoGraph compileGraph()
+  ** Compile input libs to a Graph
+  Graph compileGraph()
   {
     run(frontend).graph
   }
 
   ** Compile list of output files for command line main
-  ProtoGraph compileMain(Str[] outputs)
+  Graph compileMain(Str[] outputs)
   {
     steps := frontend.dup
     outputs.each |o|
@@ -63,7 +63,7 @@ class ProtoCompiler
     return run(steps).graph
   }
 
-  ** List of front end steps to compile to the ProtoGraph
+  ** List of front end steps to compile to the Graph
   private Step[] frontend()
   {
     return [
@@ -148,7 +148,7 @@ class ProtoCompiler
   internal CLib[]? libs                  // InitLibs
   internal CProto? root                  // Parse
   internal CSys? sys                     // ResolveSys
-  internal MProtoGraph? graph            // Assemble
+  internal MGraph? graph                 // Assemble
 }
 
 

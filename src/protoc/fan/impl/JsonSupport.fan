@@ -18,7 +18,7 @@ internal class JsonProtoEncoder : OutStream
 {
   new make(OutStream out) : super(out) {}
 
-  This encode(ProtoGraph pg)
+  This encode(Graph pg)
   {
     printLine("{")
     kids := pg.root.listOwn
@@ -74,7 +74,7 @@ internal class JsonProtoEncoder : OutStream
 @Js
 internal class JsonProtoDecoder
 {
-  static ProtoGraph decode(InStream in)
+  static Graph decode(InStream in)
   {
     try
     {
@@ -97,11 +97,11 @@ internal class JsonProtoDecoder
     return x
   }
 
-  private MProtoGraph asm()
+  private MGraph asm()
   {
     root := asmProto(acc[""])
     libs := asmLibs
-    return MProtoGraph(root, libs)
+    return MGraph(root, libs)
   }
 
   private MProto asmProto(JsonProto x)
@@ -116,7 +116,7 @@ internal class JsonProtoDecoder
 throw Err("TODO")
 
      m := x.isLib ?
-       MProtoLib(FileLoc.unknown, path, baseRef, val, kids) :
+       MLib(FileLoc.unknown, path, baseRef, val, kids) :
        MProto(FileLoc.unknown, path, baseRef, val, kids)
 
      x.asmRef.val = m
@@ -132,9 +132,9 @@ throw Err("TODO")
     return acc.toImmutable
   }
 
-  private Str:ProtoLib asmLibs()
+  private Str:Lib asmLibs()
   {
-    libs.map |x->MProtoLib| { x.asm }
+    libs.map |x->MLib| { x.asm }
   }
 
   private Str:JsonProto acc := [:]

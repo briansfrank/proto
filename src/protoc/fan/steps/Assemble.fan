@@ -28,7 +28,7 @@ internal class Assemble : Step
     assignBase(compiler.root)
 
     // create space implementation
-    compiler.graph = MProtoGraph(root, asmLibs)
+    compiler.graph = MGraph(root, asmLibs)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ internal class Assemble : Step
     val     := x.val
 
     m := x.isLib ?
-         MProtoLib(x.loc, path, baseRef, val, kids) :
+         MLib(x.loc, path, baseRef, val, kids) :
          MProto(x.loc, path, baseRef, val, kids)
 
     x.asmRef = m
@@ -61,10 +61,10 @@ internal class Assemble : Step
     return acc.toImmutable
   }
 
-  private Str:ProtoLib asmLibs()
+  private Str:Lib asmLibs()
   {
-    acc := Str:ProtoLib[:]
-    libs.each |x| { acc.add(x.path.toStr, (MProtoLib)x.proto.asm) }
+    acc := Str:Lib[:]
+    libs.each |x| { acc.add(x.path.toStr, (MLib)x.proto.asm) }
     return acc
   }
 

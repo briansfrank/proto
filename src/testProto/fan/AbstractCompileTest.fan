@@ -14,19 +14,19 @@ using proto
 abstract class AbstractCompileTest : Test
 {
 
-  ProtoGraph? graph
+  Graph? graph
 
   Proto get(Str qname)
   {
     graph.get(qname)
   }
 
-  ProtoGraph compile(Str[] libs)
+  Graph compile(Str[] libs)
   {
     this.graph = ProtoEnv.cur.compile(libs)
   }
 
-  ProtoLib compileSrc(Str src)
+  Lib compileSrc(Str src)
   {
     prelude :=
      Str<|test #<

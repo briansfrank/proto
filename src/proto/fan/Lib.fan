@@ -10,7 +10,7 @@
 ** Proto library is a root object of versioned prototypes
 **
 @Js
-const mixin ProtoLib : Proto
+const mixin Lib : Proto
 {
   ** Version of the library
   abstract Version version()

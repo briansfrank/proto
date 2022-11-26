@@ -46,7 +46,7 @@ abstract const class ProtoEnv
 
   ** Compile a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
-  abstract ProtoGraph compile(Str[] libNames)
+  abstract Graph compile(Str[] libNames)
 
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
@@ -68,7 +68,7 @@ internal const class JsProtoEnv : ProtoEnv
 
   override File? libDir(Str name, Bool checked := true) { throw UnsupportedErr() }
 
-  override ProtoGraph compile(Str[] libNames) { throw UnsupportedErr() }
+  override Graph compile(Str[] libNames) { throw UnsupportedErr() }
 }
 
 

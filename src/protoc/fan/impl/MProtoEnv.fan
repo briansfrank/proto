@@ -75,7 +75,7 @@ internal const class MProtoEnv : ProtoEnv
 
   ** Compile a new namespace from a list of library names.
   ** Raise exception if there are any compiler errors.
-  override ProtoGraph compile(Str[] libNames)
+  override Graph compile(Str[] libNames)
   {
     c := ProtoCompiler
     {

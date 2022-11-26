@@ -8,6 +8,7 @@
 
 using proto
 using haystack
+using haystack::Lib
 
 **
 ** Command line program main

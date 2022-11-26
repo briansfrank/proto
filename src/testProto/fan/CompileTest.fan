@@ -24,15 +24,15 @@ class CompileTest : AbstractCompileTest
     compile(["sys"])
     verifyEq(graph.libs.size, 1)
     verifySame(graph.libs[0], graph.lib("sys"))
-    verifySys(graph)
+    verifySys
 
     // sys + ph
     compile(["sys", "ph"])
     verifyEq(graph.libs.size, 2)
     verifySame(graph.libs[0], graph.lib("ph"))
     verifySame(graph.libs[1], graph.lib("sys"))
-    verifySys(graph)
-    verifyPh(graph)
+    verifySys
+    verifyPh
 
     // now test JSON
 /* TODO
@@ -48,9 +48,9 @@ class CompileTest : AbstractCompileTest
 */
   }
 
-  private Void verifySys(ProtoGraph ps)
+  private Void verifySys()
   {
-    sys := verifyLib(ps, "sys", "0.9.1")
+    sys := verifyLib("sys", "0.9.1")
     verifySame(graph.root->sys, sys)
 
     obj    := verifyProto("sys.Obj",    null,   null)
@@ -73,9 +73,9 @@ class CompileTest : AbstractCompileTest
     verifyErr(UnknownProtoErr#) { obj->foo }
   }
 
-  private Void verifyPh(ProtoGraph ps)
+  private Void verifyPh()
   {
-    ph := verifyLib(ps, "ph", "3.9.12")
+    ph := verifyLib("ph", "3.9.12")
     verifySame(graph.root->ph, ph)
 
     sys := graph.root->sys
@@ -507,7 +507,7 @@ class CompileTest : AbstractCompileTest
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
-  private ProtoLib verifyLib(ProtoGraph ps, Str qname, Str version)
+  private Lib verifyLib(Str qname, Str version)
   {
     lib := graph.lib(qname)
     verifySame(lib, graph.get(qname))

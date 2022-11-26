@@ -28,7 +28,7 @@ abstract internal class Step
 
   CSys sys() { compiler.sys }
 
-  MProtoGraph graph() { compiler.graph }
+  MGraph graph() { compiler.graph }
 
   internal Void addSlot(CProto parent, CProto child)
   {
