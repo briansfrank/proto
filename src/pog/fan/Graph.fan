@@ -36,7 +36,7 @@ const mixin Graph
   ** Root object for this space
   abstract Proto root()
 
-  ** Encode the entire space to a JSON file.  Also see `ProtoEnv.decodeJson`.
+  ** Encode the entire space to a JSON file.  Also see `PogEnv.decodeJson`.
   abstract Void encodeJson(OutStream out)
 
   ** Get the proto with the fully qualified name

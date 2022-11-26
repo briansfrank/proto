@@ -10,9 +10,9 @@ using util
 using pog
 
 **
-** Standard implementation for ProtoEnv
+** Standard implementation for PogEnv
 **
-internal const class MProtoEnv : ProtoEnv
+internal const class MPogEnv : PogEnv
 {
   ** Constructor
   new make()
@@ -41,13 +41,13 @@ internal const class MProtoEnv : ProtoEnv
     if (hasLib && !path.isEmpty)
     {
       dup := acc[path]
-      if (dup != null) echo("WARN: ProtoEnv '$path' lib path hidden [$dup.osPath]")
+      if (dup != null) echo("WARN: PogEnv '$path' lib path hidden [$dup.osPath]")
       acc[path] = dir
     }
     dir.listDirs.each |kid|
     {
-      if (!ProtoUtil.isName(kid.name)) return
-      kidPath := ProtoUtil.qnameJoin(path, kid.name)
+      if (!PogUtil.isName(kid.name)) return
+      kidPath := PogUtil.qnameJoin(path, kid.name)
       doInitInstalled(acc, kidPath, kid)
     }
   }
@@ -88,7 +88,7 @@ internal const class MProtoEnv : ProtoEnv
   ** Debug dump
   override Void dump(OutStream out := Env.cur.out)
   {
-    out.printLine("=== ProtoEnv ===")
+    out.printLine("=== PogEnv ===")
     out.printLine("Path:")
     path.each |x| { out.printLine("  $x.osPath") }
     out.printLine("Installed:")

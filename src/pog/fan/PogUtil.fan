@@ -7,10 +7,10 @@
 //
 
 **
-** Proto utilities
+** Proto object graph utilities
 **
 @Js
-const class ProtoUtil
+const class PogUtil
 {
   **
   ** Return if the given string is a legal proto name:

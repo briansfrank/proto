@@ -18,7 +18,7 @@ abstract internal class Step
 
   abstract Void run()
 
-  ProtoEnv env() { compiler.env }
+  PogEnv env() { compiler.env }
 
   Str[] libNames() { compiler.libNames }
 

@@ -7,28 +7,28 @@
 //
 
 **
-** Prototype environment for the current VM.
+** Proto object graph environment for the current VM.
 **
 @Js
-abstract const class ProtoEnv
+abstract const class PogEnv
 {
   ** Current default environment for the VM
-  static ProtoEnv cur() { curRef ?: throw Err("ProtoEnv not initialized") }
+  static PogEnv cur() { curRef ?: throw Err("PogEnv not initialized") }
 
   // init env instance using reflection
-  private static const ProtoEnv? curRef
+  private static const PogEnv? curRef
   static
   {
     try
     {
       if (Env.cur.runtime == "js")
-        curRef = JsProtoEnv()
+        curRef = JsPogEnv()
       else
-        curRef = Type.find("pogc::MProtoEnv").make
+        curRef = Type.find("pogc::MPogEnv").make
     }
     catch (Err e)
     {
-      echo("ERROR: cannot init ProtoEnv.cur")
+      echo("ERROR: cannot init PogEnv.cur")
       e.trace
     }
   }
@@ -53,14 +53,14 @@ abstract const class ProtoEnv
 }
 
 **************************************************************************
-** JsProtoEnv
+** JsPogEnv
 **************************************************************************
 
 **
-** JsProtoEnv is stub implementation for browser environments
+** JsPogEnv is stub implementation for browser environments
 **
 @Js
-internal const class JsProtoEnv : ProtoEnv
+internal const class JsPogEnv : PogEnv
 {
   override File[] path() { File[,] }
 

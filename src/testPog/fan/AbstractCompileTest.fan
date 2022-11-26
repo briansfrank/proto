@@ -23,7 +23,7 @@ abstract class AbstractCompileTest : Test
 
   Graph compile(Str[] libs)
   {
-    this.graph = ProtoEnv.cur.compile(libs)
+    this.graph = PogEnv.cur.compile(libs)
   }
 
   Lib compileSrc(Str src)

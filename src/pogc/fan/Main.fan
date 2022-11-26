@@ -35,7 +35,7 @@ class Main : AbstractMain
   @Opt { help = "Comma separated outputs: json" }
   Str json := ""
 
-  ProtoEnv env := ProtoEnv.cur
+  PogEnv env := PogEnv.cur
 
   override Int run()
   {
