@@ -16,9 +16,9 @@ abstract class AbstractCompileTest : Test
 
   Graph? graph
 
-  Proto get(Str qname)
+  Proto getq(Str qname)
   {
-    graph.get(qname)
+    graph.getq(qname)
   }
 
   Graph compile(Str[] libs)

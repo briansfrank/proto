@@ -36,7 +36,7 @@ internal const class MProto : Proto
   override Proto? type() { base.proto }
 
   MProtoBase base() { baseRef.val }
-  private const AtomicRef baseRef
+  internal const AtomicRef baseRef
 
   override Bool hasVal() { valRef != null }
 
@@ -80,7 +80,7 @@ internal const class MProto : Proto
     return null
   }
 
-  private const Str:MProto children
+  internal const Str:MProto children
 
   override Void each(|Proto| f)
   {

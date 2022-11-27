@@ -21,7 +21,7 @@ internal class JsonProtoEncoder : OutStream
   This encode(Graph pg)
   {
     printLine("{")
-    kids := pg.root.listOwn
+    kids := pg.listOwn
     kids.each |kid, i|
     {
       doEncode(kid, i + 1 < kids.size)

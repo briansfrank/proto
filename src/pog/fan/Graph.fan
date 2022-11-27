@@ -10,7 +10,7 @@
 ** Graph models a self contained namespaced graph of protos.
 **
 @Js
-const mixin Graph
+const mixin Graph : Proto
 {
   ** The core system library
   abstract Lib sys()
@@ -21,26 +21,15 @@ const mixin Graph
   ** Lookup a library by its dotted qualified name
   abstract Lib? lib(Str name, Bool checked := true)
 
-  ** The object type from which all other objects inherit
-  abstract Proto obj()
-
-  ** The str type object
-  abstract Proto str()
-
-  ** The marker type object
-  abstract Proto marker()
-
-  ** The dict type object
-  abstract Proto dict()
-
-  ** Root object for this space
-  abstract Proto root()
-
   ** Encode the entire space to a JSON file.  Also see `PogEnv.decodeJson`.
   abstract Void encodeJson(OutStream out)
 
   ** Get the proto with the fully qualified name
-  @Operator abstract Proto? get(Str qname, Bool checked := true)
+  abstract Proto? getq(Str qname, Bool checked := true)
+
+  ** Get the effective child mapped by the given name.  If it is not
+  ** mapped to a non-null value, then throw an UnknownProtoErr.
+  override abstract Proto? trap(Str name, Obj?[]? args := null)
 }
 
 

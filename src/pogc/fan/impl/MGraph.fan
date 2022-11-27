@@ -12,27 +12,18 @@ using pog
 ** Graph implementation
 **
 @Js
-internal const class MGraph : Graph
+internal const class MGraph : MProto, Graph
 {
-  new make(Proto root, Str:Lib libsMap)
+  new make(MProto root, Str:Lib libsMap)
+    : super(root.loc, root.path, root.baseRef, null, root.children)
   {
-    this.root    = root
     this.libs    = libsMap.vals.sort |a, b| { a.qname <=> b.qname }
     this.libsMap = libsMap
     this.sys     = libsMap.getChecked("sys")
-    this.obj     = sys->Obj
-    this.marker  = sys->Marker
-    this.str     = sys->Str
-    this.dict    = sys->Dict
   }
 
-  override const Proto root
   override const Lib[] libs
   override const Lib sys
-  override const Proto obj
-  override const Proto marker
-  override const Proto str
-  override const Proto dict
   const Str:Lib libsMap
 
   override Lib? lib(Str name, Bool checked := true)
@@ -43,10 +34,10 @@ internal const class MGraph : Graph
     return null
   }
 
-  @Operator override Proto? get(Str qname, Bool checked := true)
+  override Proto? getq(Str qname, Bool checked := true)
   {
     path := Path(qname)
-    Proto? p := root
+    Proto? p := this
     for (i := 0; p != null && i<path.size; ++i)
       p = p.get(path[i], checked)
     return p

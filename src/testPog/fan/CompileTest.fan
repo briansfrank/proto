@@ -51,7 +51,7 @@ class CompileTest : AbstractCompileTest
   private Void verifySys()
   {
     sys := verifyLib("sys", "0.9.1")
-    verifySame(graph.root->sys, sys)
+    verifySame(graph->sys, sys)
 
     obj    := verifyProto("sys.Obj",    null,   null)
     marker := verifyProto("sys.Marker", obj,    null)
@@ -76,9 +76,9 @@ class CompileTest : AbstractCompileTest
   private Void verifyPh()
   {
     ph := verifyLib("ph", "3.9.12")
-    verifySame(graph.root->ph, ph)
+    verifySame(graph->ph, ph)
 
-    sys := graph.root->sys
+    sys := graph->sys
 
     na     := verifyProto("ph.Na",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
@@ -176,7 +176,7 @@ class CompileTest : AbstractCompileTest
     graph.lib("test").eachOwn |x|
     {
       if (x.name[0] == '_') return // TODO
-      verifySame(x.type, graph.dict)
+      verifySame(x.type, graph->sys->Dict)
     }
   }
 
@@ -187,7 +187,7 @@ class CompileTest : AbstractCompileTest
       if (x.name[0] == '_') return // TODO
       verifyEq(x.get("_foo").val, "x")
       verifyEq(x.get("_bar").val, "y")
-      verifySame(x.get("_baz").type, graph.marker)
+      verifySame(x.get("_baz").type, graph->sys->Marker)
     }
   }
 
@@ -199,7 +199,7 @@ class CompileTest : AbstractCompileTest
       if (x.name[0] == '_') return // TODO
       verifyEq(x.get("foo").val, "x")
       verifyEq(x.get("bar").val, "y")
-      verifySame(x.get("baz").type, graph.marker)
+      verifySame(x.get("baz").type, graph->sys->Marker)
     }
   }
 
@@ -227,7 +227,7 @@ class CompileTest : AbstractCompileTest
   Void verifyMaybe(Proto p, Str type, Str? val := null, Str? kids := null)
   {
     verifyEq(p.type.qname, "sys.Maybe")
-    verifySame(p.type, graph.root->sys->Maybe)
+    verifySame(p.type, graph->sys->Maybe)
     of := p->_of
     verifyEq(of.type.qname, type)
 
@@ -305,8 +305,8 @@ class CompileTest : AbstractCompileTest
 
   Void verifyCompound(Str type, Str name, Str pattern)
   {
-    u := graph.root->test.trap(name)
-    verifySame(u.type, graph.get(type))
+    u := graph->test.trap(name)
+    verifySame(u.type, graph.getq(type))
     of := u->_of
     verifyEq(of.qname, "test.${name}._of")
     actual := StrBuf()
@@ -498,9 +498,9 @@ class CompileTest : AbstractCompileTest
     verifyEq(x->foo2.getOwn("a").qname, "test.foo2.a")
     verifyEq(x->foo3.getOwn("a").qname, "test.foo3.a")
 
-    verifySame(x->foo1.getOwn("a").type, graph.get("test.Foo.a"))
-    verifySame(x->foo2.getOwn("a").type, graph.get("test.Foo.a"))
-    verifySame(x->foo3.getOwn("a").type, graph.get("test.Foo.a"))
+    verifySame(x->foo1.getOwn("a").type, graph.getq("test.Foo.a"))
+    verifySame(x->foo2.getOwn("a").type, graph.getq("test.Foo.a"))
+    verifySame(x->foo3.getOwn("a").type, graph.getq("test.Foo.a"))
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -519,7 +519,7 @@ class CompileTest : AbstractCompileTest
 
   private Proto verifyProto(Str path, Proto? type, Obj? val := null)
   {
-    p := get(path)
+    p := getq(path)
     // echo("$p.loc [$p.qname]")
     verifyEq(p.name, path.split('.').last)
     verifyEq(p.qname, path)
