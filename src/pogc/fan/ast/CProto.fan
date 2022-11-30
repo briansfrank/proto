@@ -85,7 +85,7 @@ internal class CProto
 
   Bool isAssembled() { asmRef != null }
 
-  MProto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
+  Proto asm() { asmRef ?: throw Err("Not assembled yet [$name]") }
 
   static const Str:CProto noChildren := [:]
 
@@ -97,7 +97,7 @@ internal class CProto
   const FileLoc loc       // ctor
   const Str name          // ctor
   const AtomicRef baseRef // ctor
-  MProto? asmRef          // Assemble.asm
+  Proto? asmRef           // Assemble.asm
   CPragma? pragma         // Parser
   CProto? parent          // Step.addSlot
   Str:CProto children     // Step.addSlot

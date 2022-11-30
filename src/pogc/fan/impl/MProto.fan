@@ -11,12 +11,12 @@ using concurrent
 using pog
 
 **
-** Proto implementation
+** Proto service provider implementation
 **
 @Js
-internal const class MProto : Proto
+internal const class MProtoSpi : ProtoSpi
 {
-  new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:MProto children)
+  new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:Proto children)
   {
     this.loc      = loc
     this.path     = path
@@ -40,7 +40,7 @@ internal const class MProto : Proto
 
   override Bool hasVal() { valRef != null }
 
-  override Str? val(Bool checked := true)
+  override Str? val(Bool checked)
   {
     if (valRef != null) return valRef
     if (checked) throw ProtoMissingValErr(name)
@@ -80,7 +80,7 @@ internal const class MProto : Proto
     return null
   }
 
-  internal const Str:MProto children
+  internal const Str:Proto children
 
   override Void each(|Proto| f)
   {
@@ -89,7 +89,7 @@ internal const class MProto : Proto
     eachSeen(seen, f)
   }
 
-  Void eachSeen(Str:Str seen, |Proto| f)
+  override Void eachSeen(Str:Str seen, |Proto| f)
   {
     children.each |kid|
     {
@@ -121,7 +121,7 @@ internal const class MProto : Proto
 
   override Bool fits(Proto that)
   {
-    this === that || base.fits(that)
+    this === that.spi || base.fits(that)
   }
 
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
@@ -140,7 +140,7 @@ internal const class MProto : Proto
     }
   }
 
-  static const Str:MProto noChildren := [:]
+  static const Str:Proto noChildren := [:]
 
 }
 

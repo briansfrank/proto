@@ -21,21 +21,22 @@ internal class Assemble : Step
 
   override Void run()
   {
-    // assemble CProtos to MProtos
-    root := asm(compiler.root)
+    this.update = AssembleUpdate()
+    this.update.execute |u|
+    {
+      // assemble CProtos to MProtos
+      compiler.graph = asm(compiler.root)
 
-    // assign base types
-    assignBase(compiler.root)
-
-    // create space implementation
-    compiler.graph = MGraph(root, asmLibs)
+      // assign base types
+      assignBase(compiler.root)
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Assemble
 //////////////////////////////////////////////////////////////////////////
 
-  private MProto asm(CProto x)
+  private Proto asm(CProto x)
   {
     if (x.isAssembled) return x.asm
 
@@ -44,18 +45,24 @@ internal class Assemble : Step
     kids    := asmChildren(x.children)
     val     := x.val
 
-    m := x.isLib ?
-         MLib(x.loc, path, baseRef, val, kids) :
-         MProto(x.loc, path, baseRef, val, kids)
+    m := instantiate(x, MProtoSpi(x.loc, path, baseRef, val, kids))
 
     x.asmRef = m
     return m
   }
 
-  private Str:MProto asmChildren(Str:CProto children)
+  private Proto instantiate(CProto x, MProtoSpi spi)
   {
-    if (children.isEmpty) return MProto.noChildren
-    acc := Str:MProto[:]
+    update.spi = spi
+    if (x.isLib) return Lib()
+    if (x.isRoot) return MGraph(asmLibs)
+    return Proto()
+  }
+
+  private Str:Proto asmChildren(Str:CProto children)
+  {
+    if (children.isEmpty) return MProtoSpi.noChildren
+    acc := Str:Proto[:]
     acc.ordered = true
     children.each |kid| { acc.add(kid.name, asm(kid)) }
     return acc.toImmutable
@@ -64,7 +71,7 @@ internal class Assemble : Step
   private Str:Lib asmLibs()
   {
     acc := Str:Lib[:]
-    libs.each |x| { acc.add(x.path.toStr, (MLib)x.proto.asm) }
+    libs.each |x| { acc.add(x.path.toStr, (Lib)x.proto.asm) }
     return acc
   }
 
@@ -88,9 +95,46 @@ internal class Assemble : Step
     return MSingleBase(x.type.deref.asm)
   }
 
-  private MProto[] baseOfList(CProto x)
+  private Proto[] baseOfList(CProto x)
   {
-    x.getOwn("_of").children.vals.map |kid->MProto| { kid.asm }
+    x.getOwn("_of").children.vals.map |kid->Proto| { kid.asm }
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  private AssembleUpdate? update
+
+}
+
+**************************************************************************
+** AssembleUpdate
+**************************************************************************
+
+internal class AssembleUpdate : Update
+{
+  const override DateTime ts := DateTime.now
+
+  const override Int ticks := Duration.nowTicks
+
+  const override Int tx := 0
+
+  MProtoSpi? spi
+
+  override ProtoSpi init(Proto proto)
+  {
+    r := this.spi ?: throw Err("spi field not set")
+    this.spi = null
+    return r
+  }
+
+  override Graph graph() { throw err() }
+  override Graph commit() { throw err() }
+  override Proto clone(Proto type) { throw err() }
+  override This set(Proto parent, Str name, Obj val) { throw err() }
+  override This add(Proto parent, Obj val, Str? name := null) { throw err() }
+  override This remove(Proto parent, Str name) { throw err() }
+  override This clear(Proto parent) { throw err() }
+  Err err() { UnsupportedErr("AssembleUpdate") }
 }

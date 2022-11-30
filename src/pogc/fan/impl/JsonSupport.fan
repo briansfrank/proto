@@ -71,6 +71,7 @@ internal class JsonProtoEncoder : OutStream
 **
 ** JsonProtoDecoder
 **
+/* TODO
 @Js
 internal class JsonProtoDecoder
 {
@@ -104,7 +105,7 @@ internal class JsonProtoDecoder
     return MGraph(root, libs)
   }
 
-  private MProto asmProto(JsonProto x)
+  private Proto asmProto(JsonProto x)
   {
     if (x.isAssembled) return x.asm
 
@@ -134,12 +135,13 @@ throw Err("TODO")
 
   private Str:Lib asmLibs()
   {
-    libs.map |x->MLib| { x.asm }
+    libs.map |x->Lib| { x.asm }
   }
 
   private Str:JsonProto acc := [:]
   private Str:JsonProto libs := [:]
 }
+*/
 
 **************************************************************************
 ** JsonProto
@@ -167,7 +169,7 @@ internal class JsonProto
   Bool isObj() { type == null }
 
   Bool isAssembled() { asmRef.val != null }
-  MProto asm() { asmRef.val ?: throw Err("Not assembled yet [$path]") }
+  Proto asm() { asmRef.val ?: throw Err("Not assembled yet [$path]") }
   const AtomicRef asmRef := AtomicRef()
 }
 

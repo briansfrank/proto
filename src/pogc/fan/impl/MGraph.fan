@@ -12,10 +12,9 @@ using pog
 ** Graph implementation
 **
 @Js
-internal const class MGraph : MProto, Graph
+internal const class MGraph : Graph
 {
-  new make(MProto root, Str:Lib libsMap)
-    : super(root.loc, root.path, root.baseRef, null, root.children)
+  new make(Str:Lib libsMap)
   {
     this.libs    = libsMap.vals.sort |a, b| { a.qname <=> b.qname }
     this.libsMap = libsMap
@@ -41,11 +40,6 @@ internal const class MGraph : MProto, Graph
     for (i := 0; p != null && i<path.size; ++i)
       p = p.get(path[i], checked)
     return p
-  }
-
-  override Void encodeJson(OutStream out)
-  {
-    JsonProtoEncoder(out).encode(this)
   }
 
 }

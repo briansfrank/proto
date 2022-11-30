@@ -16,24 +16,53 @@ abstract class Update
 {
 
 //////////////////////////////////////////////////////////////////////////
-// Context
+// Execution Context
 //////////////////////////////////////////////////////////////////////////
 
   ** Get the current update
   static Update? cur(Bool checked := true)
   {
-    u := Actor.locals[actorKey]
+    u := curStack?.peek
     if (u != null) return u
     if (checked) throw NotInUpdateErr("Not currently in an update")
     return null
   }
-  @NoDoc static const Str actorKey := "pog.update"
+
+  ** Get the current update stack
+  @NoDoc static Update[]? curStack()
+  {
+    Actor.locals[actorKey] as Update[]
+  }
+
+  ** Push this update on to the stack, perform callback, then pop
+  @NoDoc Void execute(|This| f)
+  {
+    stack := curStack
+    if (stack == null)
+    {
+      Actor.locals[actorKey] = stack = Update[this]
+      try
+        f(this)
+      finally
+        Actor.locals.remove(actorKey)
+    }
+    else
+    {
+      stack.push(this)
+      try
+        f(this)
+      finally
+        stack.pop
+    }
+  }
+
+  private static const Str actorKey := "pog.update"
 
 //////////////////////////////////////////////////////////////////////////
 // Identity
 //////////////////////////////////////////////////////////////////////////
 
-  ** Associated graph
+  ** Associated original instance of the graph
   abstract Graph graph()
 
   ** Timestamp for this update
@@ -52,8 +81,11 @@ abstract class Update
 // Updates
 //////////////////////////////////////////////////////////////////////////
 
+  ** Commit the updates and create new immutable instance of the graph.
+  abstract Graph commit()
+
   ** Proto initialization
-  //@NoDoc abstract ProtoSpi init(Proto proto)
+  @NoDoc abstract ProtoSpi init(Proto proto)
 
   ** Clone a new proto from the given type
   abstract Proto clone(Proto type)

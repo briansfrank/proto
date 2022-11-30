@@ -13,6 +13,7 @@ using pog
 **
 ** Lib implementation
 **
+/* TODO
 @Js
 internal const class MLib : MProto, Lib
 {
@@ -25,3 +26,4 @@ internal const class MLib : MProto, Lib
 
   override const Version version
 }
+*/

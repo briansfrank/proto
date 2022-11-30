@@ -58,11 +58,11 @@ internal const class MNullBase : MProtoBase
 **
 internal const class MSingleBase : MProtoBase
 {
-  new make(MProto proto) { this.proto = proto }
-  override const MProto? proto
+  new make(Proto proto) { this.proto = proto }
+  override const Proto? proto
   override Bool has(Str name) { proto.has(name) }
   override Proto? get(Str name) { proto.get(name, false) }
-  override Void eachSeen(Str:Str seen, |Proto| f) { proto.eachSeen(seen, f) }
+  override Void eachSeen(Str:Str seen, |Proto| f) { proto.spi.eachSeen(seen, f) }
   override Bool fits(Proto base) { proto.fits(base) }
 }
 
@@ -75,13 +75,13 @@ internal const class MSingleBase : MProtoBase
 **
 internal const class MAndBase : MProtoBase
 {
-  new make(MProto and, MProto[] bases) { this.proto = and; this.bases = bases }
-  override const MProto? proto
+  new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }
+  override const Proto? proto
   override Bool has(Str name) { get(name) != null }
   override Proto? get(Str name) { bases.eachWhile |b| { b.get(name, false) } }
-  override Void eachSeen(Str:Str seen, |Proto| f) { bases.each |b| { b.eachSeen(seen, f) } }
+  override Void eachSeen(Str:Str seen, |Proto| f) { bases.each |b| { b.spi.eachSeen(seen, f) } }
   override Bool fits(Proto base) { proto.fits(base) || bases.any |b| { b.fits(base) } }
-  const MProto[] bases
+  const Proto[] bases
 }
 
 **************************************************************************
@@ -93,8 +93,8 @@ internal const class MAndBase : MProtoBase
 **
 internal const class MOrBase : MProtoBase
 {
-  new make(MProto and, MProto[] bases) { this.proto = and; this.bases = bases }
-  override const MProto? proto
+  new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }
+  override const Proto? proto
   override Bool has(Str name) { get(name) != null }
   override Proto? get(Str name)
   {
@@ -123,5 +123,5 @@ internal const class MOrBase : MProtoBase
     }
   }
   override Bool fits(Proto base) { proto.fits(base) || bases.all |b| { b.fits(base) } }
-  const MProto[] bases
+  const Proto[] bases
 }
