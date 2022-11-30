@@ -20,6 +20,7 @@ internal const class MPogEnv : PogEnv
     this.path = initPath
     this.installedMap = initInstalled(this.path)
     this.installed = installedMap.keys.sort
+    this.io = MPogEnvIO.init
   }
 
   private static File[] initPath()
@@ -73,6 +74,9 @@ internal const class MPogEnv : PogEnv
     return null
   }
 
+  ** I/O regsitry
+  override const MPogEnvIO io
+
   ** Compile a new namespace from a list of library names.
   ** Raise exception if there are any compiler errors.
   override Graph compile(Str[] libNames)
@@ -98,3 +102,47 @@ internal const class MPogEnv : PogEnv
   ** Test main to dump
   static Void main() { cur.dump }
 }
+
+**************************************************************************
+** MPogEnvIO
+**************************************************************************
+
+internal const class MPogEnvIO : PogEnvIO
+{
+  static MPogEnvIO init()
+  {
+    acc := Str:PogIO[:]
+    Env.cur.index("pog.io").each |qname|
+    {
+      try
+      {
+        io := (PogIO)Type.find(qname).make
+        acc.add(io.name, io)
+      }
+      catch (Err e)
+      {
+        echo("ERROR: cannot init PogIO: $qname\n$e.traceToStr")
+      }
+    }
+    return make(acc)
+  }
+
+  private new make(Str:PogIO map)
+  {
+    this.map = map
+    this.list = map.vals.sort |a, b| { a.name <=> b.name }
+  }
+
+  const override PogIO[] list
+
+  const Str:PogIO map
+
+  override PogIO? get(Str name, Bool checked := true)
+  {
+    io := map[name]
+    if (io != null) return io
+    if (checked) throw Err("Unknown PogIO format: $name")
+    return null
+  }
+}
+

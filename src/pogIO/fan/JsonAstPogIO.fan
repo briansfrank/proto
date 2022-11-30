@@ -9,28 +9,54 @@
 using concurrent
 using util
 using pog
+using pogc
 
 **
-** JsonProtoEncoder
+** JSON representation of the AST
 **
 @Js
-internal class JsonProtoEncoder : OutStream
+const class JsonAstPogIO : FilePogIO
+{
+  new make() : super("json-ast") {}
+
+  override Str summary()
+  {
+    "JSON encoding of the AST"
+  }
+
+  override Graph readStream(InStream in)
+  {
+    JsonAstReader().readGraph(in)
+  }
+
+  override Void writeStream(Graph graph, OutStream out)
+  {
+    JsonAstWriter(out).writeGraph(graph)
+  }
+}
+
+**************************************************************************
+** JsonAstWriter
+**************************************************************************
+
+@Js
+internal class JsonAstWriter : OutStream
 {
   new make(OutStream out) : super(out) {}
 
-  This encode(Graph pg)
+  This writeGraph(Graph g)
   {
     printLine("{")
-    kids := pg.listOwn
+    kids := g.listOwn
     kids.each |kid, i|
     {
-      doEncode(kid, i + 1 < kids.size)
+      writeProto(kid, i + 1 < kids.size)
     }
     printLine("}")
     return this
   }
 
-  private Void doEncode(Proto p, Bool comma)
+  private Void writeProto(Proto p, Bool comma)
   {
     kids := p.listOwn
     typeComma := kids.isEmpty && !p.hasVal ? "" : ","
@@ -48,7 +74,7 @@ internal class JsonProtoEncoder : OutStream
 
     kids.each |kid, i|
     {
-      doEncode(kid, i + 1 < kids.size)
+      writeProto(kid, i + 1 < kids.size)
     }
 
     indentation--
@@ -65,30 +91,21 @@ internal class JsonProtoEncoder : OutStream
 }
 
 **************************************************************************
-** JsonProtoDecoder
+** JsonAstReader
 **************************************************************************
 
-**
-** JsonProtoDecoder
-**
-/* TODO
 @Js
-internal class JsonProtoDecoder
+internal class JsonAstReader
 {
-  static Graph decode(InStream in)
+  Graph readGraph(InStream in)
   {
-    try
-    {
-      decoder := make
-      decoder.index(Path.root, JsonInStream(in).readJson)
-      return decoder.asm
-    }
-    finally in.close
+    index(Path.root, JsonInStream(in).readJson)
+    return asm
   }
 
-  private JsonProto index(Path path, Str:Obj map)
+  private JsonAstProto index(Path path, Str:Obj map)
   {
-    x := JsonProto(path, map)
+    x := JsonAstProto(path, map)
     acc[path.toStr] = x
     if (x.isLib) libs.add(path.toStr, x)
     map.each |v, k|
@@ -98,8 +115,11 @@ internal class JsonProtoDecoder
     return x
   }
 
-  private MGraph asm()
+  private Graph asm()
   {
+    throw Err("TODO")
+  }
+    /*
     root := asmProto(acc[""])
     libs := asmLibs
     return MGraph(root, libs)
@@ -137,18 +157,18 @@ throw Err("TODO")
   {
     libs.map |x->Lib| { x.asm }
   }
+  */
 
-  private Str:JsonProto acc := [:]
-  private Str:JsonProto libs := [:]
+  private Str:JsonAstProto acc := [:]
+  private Str:JsonAstProto libs := [:]
 }
-*/
 
 **************************************************************************
-** JsonProto
+** JsonAstProto
 **************************************************************************
 
 @Js
-internal class JsonProto
+internal class JsonAstProto
 {
   new make(Path path, Str:Obj map)
   {
@@ -162,7 +182,7 @@ internal class JsonProto
   const Str? type
   const Bool isLib
   Str:Obj map
-  JsonProto[] children := [,]
+  JsonAstProto[] children := [,]
 
   Str name() { path.name }
 
@@ -172,4 +192,3 @@ internal class JsonProto
   Proto asm() { asmRef.val ?: throw Err("Not assembled yet [$path]") }
   const AtomicRef asmRef := AtomicRef()
 }
-

@@ -33,64 +33,6 @@ class CompileTest : AbstractCompileTest
     verifySame(graph.libs[1], graph.lib("sys"))
     verifySys
     verifyPh
-
-    // now test JSON
-/* TODO
-    sb := StrBuf()
-    graph.encodeJson(sb.out)
-    json := sb.toStr
-    ps = ProtoEnv.cur.decodeJson(json.in)
-    verifyEq(graph.libs.size, 2)
-    verifySame(graph.libs[0], graph.lib("ph"))
-    verifySame(graph.libs[1], graph.lib("sys"))
-    verifySys(ps)
-    verifyPh(ps)
-*/
-  }
-
-  private Void verifySys()
-  {
-    sys := verifyLib("sys", "0.9.1")
-    verifySame(graph->sys, sys)
-
-    obj    := verifyProto("sys.Obj",    null,   null)
-    marker := verifyProto("sys.Marker", obj,    null)
-    val    := verifyProto("sys.Val",    obj,    null)
-    scalar := verifyProto("sys.Scalar", val,    null)
-    bool   := verifyProto("sys.Bool",   scalar, null)
-    boolT  := verifyProto("sys.True",   bool,   "true")
-    boolF  := verifyProto("sys.False",  bool,   "false")
-    str    := verifyProto("sys.Str",    scalar, null)
-
-    objDoc    := verifyProto("sys.Obj._doc", str, "Root type for all objects")
-    objDocDoc := verifyProto("sys.Obj._doc._doc", str, "Documentation for object")
-    valDoc    := verifyProto("sys.Val._doc", objDoc, "Data value type")
-    scalarDoc := verifyProto("sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
-
-    verifySame(sys->Obj, obj)
-    verifySame(obj->_doc, objDoc)
-    verifyErr(UnknownProtoErr#) { sys->Foo }
-    verifyErr(UnknownProtoErr#) { obj->foo }
-  }
-
-  private Void verifyPh()
-  {
-    ph := verifyLib("ph", "3.9.12")
-    verifySame(graph->ph, ph)
-
-    sys := graph->sys
-
-    na     := verifyProto("ph.Na",     sys->Obj)
-    remove := verifyProto("ph.Remove", sys->Obj)
-    ref    := verifyProto("ph.Ref",    sys->Scalar)
-    grid   := verifyProto("ph.Grid",   sys->Collection)
-    entity := verifyProto("ph.Entity", sys->Dict)
-    id     := verifyProto("ph.Entity.id._of", ph->Tag->id)
-    str    := verifyProto("ph.Entity.dis._of", ph->Tag->dis)
-
-    depends := verifyProto("ph._depends", sys->Lib->_depends)
-    verifyProto("ph._depends._0", sys->Depend)
-    verifyProto("ph._depends._0.lib", sys->Depend->lib, "sys")
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -507,35 +449,6 @@ class CompileTest : AbstractCompileTest
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
-  private Lib verifyLib(Str qname, Str version)
-  {
-    lib := graph.lib(qname)
-    verifySame(lib, graph.get(qname))
-    verifyProto(qname, graph.sys->Lib, null)
-    verifyProto(qname+"._version", graph.sys->Lib->_version, version)
-    verifyEq(lib.version, Version(version))
-    return lib
-  }
 
-  private Proto verifyProto(Str path, Proto? type, Obj? val := null)
-  {
-    p := getq(path)
-    // echo("$p.loc [$p.qname]")
-    verifyEq(p.name, path.split('.').last)
-    verifyEq(p.qname, path)
-    verifySame(p.type, type)
-    verifyEq(p.toStr, path)
-    if (val != null)
-    {
-      verifyEq(p.val, val)
-    }
-    else
-    {
-      verifyEq(p.val(false), null)
-      verifyErr(ProtoMissingValErr#) { p.val }
-      verifyErr(ProtoMissingValErr#) { p.val(true) }
-    }
-    return p
-  }
 }
 

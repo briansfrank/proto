@@ -44,6 +44,9 @@ abstract const class PogEnv
   ** might be on the local file system or a directory within a pod file.
   abstract File? libDir(Str qname, Bool checked := true)
 
+  ** I/O adaptor and file format registry
+  abstract PogEnvIO io()
+
   ** Compile a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
   abstract Graph compile(Str[] libNames)
@@ -67,6 +70,8 @@ internal const class JsPogEnv : PogEnv
   override Str[] installed() { Str[,] }
 
   override File? libDir(Str name, Bool checked := true) { throw UnsupportedErr() }
+
+  override PogEnvIO io() { throw UnsupportedErr() }
 
   override Graph compile(Str[] libNames) { throw UnsupportedErr() }
 }
