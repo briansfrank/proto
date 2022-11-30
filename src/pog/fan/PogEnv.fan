@@ -21,10 +21,7 @@ abstract const class PogEnv
   {
     try
     {
-      if (Env.cur.runtime == "js")
-        curRef = JsPogEnv()
-      else
-        curRef = Type.find("pogc::MPogEnv").make
+      curRef = Type.find("pogc::MPogEnv").make
     }
     catch (Err e)
     {
@@ -47,33 +44,12 @@ abstract const class PogEnv
   ** I/O adaptor and file format registry
   abstract PogEnvIO io()
 
-  ** Compile a new graph from a list of library qnames.
+  ** Create a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
-  abstract Graph compile(Str[] libNames)
+  abstract Graph create(Str[] libNames)
 
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
-}
-
-**************************************************************************
-** JsPogEnv
-**************************************************************************
-
-**
-** JsPogEnv is stub implementation for browser environments
-**
-@Js
-internal const class JsPogEnv : PogEnv
-{
-  override File[] path() { File[,] }
-
-  override Str[] installed() { Str[,] }
-
-  override File? libDir(Str name, Bool checked := true) { throw UnsupportedErr() }
-
-  override PogEnvIO io() { throw UnsupportedErr() }
-
-  override Graph compile(Str[] libNames) { throw UnsupportedErr() }
 }
 
 

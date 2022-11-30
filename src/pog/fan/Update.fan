@@ -35,14 +35,14 @@ abstract class Update
   }
 
   ** Push this update on to the stack, perform callback, then pop
-  @NoDoc Void execute(|This| f)
+  @NoDoc Graph execute(|This->Graph| f)
   {
     stack := curStack
     if (stack == null)
     {
       Actor.locals[actorKey] = stack = Update[this]
       try
-        f(this)
+        return f(this)
       finally
         Actor.locals.remove(actorKey)
     }
@@ -50,7 +50,7 @@ abstract class Update
     {
       stack.push(this)
       try
-        f(this)
+        return f(this)
       finally
         stack.pop
     }
@@ -81,37 +81,52 @@ abstract class Update
 // Updates
 //////////////////////////////////////////////////////////////////////////
 
-  ** Commit the updates and create new immutable instance of the graph.
-  abstract Graph commit()
-
   ** Proto initialization
   @NoDoc abstract ProtoSpi init(Proto proto)
 
+  ** Load the given library name into the graph.  If the library is already
+  ** loaded then this a no-op.  Dependencies must already be loaded.
+  abstract This load(Str libName)
+
+  ** Remove the given library name into the graph.  If library is not already
+  ** loaded then this no-op.  Raise exception if other loaded libraries
+  ** depend on the given library.
+  abstract This unload(Str libName)
+
   ** Clone a new proto from the given type
-  abstract Proto clone(Proto type)
+  abstract ProtoStub clone(ProtoStub type)
 
   ** Add or update the effective child within the parent.  If the given
   ** name does not exist or is inherited, then this method always ensures
   ** that parent has its own child slot for the name.   The value may be a
   ** Proto or a scalar value.  If the parent's type has a slot with the same
   ** name, then value must be type compatible with the parent's definition.
-  abstract This set(Proto parent, Str name, Obj val)
+  abstract This set(ProtoStub parent, Str name, Obj val)
 
   ** Add the given slot name within the parent.  This method has the
   ** exact same semantics as `set` except it raises a 'DupProtoNameErr'
   ** if name is already bound to slot (own or inherited).  If name is null,
   ** then a name is auto-generated.
-  abstract This add(Proto parent, Obj val, Str? name := null)
+  abstract This add(ProtoStub parent, Obj val, Str? name := null)
 
   ** Remove given slot from the parent proto.  Note this removes the slot
   ** only if the parent has its own slot with the given name; the name
   ** may still be inherited from the parent's prototype.  If the parent
   ** does not have its own slot with the given name, then this method is
   ** a silent no-op.
-  abstract This remove(Proto parent, Str name)
+  abstract This remove(ProtoStub parent, Str name)
 
   ** Remove all children protos from the given proto.  This method only
   ** removes slots which owned by the given parent, not inherited slots.
-  abstract This clear(Proto parent)
+  abstract This clear(ProtoStub parent)
 }
+
+**************************************************************************
+** ProtoStub
+**************************************************************************
+
+** ProtoStub is an actual Proto instance or a place holder
+** used during the update proecess.
+@Js
+mixin ProtoStub {}
 

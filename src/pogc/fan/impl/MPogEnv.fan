@@ -79,7 +79,7 @@ internal const class MPogEnv : PogEnv
 
   ** Compile a new namespace from a list of library names.
   ** Raise exception if there are any compiler errors.
-  override Graph compile(Str[] libNames)
+  override Graph create(Str[] libNames)
   {
     c := ProtoCompiler
     {

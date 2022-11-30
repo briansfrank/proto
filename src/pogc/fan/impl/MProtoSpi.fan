@@ -38,6 +38,8 @@ internal const class MProtoSpi : ProtoSpi
   MProtoBase base() { baseRef.val }
   internal const AtomicRef baseRef
 
+  override Int tx() { -1 }
+
   override Bool hasVal() { valRef != null }
 
   override Str? val(Bool checked)
@@ -127,8 +129,15 @@ internal const class MProtoSpi : ProtoSpi
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     indent := opts?.get("indent") as Str ?: ""
-    out.print(indent).print(name)
-    if (type != null) out.print(" : ").print(type)
+    if (path.isRoot)
+    {
+      out.print(type)
+    }
+    else
+    {
+      out.print(indent).print(name)
+      if (type != null) out.print(" : ").print(type)
+    }
     if (valRef != null) out.print(" ").print(valRef.toCode)
     if (children.size == 0) out.printLine
     else

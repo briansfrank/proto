@@ -42,5 +42,14 @@ internal const class MGraph : Graph
     return p
   }
 
+  override Graph update(|Update| f)
+  {
+    MUpdate(this).execute |MUpdate u->Graph|
+    {
+      f(u)
+      return u.commit
+    }
+  }
+
 }
 

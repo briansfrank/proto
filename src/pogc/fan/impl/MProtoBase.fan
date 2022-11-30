@@ -40,6 +40,7 @@ internal abstract const class MProtoBase
 **
 ** MNullBase is for sys.Obj itself which has no base type
 **
+@Js
 internal const class MNullBase : MProtoBase
 {
   override Proto? proto()  { null }
@@ -56,6 +57,7 @@ internal const class MNullBase : MProtoBase
 **
 ** MSingleBase handles the standard case for a single prototype base type
 **
+@Js
 internal const class MSingleBase : MProtoBase
 {
   new make(Proto proto) { this.proto = proto }
@@ -73,6 +75,7 @@ internal const class MSingleBase : MProtoBase
 **
 ** MAndBase handles an And construct with intersects all base types
 **
+@Js
 internal const class MAndBase : MProtoBase
 {
   new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }
@@ -91,6 +94,7 @@ internal const class MAndBase : MProtoBase
 **
 ** MOrBase handles an Or construct with union all base types
 **
+@Js
 internal const class MOrBase : MProtoBase
 {
   new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }

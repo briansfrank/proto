@@ -22,13 +22,15 @@ internal class Assemble : Step
   override Void run()
   {
     this.update = AssembleUpdate()
-    this.update.execute |u|
+    this.update.execute |u->Graph|
     {
       // assemble CProtos to MProtos
       compiler.graph = asm(compiler.root)
 
       // assign base types
       assignBase(compiler.root)
+
+      return compiler.graph
     }
   }
 
@@ -124,17 +126,18 @@ internal class AssembleUpdate : Update
 
   override ProtoSpi init(Proto proto)
   {
-    r := this.spi ?: throw Err("spi field not set")
+    r := this.spi ?: throw Err("spi not ready")
     this.spi = null
     return r
   }
 
   override Graph graph() { throw err() }
-  override Graph commit() { throw err() }
-  override Proto clone(Proto type) { throw err() }
-  override This set(Proto parent, Str name, Obj val) { throw err() }
-  override This add(Proto parent, Obj val, Str? name := null) { throw err() }
-  override This remove(Proto parent, Str name) { throw err() }
-  override This clear(Proto parent) { throw err() }
+  override ProtoStub clone(ProtoStub type) { throw err() }
+  override This load(Str libName) { throw err() }
+  override This unload(Str libName)  { throw err() }
+  override This set(ProtoStub parent, Str name, Obj val) { throw err() }
+  override This add(ProtoStub parent, Obj val, Str? name := null) { throw err() }
+  override This remove(ProtoStub parent, Str name) { throw err() }
+  override This clear(ProtoStub parent) { throw err() }
   Err err() { UnsupportedErr("AssembleUpdate") }
 }

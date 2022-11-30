@@ -12,7 +12,7 @@ using util
 ** Prototype object.
 **
 @Js
-const class Proto
+const class Proto : ProtoStub
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,9 @@ const class Proto
   **   Str.fits(Scalar)  >>>  true
   **   Scalar.fits(Str)  >>>  false
   Bool fits(Proto base) { spiRef.fits(base) }
+
+  ** Transaction version for when this proto was last modified
+  Int tx() { spiRef.tx }
 
   ** Service provider interface for this proto object
   @NoDoc virtual ProtoSpi spi() { spiRef }
@@ -132,6 +135,7 @@ abstract const class ProtoSpi
   abstract Str name()
   abstract Str qname()
   abstract Proto? type()
+  abstract Int tx()
   abstract Bool fits(Proto base)
   abstract Bool hasVal()
   abstract Obj? val(Bool checked)

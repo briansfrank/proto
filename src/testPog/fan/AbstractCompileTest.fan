@@ -25,7 +25,7 @@ abstract class AbstractCompileTest : Test
 
   Graph compile(Str[] libs)
   {
-    this.graph = PogEnv.cur.compile(libs)
+    this.graph = PogEnv.cur.create(libs)
   }
 
   Lib compileSrc(Str src)
