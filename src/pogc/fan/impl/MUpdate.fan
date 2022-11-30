@@ -55,13 +55,13 @@ internal class MUpdate : Update
 
   override This set(ProtoStub parent, Str name, Obj val)
   {
-    stubPath(parent).set(name, val)
+    stubPath(parent).doSet(name, val)
     return this
   }
 
   override This add(ProtoStub parent, Obj val, Str? name := null)
   {
-    stubPath(parent).add(name, val)
+    stubPath(parent).doAdd(name, val)
     return this
   }
 
@@ -80,22 +80,23 @@ internal class MUpdate : Update
   {
     if (obj is MProtoStub) return obj
     spi := (MProtoSpi)((Proto)obj).spi
-    if (root == null) root = MProtoStub.makeStub(graph.spi)
+    if (root == null) root = MProtoStub.makeStub(null, graph.spi)
     cur := root
     spi.path.each |name, i|
     {
-      kid := cur.get(name)
+      parent := cur
+      kid := parent.get(name)
       if (kid == null) throw Err("Proto not in graph: $spi.path")
-      if (kid is MProtoStub)
+
+      if (kid is Proto)
       {
-        cur = kid
-      }
-      else
-      {
-        kidStub := MProtoStub.makeStub(((Proto)kid).spi)
+        kidProto := (Proto)kid
+        kidStub := MProtoStub.makeStub(parent, kidProto.spi)
         cur.set(name, kidStub)
         cur = kidStub
       }
+
+      cur = kid
     }
     return cur
   }
@@ -118,6 +119,32 @@ internal class MUpdate : Update
 
     this.spi = MProtoSpi(stub.loc, path, tx, baseRef, stub.val, children)
     return path.isRoot ? MGraph(libsMap) : Proto()
+  }
+
+  override Void dump(OutStream out := Env.cur.out)
+  {
+    out.printLine("--- MUpdate [tx $tx] ---")
+    dumpStub(out, "root", root, 0)
+  }
+
+  private Void dumpStub(OutStream out, Str name, ProtoStub? x, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    if (x == null) return out.printLine(" null")
+    stub := x as MProtoStub
+    if (stub != null)
+    {
+      out.print("M ").print(name).print(": ").printLine(stub.type)
+      stub.children.each |kid, kidName|
+      {
+        dumpStub(out, kidName, kid, indent+2)
+      }
+    }
+    else
+    {
+      proto := (Proto)x
+      out.print("~ ").print(name).print(": ").printLine(proto.type)
+    }
   }
 
   private Str:Lib libsMap

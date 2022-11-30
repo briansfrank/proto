@@ -139,5 +139,6 @@ internal class AssembleUpdate : Update
   override This add(ProtoStub parent, Obj val, Str? name := null) { throw err() }
   override This remove(ProtoStub parent, Str name) { throw err() }
   override This clear(ProtoStub parent) { throw err() }
+  override Void dump(OutStream out := Env.cur.out) { throw err() }
   Err err() { UnsupportedErr("AssembleUpdate") }
 }

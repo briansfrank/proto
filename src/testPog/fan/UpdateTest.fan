@@ -14,34 +14,70 @@ using pogc
 **
 class UpdateTest : AbstractCompileTest
 {
-  Void testBasics()
+  Void testSets()
   {
     graph = env.create(["sys"])
     verifySys
-    verifyTx("", 0)
-    verifyTx("sys", 0)
-    verifyTx("sys.Dict", 0)
-    verifyTx("sys.Lib._version", 0)
+    verifyProto("", graph.sys->Dict, null, 0)
+    verifyProto("sys", graph.sys->Lib, null, 0)
+    verifyProto("sys._version", graph.sys->Lib->_version, graph.sys.version.toStr, 0)
 
-    // add
-    newGraph := graph.update |u|
+    // set/add
+    update |u|
     {
       dict := graph.sys->Dict
-      a := graph.add(u.clone(dict), "a")
-      b := graph.set("b", u.clone(dict))
+      graph.add(u.clone(dict), "a")
+      graph.set("b", u.clone(dict))
     }
-newGraph.dump
-    graph = newGraph
     verifySys
-    verifyProto("a", graph.sys->Dict, null)
-    verifyProto("b", graph.sys->Dict, null)
-    verifyTx("", 1)
-    verifyTx("sys", 0)
-    verifyTx("sys.Dict", 0)
-    verifyTx("sys.Lib._version", 0)
-    verifyTx("a", 1)
-    verifyTx("b", 1)
+    verifyProto("", graph.sys->Dict, null, 1)
+    verifyProto("sys", graph.sys->Lib, null, 0)
+    verifyProto("sys._version", graph.sys->Lib->_version, graph.sys.version.toStr, 0)
+    verifyProto("a", graph.sys->Dict, null, 1)
+    verifyProto("b", graph.sys->Dict, null, 1)
 
+    // set/add deep
+    update |u|
+    {
+      dict := graph.sys->Dict
+      c := u.clone(dict)
+      d := u.clone(dict)
+      e := u.clone(dict)
+      graph.set("c", c)
+      c.set("d", d)
+      d.add(e, "e")
+      d.add(u.clone(dict))
+      d.add(u.clone(dict))
+
+      // verify exceptions
+      verifyErr(DupProtoNameErr#) { graph.add(u.clone(dict), "a") }
+      verifyErr(DupProtoNameErr#) { d.add(u.clone(dict), "e") }
+      verifyErr(ProtoAlreadyParentedErr#) { d.add(e, "someName") }
+    }
+    verifySys
+    verifyProto("", graph.sys->Dict, null, 2)
+    verifyProto("sys", graph.sys->Lib, null, 0)
+    verifyProto("sys._version", graph.sys->Lib->_version, graph.sys.version.toStr, 0)
+    verifyProto("a", graph.sys->Dict, null, 1)
+    verifyProto("b", graph.sys->Dict, null, 1)
+    verifyProto("c", graph.sys->Dict, null, 2)
+    verifyProto("c.d", graph.sys->Dict, null, 2)
+    verifyProto("c.d.e", graph.sys->Dict, null, 2)
+    verifyProto("c.d._0", graph.sys->Dict, null, 2)
+    verifyProto("c.d._1", graph.sys->Dict, null, 2)
+  }
+
+  Void update(|Update| f)
+  {
+    newGraph := graph.update(f)
+    verifyNotSame(graph, newGraph)
+    verifyEq(graph.tx+1, newGraph.tx)
+    graph = newGraph
+  }
+
+  /* TODO
+  Void testLoad()
+  {
     // no-op load
     newGraph = graph.update |u| { u.load("sys") }
     verifySame(graph, newGraph)
@@ -51,18 +87,13 @@ newGraph.dump
     verifySame(graph, newGraph)
 
     // load lib
-    /* TODO
     newGraph = graph.update |u| { u.load("ph") }
     verifyNotSame(graph, newGraph)
     verifyEq(graph.lib("ph", false)?.qname, null)
     verifyEq(newGraph.lib("ph", false)?.qname, "ph")
     verifySys
     verifyPh
-    */
   }
+  */
 
-  Void verifyTx(Str qname, Int expected)
-  {
-    verifyEq(getq(qname).tx, expected)
-  }
 }

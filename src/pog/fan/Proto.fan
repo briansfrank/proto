@@ -98,22 +98,6 @@ const class Proto : ProtoStub
   Proto[] listOwn()  { spiRef.listOwn }
 
 //////////////////////////////////////////////////////////////////////////
-// Updates
-//////////////////////////////////////////////////////////////////////////
-
-  ** Convenience for `Update.set`
-  @Operator This set(Str name, Obj val) { Update.cur.set(this, name, val); return this }
-
-  ** Convenience for `Update.add`
-  @Operator This add(Obj val, Str? name := null) { Update.cur.add(this, val, name); return this }
-
-  ** Convenience for `Update.remove`
-  Void remove(Str name) { Update.cur.remove(this, name) }
-
-  ** Convenience for `Update.clear`
-  This clear() { Update.cur.clear(this); return this }
-
-//////////////////////////////////////////////////////////////////////////
 // Debug
 //////////////////////////////////////////////////////////////////////////
 

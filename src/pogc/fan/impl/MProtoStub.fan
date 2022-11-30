@@ -23,8 +23,9 @@ internal class MProtoStub : ProtoStub
     this.children = MProtoSpi.noChildren
   }
 
-  new makeStub(MProtoSpi spi)
+  new makeStub(ProtoStub? parent, MProtoSpi spi)
   {
+    this.parent = parent
     this.loc = spi.loc
     this.old = spi
     this.type = spi.type
@@ -33,20 +34,34 @@ internal class MProtoStub : ProtoStub
 
   ProtoStub? get(Str name) { children[name] }
 
-  Void set(Str name, ProtoStub kid)
+  Void doSet(Str name, MProtoStub kid)
   {
+    if (kid.parent != null) throw ProtoAlreadyParentedErr(name)
     if (children.isImmutable) children = children.dup
+    kid.parent = this
     children[name] = kid
   }
 
-  Void add(Str name, ProtoStub kid)
+  Void doAdd(Str? name, MProtoStub kid)
   {
-    if (children[name] != null) throw DupProtoNameErr(name)
-    set(name, kid)
+    if (name == null) name = autoName
+    else if (children[name] != null) throw DupProtoNameErr(name)
+    doSet(name, kid)
+  }
+
+  private Str autoName()
+  {
+    for (i := 0; i<10_000; ++i)
+    {
+      name := "_" + i.toStr
+      if (children[name] == null) return name
+    }
+    throw Err("Cannot autoName")
   }
 
   static const Str:ProtoStub noChildren := [:]
 
+  ProtoStub? parent
   FileLoc loc
   Obj? val
   MProtoSpi? old

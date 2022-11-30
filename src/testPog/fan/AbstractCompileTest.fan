@@ -58,7 +58,7 @@ abstract class AbstractCompileTest : Test
     return lib
   }
 
-  Proto verifyProto(Str qname, Proto? type, Obj? val := null)
+  Proto verifyProto(Str qname, Proto? type, Obj? val := null, Int? tx := null)
   {
     p := getq(qname)
     // echo("$p.loc [$p.qname]")
@@ -76,6 +76,7 @@ abstract class AbstractCompileTest : Test
       verifyErr(ProtoMissingValErr#) { p.val }
       verifyErr(ProtoMissingValErr#) { p.val(true) }
     }
+    if (tx != null) verifyEq(p.tx, tx)
     return p
   }
 

@@ -119,6 +119,14 @@ abstract class Update
   ** Remove all children protos from the given proto.  This method only
   ** removes slots which owned by the given parent, not inherited slots.
   abstract This clear(ProtoStub parent)
+
+//////////////////////////////////////////////////////////////////////////
+// Debug
+//////////////////////////////////////////////////////////////////////////
+
+  ** Debug dump current changes
+  @NoDoc abstract Void dump(OutStream out := Env.cur.out)
+
 }
 
 **************************************************************************
@@ -128,5 +136,19 @@ abstract class Update
 ** ProtoStub is an actual Proto instance or a place holder
 ** used during the update proecess.
 @Js
-mixin ProtoStub {}
+mixin ProtoStub
+{
+  ** Convenience for `Update.set`
+  @Operator This set(Str name, Obj val) { Update.cur.set(this, name, val); return this }
+
+  ** Convenience for `Update.add`
+  @Operator This add(Obj val, Str? name := null) { Update.cur.add(this, val, name); return this }
+
+  ** Convenience for `Update.remove`
+  Void remove(Str name) { Update.cur.remove(this, name) }
+
+  ** Convenience for `Update.clear`
+  This clear() { Update.cur.clear(this); return this }
+}
+
 

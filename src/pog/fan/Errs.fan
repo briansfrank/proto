@@ -24,16 +24,24 @@ const class UnknownLibErr : Err
   new make(Str msg, Err? cause := null) : super(msg, cause) {}
 }
 
+@Js @NoDoc
+const class NotInUpdateErr : Err
+{
+  new make(Str msg, Err? cause := null) : super(msg, cause) {}
+}
+
 @NoDoc @Js
 const class DupProtoNameErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}
 }
 
-@Js @NoDoc
-const class NotInUpdateErr : Err
+@NoDoc @Js
+const class ProtoAlreadyParentedErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}
 }
+
+
 
 
