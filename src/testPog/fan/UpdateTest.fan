@@ -18,6 +18,10 @@ class UpdateTest : AbstractCompileTest
   {
     graph = env.create(["sys"])
     verifySys
+    verifyTx("", 0)
+    verifyTx("sys", 0)
+    verifyTx("sys.Dict", 0)
+    verifyTx("sys.Lib._version", 0)
 
     // add
     newGraph := graph.update |u|
@@ -31,6 +35,12 @@ newGraph.dump
     verifySys
     verifyProto("a", graph.sys->Dict, null)
     verifyProto("b", graph.sys->Dict, null)
+    verifyTx("", 1)
+    verifyTx("sys", 0)
+    verifyTx("sys.Dict", 0)
+    verifyTx("sys.Lib._version", 0)
+    verifyTx("a", 1)
+    verifyTx("b", 1)
 
     // no-op load
     newGraph = graph.update |u| { u.load("sys") }
@@ -49,5 +59,10 @@ newGraph.dump
     verifySys
     verifyPh
     */
+  }
+
+  Void verifyTx(Str qname, Int expected)
+  {
+    verifyEq(getq(qname).tx, expected)
   }
 }

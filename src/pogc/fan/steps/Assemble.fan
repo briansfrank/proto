@@ -47,7 +47,7 @@ internal class Assemble : Step
     kids    := asmChildren(x.children)
     val     := x.val
 
-    m := instantiate(x, MProtoSpi(x.loc, path, baseRef, val, kids))
+    m := instantiate(x, MProtoSpi(x.loc, path, 0, baseRef, val, kids))
 
     x.asmRef = m
     return m

@@ -116,7 +116,7 @@ internal class MUpdate : Update
 
     baseRef := AtomicRef(MSingleBase(stub.type))
 
-    this.spi = MProtoSpi(stub.loc, path, baseRef, stub.val, children)
+    this.spi = MProtoSpi(stub.loc, path, tx, baseRef, stub.val, children)
     return path.isRoot ? MGraph(libsMap) : Proto()
   }
 

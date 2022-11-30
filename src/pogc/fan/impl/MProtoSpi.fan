@@ -16,13 +16,14 @@ using pog
 @Js
 internal const class MProtoSpi : ProtoSpi
 {
-  new make(FileLoc loc, Path path, AtomicRef baseRef, Str? val, Str:Proto children)
+  new make(FileLoc loc, Path path, Int tx, AtomicRef baseRef, Str? val, Str:Proto children)
   {
     this.loc      = loc
     this.path     = path
     this.baseRef  = baseRef
     this.valRef   = val
     this.children = children
+    this.tx       = tx
   }
 
   override const FileLoc loc
@@ -33,12 +34,13 @@ internal const class MProtoSpi : ProtoSpi
 
   const Path path
 
+  override const Int tx
+
   override Proto? type() { base.proto }
 
   MProtoBase base() { baseRef.val }
   internal const AtomicRef baseRef
 
-  override Int tx() { -1 }
 
   override Bool hasVal() { valRef != null }
 
