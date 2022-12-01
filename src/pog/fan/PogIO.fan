@@ -36,10 +36,19 @@ abstract const class PogEnvIO
 abstract const class PogIO
 {
   ** Constructor
-  protected new make(Str name) { this.name = name }
+  @NoDoc protected new make(PogEnv env, Str name)
+  {
+    this.envRef = env
+    this.nameRef = name
+  }
+
+  ** Environment
+  PogEnv env() { envRef }
+  private const PogEnv envRef
 
   ** Name key for this format type
-  const Str name
+  Str name() { nameRef }
+  private const Str nameRef
 
   ** Short one sentence of this format
   abstract Str summary()
@@ -69,7 +78,7 @@ abstract const class PogIO
 @NoDoc @Js
 abstract const class FilePogIO : PogIO
 {
-  protected new make(Str name) : super(name) {}
+  protected new make(PogEnv env, Str name) : super(env, name) {}
 
   override Bool canRead(Obj input)
   {

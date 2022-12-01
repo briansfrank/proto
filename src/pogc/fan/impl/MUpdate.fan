@@ -55,13 +55,13 @@ internal class MUpdate : Update
 
   override This set(ProtoStub parent, Str name, Obj val)
   {
-    stubPath(parent).doSet(name, val)
+    stubPath(parent).doSet(name, coerce("set", val))
     return this
   }
 
   override This add(ProtoStub parent, Obj val, Str? name := null)
   {
-    stubPath(parent).doAdd(name, val)
+    stubPath(parent).doAdd(name, coerce("add", val))
     return this
   }
 
@@ -74,6 +74,27 @@ internal class MUpdate : Update
   {
     throw Err("TODO")
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Coerce
+//////////////////////////////////////////////////////////////////////////
+
+  private MProtoStub coerce(Str action, Obj val)
+  {
+    if (val is MProtoStub) return val
+    if (val is Str) return coerceScalar(val, graph.sys->Str)
+    if (val is Proto) throw Err("Cannot $action Proto directly, clone it first")
+    throw Err("Unsupported value type for $action: $val.typeof")
+  }
+
+  private MProtoStub coerceScalar(Obj val, Proto type)
+  {
+    MProtoStub.makeClone(type, val)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Stub Modifications Tracking
+//////////////////////////////////////////////////////////////////////////
 
   ** Stub the given proto up the root
   private MProtoStub stubPath(ProtoStub obj)
@@ -146,6 +167,10 @@ internal class MUpdate : Update
       out.print("~ ").print(name).print(": ").printLine(proto.type)
     }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
 
   private Str:Lib libsMap
   private MProtoStub? root

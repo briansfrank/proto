@@ -17,7 +17,7 @@ using pogc
 @Js
 const class JsonAstPogIO : FilePogIO
 {
-  new make() : super("json-ast") {}
+  new make(PogEnv env) : super(env, "json-ast") {}
 
   override Str summary()
   {

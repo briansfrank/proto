@@ -43,8 +43,8 @@ class UpdateTest : AbstractCompileTest
       c := u.clone(dict)
       d := u.clone(dict)
       e := u.clone(dict)
-      graph.set("c", c)
-      c.set("d", d)
+      graph["c"] = c
+      c.set("d", d) // TODO: change this to set operator
       d.add(e, "e")
       d.add(u.clone(dict))
       d.add(u.clone(dict))

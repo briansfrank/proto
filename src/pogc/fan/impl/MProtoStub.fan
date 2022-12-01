@@ -16,11 +16,12 @@ using pog
 @Js
 internal class MProtoStub : ProtoStub
 {
-  new makeClone(ProtoStub type)
+  new makeClone(ProtoStub type, Obj? val := null)
   {
     this.loc = FileLoc.unknown
     this.type = type
     this.children = MProtoSpi.noChildren
+    this.val = val
   }
 
   new makeStub(ProtoStub? parent, MProtoSpi spi)

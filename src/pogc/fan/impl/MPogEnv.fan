@@ -20,7 +20,7 @@ internal const class MPogEnv : PogEnv
     this.path = initPath
     this.installedMap = initInstalled(this.path)
     this.installed = installedMap.keys.sort
-    this.io = MPogEnvIO.init
+    this.io = MPogEnvIO.init(this)
   }
 
   private static File[] initPath()
@@ -109,14 +109,14 @@ internal const class MPogEnv : PogEnv
 
 internal const class MPogEnvIO : PogEnvIO
 {
-  static MPogEnvIO init()
+  static MPogEnvIO init(PogEnv env)
   {
     acc := Str:PogIO[:]
     Env.cur.index("pog.io").each |qname|
     {
       try
       {
-        io := (PogIO)Type.find(qname).make
+        io := (PogIO)Type.find(qname).make([env])
         acc.add(io.name, io)
       }
       catch (Err e)
