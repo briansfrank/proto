@@ -39,7 +39,7 @@ class ProtoCompiler
 //////////////////////////////////////////////////////////////////////////
 
   ** Install environment
-  const PogEnv env := PogEnv.cur
+  const MPogEnv env := PogEnv.cur
 
   ** Library names to compile
   const Str[] libNames

@@ -57,9 +57,9 @@ internal class Assemble : Step
   private Proto instantiate(CProto x, MProtoSpi spi)
   {
     update.spi = spi
-    if (x.isLib) return Lib()
     if (x.isRoot) return MGraph(env, asmLibs)
-    return Proto()
+    if (x.type == null) return Proto()
+    return env.factory.init(x.qname, x.type.deref.qname)
   }
 
   private Str:Proto asmChildren(Str:CProto children)

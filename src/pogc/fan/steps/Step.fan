@@ -19,7 +19,7 @@ abstract internal class Step
 
   abstract Void run()
 
-  PogEnv env() { compiler.env }
+  MPogEnv env() { compiler.env }
 
   Str[] libNames() { compiler.libNames }
 

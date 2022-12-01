@@ -66,7 +66,7 @@ const class MPogEnv : PogEnv
   const Str:File installedMap
 
   ** Factory to map to/from Protos and Fantom types
-  internal const MFactory factory
+  const MFactory factory
 
   ** Is given library qname installed
   Bool isInstalled(Str libName) { installedMap[libName] != null }

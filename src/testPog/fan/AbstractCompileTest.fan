@@ -51,7 +51,7 @@ abstract class AbstractCompileTest : Test
   Lib verifyLib(Str qname, Str version)
   {
     lib := graph.lib(qname)
-    verifySame(lib, graph.get(qname))
+    verifySame(lib, graph.getq(qname))
     verifyProto(qname, graph.sys->Lib, null)
     verifyProto(qname+"._version", graph.sys->Lib->_version, version)
     verifyEq(lib.version, Version(version))

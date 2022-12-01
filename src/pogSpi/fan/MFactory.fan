@@ -12,7 +12,7 @@ using pog
 ** MFactory maps proto qnames to/from their proper Fantom type
 **
 @Js
-internal const class MFactory
+const class MFactory
 {
   new make(MPogEnv env)
   {
@@ -24,25 +24,27 @@ internal const class MFactory
   private static Str:Str initToFantom(MPogEnv env)
   {
     acc := Str:Str[:]
-    acc["sys.Lib"]              = "pog::Lib"
+    acc["sys.Lib"] = "pog::Lib"
 
     Env.cur.index("pog.types").each |str|
     {
       try
       {
-        // parse: "pog.types": "acme.someib:Foo,Bar,Baz"
-        colon := str.index(":") ?: throw Err("Missing colon")
-        qname := str[0..<colon].trim
+        // parse "pog.types": "<pod>; <lib>; <names>"
+        // parse: "pog.types": "pogLint; sys.lint; LintReport,LintPlan..."
+        semi1 := str.index(";") ?: throw Err("Missing semicolon 1")
+        semi2 := str.index(";", semi1+1) ?: throw Err("Missing semicolon 2")
+        pod := str[0..<semi1].trim
+        lib := str[semi1+1..<semi2].trim
+        types := str[semi2+1..-1].split(',')
 
         // skip if lib not installed
-        if (!env.isInstalled(qname)) return
+        if (!env.isInstalled(lib)) return
 
         // parse type names to Fantom types
-        pod := PogUtil.qnameToCamelCase(qname)
-        types := str[colon+1..-1].split(',')
         types.each |type|
         {
-          acc[qname + "." + type] = pod + "::" + type
+          acc[lib + "." + type] = pod + "::" + type
         }
       }
       catch (Err e)
@@ -106,4 +108,12 @@ internal const class MFactory
 
   ** Fantom scalar type to Proto qname
   const Str:Str fromFantomScalar
+
+  ** Create Fantom instance for library proto
+  Proto init(Str qname, Str type)
+  {
+    fantom := toFantom[qname] ?: toFantom[type]
+    if (fantom != null) return Type.find(fantom).make
+    return Proto()
+  }
 }
