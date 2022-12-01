@@ -49,6 +49,21 @@ class IOTest : AbstractCompileTest
   Void testHaystack()
   {
     verifyHaystack(Etc.makeDict1("dis", "Hello"))
+
+    verifyHaystack(Etc.makeDict([
+      "str": "string",
+      "marker": Marker.val,
+      "date": Date("1996-10-15"),
+      "time": Time.now,
+      "ts": DateTime.now,
+      "num": Number(123, Unit("%")),
+      "ref": Ref.gen,
+      "na": NA.val,
+      "remove": Remove.val,
+      "coord": Coord(75f, -10f),
+      "sym": Symbol("site"),
+      "xstr": XStr("Span", "today"),
+     ]))
   }
 
   Void verifyHaystack(Obj val)
@@ -75,7 +90,7 @@ class IOTest : AbstractCompileTest
   {
     verifyProto(p.qname, graph.sys->Dict, null, graph.tx)
     num := 0
-    d.each |n, v|
+    d.each |v, n|
     {
       verifyHaystackEq(p.get(n), v)
     }
@@ -83,8 +98,12 @@ class IOTest : AbstractCompileTest
 
   Void verifyHaystackScalarEq(Proto p, Obj v)
   {
-    // TODO
-    verifyProto(p.qname, graph.sys->Str, v.toStr, graph.tx)
+    type := p.type
+    expectedName := v.typeof.name
+    if (v is Symbol) expectedName = "Symbol"
+    verifyEq(type.name, expectedName)
+
+    verifyProto(p.qname, type, v, graph.tx)
   }
 }
 

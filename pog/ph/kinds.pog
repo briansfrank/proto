@@ -7,7 +7,7 @@
 //
 
 // Singleton for not available to indicate invalid or missing data.
-Na : Obj
+NA : Obj
 
 // Singleton for remove operation.
 Remove : Obj

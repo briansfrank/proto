@@ -58,7 +58,7 @@ internal class Assemble : Step
   {
     update.spi = spi
     if (x.isLib) return Lib()
-    if (x.isRoot) return MGraph(asmLibs)
+    if (x.isRoot) return MGraph(env, asmLibs)
     return Proto()
   }
 

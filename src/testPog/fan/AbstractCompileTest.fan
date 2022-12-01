@@ -112,7 +112,7 @@ abstract class AbstractCompileTest : Test
 
     sys := graph->sys
 
-    na     := verifyProto("ph.Na",     sys->Obj)
+    na     := verifyProto("ph.NA",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
     ref    := verifyProto("ph.Ref",    sys->Scalar)
     grid   := verifyProto("ph.Grid",   sys->Collection)

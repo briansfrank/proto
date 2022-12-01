@@ -60,7 +60,7 @@ const class Proto : ProtoStub
   Bool hasVal() { spiRef.hasVal }
 
   ** Scalar value string of the object
-  Str? val(Bool checked := true) { spiRef.val(checked) }
+  Obj? val(Bool checked := true) { spiRef.val(checked) }
 
 //////////////////////////////////////////////////////////////////////////
 // Children

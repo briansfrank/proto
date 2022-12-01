@@ -12,6 +12,9 @@
 @Js
 abstract const class Graph : Proto
 {
+  ** Environment
+  abstract PogEnv env()
+
   ** The core system library
   abstract Lib sys()
 

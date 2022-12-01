@@ -55,7 +55,7 @@ const class HaystackPogIO : PogIO
       kind := Kind.fromVal(val)
       if (kind.isScalar)
       {
-        u.add(stub, name, val)
+        u.add(stub, val, name)
       }
       else if (kind.isDict)
       {

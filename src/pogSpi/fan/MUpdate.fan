@@ -15,6 +15,8 @@ internal class MUpdate : Update
 {
   new make(MGraph graph)
   {
+    this.env     = graph.env
+    this.factory = env.factory
     this.graph   = graph
     this.libsMap = graph.libsMap
     this.ts      = DateTime.now(null)
@@ -81,8 +83,17 @@ internal class MUpdate : Update
 
   private MProtoStub coerce(Str action, Obj val)
   {
+    // if its already a stub, just use it
     if (val is MProtoStub) return val
-    if (val is Str) return coerceScalar(val, graph.sys->Str)
+
+    // try to map a scalar to a proto type
+    scalarType := factory.fromFantomScalar[val.typeof.qname]
+    if (scalarType != null)
+    {
+      scalarProto := getq(scalarType, false)
+      if (scalarProto != null) return coerceScalar(val, scalarProto)
+    }
+
     if (val is Proto) throw Err("Cannot $action Proto directly, clone it first")
     throw Err("Unsupported value type for $action: $val.typeof")
   }
@@ -139,7 +150,7 @@ internal class MUpdate : Update
     baseRef := AtomicRef(MSingleBase(stub.type))
 
     this.spi = MProtoSpi(stub.loc, path, tx, baseRef, stub.val, children)
-    return path.isRoot ? MGraph(libsMap) : Proto()
+    return path.isRoot ? MGraph(env, libsMap) : Proto()
   }
 
   override Void dump(OutStream out := Env.cur.out)
@@ -172,6 +183,8 @@ internal class MUpdate : Update
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
+  private MPogEnv env
+  private MFactory factory
   private Str:Lib libsMap
   private MProtoStub? root
   private MProtoSpi? spi

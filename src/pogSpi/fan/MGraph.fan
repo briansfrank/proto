@@ -14,13 +14,15 @@ using pog
 @Js
 const class MGraph : Graph
 {
-  new make(Str:Lib libsMap)
+  new make(MPogEnv env, Str:Lib libsMap)
   {
+    this.env     = env
     this.libs    = libsMap.vals.sort |a, b| { a.qname <=> b.qname }
     this.libsMap = libsMap
     this.sys     = libsMap.getChecked("sys")
   }
 
+  override const PogEnv env
   override const Lib[] libs
   override const Lib sys
   const Str:Lib libsMap

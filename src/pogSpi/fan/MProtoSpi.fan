@@ -16,7 +16,7 @@ using pog
 @Js
 const class MProtoSpi : ProtoSpi
 {
-  new make(FileLoc loc, Path path, Int tx, AtomicRef baseRef, Str? val, Str:Proto children)
+  new make(FileLoc loc, Path path, Int tx, AtomicRef baseRef, Obj? val, Str:Proto children)
   {
     this.loc      = loc
     this.path     = path
@@ -44,13 +44,13 @@ const class MProtoSpi : ProtoSpi
 
   override Bool hasVal() { valRef != null }
 
-  override Str? val(Bool checked)
+  override Obj? val(Bool checked)
   {
     if (valRef != null) return valRef
     if (checked) throw ProtoMissingValErr(name)
     return null
   }
-  private const Str? valRef
+  private const Obj? valRef
 
   override final Proto? trap(Str name, Obj?[]? args := null)
   {
@@ -140,7 +140,7 @@ const class MProtoSpi : ProtoSpi
       out.print(indent).print(name)
       if (type != null) out.print(" : ").print(type)
     }
-    if (valRef != null) out.print(" ").print(valRef.toCode)
+    if (valRef != null) out.print(" ").print(valRef.toStr.toCode)
     if (children.size == 0) out.printLine
     else
     {
@@ -151,7 +151,7 @@ const class MProtoSpi : ProtoSpi
     }
   }
 
-  static const Str:Proto noChildren := [:]
+  static const Str:Proto noChildren := [:] { ordered = true }
 
 }
 

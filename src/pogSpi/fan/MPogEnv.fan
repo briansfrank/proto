@@ -12,6 +12,7 @@ using pog
 **
 ** Standard implementation for PogEnv
 **
+@Js
 const class MPogEnv : PogEnv
 {
   ** Constructor
@@ -21,6 +22,7 @@ const class MPogEnv : PogEnv
     this.installedMap = initInstalled(this.path)
     this.installed = installedMap.keys.sort
     this.io = MPogEnvIO.init(this)
+    this.factory = MFactory(this)
   }
 
   private static File[] initPath()
@@ -63,14 +65,20 @@ const class MPogEnv : PogEnv
   ** Install lib name to directory mapping
   const Str:File installedMap
 
+  ** Factory to map to/from Protos and Fantom types
+  internal const MFactory factory
+
+  ** Is given library qname installed
+  Bool isInstalled(Str libName) { installedMap[libName] != null }
+
   ** Return root directory for the given library name.  The result
   ** might be on the local file system or a directory within a pod file.
   ** Raise exception if library name is not installed.
-  override File? libDir(Str name, Bool checked := true)
+  override File? libDir(Str qname, Bool checked := true)
   {
-    dir := installedMap[name]
+    dir := installedMap[qname]
     if (dir != null) return dir
-    if (checked) throw UnknownLibErr("Not installed: $name")
+    if (checked) throw UnknownLibErr("Not installed: $qname")
     return null
   }
 
@@ -102,6 +110,7 @@ const class MPogEnv : PogEnv
 ** MPogEnvIO
 **************************************************************************
 
+@Js
 internal const class MPogEnvIO : PogEnvIO
 {
   static MPogEnvIO init(PogEnv env)
