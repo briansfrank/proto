@@ -8,6 +8,7 @@
 
 using util
 using pog
+using pogSpi
 
 **
 ** Resolve all unresolved names in the AST

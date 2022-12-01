@@ -12,7 +12,7 @@ using pog
 ** Graph implementation
 **
 @Js
-internal const class MGraph : Graph
+const class MGraph : Graph
 {
   new make(Str:Lib libsMap)
   {

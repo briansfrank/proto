@@ -8,6 +8,7 @@
 
 using util
 using pog
+using pogSpi
 
 **
 ** Base class for ProtoCompiler steps

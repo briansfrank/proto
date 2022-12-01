@@ -7,7 +7,6 @@
 //
 
 using pog
-using pogc
 
 **
 ** Reflection tests

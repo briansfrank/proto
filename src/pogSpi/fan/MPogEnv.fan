@@ -12,7 +12,7 @@ using pog
 **
 ** Standard implementation for PogEnv
 **
-internal const class MPogEnv : PogEnv
+const class MPogEnv : PogEnv
 {
   ** Constructor
   new make()
@@ -75,18 +75,13 @@ internal const class MPogEnv : PogEnv
   }
 
   ** I/O regsitry
-  override const MPogEnvIO io
+  override const PogEnvIO io
 
   ** Compile a new namespace from a list of library names.
   ** Raise exception if there are any compiler errors.
   override Graph create(Str[] libNames)
   {
-    c := ProtoCompiler
-    {
-      it.env = this
-      it.libNames = libNames
-    }
-    return c.compileGraph
+    Slot.findMethod("pogc::ProtoCompiler.create").call(this, libNames)
   }
 
   ** Debug dump

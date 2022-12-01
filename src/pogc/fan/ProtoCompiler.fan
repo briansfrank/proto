@@ -8,6 +8,7 @@
 
 using util
 using pog
+using pogSpi
 
 **
 ** Proto compiler
@@ -16,8 +17,19 @@ class ProtoCompiler
 {
 
 //////////////////////////////////////////////////////////////////////////
-// Constructor
+// Construction
 //////////////////////////////////////////////////////////////////////////
+
+  ** Implementation for MPogEnv.create
+  static Graph create(PogEnv env, Str[] libNames)
+  {
+    c := ProtoCompiler
+    {
+      it.env = env
+      it.libNames = libNames
+    }
+    return c.compileGraph
+  }
 
   ** It-block constructor
   new make(|This| f) { f(this) }

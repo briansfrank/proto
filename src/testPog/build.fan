@@ -28,7 +28,7 @@ class Build : BuildPod
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
                "pog @{pog.depend}",
-               "pogc @{pog.depend}",
+               "pogSpi @{pog.depend}",
                "haystack @{hx.depend}"]
     srcDirs = [`fan/`]
   }

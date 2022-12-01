@@ -8,6 +8,7 @@
 
 using concurrent
 using pog
+using pogSpi
 
 **
 ** Assemble the AST into the implementation instances

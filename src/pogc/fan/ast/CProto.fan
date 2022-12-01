@@ -9,6 +9,7 @@
 using concurrent
 using util
 using pog
+using pogSpi
 
 **
 ** AST proto

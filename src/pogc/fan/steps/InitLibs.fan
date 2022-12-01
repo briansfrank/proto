@@ -8,6 +8,7 @@
 
 using util
 using pog
+using pogSpi
 
 **
 ** Initialize the input libNames to CLibs

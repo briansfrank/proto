@@ -9,7 +9,7 @@
 using concurrent
 using util
 using pog
-using pogc
+using pogSpi
 
 **
 ** JSON representation of the AST

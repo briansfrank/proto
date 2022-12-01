@@ -4,20 +4,20 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   23 Feb 2022  Brian Frank  Creation
+//   1 Dec 2022  Brian Frank  Creation
 //
 
 using build
 
 **
-** Build: pogc
+** Build: pogSpi
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "pogc"
-    summary = "Proto object graph data type system compiler"
+    podName = "pogSpi"
+    summary = "Proto object graph service provider implementation"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -29,10 +29,7 @@ class Build : BuildPod
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
                "pog @{pog.depend}",
-               "pogSpi @{pog.depend}"]
-    srcDirs = [`fan/`,
-               `fan/ast/`,
-               `fan/parser/`,
-               `fan/steps/`]
+               "haystack @{hx.depend}"]
+    srcDirs = [`fan/`]
   }
 }

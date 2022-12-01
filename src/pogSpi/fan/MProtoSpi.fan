@@ -14,7 +14,7 @@ using pog
 ** Proto service provider implementation
 **
 @Js
-internal const class MProtoSpi : ProtoSpi
+const class MProtoSpi : ProtoSpi
 {
   new make(FileLoc loc, Path path, Int tx, AtomicRef baseRef, Str? val, Str:Proto children)
   {

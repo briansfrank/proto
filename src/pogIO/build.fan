@@ -29,7 +29,7 @@ class Build : BuildPod
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
                "pog @{pog.depend}",
-               "pogc @{pog.depend}",
+               "pogSpi @{pog.depend}",
                "haystack @{hx.depend}"]
     srcDirs = [`fan/`]
     index = [

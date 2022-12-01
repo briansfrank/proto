@@ -7,7 +7,7 @@
 //
 
 using pog
-using pogc
+using pogSpi
 
 **
 ** Misc API tests
