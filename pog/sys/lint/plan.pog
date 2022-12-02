@@ -8,6 +8,6 @@
 
 // Lint plan specifies options to a validation engine.
 LintPlan: {
-  maxItems: Int              // Maximum number of items to report
+  maxItems: Int?             // Maximum number of items to report
 }
 

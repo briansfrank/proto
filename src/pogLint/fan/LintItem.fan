@@ -33,7 +33,7 @@ const class LintItem : Proto
   ** Severity of the message: err, warn, info
   LintLevel level
   {
-    get { get("level") }
+    get { get("level").val }
     set { set("level", it) }
   }
 

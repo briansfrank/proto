@@ -41,19 +41,18 @@ internal class GenSlots : Step
 
   Void genSlot(StrBuf s, Proto x)
   {
+    sig := TypeSig.map(graph, x)
+
     doc := x.get("_doc")?.val(false) as Str
     if (doc != null)
       doc.splitLines.each |line| { s.add("  ** ").add(line).add("\n") }
 
-    isList := x.fits(graph.sys->List)
-    typeSig := typeSig(x, isList)
-
-    s.add("  ").add(typeSig).add(" ").add(x.name).add("\n")
+    s.add("  ").add(sig.toStr).add(" ").add(x.name).add("\n")
     s.add("  {\n")
 
-    s.add("    get { get(\"").add(x.name).add("\")")
-    if (isScalar(x)) s.add(".val")
-    else if (isList) s.add(".listOwn")
+    s.add("    get { get(\"").add(x.name).add("\"").add(sig.isMaybe ? ", false)" : ")")
+    if (sig.isScalar) s.add(sig.isMaybe ? "?.val" : ".val")
+    else if (sig.isList) s.add(sig.isMaybe ? "?.listOwn" : ".listOwn")
     s.add(" }\n")
 
     s.add("    set { set(\"").add(x.name).add("\", it) }\n")
@@ -82,3 +81,56 @@ internal class GenSlots : Step
 
 }
 
+**************************************************************************
+** TypeSig
+**************************************************************************
+
+** Map Proto to Fantom type signature
+internal const class TypeSig
+{
+  static TypeSig map(Graph graph, Proto? proto)
+  {
+    if (proto == null) return TypeSig("Obj", 0)
+    if (proto.type == null) return TypeSig("Proto", 0)
+
+    isList := proto.fits(graph.sys->List)
+    if (isList)
+    {
+      of := map(graph, proto.get("_of", false))
+      return make(of.sig+"[]", list)
+    }
+
+    isMaybe := proto.type?.qname == "sys.Maybe"
+    if (isMaybe)
+    {
+      of := map(graph, proto.get("_of", false))
+      return make(of.sig+"?", of.flags.or(maybe))
+    }
+
+    isScalar := proto.fits(graph.sys->Scalar)
+    flags := 0
+    if (isScalar) flags = flags.or(scalar)
+
+    name := proto.type.name
+    if (name == "Obj") name = "Proto"
+
+    return make(name, flags)
+  }
+
+  private new make(Str sig, Int flags)
+  {
+    this.sig = sig
+    this.flags = flags
+  }
+
+  static const Int scalar := 0x01
+  static const Int list   := 0x02
+  static const Int maybe  := 0x04
+
+  const Str sig
+  const Int flags
+  Bool isScalar() { flags.and(scalar) != 0 }
+  Bool isList()   { flags.and(list)   != 0 }
+  Bool isMaybe()  { flags.and(maybe)  != 0 }
+  override Str toStr() { sig }
+}

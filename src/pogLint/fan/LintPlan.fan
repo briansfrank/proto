@@ -17,9 +17,9 @@ const class LintPlan : Proto
   /* pog-start */
 
   ** Maximum number of items to report
-  Int maxItems
+  Int? maxItems
   {
-    get { get("maxItems").val }
+    get { get("maxItems", false)?.val }
     set { set("maxItems", it) }
   }
 
