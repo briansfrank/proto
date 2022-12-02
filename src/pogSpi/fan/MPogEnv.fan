@@ -13,7 +13,20 @@ using pog
 ** Standard implementation for PogEnv
 **
 @Js
-const class MPogEnv : PogEnv
+abstract const class MPogEnv : PogEnv
+{
+  ** Factory to map to/from Protos and Fantom types
+  abstract  MFactory factory()
+}
+
+**************************************************************************
+** LocalPogEnv
+**************************************************************************
+
+**
+** Environment with access to local file system
+**
+const class LocalPogEnv : MPogEnv
 {
   ** Constructor
   new make()
@@ -66,10 +79,10 @@ const class MPogEnv : PogEnv
   const Str:File installedMap
 
   ** Factory to map to/from Protos and Fantom types
-  const MFactory factory
+  const override MFactory factory
 
   ** Is given library qname installed
-  Bool isInstalled(Str libName) { installedMap[libName] != null }
+  override Bool isInstalled(Str libName) { installedMap[libName] != null }
 
   ** Return root directory for the given library name.  The result
   ** might be on the local file system or a directory within a pod file.

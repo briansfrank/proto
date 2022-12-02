@@ -21,7 +21,7 @@ abstract const class PogEnv
   {
     try
     {
-      curRef = Type.find("pogSpi::MPogEnv").make
+      curRef = Type.find("pogSpi::LocalPogEnv").make
     }
     catch (Err e)
     {
@@ -36,6 +36,9 @@ abstract const class PogEnv
 
   ** List the library qnames installed by this environment
   abstract Str[] installed()
+
+  ** Is given library qname installed
+  abstract Bool isInstalled(Str libName)
 
   ** Return root directory for the given library qname.  The result
   ** might be on the local file system or a directory within a pod file.
