@@ -16,16 +16,20 @@ const class MFactory
 {
   new make(MPogEnv env)
   {
-    this.toFantom         = initToFantom(env)
+    toPod := Str:Str[:]
+    toFantom := Str:Str[:]
+    initToFantom(env, toPod, toFantom)
+
+    this.toPod            = toPod
+    this.toFantom         = toFantom
     this.fromFantomProto  = initFromFantomProto(toFantom)
     this.fromFantomScalar = initFromFantomScalar
   }
 
-  private static Str:Str initToFantom(MPogEnv env)
+  private static Void initToFantom(MPogEnv env, Str:Str toPod, Str:Str toFantom)
   {
-    acc := Str:Str[:]
-    acc["sys.Lib"] = "pog::Lib"
 
+    toFantom["sys.Lib"] = "pog::Lib"
     Env.cur.index("pog.types").each |str|
     {
       try
@@ -41,10 +45,12 @@ const class MFactory
         // skip if lib not installed
         if (!env.isInstalled(lib)) return
 
+        toPod[lib] = pod
+
         // parse type names to Fantom types
         types.each |type|
         {
-          acc[lib + "." + type] = pod + "::" + type
+          toFantom[lib + "." + type] = pod + "::" + type
         }
       }
       catch (Err e)
@@ -53,8 +59,6 @@ const class MFactory
         e.trace
       }
     }
-
-    return acc
   }
 
   private static Str:Str initFromFantomProto(Str:Str toFantom)
@@ -99,6 +103,9 @@ const class MFactory
 
     return acc
   }
+
+  ** Proto lib to Fantom pod name
+  const Str:Str toPod
 
   ** Proto qname to Fantom type
   const Str:Str toFantom

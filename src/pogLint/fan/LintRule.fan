@@ -14,5 +14,7 @@ using pog
 @Js
 const class LintRule : Proto
 {
-}
+  /* pog-start */
 
+  /* pog-end */
+}

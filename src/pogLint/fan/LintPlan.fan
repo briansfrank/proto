@@ -14,5 +14,14 @@ using pog
 @Js
 const class LintPlan : Proto
 {
-}
+  /* pog-start */
 
+  ** Unitless integer number
+  Int maxItems
+  {
+    get { get("maxItems").val }
+    set { set("maxItems", it) }
+  }
+
+  /* pog-end */
+}

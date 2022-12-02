@@ -14,5 +14,14 @@ using pog
 @Js
 const class LintReport : Proto
 {
-}
+  /* pog-start */
 
+  ** Ordered list of zero or more values
+  LintItem[] items
+  {
+    get { get("items").listOwn }
+    set { set("items", it) }
+  }
+
+  /* pog-end */
+}

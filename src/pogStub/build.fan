@@ -4,20 +4,20 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   1 Dec 2022  Brian Frank  Creation
+//   2 Dec 2022  Brian Frank  Creation
 //
 
 using build
 
 **
-** Build: pogLint
+** Build: pogStub
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "pogLint"
-    summary = "Proto object graph validation engine"
+    podName = "pogStub"
+    summary = "Proto to Fantom stub compiler"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -28,13 +28,9 @@ class Build : BuildPod
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
-               "pog @{pog.depend}"]
-    srcDirs = [`fan/`]
-
-    /* pog-start */
-
-    index = ["pog.types": "pogLint; sys.lint; LintItem,LintPlan,LintReport,LintRule"]
-
-    /* pog-end */
+               "pog @{pog.depend}",
+               "pogSpi @{pog.depend}",
+               "pogc @{pog.depend}"]
+    srcDirs = [`fan/`, `fan/ast/`, `fan/steps/`]
   }
 }
