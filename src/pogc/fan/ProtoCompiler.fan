@@ -85,6 +85,7 @@ class ProtoCompiler
       ResolveDepends(),
       ExpandNested(),
       ResolveNames(),
+      NormEnum(),
       AddMeta(),
       Inherit(),
       Assemble(),

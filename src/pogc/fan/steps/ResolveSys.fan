@@ -23,6 +23,7 @@ internal class ResolveSys : Step
     {
       it.sys    = lib
       it.obj    = resolve(lib.proto, "Obj")
+      it.marker = resolve(lib.proto, "Marker")
       it.str    = resolve(lib.proto, "Str")
       it.dict   = resolve(lib.proto, "Dict")
       it.list   = resolve(lib.proto, "List")

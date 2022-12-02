@@ -20,5 +20,9 @@ LintItem: {
 }
 
 // Severity of the issue
-LintLevel: "err" | "warn" | "info"
+LintLevel: Enum {
+    err                      // Error level
+    warn                     // Warning level
+    info                     // Informational level
+}
 

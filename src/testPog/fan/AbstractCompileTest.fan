@@ -89,10 +89,12 @@ abstract class AbstractCompileTest : Test
     marker := verifyProto("sys.Marker", obj,    null)
     val    := verifyProto("sys.Val",    obj,    null)
     scalar := verifyProto("sys.Scalar", val,    null)
-    bool   := verifyProto("sys.Bool",   scalar, null)
-    boolT  := verifyProto("sys.True",   bool,   "true")
-    boolF  := verifyProto("sys.False",  bool,   "false")
     str    := verifyProto("sys.Str",    scalar, null)
+
+    enum   := verifyProto("sys.Enum",       obj,  null)
+    bool   := verifyProto("sys.Bool",       enum, null)
+    boolT  := verifyProto("sys.Bool.true",  bool, null)
+    boolF  := verifyProto("sys.Bool.false", bool, null)
 
     objDoc    := verifyProto("sys.Obj._doc", str, "Root type for all objects")
     objDocDoc := verifyProto("sys.Obj._doc._doc", str, "Documentation for object")

@@ -146,6 +146,36 @@ class CompileTest : AbstractCompileTest
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Enum
+//////////////////////////////////////////////////////////////////////////
+
+  Void testEnum()
+  {
+    test := compileSrc(
+     Str<|Foo: Enum <bar> {
+            alpha    // Alpha doc
+            beta     // Beta doc
+            charlie  // Charlie doc
+          }|>)
+
+    foo := test->Foo
+    marker := graph.sys->Marker
+    enum := graph.sys->Enum
+    doc := graph.sys->Obj->_doc
+
+    verifyProto("test.Foo", enum, null)
+    verifyProto("test.Foo._bar", marker, null)
+    verifyProto("test.Foo._final", marker, null)
+    a := verifyProto("test.Foo.alpha", foo, null)
+    b := verifyProto("test.Foo.beta", foo, null)
+    c := verifyProto("test.Foo.charlie", foo, null)
+
+    verifyProto("test.Foo.alpha._doc",   doc, "Alpha doc")
+    verifyProto("test.Foo.beta._doc",    doc, "Beta doc")
+    verifyProto("test.Foo.charlie._doc", doc, "Charlie doc")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Maybe
 //////////////////////////////////////////////////////////////////////////
 

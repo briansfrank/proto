@@ -17,6 +17,7 @@ internal class CSys
 
   CLib sys          // sys library itself
   CProto obj        // sys.Obj
+  CProto marker     // sys.Marker
   CProto str        // sys.Str
   CProto dict       // sys.Dict
   CProto list       // sys.List

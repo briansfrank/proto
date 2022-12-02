@@ -27,14 +27,14 @@ Val : Obj
 // Scalar is an atomic value kind
 Scalar : Val
 
+// Closed enumerated choice
+Enum : Obj
+
 // Boolean value either true or false
-Bool : Scalar
-
-// Boolean true value
-True : Bool "true"
-
-// Boolean false value
-False : Bool "false"
+Bool : Enum {
+  true    // Boolean true value
+  false   // Boolean false value
+}
 
 // Integer or floating point numbers annotated with an optional unit
 Number : Scalar <

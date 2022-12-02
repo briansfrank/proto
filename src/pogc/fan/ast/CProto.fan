@@ -63,7 +63,13 @@ internal class CProto
 
   once Path path() { isRoot ? Path.root : parent.path.add(name) }
 
+  Bool isMeta() { name[0] == '_' }
+
   Bool isObj() { qname == "sys.Obj" }
+
+  Bool isEnum() { qname == "sys.Enum" }
+
+  Bool isMarker() { qname == "sys.Marker" }
 
   Bool isMaybe() { qname == "sys.Maybe" }
 
