@@ -191,7 +191,7 @@ internal class Parser
     hasMeta := parseProtoMeta(proto)
     hasData := parseProtoData(proto)
     hasVal  := parseProtoVal(proto)
-    parseTrailingDoc(parent)
+    parseTrailingDoc(proto)
 
     // verify we had one production: type |meta | data | val
     if (!(hasType || hasMeta || hasData || hasVal))

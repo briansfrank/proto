@@ -16,28 +16,28 @@ const class LintItem : Proto
 {
   /* pog-start */
 
-  ** Lint rule specifies one validation constraint
+  ** Rule which triggered this issue
   LintRule rule
   {
     get { get("rule") }
     set { set("rule", it) }
   }
 
-  ** Root type for all objects
+  ** Target proto that is the subject of this message
   Proto target
   {
     get { get("target") }
     set { set("target", it) }
   }
 
-  ** Severity of the issue
+  ** Severity of the message: err, warn, info
   LintLevel level
   {
     get { get("level") }
     set { set("level", it) }
   }
 
-  ** Unicode string of characters
+  ** Free form message string describing issue
   Str msg
   {
     get { get("msg").val }

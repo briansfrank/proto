@@ -16,7 +16,7 @@ const class LintPlan : Proto
 {
   /* pog-start */
 
-  ** Unitless integer number
+  ** Maximum number of items to report
   Int maxItems
   {
     get { get("maxItems").val }
