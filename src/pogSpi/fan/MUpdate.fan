@@ -112,7 +112,7 @@ internal class MUpdate : Update
   {
     if (obj is MProtoStub) return obj
     spi := (MProtoSpi)((Proto)obj).spi
-    if (root == null) root = MProtoStub.makeStub(null, graph.spi)
+    if (root == null) root = MProtoStub.makeStub(graph.spi)
     cur := root
     spi.path.each |name, i|
     {
@@ -123,12 +123,14 @@ internal class MUpdate : Update
       if (kid is Proto)
       {
         kidProto := (Proto)kid
-        kidStub := MProtoStub.makeStub(parent, kidProto.spi)
-        cur.set(name, kidStub)
+        kidStub := MProtoStub.makeStub(kidProto.spi)
+        cur.doSet(name, kidStub)
         cur = kidStub
       }
-
-      cur = kid
+      else
+      {
+        cur = kid
+      }
     }
     return cur
   }
@@ -147,10 +149,12 @@ internal class MUpdate : Update
       kid as Proto ?: commitStub(path.add(name), kid)
     }
 
-    baseRef := AtomicRef(MSingleBase(stub.type))
+    // TODO: this needs some work....
+    type := stub.type as Proto ?: throw Err("no type?")
+    baseRef := AtomicRef(MSingleBase(type))
 
     this.spi = MProtoSpi(stub.loc, path, tx, baseRef, stub.val, children)
-    return path.isRoot ? MGraph(env, libsMap) : Proto()
+    return path.isRoot ? MGraph(env, libsMap) : factory.instantiate(type.qname)
   }
 
   override Void dump(OutStream out := Env.cur.out)

@@ -24,9 +24,8 @@ internal class MProtoStub : ProtoStub
     this.val = val
   }
 
-  new makeStub(ProtoStub? parent, MProtoSpi spi)
+  new makeStub(MProtoSpi spi)
   {
-    this.parent = parent
     this.loc = spi.loc
     this.old = spi
     this.type = spi.type

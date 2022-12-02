@@ -34,16 +34,25 @@ class LintTest : AbstractCompileTest
 
     graph := graph.update |u|
     {
-      r := u.clone(lib->LintRule)
-      i := u.clone(lib->LintItem)
-      graph.set("rule", r)
-      i.set("rule", r)
-       .set("level", LintLevel.warn)
-       .set("msg", "test item")
+      x := u.clone(lib->LintItem)
+      graph.set("x", x)
+      x.set("level", LintLevel.warn)
+       .set("msg", "test a")
     }
 
-    item := (LintItem)graph->item
-    item.dump
+    x := (LintItem)graph->x
+    verifyEq(x.level, LintLevel.warn)
+    verifyEq(x.msg, "test a")
 
+    graph = graph.update |u|
+    {
+      x.set("level", LintLevel.info)
+       .set("msg", "test b")
+    }
+
+    verifyNotSame(graph->x, x)
+    x = graph->x
+    verifyEq(x.level, LintLevel.info)
+    verifyEq(x.msg, "test b")
   }
 }

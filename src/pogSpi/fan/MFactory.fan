@@ -125,4 +125,12 @@ const class MFactory
     if (fantom != null) return Type.find(fantom).make
     return Proto()
   }
+
+  ** Create Fantom instance for library proto
+  Proto instantiate(Str type)
+  {
+    fantom := toFantom[type]
+    if (fantom != null) return Type.find(fantom).make
+    return Proto()
+  }
 }
