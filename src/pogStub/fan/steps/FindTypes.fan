@@ -47,20 +47,25 @@ internal class FindTypes : Step
     {
       // parse out class header as "class Type: Base, Blah, Blah"
       cls := header.index("class ")
-      colon := header.index(":", cls+1)
-      if (colon == null) return err("Proto class must have base type", loc)
-      comma := header.index(",", colon+1) ?: header.size
-
-      type := header[cls+6..<colon].trim
-      base := header[colon+1..<comma].trim
       isAbstract := header.contains("abstract ")
+      isEnum := header.contains("enum ")
+
+      type := header[cls+6..-1].trim
+      base := "Obj"
+      colon := type.index(":")
+      if (colon != null)
+      {
+        comma := type.index(",", colon+1) ?: type.size
+        base = type[colon+1..<comma].trim
+        type = type[0..<colon].trim
+      }
 
       // map type name to proto type
       proto := pod.lib.get(type, false)
       if (proto == null) return err("Unknown proto for Fantom type: $type", loc)
 
       // add to our accumulator
-      acc.add(TypeSrc(proto, pod, src, isAbstract, base, lines))
+      acc.add(TypeSrc(proto, pod, src, isAbstract, isEnum, base, lines))
     }
     if (!acc.isEmpty) accByFile[src] = acc
   }

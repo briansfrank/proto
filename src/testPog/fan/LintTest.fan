@@ -14,7 +14,7 @@ using pogLint
 **
 class LintTest : AbstractCompileTest
 {
-  Void test()
+  Void testStub()
   {
     compile(["sys", "sys.lint"])
 
@@ -31,5 +31,19 @@ class LintTest : AbstractCompileTest
     verifyProto("sys.lint.LintItem._doc", doc, "Lint item models one validation message")
     verifyProto("sys.lint.LintItem.msg", str)
     verifyProto("sys.lint.LintItem.msg._doc", doc, "Free form message string describing issue")
+
+    graph := graph.update |u|
+    {
+      r := u.clone(lib->LintRule)
+      i := u.clone(lib->LintItem)
+      graph.set("rule", r)
+      i.set("rule", r)
+       .set("level", LintLevel.warn)
+       .set("msg", "test item")
+    }
+
+    item := (LintItem)graph->item
+    item.dump
+
   }
 }

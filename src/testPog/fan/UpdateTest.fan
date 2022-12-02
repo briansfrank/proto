@@ -7,6 +7,7 @@
 //
 
 using pog
+using pogLint
 using haystack
 
 **
@@ -78,7 +79,7 @@ class UpdateTest : AbstractCompileTest
 
   Void testScalars()
   {
-    graph = env.create(["sys", "ph"])
+    graph = env.create(["sys", "sys.lint", "ph"])
     verifySys
 
     update |u|
@@ -97,6 +98,9 @@ class UpdateTest : AbstractCompileTest
       data.set("dt",   DateTime.boot)
       data.set("dur",  5sec)
       data.set("ver",  Version("1.2.3"))
+
+      // sys lint types
+      data.set("lintLevel", LintLevel.warn)
 
       // haystack types
       data.set("marker", Marker.val)
@@ -124,6 +128,9 @@ class UpdateTest : AbstractCompileTest
     verifyProto("data.dt",    graph.sys->DateTime, DateTime.boot)
     verifyProto("data.dur",   graph.sys->Duration, 5sec)
     verifyProto("data.ver",   graph.sys->Version, Version("1.2.3"))
+
+    // sys.lint types
+    verifyProto("data.lintLevel",  graph.sys->lint->LintLevel, LintLevel.warn)
 
     // haystack types
     verifyProto("data.marker",  graph.sys->Marker, Marker.val)

@@ -26,7 +26,7 @@ internal class RewriteIndex : Step
 
   Void rewritePod(PodSrc pod)
   {
-    types := pod.concrete
+    types := pod.toIndex
     if (types.isEmpty) return
 
     file := pod.dir + `build.fan`

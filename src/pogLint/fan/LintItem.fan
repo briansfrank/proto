@@ -51,6 +51,20 @@ const class LintItem : Proto
 ** LintLevel
 **************************************************************************
 
-** TODO
+** Severity of the issue
 @Js
-const class LintLevel : Proto {}
+enum class LintLevel
+{
+  /* pog-start */
+
+  ** Error level
+  err,
+
+  ** Warning level
+  warn,
+
+  ** Informational level
+  info
+
+  /* pog-end */
+}

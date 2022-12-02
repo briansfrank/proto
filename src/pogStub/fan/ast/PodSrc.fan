@@ -26,7 +26,7 @@ internal class PodSrc
   TypeSrc[]? types               // FindTypes
   [File:TypeSrc[]]? typesByFile  // FindTypes
 
-  once TypeSrc[] concrete() { types.findAll { !it.isAbstract }.ro }
+  once TypeSrc[] toIndex() { types.findAll { !it.isAbstract && !it.isEnum }.ro }
 
   override Str toStr() { lib.qname }
 }

@@ -33,20 +33,27 @@ internal class GenSlots : Step
       if (x.name.startsWith("_")) return  // skip meta
       if (type.proto.type.has(x.name)) return // skip inherited
       s.add("\n")
-      genSlot(s, x)
+      genSlot(type, s, x)
     }
+
+    if (type.isEnum) s.removeRange(-2..-2)  // remove last comma
 
     type.gen = s.toStr.splitLines
   }
 
-  Void genSlot(StrBuf s, Proto x)
+  Void genSlot(TypeSrc type, StrBuf s, Proto x)
   {
-    sig := TypeSig.map(graph, x)
-
+    // fandoc
     doc := x.get("_doc")?.val(false) as Str
     if (doc != null)
       doc.splitLines.each |line| { s.add("  ** ").add(line).add("\n") }
 
+
+    // if this is an enum, then just comma
+    if (type.isEnum) return s.add("  ").add(x.name).add(",\n")
+
+    // field getter/setter
+    sig := TypeSig.map(graph, x)
     s.add("  ").add(sig.toStr).add(" ").add(x.name).add("\n")
     s.add("  {\n")
 
@@ -107,8 +114,11 @@ internal const class TypeSig
       return make(of.sig+"?", of.flags.or(maybe))
     }
 
+    isEnum := proto.fits(graph.sys->Enum)
     isScalar := proto.fits(graph.sys->Scalar)
+
     flags := 0
+    if (isEnum)   flags = flags.or(scalar)
     if (isScalar) flags = flags.or(scalar)
 
     name := proto.type.name

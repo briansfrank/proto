@@ -59,7 +59,15 @@ internal class Assemble : Step
     update.spi = spi
     if (x.isRoot) return MGraph(env, asmLibs)
     if (x.type == null) return Proto()
-    return env.factory.init(x.qname, x.type.deref.qname)
+    try
+    {
+      return env.factory.init(x.qname, x.type.deref.qname)
+    }
+    catch (Err e)
+    {
+      echo("ERROR: instantiate error [$x.qname]\n$e.traceToStr")
+      return Proto()
+    }
   }
 
   private Str:Proto asmChildren(Str:CProto children)

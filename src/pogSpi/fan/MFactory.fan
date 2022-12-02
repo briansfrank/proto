@@ -81,6 +81,8 @@ const class MFactory
     acc["sys::DateTime"]        = "sys.DateTime"
     acc["sys::Version"]         = "sys.Version"
 
+    acc["pogLint::LintLevel"]   = "sys.lint.LintLevel"
+
     acc["haystack::Marker"]     = "sys.Marker"
     acc["haystack::Number"]     = "sys.Number"
     acc["haystack::NA"]         = "ph.NA"

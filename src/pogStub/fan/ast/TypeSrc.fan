@@ -13,13 +13,14 @@ using pog
 **
 internal class TypeSrc
 {
-  new make(Proto proto, PodSrc pod, File file, Bool isAbstract, Str base, Range lines)
+  new make(Proto proto, PodSrc pod, File file, Bool isAbstract, Bool isEnum, Str? base, Range lines)
   {
     this.proto      = proto
     this.pod        = pod
     this.name       = proto.name
     this.file       = file
     this.isAbstract = isAbstract
+    this.isEnum     = isEnum
     this.base       = base
     this.lines      = lines
   }
@@ -30,6 +31,7 @@ internal class TypeSrc
   const File file       // Fantom source file
   const Str base        // Fantom base type name
   const Bool isAbstract // Is the class abstract (non-indexed)
+  const Bool isEnum     // Is the class an enum
   const Range lines     // pog-start .. pog-end lines (zero based line numbers)
   Str[]? gen            // GenSlots source code
 
