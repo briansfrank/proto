@@ -138,7 +138,7 @@ const class MProtoSpi : ProtoSpi
     else
     {
       out.print(indent).print(name)
-      if (type != null) out.print(" : ").print(type)
+      if (type != null) out.print(": ").print(type)
     }
     if (valRef != null) out.print(" ").print(valRef.toStr.toCode)
     if (children.size == 0) out.printLine

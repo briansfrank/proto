@@ -70,7 +70,7 @@ internal class JsonAstWriter : OutStream
       indent.quoted("_type").print(": ").quoted(p.type.qname).printLine(typeComma)
 
     if (p.hasVal)
-      indent.quoted("_val").print(": ").quoted(p.val).printLine(valComma)
+      indent.quoted("_val").print(": ").quoted(p.val.toStr).printLine(valComma)
 
     kids.each |kid, i|
     {
