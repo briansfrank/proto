@@ -116,7 +116,7 @@ abstract class AbstractCompileTest : Test
 
     na     := verifyProto("ph.NA",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
-    ref    := verifyProto("ph.Ref",    sys->Scalar)
+    ref    := verifyProto("ph.Coord",  sys->Scalar)
     grid   := verifyProto("ph.Grid",   sys->Collection)
     entity := verifyProto("ph.Entity", sys->Dict)
     id     := verifyProto("ph.Entity.id._of", ph->Tag->id)

@@ -135,9 +135,9 @@ class UpdateTest : AbstractCompileTest
     // haystack types
     verifyProto("data.marker",  graph.sys->Marker, Marker.val)
     verifyProto("data.num",     graph.sys->Number, Number(123, Unit("kW")))
+    verifyProto("data.ref",     graph->sys->Ref,   Ref("123-abc"))
     verifyProto("data.na",      graph->ph->NA,     NA.val)
     verifyProto("data.remove",  graph->ph->Remove, Remove.val)
-    verifyProto("data.ref",     graph->ph->Ref,    Ref("123-abc"))
     verifyProto("data.coord",   graph->ph->Coord,  Coord(12f, 45f))
     verifyProto("data.sym1",    graph->ph->Symbol, Symbol("foo"))
     verifyProto("data.sym2",    graph->ph->Symbol, Symbol("foo-bar"))

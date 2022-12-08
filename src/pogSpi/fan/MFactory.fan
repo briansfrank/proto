@@ -84,10 +84,10 @@ const class MFactory
     acc["pogLint::LintLevel"]   = "sys.lint.LintLevel"
 
     acc["haystack::Marker"]     = "sys.Marker"
+    acc["haystack::Ref"]        = "sys.Ref"
     acc["haystack::Number"]     = "sys.Number"
     acc["haystack::NA"]         = "ph.NA"
     acc["haystack::Remove"]     = "ph.Remove"
-    acc["haystack::Ref"]        = "ph.Ref"
     acc["haystack::Coord"]      = "ph.Coord"
     acc["haystack::XStr"]       = "ph.XStr"
     acc["haystack::TagSymbol"]  = "ph.Symbol"
