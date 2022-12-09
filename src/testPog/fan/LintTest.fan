@@ -14,6 +14,11 @@ using pogLint
 **
 class LintTest : AbstractCompileTest
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Stub
+//////////////////////////////////////////////////////////////////////////
+
   Void testStub()
   {
     compile(["sys", "sys.lint"])
@@ -54,5 +59,27 @@ class LintTest : AbstractCompileTest
     x = graph->x
     verifyEq(x.level, LintLevel.info)
     verifyEq(x.msg, "test b")
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Test Cases
+//////////////////////////////////////////////////////////////////////////
+
+  Void testCases()
+  {
+    PogTestReader(`test/lint/`).readEach |c|
+    {
+      verifyCase(c)
+    }
+  }
+
+  Void verifyCase(PogTestCase c)
+  {
+    echo("   $c.doc [$c.loc]")
+    test := compileSrc(c.in)
+    expected := c.out.splitLines
+test.dump
+echo("---")
+echo(expected.join("\n"))
   }
 }

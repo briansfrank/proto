@@ -1,0 +1,26 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   9 Dec 2022  Brian Frank  Creation
+//
+
+==========================================================================
+Verify scalar regex and parsing
+---
+In: {
+  ref1: Ref "foo bar"
+  date1: Date "2023.12.09"
+}
+---
+err | test.In.ref1  | Invalid sys.Ref scalar value "foo bar"
+err | test.In.date1 | Invalid sys.Date scalar value "2023.12.09"
+==========================================================================
+
+
+
+
+
+
+

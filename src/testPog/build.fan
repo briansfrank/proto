@@ -27,6 +27,7 @@ class Build : BuildPod
                "vcs.uri":      "https://github.com//briansfrank/proto"]
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
+               "util @{fan.depend}",
                "pog @{pog.depend}",
                "pogSpi @{pog.depend}",
                "pogLint @{pog.depend}",
