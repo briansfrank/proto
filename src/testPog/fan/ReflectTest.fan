@@ -55,7 +55,7 @@ class ReflectTest : AbstractCompileTest
     verifyInherit(d, "a,b",   ["Delta.a", "Delta.b", "Charlie.c"])
   }
 
-  private Void verifyInherit(Proto p, Str declared, Str[] slots)
+  private Void verifyInherit(Proto p, Str own, Str[] slots)
   {
    // echo("--- $p "); p.dump
 
@@ -94,7 +94,7 @@ class ReflectTest : AbstractCompileTest
     }
     verifyEq(map, ["a":"av", "b":"bv", "c":"cv"])
 
-    // each - declared only
+    // each - with own check
     map.clear
     p.each |kid|
     {
@@ -111,7 +111,27 @@ class ReflectTest : AbstractCompileTest
         verifyErr(UnknownProtoErr#) { p.getOwn(kid.name, true) }
       }
     }
-    verifyEq(map.keys.join(","), declared)
+    verifyEq(map.keys.join(","), own)
+
+    // eachOwn
+    map.clear
+    p.eachOwn |kid|
+    {
+      if (kid.name.startsWith("_")) return
+      map[kid.name] = kid.val
+    }
+    verifyEq(map.keys.join(","), own)
+
+    // eachOwnWhile
+    map.clear
+    result := p.eachOwnWhile |kid|
+    {
+      if (kid.name.startsWith("_")) return null
+      map[kid.name] = kid.val
+      return kid.name == "b" ? "break" : null
+    }
+    verifyEq(result, own.contains("b") ? "break" : null)
+    verifyEq(map.keys.join(","), own.contains("b") ? own[0..own.index("b")] : own)
 
     // bad
     verifyEq(p.has("bad"), false)

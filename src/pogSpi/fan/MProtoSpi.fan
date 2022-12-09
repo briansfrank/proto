@@ -109,6 +109,11 @@ const class MProtoSpi : ProtoSpi
     children.each(f)
   }
 
+  override Obj? eachOwnWhile(|Proto->Obj?| f)
+  {
+    children.eachWhile(f)
+  }
+
   override Proto[] list()
   {
     acc := Proto[,]

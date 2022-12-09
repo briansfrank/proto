@@ -89,6 +89,9 @@ const class Proto : ProtoStub
   ** Iterate the non-inherited children objects.
   Void eachOwn(|Proto| f) { spiRef.eachOwn(f) }
 
+  ** Iterate the non-inherited children objects until callback returns non-null.
+  Obj? eachOwnWhile(|Proto->Obj?| f) { spiRef.eachOwnWhile(f) }
+
   ** Return a list of this object effective children.  This iteration includes
   ** inherited children and can be very expensive; prefer `listOwn()`.
   Proto[] list() { spiRef.list }
@@ -129,6 +132,7 @@ abstract const class ProtoSpi
   abstract Proto? getOwn(Str name, Bool checked := true)
   abstract Void each(|Proto| f)
   abstract Void eachOwn(|Proto| f)
+  abstract Obj? eachOwnWhile(|Proto->Obj?| f)
   abstract Void eachSeen(Str:Str seen, |Proto| f)
   abstract Proto[] list()
   abstract Proto[] listOwn()
