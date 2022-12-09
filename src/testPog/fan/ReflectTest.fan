@@ -57,7 +57,7 @@ class ReflectTest : AbstractCompileTest
 
   private Void verifyInherit(Proto p, Str own, Str[] slots)
   {
-   // echo("--- $p "); p.dump
+    // echo("--- $p "); p.dump
 
     // has
     verifyEq(p.has("a"), true)
@@ -89,7 +89,7 @@ class ReflectTest : AbstractCompileTest
     map := Str:Str[:] { ordered = true }
     p.each |kid|
     {
-      if (kid.name.startsWith("_")) return
+      if (kid.qname.startsWith("sys.")) return
       map[kid.name] = kid.val
     }
     verifyEq(map, ["a":"av", "b":"bv", "c":"cv"])
@@ -98,7 +98,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     p.each |kid|
     {
-      if (kid.name.startsWith("_")) return
+      if (kid.qname.startsWith("sys.")) return
       if (p.hasOwn(kid.name))
       {
         verifySame(p.get(kid.name), p.getOwn(kid.name))
@@ -117,7 +117,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     p.eachOwn |kid|
     {
-      if (kid.name.startsWith("_")) return
+      if (kid.qname.startsWith("sys.")) return
       map[kid.name] = kid.val
     }
     verifyEq(map.keys.join(","), own)
@@ -126,7 +126,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     result := p.eachOwnWhile |kid|
     {
-      if (kid.name.startsWith("_")) return null
+      if (kid.qname.startsWith("sys.")) return null
       map[kid.name] = kid.val
       return kid.name == "b" ? "break" : null
     }

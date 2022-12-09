@@ -86,7 +86,9 @@ List : Collection <
 // Hashmap of name/value tag pairs
 Dict : Collection <
   of: Obj    // Item type for dict values
->
+> {
+  id: Ref?   // Unique identifier within graph for the object
+}
 
 // Maybe is the option type.  It contains some value or None.
 Maybe : Collection <

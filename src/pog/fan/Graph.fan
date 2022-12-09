@@ -27,6 +27,9 @@ abstract const class Graph : Proto
   ** Get the proto with the fully qualified name
   abstract Proto? getq(Str qname, Bool checked := true)
 
+  ** Get the proto by its unique id key
+  abstract Proto? getById(Str id, Bool checked := true)
+
   ** Perform an update to the graph and return new instance
   abstract Graph update(|Update| f)
 }

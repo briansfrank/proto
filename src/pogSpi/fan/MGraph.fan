@@ -44,6 +44,23 @@ const class MGraph : Graph
     return p
   }
 
+  override Proto? getById(Str id, Bool checked := true)
+  {
+    // TODO: just full scan for now
+    if (!id.startsWith("@")) throw ArgErr("Id must be prefixed with @: $id")
+    p := doGetById(this, id)
+    if (p != null) return p
+    if (checked) throw UnknownProtoErr(id)
+    return null
+  }
+
+  private Proto? doGetById(Proto p, Str id)
+  {
+    v := p.getOwn("id", false)
+    if (v != null && v.val(false)?.toStr == id) return p
+    return p.eachOwnWhile |kid| { doGetById(kid, id) }
+  }
+
   override Graph update(|Update| f)
   {
     MUpdate(this).execute |MUpdate u->Graph|
