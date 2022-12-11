@@ -10,12 +10,14 @@
 Verify scalar regex and parsing
 ---
 In: {
-  ref1: Ref "foo bar"
+  dateOk: Date "2022-12-09"
   date1: Date "2023.12.09"
+  refOk: Ref "foo.BAR~baz_0123"
+  ref1: Ref "foo bar"
 }
 ---
-err | test.In.ref1  | Invalid sys.Ref scalar value "foo bar"
-err | test.In.date1 | Invalid sys.Date scalar value "2023.12.09"
+err | test.In.date1 | Scalar does not match sys.Date pattern: "2023.12.09"
+err | test.In.ref1  | Scalar does not match sys.Ref pattern: "foo bar"
 ==========================================================================
 
 

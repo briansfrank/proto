@@ -25,7 +25,9 @@ Marker : Obj
 Val : Obj
 
 // Scalar is an atomic value kind
-Scalar : Val
+Scalar : Val <
+  pattern: Str?  // Regex pattern that string encoding must match
+>
 
 // Closed enumerated choice
 Enum : Obj
@@ -54,10 +56,11 @@ Duration : Number
 // Unicode string of characters
 Str : Scalar
 
-// Reference to another object.  The value must be either a 
+// Reference to another object.  The value must be either a
 // dotted qualified name or an id value prefixed with "@".
 Ref : Scalar <
-  of: Obj    // Item type for referent
+  of: Obj   // Item type for referent
+  pattern: "[a-zA-Z\\d\\._~]*"
 >
 
 // Version string formatted as decimal digits separated by a dot
@@ -67,7 +70,9 @@ Version : Scalar
 Uri : Scalar
 
 // ISO 8601 date as year, month, day: '2011-06-07'
-Date : Scalar
+Date : Scalar <
+  pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"
+>
 
 // ISO 8601 time as hour, minute, seconds: '09:51:27.354'
 Time : Scalar

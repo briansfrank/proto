@@ -16,17 +16,10 @@ const class LintItem : Proto
 {
   /* pog-start */
 
-  ** Rule which triggered this issue
-  LintRule rule
+  ** TODO Target proto that is the subject of this message
+  Str target
   {
-    get { get("rule") }
-    set { set("rule", it) }
-  }
-
-  ** Target proto that is the subject of this message
-  Proto target
-  {
-    get { get("target") }
+    get { get("target").val.toStr }
     set { set("target", it) }
   }
 

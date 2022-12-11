@@ -16,6 +16,27 @@ const class LintReport : Proto
 {
   /* pog-start */
 
+  ** Number of error level items
+  Int numErrs
+  {
+    get { get("numErrs").val }
+    set { set("numErrs", it) }
+  }
+
+  ** Number of warning level items
+  Int numWarn
+  {
+    get { get("numWarn").val }
+    set { set("numWarn", it) }
+  }
+
+  ** Number of info level items
+  Int numInfo
+  {
+    get { get("numInfo").val }
+    set { set("numInfo", it) }
+  }
+
   ** List of items in report
   LintItem[] items
   {

@@ -6,15 +6,14 @@
 //   1 Dec 2022  Brian Frank  Creation
 //
 
-// Lint report which encapsulates the output of a validation process 
+// Lint report which encapsulates the output of a validation process
 LintReport: {
   items: List<of:LintItem>   // List of items in report
 }
 
 // Lint item models one validation message
 LintItem: {
-  rule: LintRule             // Rule which triggered this issue
-  target: Obj                // Target proto that is the subject of this message
+  target: Ref                // Target proto that is the subject of this message
   level: LintLevel           // Severity of the message: err, warn, info
   msg: Str                   // Free form message string describing issue
 }

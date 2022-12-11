@@ -78,8 +78,23 @@ class LintTest : AbstractCompileTest
     echo("   $c.doc [$c.loc]")
     test := compileSrc(c.in)
     expected := c.out.splitLines
-test.dump
-echo("---")
-echo(expected.join("\n"))
+
+    lint := graph.lint
+    report := lint.report
+    // echo; test.dump; echo("---"); report.dump
+    verifySame(lint.report, report)
+    verifyEq(lint.isOk, false)
+    verifyEq(lint.isErr, true)
+
+    i := 0
+    report->items.eachOwn |item|
+    {
+      e := expected[i++].split('|')
+      if (item.name == "_of") return
+      verifyEq(item->level.val, e[0])
+      verifyEq(item->target.val, e[1])
+      verifyEq(item->msg.val, e[2])
+    }
+    verifyEq(i, expected.size)
   }
 }

@@ -29,11 +29,11 @@ class Build : BuildPod
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
                "pog @{pog.depend}"]
-    srcDirs = [`fan/`]
+    srcDirs = [`fan/`, `fan/rules/`]
 
     /* pog-start */
 
-    index = ["pog.types": "pogLint; sys.lint; LintItem,LintPlan,LintReport,LintRule"]
+    index = ["pog.types": "pogLint; sys.lint; LintItem,LintPlan,LintReport"]
 
     /* pog-end */
   }

@@ -12,9 +12,10 @@ using pog
 ** Lint rule specifies one validation constraint
 **
 @Js
-const class LintRule : Proto
+abstract const class LintRule
 {
-  /* pog-start */
 
-  /* pog-end */
+  ** Run this rule with the given context
+  abstract Void lint(LintContext cx)
+
 }

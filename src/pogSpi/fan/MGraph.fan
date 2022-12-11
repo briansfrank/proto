@@ -70,5 +70,10 @@ const class MGraph : Graph
     }
   }
 
+  override PogLint lint(Proto? plan := null)
+  {
+    Slot.findMethod("pogLint::LintEngine.lint").call(this, plan)
+  }
+
 }
 
