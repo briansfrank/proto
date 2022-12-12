@@ -29,7 +29,6 @@ class LintTest : AbstractCompileTest
     verifyEq(lib->LintReport.typeof, LintReport#)
     verifyEq(lib->LintItem.typeof, LintItem#)
     verifyEq(lib->LintPlan.typeof, LintPlan#)
-    verifyEq(lib->LintRule.typeof, LintRule#)
 
     doc := graph.sys->Obj->_doc
     str := graph.sys->Str

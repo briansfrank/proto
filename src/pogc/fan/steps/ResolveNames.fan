@@ -77,16 +77,15 @@ internal class ResolveNames : Step
 
   private CProto[] doResolve(CPragma pragma, Str name)
   {
-    name.contains(".") ? doResolveQualified(pragma, name) : doResolveUnqualified(pragma, name)
+    name.contains(".") ? doResolveQualified(pragma, QName(name)) : doResolveUnqualified(pragma, name)
   }
 
-  private CProto[] doResolveQualified(CPragma pragma, Str qname)
+  private CProto[] doResolveQualified(CPragma pragma, QName qname)
   {
-    path := Path(qname)
     CProto? p := root
-    for (i := 0; i<path.size; ++i)
+    for (i := 0; i<qname.size; ++i)
     {
-      name := path[i]
+      name := qname[i]
 
       // check own name
       x := p.getOwn(name, false)

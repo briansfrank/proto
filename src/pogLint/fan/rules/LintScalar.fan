@@ -33,11 +33,7 @@ const class LintScalar : LintRule
 
     val := cx.proto.val.toStr
     if (!Regex(pattern.val.toStr).matches(val))
-    {
-// TODO: lets move qname into pog
-patternType := pattern.qname.split('.')[0..-2].join(".")
-      cx.err("Scalar does not match $patternType pattern: $val.toCode")
-    }
+      cx.err("Scalar does not match ${pattern.qname.parent} pattern: ${val.toCode}")
   }
 
 }

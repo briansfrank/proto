@@ -114,11 +114,11 @@ internal class MUpdate : Update
     spi := (MProtoSpi)((Proto)obj).spi
     if (root == null) root = MProtoStub.makeStub(graph.spi)
     cur := root
-    spi.path.each |name, i|
+    spi.qname.each |name, i|
     {
       parent := cur
       kid := parent.get(name)
-      if (kid == null) throw Err("Proto not in graph: $spi.path")
+      if (kid == null) throw Err("Proto not in graph: $spi.qname")
 
       if (kid is Proto)
       {
@@ -139,22 +139,22 @@ internal class MUpdate : Update
   MGraph commit()
   {
     if (root == null) return graph
-    return commitStub(Path.root, root)
+    return commitStub(QName.root, root)
   }
 
-  private Proto commitStub(Path path, MProtoStub stub)
+  private Proto commitStub(QName qname, MProtoStub stub)
   {
     children := stub.children.map |kid, name->Proto|
     {
-      kid as Proto ?: commitStub(path.add(name), kid)
+      kid as Proto ?: commitStub(qname.add(name), kid)
     }
 
     // TODO: this needs some work....
     type := stub.type as Proto ?: throw Err("no type?")
     baseRef := AtomicRef(MSingleBase(type))
 
-    this.spi = MProtoSpi(stub.loc, path, tx, baseRef, stub.val, children)
-    return path.isRoot ? MGraph(env, libsMap) : factory.instantiate(type.qname)
+    this.spi = MProtoSpi(stub.loc, qname, tx, baseRef, stub.val, children)
+    return qname.isRoot ? MGraph(env, libsMap) : factory.instantiate(type.qname.toStr)
   }
 
   override Void dump(OutStream out := Env.cur.out)

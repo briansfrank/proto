@@ -64,8 +64,8 @@ internal class InitLibs : Step
 
     // create lib and its proto
     loc := FileLoc(dir)
-    path := Path(name)
-    return CLib(loc, path, dir, src, initProto(loc, path))
+    qname := QName(name)
+    return CLib(loc, qname, dir, src, initProto(loc, qname))
   }
 
   private CLib initSrcLib(Str src)
@@ -73,28 +73,28 @@ internal class InitLibs : Step
     // this is backdoor hook to pass the source string for as lib
     // formatted as "libName #<> ...."
     pound := src.index("#")
-    name := src[0..<pound].trim
-    file := src[pound..-1].toBuf.toFile(`${name}.pog`)
+    qnameStr := src[0..<pound].trim
+    file := src[pound..-1].toBuf.toFile(`${qnameStr}.pog`)
 
     loc := FileLoc("memory")
-    path := Path(name)
-    return CLib(loc, path, Env.cur.workDir, [file], initProto(loc, path))
+    qname := QName(qnameStr)
+    return CLib(loc, qname, Env.cur.workDir, [file], initProto(loc, qname))
   }
 
-  private CProto initProto(FileLoc loc, Path path)
+  private CProto initProto(FileLoc loc, QName qname)
   {
     // build path of generic protos to base of lib itself
     libBase := root
-    for (i := 0; i<path.size-1; ++i)
+    for (i := 0; i<qname.size-1; ++i)
     {
-      n := path[i]
+      n := qname[i]
       x := libBase.getOwn(n, false)
       if (x == null) addSlot(libBase, x = CProto(FileLoc.synthetic, n))
       libBase = x
     }
 
     // build Lib object itself
-    proto := CProto(loc, path.name, null, CType(loc, "sys.Lib"))
+    proto := CProto(loc, qname.name, null, CType(loc, "sys.Lib"))
     proto.isLib = true
     addSlot(libBase, proto)
     return proto

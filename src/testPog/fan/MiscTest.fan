@@ -7,7 +7,6 @@
 //
 
 using pog
-using pogSpi
 
 **
 ** Misc API tests
@@ -16,37 +15,56 @@ class MiscTest : Test
 {
 
 //////////////////////////////////////////////////////////////////////////
-// Path
+// QName
 //////////////////////////////////////////////////////////////////////////
 
-  Void testPath()
+  Void testQName()
   {
-    verifyPath("", Str[,])
-    verifyPath("a", ["a"])
-    verifyPath("a.b", ["a", "b"])
-    verifyPath("a.b.c", ["a", "b", "c"])
-    verifyPath("a.b.c.d", ["a", "b", "c", "d"])
-    verifyPath("a.b.c.d.e", ["a", "b", "c", "d", "e"])
+    verifyQName("", Str[,])
+    verifyQName("a", ["a"])
+    verifyQName("a.b", ["a", "b"])
+    verifyQName("a.b.c", ["a", "b", "c"])
+    verifyQName("a.b.c.d", ["a", "b", "c", "d"])
+    verifyQName("a.b.c.d.e", ["a", "b", "c", "d", "e"])
 
-    verifyPath("alpha", ["alpha"])
-    verifyPath("alpha.beta", ["alpha", "beta"])
-    verifyPath("alpha.beta.charlie", ["alpha", "beta", "charlie"])
-    verifyPath("alpha.beta.charlie.delta", ["alpha", "beta", "charlie", "delta"])
-    verifyPath("alpha.beta.charlie.delta.episolon", ["alpha", "beta", "charlie", "delta", "episolon"])
+    verifyQName("alpha", ["alpha"])
+    verifyQName("alpha.beta", ["alpha", "beta"])
+    verifyQName("alpha.beta.charlie", ["alpha", "beta", "charlie"])
+    verifyQName("alpha.beta.charlie.delta", ["alpha", "beta", "charlie", "delta"])
+    verifyQName("alpha.beta.charlie.delta.episolon", ["alpha", "beta", "charlie", "delta", "episolon"])
+
+    // slice
+    verifyEq(QName("a.b")[1..-1], QName("b"))
+    verifyEq(QName("a.b")[0..-2], QName("a"))
+    verifyEq(QName("a.b.c")[1..-1], QName("b.c"))
+    verifyEq(QName("a.b.c")[0..-2], QName("a.b"))
+    verifyEq(QName("a.b.c.d")[1..-1], QName("b.c.d"))
+    verifyEq(QName("a.b.c.d")[0..-2], QName("a.b.c"))
+    verifyEq(QName("a.b.c.d.e")[1..-1], QName("b.c.d.e"))
+    verifyEq(QName("a.b.c.d.e")[0..-2], QName("a.b.c.d"))
+    verifyEq(QName("a.b.c.d.e")[1..-2], QName("b.c.d"))
   }
 
-  Void verifyPath(Str s, Str[] names)
+  Void verifyQName(Str s, Str[] names)
   {
-    p := Path(s)
-    verifyEq(p.isRoot, names.isEmpty)
-    if (p.isRoot) verifySame(Path.root, p)
-    verifyEq(p.size, names.size)
-    verifyEq(p.name, names.last ?: "")
-    verifyEq(p.toStr, s)
-    verifySame(p.toStr, p.toStr)
-    names.each |n, i| { verifyEq(p[i], n) }
-    verifyEq(p, Path(s))
-    verifyEq(p.add("foo").toStr, p.isRoot ? "foo" : "${s}.foo")
+    x := QName(s)
+    verifyEq(x.isRoot, names.isEmpty)
+    if (x.isRoot) verifySame(QName.root, x)
+    verifyEq(x.size, names.size)
+    verifyEq(x.name, names.last ?: "")
+    verifyEq(x.toStr, s)
+    verifySame(x.toStr, x.toStr)
+    names.each |n, i| { verifyEq(x[i], n) }
+    verifyEq(x, QName(s))
+    if (x.isRoot || names.size == 1)
+    {
+      verifySame(x.parent, QName.root)
+    }
+    else
+    {
+      verifyEq(x.parent, QName(names[0..-2]))
+    }
+    verifyEq(x.add("foo").toStr, x.isRoot ? "foo" : "${s}.foo")
   }
 }
 

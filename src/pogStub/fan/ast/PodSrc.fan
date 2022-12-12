@@ -28,7 +28,7 @@ internal class PodSrc
 
   once TypeSrc[] toIndex() { types.findAll { !it.isAbstract && !it.isEnum }.ro }
 
-  override Str toStr() { lib.qname }
+  override Str toStr() { lib.qname.toStr }
 }
 
 

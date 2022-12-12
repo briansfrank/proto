@@ -16,10 +16,10 @@ using pog
 @Js
 const class MProtoSpi : ProtoSpi
 {
-  new make(FileLoc loc, Path path, Int tx, AtomicRef baseRef, Obj? val, Str:Proto children)
+  new make(FileLoc loc, QName qname, Int tx, AtomicRef baseRef, Obj? val, Str:Proto children)
   {
     this.loc      = loc
-    this.path     = path
+    this.qname    = qname
     this.baseRef  = baseRef
     this.valRef   = val
     this.children = children
@@ -28,11 +28,9 @@ const class MProtoSpi : ProtoSpi
 
   override const FileLoc loc
 
-  override Str name() { path.name }
+  override Str name() { qname.name }
 
-  override Str qname() { path.toStr }
-
-  const Path path
+  override const QName qname
 
   override const Int tx
 
@@ -126,7 +124,7 @@ const class MProtoSpi : ProtoSpi
     children.vals
   }
 
-  override Str toStr() { path.toStr }
+  override Str toStr() { qname.toStr }
 
   override Bool fits(Proto that)
   {
@@ -136,7 +134,7 @@ const class MProtoSpi : ProtoSpi
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     indent := opts?.get("indent") as Str ?: ""
-    if (path.isRoot)
+    if (qname.isRoot)
     {
       out.print(type)
     }

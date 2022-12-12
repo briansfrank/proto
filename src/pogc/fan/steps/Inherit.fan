@@ -68,7 +68,7 @@ internal class Inherit : Step
   {
     of := p.parent.get("_of", false)
     if (of == null || of.type == null) return null
-    if (of.qname == rootOf) return null
+    if (of.qname.toStr == rootOf) return null
     return of.type.deref
   }
 

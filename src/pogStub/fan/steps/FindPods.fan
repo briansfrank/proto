@@ -29,7 +29,7 @@ internal class FindPods : Step
   PodSrc? findPod(File[] path, Lib lib)
   {
     // lookup pod name from lib qname
-    podName := env.factory.toPod[lib.qname]
+    podName := env.factory.toPod[lib.qname.toStr]
     if (podName == null) return null
 
     // search for source directory

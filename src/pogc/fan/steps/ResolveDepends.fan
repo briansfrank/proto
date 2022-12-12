@@ -50,7 +50,7 @@ internal class ResolveDepends : Step
       if (acc[dependName] != null) return err("Duplicate depend: $dependName", depend.loc)
 
       // resolve depend
-      dependLib := libs.find { it.qname == dependName }
+      dependLib := libs.find { it.qname.toStr == dependName }
       if (dependLib == null) return err("Depend not found: $dependName", depend.loc)
 
       // add to our list of depends

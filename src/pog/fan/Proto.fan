@@ -30,7 +30,7 @@ const class Proto : ProtoStub
   Str name() { spiRef.name }
 
   ** Fully qualified name as dotted path from root
-  Str qname() { spiRef.qname }
+  QName qname() { spiRef.qname }
 
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
   Proto? type() { spiRef.type }
@@ -50,7 +50,7 @@ const class Proto : ProtoStub
   internal const ProtoSpi spiRef
 
   ** String representation is always qname
-  override final Str toStr() { qname }
+  override final Str toStr() { qname.toStr }
 
 //////////////////////////////////////////////////////////////////////////
 // Scalar
@@ -120,7 +120,7 @@ const class Proto : ProtoStub
 abstract const class ProtoSpi
 {
   abstract Str name()
-  abstract Str qname()
+  abstract QName qname()
   abstract Proto? type()
   abstract Int tx()
   abstract Bool fits(Proto base)

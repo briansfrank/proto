@@ -173,7 +173,7 @@ internal const class MPogLint : PogLint
       items.each |item|
       {
         itemStub := u.clone(itemType)
-        itemStub.set("target", item.target.qname)
+        itemStub.set("target", item.target.qname.toStr)
         itemStub.set("level",  item.level.name)
         itemStub.set("msg",    item.msg)
         itemsStub.add(itemStub)

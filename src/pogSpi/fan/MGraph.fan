@@ -37,7 +37,7 @@ const class MGraph : Graph
 
   override Proto? getq(Str qname, Bool checked := true)
   {
-    path := Path(qname)
+    path := QName(qname)
     Proto? p := this
     for (i := 0; p != null && i<path.size; ++i)
       p = p.get(path[i], checked)

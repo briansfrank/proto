@@ -68,7 +68,7 @@ internal class GenSlots : Step
 
   Bool isScalar(Proto x)
   {
-    if (x.qname == "sys.Scalar") return true
+    if (x.qname.toStr == "sys.Scalar") return true
     if (x.type == null) return false
     return isScalar(x.type)
   }
@@ -107,7 +107,7 @@ internal const class TypeSig
       return make(of.sig+"[]", list)
     }
 
-    isMaybe := proto.type?.qname == "sys.Maybe"
+    isMaybe := proto.type?.qname?.toStr == "sys.Maybe"
     if (isMaybe)
     {
       of := map(graph, proto.get("_of", false))

@@ -198,10 +198,10 @@ class CompileTest : AbstractCompileTest
 
   Void verifyMaybe(Proto p, Str type, Str? val := null, Str? kids := null)
   {
-    verifyEq(p.type.qname, "sys.Maybe")
+    verifyEq(p.type.qname.toStr, "sys.Maybe")
     verifySame(p.type, graph->sys->Maybe)
     of := p->_of
-    verifyEq(of.type.qname, type)
+    verifyEq(of.type.qname.toStr, type)
 
     if (val == null) verifyEq(p.hasVal, false)
     else verifyEq(p.val, val)
@@ -280,7 +280,7 @@ class CompileTest : AbstractCompileTest
     u := graph->test.trap(name)
     verifySame(u.type, graph.getq(type))
     of := u->_of
-    verifyEq(of.qname, "test.${name}._of")
+    verifyEq(of.qname.toStr, "test.${name}._of")
     actual := StrBuf()
     of.eachOwn |x|
     {
@@ -371,7 +371,7 @@ class CompileTest : AbstractCompileTest
     kids := Proto[,]
     b.eachOwn |x| { kids.add(x) }
     verifyEq(kids.size, 3)
-    kids.each |kid| { verifyEq(kid.type.qname, "test.Box") }
+    kids.each |kid| { verifyEq(kid.type.qname.toStr, "test.Box") }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -421,11 +421,11 @@ class CompileTest : AbstractCompileTest
 
   Void verifyNestedSet(Proto p, Str dis)
   {
-    verifyEq(p.type.qname, "test.Ahu")
+    verifyEq(p.type.qname.toStr, "test.Ahu")
 
     d := p->discharge
     verifyEq(d->dis.val, "$dis-discharge")
-    verifyEq(d.type.qname, "test.Ahu.discharge")
+    verifyEq(d.type.qname.toStr, "test.Ahu.discharge")
 
     df := d->fan
     verifyEq(df->dis.val, "$dis-discharge-fan")
@@ -461,14 +461,14 @@ class CompileTest : AbstractCompileTest
 
     //x.dump
 
-    verifyEq(x->bar0->bind.type.qname, "test.Foo.a")
-    verifyEq(x->bar1->bind.type.qname, "test.foo1.a")
-    verifyEq(x->bar2->bind.type.qname, "test.foo2.a")
-    verifyEq(x->bar3->bind.type.qname, "test.foo3.a")
+    verifyEq(x->bar0->bind.type.qname.toStr, "test.Foo.a")
+    verifyEq(x->bar1->bind.type.qname.toStr, "test.foo1.a")
+    verifyEq(x->bar2->bind.type.qname.toStr, "test.foo2.a")
+    verifyEq(x->bar3->bind.type.qname.toStr, "test.foo3.a")
 
-    verifyEq(x->foo1.getOwn("a").qname, "test.foo1.a")
-    verifyEq(x->foo2.getOwn("a").qname, "test.foo2.a")
-    verifyEq(x->foo3.getOwn("a").qname, "test.foo3.a")
+    verifyEq(x->foo1.getOwn("a").qname.toStr, "test.foo1.a")
+    verifyEq(x->foo2.getOwn("a").qname.toStr, "test.foo2.a")
+    verifyEq(x->foo3.getOwn("a").qname.toStr, "test.foo3.a")
 
     verifySame(x->foo1.getOwn("a").type, graph.getq("test.Foo.a"))
     verifySame(x->foo2.getOwn("a").type, graph.getq("test.Foo.a"))

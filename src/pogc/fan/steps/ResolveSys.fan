@@ -37,7 +37,7 @@ internal class ResolveSys : Step
 
   private CProto resolve(CProto parent, Str name)
   {
-    parent.getOwn(name, false) ?: throw err("Sys type not found: ${parent.path}.$name", parent.loc)
+    parent.getOwn(name, false) ?: throw err("Sys type not found: ${parent.qname}.$name", parent.loc)
   }
 }
 

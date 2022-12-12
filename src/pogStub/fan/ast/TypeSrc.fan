@@ -35,5 +35,5 @@ internal class TypeSrc
   const Range lines     // pog-start .. pog-end lines (zero based line numbers)
   Str[]? gen            // GenSlots source code
 
-  override Str toStr() { proto.qname }
+  override Str toStr() { proto.qname.toStr }
 }

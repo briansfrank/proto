@@ -43,12 +43,12 @@ internal class Assemble : Step
   {
     if (x.isAssembled) return x.asm
 
-    path    := x.path
+    qname   := x.qname
     baseRef := x.baseRef
     kids    := asmChildren(x.children)
     val     := x.val
 
-    m := instantiate(x, MProtoSpi(x.loc, path, 0, baseRef, val, kids))
+    m := instantiate(x, MProtoSpi(x.loc, qname, 0, baseRef, val, kids))
 
     x.asmRef = m
     return m
@@ -61,7 +61,7 @@ internal class Assemble : Step
     if (x.type == null) return Proto()
     try
     {
-      return env.factory.init(x.qname, x.type.deref.qname)
+      return env.factory.init(x.qname.toStr, x.type.deref.qname.toStr)
     }
     catch (Err e)
     {
@@ -82,7 +82,7 @@ internal class Assemble : Step
   private Str:Lib asmLibs()
   {
     acc := Str:Lib[:]
-    libs.each |x| { acc.add(x.path.toStr, (Lib)x.proto.asm) }
+    libs.each |x| { acc.add(x.qname.toStr, (Lib)x.proto.asm) }
     return acc
   }
 

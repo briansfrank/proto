@@ -81,15 +81,15 @@ class ReflectTest : AbstractCompileTest
     verifyEq(p.get("c").val, "cv")
 
     // get path of each slot
-    verifyEq(p.get("a").qname, "test." + slots[0])
-    verifyEq(p.get("b").qname, "test." + slots[1])
-    verifyEq(p.get("c").qname, "test." + slots[2])
+    verifyEq(p.get("a").qname.toStr, "test." + slots[0])
+    verifyEq(p.get("b").qname.toStr, "test." + slots[1])
+    verifyEq(p.get("c").qname.toStr, "test." + slots[2])
 
     // each
     map := Str:Str[:] { ordered = true }
     p.each |kid|
     {
-      if (kid.qname.startsWith("sys.")) return
+      if (kid.qname.toStr.startsWith("sys.")) return
       map[kid.name] = kid.val
     }
     verifyEq(map, ["a":"av", "b":"bv", "c":"cv"])
@@ -98,7 +98,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     p.each |kid|
     {
-      if (kid.qname.startsWith("sys.")) return
+      if (kid.qname.toStr.startsWith("sys.")) return
       if (p.hasOwn(kid.name))
       {
         verifySame(p.get(kid.name), p.getOwn(kid.name))
@@ -117,7 +117,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     p.eachOwn |kid|
     {
-      if (kid.qname.startsWith("sys.")) return
+      if (kid.qname.toStr.startsWith("sys.")) return
       map[kid.name] = kid.val
     }
     verifyEq(map.keys.join(","), own)
@@ -126,7 +126,7 @@ class ReflectTest : AbstractCompileTest
     map.clear
     result := p.eachOwnWhile |kid|
     {
-      if (kid.qname.startsWith("sys.")) return null
+      if (kid.qname.toStr.startsWith("sys.")) return null
       map[kid.name] = kid.val
       return kid.name == "b" ? "break" : null
     }
@@ -455,14 +455,14 @@ class ReflectTest : AbstractCompileTest
     list := p.list
     p.each |kid|
     {
-      if (kid.name == "_of" || kid.qname.startsWith("sys.")) return
+      if (kid.name == "_of" || kid.qname.toStr.startsWith("sys.")) return
       e := expected[i++]
       // echo(" >> $kid [$kid.type] ?= $e")
-      verifyEq(kid.qname,       e[0])
-      verifyEq(kid.val(false),  e[1])
-      verifyEq(kid.type.qname,  e[2])
-      verifyEq(p.has(kid.name), true)
-      verifySame(p.get(kid.name), kid)
+      verifyEq(kid.qname.toStr,      e[0])
+      verifyEq(kid.val(false),       e[1])
+      verifyEq(kid.type.qname.toStr, e[2])
+      verifyEq(p.has(kid.name),      true)
+      verifySame(p.get(kid.name),    kid)
     }
     verifyEq(i, expected.size)
   }

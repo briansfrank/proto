@@ -15,19 +15,17 @@ using pogSpi
 **
 internal class CLib
 {
-  new make(FileLoc loc, Path path, File dir, File[] src, CProto proto)
+  new make(FileLoc loc, QName qname, File dir, File[] src, CProto proto)
   {
     this.loc   = loc
-    this.path  = path
-    this.qname = path.toStr
+    this.qname = qname
     this.dir   = dir
     this.src   = src
-    this.isSys = qname == "sys"
+    this.isSys = qname.toStr == "sys"
     this.proto = proto
   }
 
-  const Path path     // library dotted name
-  const Str qname     // dotted qualified name
+  const QName qname   // dotted qualified name
   const FileLoc loc   // location of directory
   const File dir      // directory which contains lib.pog
   const File[] src    // pog files (first is always lib.pog)

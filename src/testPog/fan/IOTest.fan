@@ -88,7 +88,7 @@ class IOTest : AbstractCompileTest
 
   Void verifyHaystackDictEq(Proto p, Dict d)
   {
-    verifyProto(p.qname, graph.sys->Dict, null, graph.tx)
+    verifyProto(p.qname.toStr, graph.sys->Dict, null, graph.tx)
     num := 0
     d.each |v, n|
     {
@@ -103,7 +103,7 @@ class IOTest : AbstractCompileTest
     if (v is Symbol) expectedName = "Symbol"
     verifyEq(type.name, expectedName)
 
-    verifyProto(p.qname, type, v, graph.tx)
+    verifyProto(p.qname.toStr, type, v, graph.tx)
   }
 }
 

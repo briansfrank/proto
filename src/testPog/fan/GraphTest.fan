@@ -42,7 +42,7 @@ class GraphTest : AbstractCompileTest
   Void verifyId(Str qname, Str id)
   {
     p := graph.getq(qname)
-    verifyEq(p.qname, qname)
+    verifyEq(p.qname.toStr, qname)
     verifySame(graph.getById(id), p)
   }
 }

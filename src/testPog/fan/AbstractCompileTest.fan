@@ -63,7 +63,7 @@ abstract class AbstractCompileTest : Test
     p := getq(qname)
     // echo("$p.loc [$p.qname]")
     verifyEq(p.name, qname.split('.').last)
-    verifyEq(p.qname, qname)
+    verifyEq(p.qname.toStr, qname)
     verifySame(p.type, type)
     verifyEq(p.toStr, qname)
     if (val != null)

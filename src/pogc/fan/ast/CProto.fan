@@ -45,7 +45,7 @@ internal class CProto
   {
     kid := children.get(name, null) ?: type?.get(name)
     if (kid != null) return kid
-    if (checked) throw UnknownProtoErr(qname + "." + name)
+    if (checked) throw UnknownProtoErr(qname.add(name).toStr)
     return null
   }
 
@@ -53,29 +53,27 @@ internal class CProto
   {
     kid := children.get(name, null)
     if (kid != null) return kid
-    if (checked) throw UnknownProtoErr(qname + "." + name)
+    if (checked) throw UnknownProtoErr(qname.add(name).toStr)
     return null
   }
 
   Bool isRoot() { parent == null }
 
-  Str qname() { path.toStr }
-
-  once Path path() { isRoot ? Path.root : parent.path.add(name) }
+  once QName qname() { isRoot ? QName.root : parent.qname.add(name) }
 
   Bool isMeta() { name[0] == '_' }
 
-  Bool isObj() { qname == "sys.Obj" }
+  Bool isObj() { qname.toStr == "sys.Obj" }
 
-  Bool isEnum() { qname == "sys.Enum" }
+  Bool isEnum() { qname.toStr == "sys.Enum" }
 
-  Bool isMarker() { qname == "sys.Marker" }
+  Bool isMarker() { qname.toStr == "sys.Marker" }
 
-  Bool isMaybe() { qname == "sys.Maybe" }
+  Bool isMaybe() { qname.toStr == "sys.Maybe" }
 
-  Bool isAnd() { qname == "sys.And" }
+  Bool isAnd() { qname.toStr == "sys.And" }
 
-  Bool isOr() { qname == "sys.Or" }
+  Bool isOr() { qname.toStr == "sys.Or" }
 
   Bool fitsList() { fits("sys.List") }
 
@@ -83,12 +81,12 @@ internal class CProto
 
   Bool fits(Str qname)
   {
-    if (this.qname == qname) return true
+    if (this.qname.toStr == qname) return true
     if (type == null) return false
     return type.deref.fits(qname)
   }
 
-  override Str toStr() { isRoot ? "_root_" : path.toStr }
+  override Str toStr() { isRoot ? "_root_" : qname.toStr }
 
   Bool isAssembled() { asmRef != null }
 

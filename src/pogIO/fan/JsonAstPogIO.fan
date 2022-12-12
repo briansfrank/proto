@@ -67,7 +67,7 @@ internal class JsonAstWriter : OutStream
     indentation++
 
     if (p.type != null)
-      indent.quoted("_type").print(": ").quoted(p.type.qname).printLine(typeComma)
+      indent.quoted("_type").print(": ").quoted(p.type.qname.toStr).printLine(typeComma)
 
     if (p.hasVal)
       indent.quoted("_val").print(": ").quoted(p.val.toStr).printLine(valComma)
@@ -99,18 +99,18 @@ internal class JsonAstReader
 {
   Graph readGraph(InStream in)
   {
-    index(Path.root, JsonInStream(in).readJson)
+    index(QName.root, JsonInStream(in).readJson)
     return asm
   }
 
-  private JsonAstProto index(Path path, Str:Obj map)
+  private JsonAstProto index(QName qname, Str:Obj map)
   {
-    x := JsonAstProto(path, map)
-    acc[path.toStr] = x
-    if (x.isLib) libs.add(path.toStr, x)
+    x := JsonAstProto(qname, map)
+    acc[qname.toStr] = x
+    if (x.isLib) libs.add(qname.toStr, x)
     map.each |v, k|
     {
-      if (v is Map) x.children.add(index(path.add(k), v))
+      if (v is Map) x.children.add(index(qname.add(k), v))
     }
     return x
   }
@@ -170,25 +170,25 @@ throw Err("TODO")
 @Js
 internal class JsonAstProto
 {
-  new make(Path path, Str:Obj map)
+  new make(QName qname, Str:Obj map)
   {
-    this.path   = path
+    this.qname = qname
     this.map   = map
     this.type  = map["_type"]
     this.isLib = type == "sys.Lib"
   }
 
-  const Path path
+  const QName qname
   const Str? type
   const Bool isLib
   Str:Obj map
   JsonAstProto[] children := [,]
 
-  Str name() { path.name }
+  Str name() { qname.name }
 
   Bool isObj() { type == null }
 
   Bool isAssembled() { asmRef.val != null }
-  Proto asm() { asmRef.val ?: throw Err("Not assembled yet [$path]") }
+  Proto asm() { asmRef.val ?: throw Err("Not assembled yet [$qname]") }
   const AtomicRef asmRef := AtomicRef()
 }
