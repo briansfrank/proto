@@ -1,0 +1,34 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Dec 2022  Brian Frank  Creation
+//
+
+==========================================================================
+Verify fit checks for scalars
+---
+Foo: {
+  date: Date
+  int:  Int
+  num: Number
+}
+
+ok: Foo {
+  date: Date "2022-12-12"
+  int: Int "123"
+  num: Float "123"
+}
+
+err: Foo {
+  date: Time "12:30:40"
+  int: Float "123"
+  num: Str "string"
+}
+---
+err | test.err.date | Invalid type for 'test.Foo.date': sys.Time does not fit sys.Date
+err | test.err.int  | Invalid type for 'test.Foo.int': sys.Float does not fit sys.Int
+err | test.err.num  | Invalid type for 'test.Foo.num': sys.Str does not fit sys.Number
+==========================================================================
+

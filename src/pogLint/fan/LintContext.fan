@@ -18,6 +18,9 @@ mixin LintContext
   ** Current graph
   abstract Graph graph()
 
+  ** Parent of the current proto (or null if root)
+  abstract Proto? parent()
+
   ** Current proto object
   abstract Proto proto()
 

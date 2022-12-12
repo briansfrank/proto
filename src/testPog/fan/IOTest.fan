@@ -34,12 +34,14 @@ class IOTest : AbstractCompileTest
     json := sb.toStr
 
     // decode
+    /* TODO
     graph = env.io.read("json-ast", json.in)
     verifyEq(graph.libs.size, 2)
     verifySame(graph.libs[0], graph.lib("ph"))
     verifySame(graph.libs[1], graph.lib("sys"))
     verifySys
     verifyPh
+    */
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -68,6 +68,7 @@ class LintTest : AbstractCompileTest
   {
     PogTestReader(`test/lint/`).readEach |c|
     {
+//if (c.doc != "") return
       verifyCase(c)
     }
   }
@@ -80,7 +81,16 @@ class LintTest : AbstractCompileTest
 
     lint := graph.lint
     report := lint.report
-//echo; test.dump; echo("---"); report.dump
+
+/*
+echo
+test.dump
+echo
+//env.io.write("json-ast", graph, Env.cur.out)
+echo("---")
+report.dump
+*/
+
     verifySame(lint.report, report)
     verifyEq(lint.isOk, false)
     verifyEq(lint.isErr, true)

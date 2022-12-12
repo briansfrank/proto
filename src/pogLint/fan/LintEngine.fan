@@ -39,7 +39,7 @@ internal class LintEngine : LintContext
   PogLint run()
   {
     initRules
-    runOn(graph)
+    runOn(null, graph)
     return toResult
   }
 
@@ -55,14 +55,15 @@ internal class LintEngine : LintContext
     this.rules = acc
   }
 
-  private Void runOn(Proto p)
+  private Void runOn(Proto? parent, Proto p)
   {
     // run all the rules on this proto
+    this.parent = parent
     this.proto = p
     rules.each |rule| { runRule(rule) }
 
     // run on kids
-    p.eachOwn |kid| { runOn(kid) }
+    p.eachOwn |kid| { runOn(p, kid) }
   }
 
   private Void runRule(LintRule rule)
@@ -113,6 +114,7 @@ internal class LintEngine : LintContext
 //////////////////////////////////////////////////////////////////////////
 
   const override Graph graph      // make
+  override Proto? parent          // make/runOn
   override Proto proto            // make/runOn
   LintRule[]? rules               // initRules
   MLintItem[] items := [,]        // log
