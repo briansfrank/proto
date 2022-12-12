@@ -44,5 +44,7 @@ class GraphTest : AbstractCompileTest
     p := graph.getq(qname)
     verifyEq(p.qname.toStr, qname)
     verifySame(graph.getById(id), p)
+    verifySame(graph.getq(qname), p)
+    verifySame(graph.getq(QName(qname)), p)
   }
 }

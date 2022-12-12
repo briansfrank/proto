@@ -24,8 +24,9 @@ abstract const class Graph : Proto
   ** Lookup a library by its dotted qualified name
   abstract Lib? lib(Str name, Bool checked := true)
 
-  ** Get the proto with the fully qualified name
-  abstract Proto? getq(Str qname, Bool checked := true)
+  ** Get the proto with the fully qualified name.
+  ** The qname parameter may be a Str or a QName.
+  abstract Proto? getq(Obj qname, Bool checked := true)
 
   ** Get the proto by its unique id key
   abstract Proto? getById(Str id, Bool checked := true)

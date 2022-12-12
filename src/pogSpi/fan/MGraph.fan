@@ -35,12 +35,12 @@ const class MGraph : Graph
     return null
   }
 
-  override Proto? getq(Str qname, Bool checked := true)
+  override Proto? getq(Obj qnameArg, Bool checked := true)
   {
-    path := QName(qname)
+    qname := qnameArg as QName ?: QName.fromStr(qnameArg)
     Proto? p := this
-    for (i := 0; p != null && i<path.size; ++i)
-      p = p.get(path[i], checked)
+    for (i := 0; p != null && i<qname.size; ++i)
+      p = p.get(qname[i], checked)
     return p
   }
 
