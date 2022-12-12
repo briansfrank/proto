@@ -88,8 +88,8 @@ abstract class AbstractCompileTest : Test
     obj    := verifyProto("sys.Obj",    null,   null)
     marker := verifyProto("sys.Marker", obj,    null)
     val    := verifyProto("sys.Val",    obj,    null)
-    scalar := verifyProto("sys.Scalar", val,    null)
-    str    := verifyProto("sys.Str",    scalar, null)
+    scalar := verifyProto("sys.Scalar", val,    "")
+    str    := verifyProto("sys.Str",    scalar, "")
 
     enum   := verifyProto("sys.Enum",       obj,  null)
     bool   := verifyProto("sys.Bool",       enum, null)
@@ -116,11 +116,11 @@ abstract class AbstractCompileTest : Test
 
     na     := verifyProto("ph.NA",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
-    ref    := verifyProto("ph.Coord",  sys->Scalar)
+    ref    := verifyProto("ph.Symbol",  sys->Scalar, "x")
     grid   := verifyProto("ph.Grid",   sys->Collection)
     entity := verifyProto("ph.Entity", sys->Dict)
-    id     := verifyProto("ph.Entity.id._of", ph->Tag->id)
-    str    := verifyProto("ph.Entity.dis._of", ph->Tag->dis)
+    id     := verifyProto("ph.Entity.id._of", ph->Tag->id, "")
+    str    := verifyProto("ph.Entity.dis._of", ph->Tag->dis, "")
 
     depends := verifyProto("ph._depends", sys->Lib->_depends)
     verifyProto("ph._depends._0", sys->Depend)

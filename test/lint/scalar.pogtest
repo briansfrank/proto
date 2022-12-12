@@ -7,19 +7,78 @@
 //
 
 ==========================================================================
-Verify scalar regex and parsing
+Verify scalar regex for sys.Date
 ---
 In: {
-  dateOk: Date "2022-12-09"
-  date1: Date "2023.12.09"
-  refOk: Ref "foo.BAR~baz_0123"
-  ref1: Ref "foo bar"
+  ok1: Date "2022-12-09"
+
+  err1: Date "2023.12.09"
 }
 ---
-err | test.In.date1 | Scalar does not match sys.Date pattern: "2023.12.09"
-err | test.In.ref1  | Scalar does not match sys.Ref pattern: "foo bar"
+err | test.In.err1 | Scalar does not match sys.Date pattern: "2023.12.09"
 ==========================================================================
+Verify scalar regex sys.Time
+---
+In: {
+  ok1: Time "23:10:03"
+  ok2: Time "00:30:13.567"
 
+  err1: Time "23.10.03"
+  err2: Time "23:10"
+  err3: Time "23:10:10."
+}
+---
+err | test.In.err1 | Scalar does not match sys.Time pattern: "23.10.03"
+err | test.In.err2 | Scalar does not match sys.Time pattern: "23:10"
+err | test.In.err3 | Scalar does not match sys.Time pattern: "23:10:10."
+==========================================================================
+Verify scalar regex sys.DateTime
+---
+In: {
+  ok1: DateTime "2000-01-01T00:00:00Z UTC"
+  ok2: DateTime "2022-12-12T09:51:47-05:00 New_York"
+  ok3: DateTime "2022-12-12T09:51:47.533-05:00 New_York"
+  ok4: DateTime "2022-12-12T05:51:47.533-09:00 GMT+9"
+  ok5: DateTime "2022-12-12T23:51:47.533+09:00 GMT-9"
+  ok6: DateTime "2022-12-12T02:51:47.533-12:00 GMT+12"
+  ok7: DateTime "2022-12-13T02:51:47.533+12:00 GMT-12"
+
+  err1: DateTime "2000-01-01T00:00:00Z"
+  err2: DateTime "2022-12-12 09:51:47-05:00 New_York"
+  err3: DateTime "2022-12-12T09:51-05:00 New_York"
+}
+---
+err | test.In.err1 | Scalar does not match sys.DateTime pattern: "2000-01-01T00:00:00Z"
+err | test.In.err2 | Scalar does not match sys.DateTime pattern: "2022-12-12 09:51:47-05:00 New_York"
+err | test.In.err3 | Scalar does not match sys.DateTime pattern: "2022-12-12T09:51-05:00 New_York"
+==========================================================================
+Verify scalar regex sys.Version
+---
+In: {
+  ok1: Version "3"
+  ok2: Version "123"
+  ok3: Version "1.22"
+  ok4: Version "1.23.123"
+
+  err1: Version "3x"
+  err2: Version "3."
+  err3: Version "3.4 x"
+}
+---
+err | test.In.err1  | Scalar does not match sys.Version pattern: "3x"
+err | test.In.err2  | Scalar does not match sys.Version pattern: "3."
+err | test.In.err3  | Scalar does not match sys.Version pattern: "3.4 x"
+==========================================================================
+Verify scalar regex sys.Ref
+---
+In: {
+  ok1: Ref "foo.BAR~baz_0123"
+
+  err1: Ref "foo bar"
+}
+---
+err | test.In.err1  | Scalar does not match sys.Ref pattern: "foo bar"
+==========================================================================
 
 
 

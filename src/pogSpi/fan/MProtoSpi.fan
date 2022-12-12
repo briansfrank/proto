@@ -45,6 +45,8 @@ const class MProtoSpi : ProtoSpi
   override Obj? val(Bool checked)
   {
     if (valRef != null) return valRef
+    val := base.val
+    if (val != null) return val
     if (checked) throw ProtoMissingValErr(name)
     return null
   }

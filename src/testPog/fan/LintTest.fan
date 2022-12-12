@@ -33,7 +33,7 @@ class LintTest : AbstractCompileTest
     doc := graph.sys->Obj->_doc
     str := graph.sys->Str
     verifyProto("sys.lint.LintItem._doc", doc, "Lint item models one validation message")
-    verifyProto("sys.lint.LintItem.msg", str)
+    verifyProto("sys.lint.LintItem.msg", str, "")
     verifyProto("sys.lint.LintItem.msg._doc", doc, "Free form message string describing issue")
 
     graph := graph.update |u|
@@ -80,7 +80,7 @@ class LintTest : AbstractCompileTest
 
     lint := graph.lint
     report := lint.report
-    // echo; test.dump; echo("---"); report.dump
+//echo; test.dump; echo("---"); report.dump
     verifySame(lint.report, report)
     verifyEq(lint.isOk, false)
     verifyEq(lint.isErr, true)

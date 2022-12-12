@@ -27,7 +27,7 @@ Val : Obj
 // Scalar is an atomic value kind
 Scalar : Val <
   pattern: Str?  // Regex pattern that string encoding must match
->
+> ""
 
 // Closed enumerated choice
 Enum : Obj
@@ -42,7 +42,7 @@ Bool : Enum {
 Number : Scalar <
   minVal: Number?   // Inclusive minimum value
   maxVal: Number?   // Inclusive maximum value
->
+> "0"
 
 // Unitless integer number
 Int : Number
@@ -64,7 +64,9 @@ Ref : Scalar <
 >
 
 // Version string formatted as decimal digits separated by a dot
-Version : Scalar
+Version : Scalar <
+  pattern: "\\d+(\\.\\d+)*"
+> "0"
 
 // Universal resource identifier
 Uri : Scalar
@@ -72,13 +74,17 @@ Uri : Scalar
 // ISO 8601 date as year, month, day: '2011-06-07'
 Date : Scalar <
   pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"
->
+> "2000-01-01"
 
 // ISO 8601 time as hour, minute, seconds: '09:51:27.354'
-Time : Scalar
+Time : Scalar <
+  pattern: "\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"
+> "00:00:00"
 
 // ISO 8601 timestamp followed by timezone identifier
-DateTime : Scalar
+DateTime : Scalar <
+  pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
+> "2000-01-01T00:00:00Z UTC"
 
 // Collection type
 Collection : Val

@@ -20,6 +20,9 @@ abstract const class MProtoBase
   ** Proto type return for base type
   abstract Proto? proto()
 
+  ** Get the value
+  abstract Obj? val()
+
   ** Does the type contain the given slot
   abstract Bool has(Str name)
 
@@ -44,6 +47,7 @@ abstract const class MProtoBase
 const class MNullBase : MProtoBase
 {
   override Proto? proto()  { null }
+  override Obj? val() { null }
   override Bool has(Str name) { false }
   override Proto? get(Str name) { null }
   override Void eachSeen(Str:Str seen, |Proto| f) {}
@@ -62,6 +66,7 @@ const class MSingleBase : MProtoBase
 {
   new make(Proto proto) { this.proto = proto }
   override const Proto? proto
+  override Obj? val() { proto.val(false) }
   override Bool has(Str name) { proto.has(name) }
   override Proto? get(Str name) { proto.get(name, false) }
   override Void eachSeen(Str:Str seen, |Proto| f) { proto.spi.eachSeen(seen, f) }
@@ -80,6 +85,7 @@ const class MAndBase : MProtoBase
 {
   new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }
   override const Proto? proto
+  override Obj? val() { null }
   override Bool has(Str name) { get(name) != null }
   override Proto? get(Str name) { bases.eachWhile |b| { b.get(name, false) } }
   override Void eachSeen(Str:Str seen, |Proto| f) { bases.each |b| { b.spi.eachSeen(seen, f) } }
@@ -99,6 +105,7 @@ const class MOrBase : MProtoBase
 {
   new make(Proto and, Proto[] bases) { this.proto = and; this.bases = bases }
   override const Proto? proto
+  override Obj? val() { null }
   override Bool has(Str name) { get(name) != null }
   override Proto? get(Str name)
   {
