@@ -13,6 +13,12 @@ const class UnknownProtoErr : Err
 }
 
 @Js @NoDoc
+const class UnknownTransducerErr : Err
+{
+  new make(Str msg, Err? cause := null) : super(msg, cause) {}
+}
+
+@Js @NoDoc
 const class ProtoMissingValErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}

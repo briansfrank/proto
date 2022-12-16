@@ -47,6 +47,12 @@ abstract const class PogEnv
   ** I/O adaptor and file format registry
   abstract PogEnvIO io()
 
+  ** List the installed transducers
+  abstract Transducer[] transducers()
+
+  ** Lookup a transducer by name
+  abstract Transducer? transducer(Str name, Bool checked := true)
+
   ** Create a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
   abstract Graph create(Str[] libNames)

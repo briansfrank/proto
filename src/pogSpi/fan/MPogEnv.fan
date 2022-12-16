@@ -36,6 +36,8 @@ const class LocalPogEnv : MPogEnv
     this.installed = installedMap.keys.sort
     this.io = MPogEnvIO.init(this)
     this.factory = MFactory(this)
+    this.transducersMap = initTransducers(this)
+    this.transducers = transducersMap.vals.sort
   }
 
   private static File[] initPath()
@@ -68,6 +70,24 @@ const class LocalPogEnv : MPogEnv
     acc[qname] = dir
   }
 
+  static Str:Transducer initTransducers(PogEnv env)
+  {
+    acc := Str:Transducer[:]
+    Env.cur.index("pog.transducer").each |qname|
+    {
+      try
+      {
+        io := (Transducer)Type.find(qname).make([env])
+        acc.add(io.name, io)
+      }
+      catch (Err e)
+      {
+        echo("ERROR: cannot init pog::Transducer: $qname\n$e.traceToStr")
+      }
+    }
+    return acc
+  }
+
   ** List the library names installed by this environment
   const override Str[] installed
 
@@ -94,6 +114,19 @@ const class LocalPogEnv : MPogEnv
     if (checked) throw UnknownLibErr("Not installed: $qname")
     return null
   }
+
+  ** List the installed transducers
+  override const Transducer[] transducers
+
+  ** Lookup a transducer by name
+  override Transducer? transducer(Str name, Bool checked := true)
+  {
+    t := transducersMap[name]
+    if (t != null) return t
+    if (checked) throw UnknownTransducerErr(name)
+    return null
+  }
+  private const Str:Transducer transducersMap
 
   ** I/O regsitry
   override const PogEnvIO io
