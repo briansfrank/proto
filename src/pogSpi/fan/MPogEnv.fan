@@ -47,25 +47,25 @@ const class LocalPogEnv : MPogEnv
   private static Str:File initInstalled(File[] path)
   {
     acc := Str:File[:]
-    path.each |dir| { doInitInstalled(acc, "", dir) }
+    path.each |pogDir|
+    {
+      pogDir.listDirs.each |dir|
+      {
+        doInitInstalled(acc, dir)
+      }
+    }
     return acc
   }
 
-  private static Void doInitInstalled(Str:File acc, Str path, File dir)
+  private static Void doInitInstalled(Str:File acc, File dir)
   {
     hasLib := dir.plus(`lib.pog`).exists
-    if (hasLib && !path.isEmpty)
-    {
-      dup := acc[path]
-      if (dup != null) echo("WARN: PogEnv '$path' lib path hidden [$dup.osPath]")
-      acc[path] = dir
-    }
-    dir.listDirs.each |kid|
-    {
-      if (!PogUtil.isName(kid.name)) return
-      kidPath := PogUtil.qnameJoin(path, kid.name)
-      doInitInstalled(acc, kidPath, kid)
-    }
+    if (!hasLib) return
+
+    qname := dir.name
+    dup := acc[qname]
+    if (dup != null) echo("WARN: PogEnv '$qname' lib hidden [$dup.osPath]")
+    acc[qname] = dir
   }
 
   ** List the library names installed by this environment
