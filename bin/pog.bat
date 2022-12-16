@@ -1,2 +1,2 @@
 @echo off
-call "%~fs0\..\fanlaunch.bat" Fan pogc %*
+call "%~fs0\..\fanlaunch.bat" Fan pog %*
