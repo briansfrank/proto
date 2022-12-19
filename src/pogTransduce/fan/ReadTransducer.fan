@@ -6,6 +6,7 @@
 //   13 Aug 2022  Brian Frank  Creation
 //
 
+using util
 using pog
 
 **
@@ -29,16 +30,23 @@ abstract const class ReadTransducer : Transducer
     throw ArgErr("Invalid input for $name transducer")
   }
 
+  private FileLoc toFileLoc(Obj arg)
+  {
+    if (arg is File) return FileLoc.makeFile(arg)
+    return FileLoc.unknown
+  }
+
   override final Obj transduce(Obj arg)
   {
+    loc := toFileLoc(arg)
     in := toInStream(arg)
     try
-      return read(in)
+      return read(loc, in)
     finally
       in.close
   }
 
-  abstract Obj read(InStream in)
+  abstract Obj read(FileLoc loc, InStream in)
 }
 
 

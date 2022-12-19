@@ -93,12 +93,25 @@ class Session
   }
 
   ** Execute transducer
-  private Obj executeTransducer(Transducer t, Str[] args)
+  private Obj? executeTransducer(Transducer t, Str[] args)
   {
     // TODO: need a bit of work here...
-    inputs := args.map |arg->Obj| { arg.toUri.toFile }
-    input := inputs.first
-    return t.transduce(input)
+    try
+    {
+      inputs := args.map |arg->Obj| { arg.toUri.toFile }
+      input := inputs.first
+      return t.transduce(input)
+    }
+    catch (FileLocErr e)
+    {
+      err("$t.name failed [$e.loc]\n$e.traceToStr")
+      return null
+    }
+    catch (Err e)
+    {
+      err("$t.name failed\n$e.traceToStr")
+      return null
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
