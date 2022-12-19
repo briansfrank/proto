@@ -1,0 +1,32 @@
+#
+# Parse tests Pog format => JSON
+#
+
+---
+name: markerOnly
+run: parse, json
+pog: |
+  foo
+json: |
+  {"foo":{"is":"sys.Marker"}}
+---
+name: nameAndIs
+run: parse, json
+pog: |
+  foo: Str
+json: |
+  {"foo":{"is":"Str"}}
+---
+name: qnameAndIs
+run: parse, json
+pog: |
+  foo: bar.baz.Elem
+json: |
+  {"foo":{"is":"bar.baz.Elem"}}
+---
+
+
+
+
+
+
