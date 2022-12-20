@@ -226,6 +226,43 @@ json: |
       }
     }}
 ---
+name: docPre
+pog: |
+  // Single line
+  Foo: {}
+
+  // Double line
+  // 2nd one
+  Bar: {}
+json: |
+  {
+    "Foo":{"meta":{"doc":{"is":"sys.Str", "val":"Single line"}}},
+    "Bar":{"meta":{"doc":{"is":"sys.Str", "val":"Double line\n2nd one"}}}
+    }
+---
+name: docPost
+pog: |
+  Foo: {}  // Post Foo
+  Bar: {
+     marker    // Post foo
+     baz: ""   // Post baz
+
+     // This trumps
+     qux: ""  // nope
+  }
+json: |
+  {
+    "Foo":{"meta":{"doc":{"is":"sys.Str", "val":"Post Foo"}}},
+    "Bar":{
+      "marker":{
+        "is":"sys.Marker",
+        "meta":{"doc":{"is":"sys.Str", "val":"Post foo"}}
+        },
+      "baz":{"val":"", "meta":{"doc":{"is":"sys.Str", "val":"Post baz"}}},
+      "qux":{"val":"", "meta":{"doc":{"is":"sys.Str", "val":"This trumps"}}}
+      }
+    }
+---
 
 
 

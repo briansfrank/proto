@@ -239,8 +239,8 @@ internal class Parser
   {
     if (p.doc == null) return
     meta := p.map["meta"] as Str:Obj
-    if (meta == null) p.map["meta"] = meta = Str:Obj[:]
-    meta["doc"] = p.doc
+    if (meta == null) p.map["meta"] = meta = Str:Obj[:] { ordered = true }
+    meta["doc"] = ["is":"sys.Str", "val":p.doc]
   }
 
   private Str autoName(ParsedProto parent)
@@ -294,7 +294,7 @@ internal class Parser
     if (cur === Token.comment)
     {
       // leading trumps trailing
-      if (p.doc != null) p.doc = curVal.toStr.trimToNull
+      if (p.doc == null) p.doc = curVal.toStr.trimToNull
       consume
     }
   }

@@ -91,8 +91,12 @@ class PogTestRunner
     env.transduce("json", ["val":ast, "write":buf.out])
     json := buf.toStr.trim
 
-    // echo; echo(json)
-    // dump(json, expected)
+    if (json != expected)
+    {
+      echo
+      echo(json)
+      dump(json, expected)
+    }
 
     // verify
     test.verifyEq(json, expected)
