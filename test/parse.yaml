@@ -4,25 +4,227 @@
 
 ---
 name: markerOnly
-run: parse, json
 pog: |
   foo
 json: |
   {"foo":{"is":"sys.Marker"}}
 ---
 name: nameAndIs
-run: parse, json
 pog: |
   foo: Str
 json: |
   {"foo":{"is":"Str"}}
 ---
-name: qnameAndIs
-run: parse, json
+name: nameAndQualIs
 pog: |
   foo: bar.baz.Elem
 json: |
   {"foo":{"is":"bar.baz.Elem"}}
+---
+name: scalarOnly
+pog: |
+  foo: "scalar"
+json: |
+  {"foo":{"val":"scalar"}}
+---
+name: scalarAndIs
+pog: |
+  foo: Date "2022-12-20"
+json: |
+  {"foo":{"is":"Date", "val":"2022-12-20"}}
+---
+name: scalarAndQualIs
+pog: |
+  foo: baz.ui.Color "green"
+json: |
+  {"foo":{"is":"baz.ui.Color", "val":"green"}}
+---
+name: children0
+pog: |
+  foo: {}
+json: |
+  {"foo":{}}
+---
+name: children1ScalarOnly
+pog: |
+  foo: {b:"beta"}
+json: |
+  {"foo":{"b":{"val":"beta"}}}
+---
+name: children1ScalarAndIs
+pog: |
+  foo  :  {  b  :  Color "blue" }
+json: |
+  {"foo":{"b":{"is":"Color", "val":"blue"}}}
+---
+name: children1ScalarAndQualIs
+pog: |
+  foo :  {
+    b:  graphics.Color "blue"
+  }
+json: |
+  {"foo":{"b":{"is":"graphics.Color", "val":"blue"}}}
+---
+name: children2ScalarsComma
+pog: |
+  foo: {a:"Alpha", b:"Bravo"}
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"val":"Bravo"}
+    }}
+---
+name: children2ScalarsCommaTrailing
+pog: |
+  foo: {a:"Alpha", b:"Bravo",}
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"val":"Bravo"}
+    }}
+---
+name: children2ScalarsNewline
+pog: |
+  foo: {
+    a:"Alpha"
+    b:"Bravo"
+  }
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"val":"Bravo"}
+    }}
+---
+name: children2ScalarsNewlineAndComma
+pog: |
+  foo: {
+    a:"Alpha",
+    b:"Bravo",
+  }
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"val":"Bravo"}
+    }}
+---
+name: children2ScalarsNewlineAndCommaAndSpace
+pog: |
+  foo:  {
+
+    a  :  "Alpha",
+
+    b : "Bravo"  ,
+
+  }
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"val":"Bravo"}
+    }}
+---
+name: children3MixedScalars
+pog: |
+  foo: {
+    a: "Alpha",
+    b: Color "#FFF"
+    c: sys.Date "2022-12-20"
+  }
+json: |
+  {"foo":{
+    "a":{"val":"Alpha"},
+    "b":{"is":"Color", "val":"#FFF"},
+    "c":{"is":"sys.Date", "val":"2022-12-20"}
+    }}
+---
+name: childrenAndIs
+pog: |
+  foo: Person {
+    name: "Brian",
+    age: Int "40"
+  }
+json: |
+  {"foo":{
+    "is":"Person",
+    "name":{"val":"Brian"},
+    "age":{"is":"Int", "val":"40"}
+    }}
+---
+name: childrenAndQualIs
+pog: |
+  foo:some.lib.Person{name: "Brian",age: Int "40"}
+json: |
+  {"foo":{
+    "is":"some.lib.Person",
+    "name":{"val":"Brian"},
+    "age":{"is":"Int", "val":"40"}
+    }}
+---
+name: metaOnly
+pog: |
+  foo: <markIt>
+json: |
+  {"foo":{"meta":{"markIt":{"is":"sys.Marker"}}}}
+---
+name: metaScalar
+pog: |
+  foo: Int<minVal:"100">"123"
+json: |
+  {"foo":{"is":"Int", "val":"123", "meta":{"minVal":{"val":"100"}}}}
+---
+name: metaScalar2
+pog: |
+  foo: Int<abstract, minVal:"100">"123"
+json: |
+  {"foo":{"is":"Int", "val":"123", "meta":{
+    "abstract":{"is":"sys.Marker"},
+    "minVal":{"val":"100"}
+    }}}
+---
+name: metaAndChildrenMarkers
+pog: |
+  foo: <metaMarker> {childMarker}
+json: |
+  {"foo":{
+    "meta":{"metaMarker":{"is":"sys.Marker"}},
+    "childMarker":{"is":"sys.Marker"}
+    }}
+---
+name: metaAndChildren
+pog: |
+  foo: <a:"Meta-A"> {b:"Child-B"}
+json: |
+  {"foo":{
+    "meta":{"a":{"val":"Meta-A"}},
+    "b":{"val":"Child-B"}
+    }}
+---
+name: everything1
+pog: |
+  foo: Person <concrete> {
+    nick:"Brian"
+    full: Full { first:"B", last:"F" }
+    age: sys.Int "10"
+    where: Place
+    addr: {street:"100 Main", city:"Richmond", post:{code:"12345"}}
+  }
+json: |
+  {"foo":{
+    "is":"Person",
+    "meta":{"concrete":{"is":"sys.Marker"}},
+    "nick":{"val":"Brian"},
+    "full":{
+      "is":"Full",
+      "first":{"val":"B"},
+      "last":{"val":"F"}
+      },
+    "age":{"is":"sys.Int", "val":"10"},
+    "where":{"is":"Place"},
+    "addr":{
+      "street":{"val":"100 Main"},
+      "city":{"val":"Richmond"},
+      "post":{"code":{"val":"12345"}}
+      }
+    }}
 ---
 
 

@@ -96,6 +96,7 @@ internal class Parser
     {
       child := parseProto
       if (child == null) break
+      parseEndOfProto
       addToParent(parent, child)
     }
   }
@@ -142,7 +143,7 @@ internal class Parser
     a := parseIs(p)
     b := parseMeta(p)
     c := parseChildrenOrVal(p)
-    if (!a && !b && !c) throw err("Expecting proto body")
+    if (!a && !b && !c) throw err("Expecting proto body, not $curToStr")
   }
 
   private Bool parseIs(ParsedProto p)
@@ -379,11 +380,17 @@ internal class Parser
 @Js
 internal class ParsedProto
 {
-  new make(FileLoc loc) { this.loc = loc }
+  new make(FileLoc loc)
+  {
+    this.loc = loc
+    this.map = Str:Obj[:]
+    this.map.ordered = true
+  }
+
   const FileLoc loc
   Str? doc
   Str? name
-  Str:Obj map := [:]
+  Str:Obj map
 }
 
 **************************************************************************

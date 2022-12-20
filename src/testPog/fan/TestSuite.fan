@@ -63,13 +63,12 @@ class PogTestRunner
   This runTest(Str filename, Str:Obj def)
   {
     name := def["name"] ?: "unknown"
+    //if (name != "metaAndChildren") return this
     qname := filename + "." + name
     echo("   - $qname")
     try
     {
       // right now only support "parse, json"
-      run := def.getChecked("run")
-      if (run != "parse, json") throw Err("TODO: $run")
       runParseJson(def)
     }
     catch (Err e)
@@ -90,14 +89,44 @@ class PogTestRunner
     // transduce AST to normalized JSON
     buf := StrBuf()
     env.transduce("json", ["val":ast, "write":buf.out])
-    json := buf.toStr
+    json := buf.toStr.trim
+
+    // echo; echo(json)
+    // dump(json, expected)
 
     // verify
-    test.verifyEq(buf.toStr, expected)
+    test.verifyEq(json, expected)
+  }
+
+  Void dump(Str a, Str b)
+  {
+    echo
+    aLines := a.splitLines
+    bLines := b.splitLines
+    max := aLines.size.max(bLines.size)
+    for (i := 0; i<max; ++i)
+    {
+      aLine := aLines.getSafe(i) ?: ""
+      bLine := bLines.getSafe(i) ?: ""
+      echo("$i:".padr(3) +  aLine)
+      echo("   "         +  bLine)
+      if (aLine != bLine)
+      {
+        s := StrBuf()
+        aLine.each |ch, j|
+        {
+          match := bLine.getSafe(j) == ch
+          s.add(match ? "_" : "^")
+        }
+        echo("   " + s)
+      }
+    }
   }
 
   Void fail(Str msg, Err e)
   {
+    numFails++
+    if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
     echo
     echo("TEST FAILED: $msg")
     e.trace
