@@ -31,14 +31,17 @@ abstract const class Transducer
   ** Return name
   override final Str toStr() { name }
 
-  ** Short one sentence of this format
+  ** Short one sentence summary
   abstract Str summary()
 
-  ** Return if we can transduce the given input
-  abstract Bool canTransduce(Obj input)
+  ** Multi-line usage help for command line
+  abstract Str usage()
 
-  ** Transduce the given input(s) the transformed output(s)
-  abstract Obj transduce(Obj input)
+  ** Transduce the given arguments
+  abstract Obj? transduce(Str:Obj? args)
+
+  ** Return name to use for single argument
+  @NoDoc virtual Str? defArgName() { null }
 }
 
 

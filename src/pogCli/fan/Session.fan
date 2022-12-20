@@ -100,7 +100,7 @@ class Session
     {
       inputs := args.map |arg->Obj| { arg.toUri.toFile }
       input := inputs.first
-      return t.transduce(input)
+      return t.transduce(["read":input])
     }
     catch (FileLocErr e)
     {
@@ -156,6 +156,7 @@ class Session
       out.printLine("  quit, exit, bye        Exit the shell")
       out.printLine("  ?, help, usage         Print command summary")
     }
+    out.printLine("  help [command]         Usage help on given command")
     out.printLine("  get [var]              Get variable name or last result")
     out.printLine("  set <var> [command]    Set variable to result of command or last result")
     out.printLine("  print [var]            Print variable name or last result")

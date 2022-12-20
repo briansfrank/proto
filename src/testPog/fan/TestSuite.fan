@@ -83,7 +83,7 @@ class PogTestRunner
   {
     pog := def.getChecked("pog")
     expected := def.getChecked("json").toStr.trim
-    actual := env.transducer("parse").transduce(pog)
+    actual := env.transducer("parse").transduce(["read":pog])
     buf := StrBuf()
     JsonOutStream(buf.out).writeJson(actual)
     test.verifyEq(buf.toStr, expected)

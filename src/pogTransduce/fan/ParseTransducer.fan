@@ -13,7 +13,7 @@ using pog
 ** Parse transducer
 **
 @Js
-const class ParseTransducer : ReadTransducer
+const class ParseTransducer : MTransducer
 {
   new make(PogEnv env) : super(env, "parse") {}
 
@@ -22,9 +22,25 @@ const class ParseTransducer : ReadTransducer
     "Parse pog source into AST"
   }
 
-  override Obj read(FileLoc loc, InStream in)
+  override Str usage()
   {
-    Parser(loc, in).parse
+    """Summary:
+         Parse pog source file into an AST object structure.
+       Usage:
+         parse read:file
+       Arguments:
+         read    input file, string, or 'stdin'
+       """
+  }
+
+  override Str? defArgName() { "read" }
+
+  override Obj? transduce(Str:Obj? args)
+  {
+    read(args) |in, loc|
+    {
+      Parser(loc, in).parse
+    }
   }
 }
 
