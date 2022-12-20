@@ -39,9 +39,6 @@ abstract const class Transducer
 
   ** Transduce the given arguments
   abstract Obj? transduce(Str:Obj? args)
-
-  ** Return name to use for single argument
-  @NoDoc virtual Str? defArgName() { null }
 }
 
 

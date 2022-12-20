@@ -53,6 +53,9 @@ abstract const class PogEnv
   ** Lookup a transducer by name
   abstract Transducer? transducer(Str name, Bool checked := true)
 
+  ** Convenience for 'transducer(name).transduce(args)'
+  Obj? transduce(Str name, Str:Obj? args) { transducer(name).transduce(args) }
+
   ** Create a new graph from a list of library qnames.
   ** Raise exception if there are any compiler errors.
   abstract Graph create(Str[] libNames)

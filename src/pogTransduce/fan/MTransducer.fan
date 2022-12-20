@@ -36,6 +36,14 @@ abstract const class MTransducer : Transducer
     throw ArgErr("Invalid read arg for $name transducer")
   }
 
+  ** Convert arg into an output stream
+  OutStream toOutStream(Obj arg)
+  {
+    if (arg is OutStream) return arg
+    if (arg is File) return ((File)arg).out
+    throw ArgErr("Invalid write arg for $name transducer")
+  }
+
   ** Convert an arg into a file location
   FileLoc toFileLoc(Obj arg)
   {
@@ -53,6 +61,17 @@ abstract const class MTransducer : Transducer
       return f(in, loc)
     finally
       in.close
+  }
+
+  ** Standard write using 'write' arg as output stream
+  Obj? write(Str:Obj args, |OutStream->Obj?| f)
+  {
+    arg := arg(args, "write")
+    out := toOutStream(arg)
+    try
+      return f(out)
+    finally
+      out.close
   }
 }
 

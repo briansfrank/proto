@@ -27,13 +27,11 @@ const class ParseTransducer : MTransducer
     """Summary:
          Parse pog source file into an AST object structure.
        Usage:
-         parse read:file
+         parse read:input         Read given input stream
        Arguments:
-         read    input file, string, or 'stdin'
+         read                     Input file, string, or 'stdin'
        """
   }
-
-  override Str? defArgName() { "read" }
 
   override Obj? transduce(Str:Obj? args)
   {
