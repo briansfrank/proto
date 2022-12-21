@@ -35,11 +35,36 @@ const class ParseTransducer : Transducer
 
   override Transduction transduce(Str:Obj? args)
   {
-    TransduceContext(this, args).read |in, loc|
+    cx := TransduceContext(this, args)
+
+    dirArg := cx.arg("dir", false)
+    if (dirArg != null)
+    {
+      dir := dirArg as File ?: throw ArgErr("Expecting dir to be File, not ${dirArg.typeof}")
+      return parseDir(cx, dir)
+    }
+
+    return cx.read |in, loc|
     {
       Parser(loc, in).parse
     }
   }
+
+  private Transduction parseDir(TransduceContext cx, File dir)
+  {
+    files := dir.list.findAll { it.ext == "pog" }
+    if (files.isEmpty) throw ArgErr("No pog files in dir [$dir.osPath]")
+    files = files.sort |a, b| { a.name <=> b.name }
+
+    root := Str:Obj[:]
+    root.ordered = true
+    files.each |file|
+    {
+      Parser(FileLoc(file), file.in).parseInto(root)
+    }
+    return cx.toResult(root)
+  }
+
 }
 
 **************************************************************************
@@ -69,12 +94,17 @@ internal class Parser
 
   Str:Obj parse()
   {
+    root := Str:Obj[:] { ordered = true }
+    parseInto(root)
+    return root
+  }
+
+  Void parseInto(Str:Obj root)
+  {
     try
     {
-      root := ParsedProto(curToLoc)
-      parseProtos(root, false)
+      parseProtos(ParsedProto(curToLoc) { it.map = root } , false)
       verify(Token.eof)
-      return root.map
     }
     catch (ParseErr e)
     {

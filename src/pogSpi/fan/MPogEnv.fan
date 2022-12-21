@@ -31,43 +31,11 @@ const class LocalPogEnv : MPogEnv
   ** Constructor
   new make()
   {
-    this.path = initPath
-    this.installedMap = initInstalled(this.path)
-    this.installed = installedMap.keys.sort
+    this.libMgr = MLibMgr(this)
     this.io = MPogEnvIO.init(this)
     this.factory = MFactory(this)
     this.transducersMap = initTransducers(this)
     this.transducers = transducersMap.vals.sort
-  }
-
-  private static File[] initPath()
-  {
-    fanPath := (Env.cur as PathEnv)?.path ?: File[Env.cur.homeDir]
-    return fanPath.map |dir->File| { dir.plus(`pog/`) }
-  }
-
-  private static Str:File initInstalled(File[] path)
-  {
-    acc := Str:File[:]
-    path.each |pogDir|
-    {
-      pogDir.listDirs.each |dir|
-      {
-        doInitInstalled(acc, dir)
-      }
-    }
-    return acc
-  }
-
-  private static Void doInitInstalled(Str:File acc, File dir)
-  {
-    hasLib := dir.plus(`lib.pog`).exists
-    if (!hasLib) return
-
-    qname := dir.name
-    dup := acc[qname]
-    if (dup != null) echo("WARN: PogEnv '$qname' lib hidden [$dup.osPath]")
-    acc[qname] = dir
   }
 
   static Str:Transducer initTransducers(PogEnv env)
@@ -88,37 +56,17 @@ const class LocalPogEnv : MPogEnv
     return acc
   }
 
-  ** List the library names installed by this environment
-  const override Str[] installed
+  internal const MLibMgr libMgr
+  override File[] path() { libMgr.path }
+  override Str[] installed()  { libMgr.installed }
+  override Bool isInstalled(Str qname) { libMgr.isInstalled(qname) }
+  override File? libDir(Str qname, Bool checked := true) { libMgr.libDir(qname, checked) }
+  override Lib? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
-  ** Search path of directories from lowest to highest priority.  Standard
-  ** behavior is to map 'pog/' directory of the Fantom `sys::Env` path.
-  const override File[] path
-
-  ** Install lib name to directory mapping
-  const Str:File installedMap
-
-  ** Factory to map to/from Protos and Fantom types
   const override MFactory factory
 
-  ** Is given library qname installed
-  override Bool isInstalled(Str libName) { installedMap[libName] != null }
-
-  ** Return root directory for the given library name.  The result
-  ** might be on the local file system or a directory within a pod file.
-  ** Raise exception if library name is not installed.
-  override File? libDir(Str qname, Bool checked := true)
-  {
-    dir := installedMap[qname]
-    if (dir != null) return dir
-    if (checked) throw UnknownLibErr("Not installed: $qname")
-    return null
-  }
-
-  ** List the installed transducers
   override const Transducer[] transducers
 
-  ** Lookup a transducer by name
   override Transducer? transducer(Str name, Bool checked := true)
   {
     t := transducersMap[name]
@@ -128,17 +76,13 @@ const class LocalPogEnv : MPogEnv
   }
   private const Str:Transducer transducersMap
 
-  ** I/O regsitry
   override const PogEnvIO io
 
-  ** Compile a new namespace from a list of library names.
-  ** Raise exception if there are any compiler errors.
   override Graph create(Str[] libNames)
   {
     Slot.findMethod("pogc::ProtoCompiler.create").call(this, libNames)
   }
 
-  ** Debug dump
   override Void dump(OutStream out := Env.cur.out)
   {
     out.printLine("=== PogEnv ===")

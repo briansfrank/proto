@@ -78,7 +78,7 @@ internal class JsonPrinter
     if (val is Map)
       printMap(val)
     else
-      out.writeJson(val)
+      out.writeJson(val.toStr)
   }
 
   Void printMap(Str:Obj? map)

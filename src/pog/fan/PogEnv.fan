@@ -38,11 +38,17 @@ abstract const class PogEnv
   abstract Str[] installed()
 
   ** Is given library qname installed
-  abstract Bool isInstalled(Str libName)
+  abstract Bool isInstalled(Str qname)
 
   ** Return root directory for the given library qname.  The result
   ** might be on the local file system or a directory within a pod file.
   abstract File? libDir(Str qname, Bool checked := true)
+
+  ** Load the given library into memory.  If previously loaded then
+  ** return cached version.  If library is not installed or has errors
+  ** then raise an exception.  This call automatically loads and cached
+  ** the given lib dependent libs.
+  abstract Lib? load(Str qname, Bool checked := true)
 
   ** I/O adaptor and file format registry
   abstract PogEnvIO io()
