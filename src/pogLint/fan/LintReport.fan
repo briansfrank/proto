@@ -12,7 +12,7 @@ using pog
 ** Lint report which encapsulates the output of a validation process
 **
 @Js
-const class LintReport : Proto
+const class LintReport : AbstractProto
 {
   /* pog-start */
 

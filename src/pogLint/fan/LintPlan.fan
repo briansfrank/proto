@@ -12,7 +12,7 @@ using pog
 **  Lint plan specifies options to a validation engine.
 **
 @Js
-const class LintPlan : Proto
+const class LintPlan : AbstractProto
 {
   /* pog-start */
 

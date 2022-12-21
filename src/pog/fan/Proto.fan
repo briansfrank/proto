@@ -12,7 +12,104 @@ using util
 ** Prototype object.
 **
 @Js
-const class Proto : ProtoStub
+const mixin Proto : ProtoStub
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Identity
+//////////////////////////////////////////////////////////////////////////
+
+  ** Simple name within parent
+  abstract Str name()
+
+  ** Fully qualified name as dotted path from root
+  abstract QName qname()
+
+  ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
+  abstract Proto? type()
+
+  ** Does this proto fit the given proto from a nominal type perspective
+  ** Examples:
+  **   Str.fits(Str)     >>>  true
+  **   Str.fits(Scalar)  >>>  true
+  **   Scalar.fits(Str)  >>>  false
+  abstract Bool fits(Proto base)
+
+  ** Transaction version for when this proto was last modified
+  abstract Int tx()
+
+  ** Service provider interface for this proto object
+  @NoDoc abstract ProtoSpi spi()
+
+//////////////////////////////////////////////////////////////////////////
+// Scalar
+//////////////////////////////////////////////////////////////////////////
+
+  ** Does this proto have a scalar value
+  abstract Bool hasVal()
+
+  ** Scalar value string of the object
+  abstract Obj? val(Bool checked := true)
+
+//////////////////////////////////////////////////////////////////////////
+// Children
+//////////////////////////////////////////////////////////////////////////
+
+  ** Does this object contain an effective child with the given name.
+  abstract Bool has(Str name)
+
+  ** Does this object contain a non-inherited child with the given name.
+  abstract Bool hasOwn(Str name)
+
+  ** Get the effective child mapped by the given name.  If it is not
+  ** mapped to a non-null value, then throw an UnknownProtoErr.
+  abstract override Proto? trap(Str name, Obj?[]? args := null)
+
+  ** Get effective child object by name.
+  @Operator abstract Proto? get(Str name, Bool checked := true)
+
+  ** Get a non-inherited child object by name.
+  abstract Proto? getOwn(Str name, Bool checked := true)
+
+  ** Iterate the effective children objects.  This iteration includes
+  ** inherited children and can be very expensive; prefer `eachOwn()`.
+  abstract Void each(|Proto| f)
+
+  ** Iterate the non-inherited children objects.
+  abstract Void eachOwn(|Proto| f)
+
+  ** Iterate the non-inherited children objects until callback returns non-null.
+  abstract Obj? eachOwnWhile(|Proto->Obj?| f)
+
+  ** Return a list of this object effective children.  This iteration includes
+  ** inherited children and can be very expensive; prefer `listOwn()`.
+  abstract Proto[] list()
+
+  ** Return a list of this object non-inherited children.
+  ** It is preferable to to use `eachOwn`.
+  abstract Proto[] listOwn()
+
+//////////////////////////////////////////////////////////////////////////
+// Debug
+//////////////////////////////////////////////////////////////////////////
+
+  ** Source file location if support or unknown
+  abstract FileLoc loc()
+
+  ** Debug dump with some pretty print
+  @NoDoc abstract Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+
+}
+
+**************************************************************************
+** AbstractProto
+**************************************************************************
+
+**
+** Base class for proto implementation classes
+**
+@Js
+const class AbstractProto :  Proto
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,26 +124,26 @@ const class Proto : ProtoStub
 //////////////////////////////////////////////////////////////////////////
 
   ** Simple name within parent
-  Str name() { spiRef.name }
+  override Str name() { spiRef.name }
 
   ** Fully qualified name as dotted path from root
-  QName qname() { spiRef.qname }
+  override QName qname() { spiRef.qname }
 
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
-  Proto? type() { spiRef.type }
+  override Proto? type() { spiRef.type }
 
   ** Does this proto fit the given proto from a nominal type perspective
   ** Examples:
   **   Str.fits(Str)     >>>  true
   **   Str.fits(Scalar)  >>>  true
   **   Scalar.fits(Str)  >>>  false
-  Bool fits(Proto base) { spiRef.fits(base) }
+  override Bool fits(Proto base) { spiRef.fits(base) }
 
   ** Transaction version for when this proto was last modified
-  Int tx() { spiRef.tx }
+  override Int tx() { spiRef.tx }
 
   ** Service provider interface for this proto object
-  @NoDoc virtual ProtoSpi spi() { spiRef }
+  @NoDoc override ProtoSpi spi() { spiRef }
   internal const ProtoSpi spiRef
 
   ** String representation is always qname
@@ -57,58 +154,58 @@ const class Proto : ProtoStub
 //////////////////////////////////////////////////////////////////////////
 
   ** Does this proto have a scalar value
-  Bool hasVal() { spiRef.hasVal }
+  override Bool hasVal() { spiRef.hasVal }
 
   ** Scalar value string of the object
-  Obj? val(Bool checked := true) { spiRef.val(checked) }
+  override Obj? val(Bool checked := true) { spiRef.val(checked) }
 
 //////////////////////////////////////////////////////////////////////////
 // Children
 //////////////////////////////////////////////////////////////////////////
 
   ** Does this object contain an effective child with the given name.
-  Bool has(Str name) { spiRef.has(name) }
+  override Bool has(Str name) { spiRef.has(name) }
 
   ** Does this object contain a non-inherited child with the given name.
-  Bool hasOwn(Str name) { spiRef.hasOwn(name) }
+  override Bool hasOwn(Str name) { spiRef.hasOwn(name) }
 
   ** Get the effective child mapped by the given name.  If it is not
   ** mapped to a non-null value, then throw an UnknownProtoErr.
   override Proto? trap(Str name, Obj?[]? args := null) { spiRef.trap(name, args) }
 
   ** Get effective child object by name.
-  @Operator Proto? get(Str name, Bool checked := true) { spiRef.get(name, checked) }
+  @Operator override Proto? get(Str name, Bool checked := true) { spiRef.get(name, checked) }
 
   ** Get a non-inherited child object by name.
-  Proto? getOwn(Str name, Bool checked := true) { spiRef.getOwn(name, checked) }
+  override Proto? getOwn(Str name, Bool checked := true) { spiRef.getOwn(name, checked) }
 
   ** Iterate the effective children objects.  This iteration includes
   ** inherited children and can be very expensive; prefer `eachOwn()`.
-  Void each(|Proto| f) { spiRef.each(f) }
+  override Void each(|Proto| f) { spiRef.each(f) }
 
   ** Iterate the non-inherited children objects.
-  Void eachOwn(|Proto| f) { spiRef.eachOwn(f) }
+  override Void eachOwn(|Proto| f) { spiRef.eachOwn(f) }
 
   ** Iterate the non-inherited children objects until callback returns non-null.
-  Obj? eachOwnWhile(|Proto->Obj?| f) { spiRef.eachOwnWhile(f) }
+  override Obj? eachOwnWhile(|Proto->Obj?| f) { spiRef.eachOwnWhile(f) }
 
   ** Return a list of this object effective children.  This iteration includes
   ** inherited children and can be very expensive; prefer `listOwn()`.
-  Proto[] list() { spiRef.list }
+  override Proto[] list() { spiRef.list }
 
   ** Return a list of this object non-inherited children.
   ** It is preferable to to use `eachOwn`.
-  Proto[] listOwn()  { spiRef.listOwn }
+  override Proto[] listOwn()  { spiRef.listOwn }
 
 //////////////////////////////////////////////////////////////////////////
 // Debug
 //////////////////////////////////////////////////////////////////////////
 
   ** Source file location if support or unknown
-  FileLoc loc() { spiRef.loc }
+  override FileLoc loc() { spiRef.loc }
 
   ** Debug dump with some pretty print
-  @NoDoc Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null) { spiRef.dump(out, opts) }
+  @NoDoc override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null) { spiRef.dump(out, opts) }
 
 }
 

@@ -10,7 +10,7 @@
 ** Graph is the root a self contained namespaced graph of protos.
 **
 @Js
-abstract const class Graph : Proto
+abstract const class Graph : AbstractProto
 {
   ** Environment
   abstract PogEnv env()

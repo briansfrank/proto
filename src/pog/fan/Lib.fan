@@ -10,7 +10,7 @@
 ** Library is the root object for a module of versioned prototypes
 **
 @Js
-const class Lib : Proto
+const class Lib : AbstractProto
 {
   ** Version of the library
   Version version() { Version.fromStr(getOwn("_version").val) }

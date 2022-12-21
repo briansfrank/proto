@@ -58,7 +58,7 @@ internal class Assemble : Step
   {
     update.spi = spi
     if (x.isRoot) return MGraph(env, asmLibs)
-    if (x.type == null) return Proto()
+    if (x.type == null) return AbstractProto()
     try
     {
       return env.factory.init(x.qname.toStr, x.type.deref.qname.toStr)
@@ -66,7 +66,7 @@ internal class Assemble : Step
     catch (Err e)
     {
       echo("ERROR: instantiate error [$x.qname]\n$e.traceToStr")
-      return Proto()
+      return AbstractProto()
     }
   }
 

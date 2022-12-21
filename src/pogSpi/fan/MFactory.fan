@@ -123,7 +123,7 @@ const class MFactory
   {
     fantom := toFantom[qname] ?: toFantom[type]
     if (fantom != null) return Type.find(fantom).make
-    return Proto()
+    return AbstractProto()
   }
 
   ** Create Fantom instance for library proto
@@ -131,6 +131,6 @@ const class MFactory
   {
     fantom := toFantom[type]
     if (fantom != null) return Type.find(fantom).make
-    return Proto()
+    return AbstractProto()
   }
 }

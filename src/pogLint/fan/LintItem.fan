@@ -12,7 +12,7 @@ using pog
 ** Lint item models one validation message
 **
 @Js
-const class LintItem : Proto
+const class LintItem : AbstractProto
 {
   /* pog-start */
 
