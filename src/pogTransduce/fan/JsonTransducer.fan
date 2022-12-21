@@ -85,7 +85,7 @@ internal class JsonPrinter
     keys := map.keys
     if (keys.size == 0)
       out.print("{}")
-    else if (keys.size <= 1 || map["val"] != null)
+    else if (keys.size <= 1 || map["_val"] != null)
       printCompact(map)
     else
       printComplex(map)
@@ -95,11 +95,11 @@ internal class JsonPrinter
   {
     first := true
     out.print("{")
-    if (map.containsKey("is"))  first = printPair("is", map["is"], -1, first)
-    if (map.containsKey("val")) first = printPair("val", map["val"], -1, first)
+    if (map.containsKey("_is"))  first = printPair("_is", map["_is"], -1, first)
+    if (map.containsKey("_val")) first = printPair("_val", map["_val"], -1, first)
     map.each |v, n|
     {
-      if (n == "is" || n == "val") return
+      if (n == "_is" || n == "_val") return
       first = printPair(n, v, -1, first)
     }
     out.print("}")

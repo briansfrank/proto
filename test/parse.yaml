@@ -7,37 +7,37 @@ name: markerOnly
 pog: |
   foo
 json: |
-  {"foo":{"is":"sys.Marker"}}
+  {"foo":{"_is":"sys.Marker"}}
 ---
 name: nameAndIs
 pog: |
   foo: Str
 json: |
-  {"foo":{"is":"Str"}}
+  {"foo":{"_is":"Str"}}
 ---
 name: nameAndQualIs
 pog: |
   foo: bar.baz.Elem
 json: |
-  {"foo":{"is":"bar.baz.Elem"}}
+  {"foo":{"_is":"bar.baz.Elem"}}
 ---
 name: scalarOnly
 pog: |
   foo: "scalar"
 json: |
-  {"foo":{"val":"scalar"}}
+  {"foo":{"_val":"scalar"}}
 ---
 name: scalarAndIs
 pog: |
   foo: Date "2022-12-20"
 json: |
-  {"foo":{"is":"Date", "val":"2022-12-20"}}
+  {"foo":{"_is":"Date", "_val":"2022-12-20"}}
 ---
 name: scalarAndQualIs
 pog: |
   foo: baz.ui.Color "green"
 json: |
-  {"foo":{"is":"baz.ui.Color", "val":"green"}}
+  {"foo":{"_is":"baz.ui.Color", "_val":"green"}}
 ---
 name: children0
 pog: |
@@ -49,13 +49,13 @@ name: children1ScalarOnly
 pog: |
   foo: {b:"beta"}
 json: |
-  {"foo":{"b":{"val":"beta"}}}
+  {"foo":{"b":{"_val":"beta"}}}
 ---
 name: children1ScalarAndIs
 pog: |
   foo  :  {  b  :  Color "blue" }
 json: |
-  {"foo":{"b":{"is":"Color", "val":"blue"}}}
+  {"foo":{"b":{"_is":"Color", "_val":"blue"}}}
 ---
 name: children1ScalarAndQualIs
 pog: |
@@ -63,15 +63,15 @@ pog: |
     b:  graphics.Color "blue"
   }
 json: |
-  {"foo":{"b":{"is":"graphics.Color", "val":"blue"}}}
+  {"foo":{"b":{"_is":"graphics.Color", "_val":"blue"}}}
 ---
 name: children2ScalarsComma
 pog: |
   foo: {a:"Alpha", b:"Bravo"}
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"val":"Bravo"}
+    "a":{"_val":"Alpha"},
+    "b":{"_val":"Bravo"}
     }}
 ---
 name: children2ScalarsCommaTrailing
@@ -79,8 +79,8 @@ pog: |
   foo: {a:"Alpha", b:"Bravo",}
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"val":"Bravo"}
+    "a":{"_val":"Alpha"},
+    "b":{"_val":"Bravo"}
     }}
 ---
 name: children2ScalarsNewline
@@ -91,11 +91,11 @@ pog: |
   }
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"val":"Bravo"}
+    "a":{"_val":"Alpha"},
+    "b":{"_val":"Bravo"}
     }}
 ---
-name: children2ScalarsNewlineAndComma
+name: children2ScalarsCommaAndNewline
 pog: |
   foo: {
     a:"Alpha",
@@ -103,11 +103,11 @@ pog: |
   }
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"val":"Bravo"}
+    "a":{"_val":"Alpha"},
+    "b":{"_val":"Bravo"}
     }}
 ---
-name: children2ScalarsNewlineAndCommaAndSpace
+name: children2ScalarsCommaAndWhitespace
 pog: |
   foo:  {
 
@@ -118,8 +118,8 @@ pog: |
   }
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"val":"Bravo"}
+    "a":{"_val":"Alpha"},
+    "b":{"_val":"Bravo"}
     }}
 ---
 name: children3MixedScalars
@@ -131,9 +131,9 @@ pog: |
   }
 json: |
   {"foo":{
-    "a":{"val":"Alpha"},
-    "b":{"is":"Color", "val":"#FFF"},
-    "c":{"is":"sys.Date", "val":"2022-12-20"}
+    "a":{"_val":"Alpha"},
+    "b":{"_is":"Color", "_val":"#FFF"},
+    "c":{"_is":"sys.Date", "_val":"2022-12-20"}
     }}
 ---
 name: childrenAndIs
@@ -144,9 +144,9 @@ pog: |
   }
 json: |
   {"foo":{
-    "is":"Person",
-    "name":{"val":"Brian"},
-    "age":{"is":"Int", "val":"40"}
+    "_is":"Person",
+    "name":{"_val":"Brian"},
+    "age":{"_is":"Int", "_val":"40"}
     }}
 ---
 name: childrenAndQualIs
@@ -154,39 +154,36 @@ pog: |
   foo:some.lib.Person{name: "Brian",age: Int "40"}
 json: |
   {"foo":{
-    "is":"some.lib.Person",
-    "name":{"val":"Brian"},
-    "age":{"is":"Int", "val":"40"}
+    "_is":"some.lib.Person",
+    "name":{"_val":"Brian"},
+    "age":{"_is":"Int", "_val":"40"}
     }}
 ---
 name: metaOnly
 pog: |
   foo: <markIt>
 json: |
-  {"foo":{"meta":{"markIt":{"is":"sys.Marker"}}}}
+  {"foo":{"_markIt":{"_is":"sys.Marker"}}}
 ---
 name: metaScalar
 pog: |
   foo: Int<minVal:"100">"123"
 json: |
-  {"foo":{"is":"Int", "val":"123", "meta":{"minVal":{"val":"100"}}}}
+  {"foo":{"_is":"Int", "_val":"123", "_minVal":{"_val":"100"}}}
 ---
 name: metaScalar2
 pog: |
   foo: Int<abstract, minVal:"100">"123"
 json: |
-  {"foo":{"is":"Int", "val":"123", "meta":{
-    "abstract":{"is":"sys.Marker"},
-    "minVal":{"val":"100"}
-    }}}
+  {"foo":{"_is":"Int", "_val":"123", "_abstract":{"_is":"sys.Marker"}, "_minVal":{"_val":"100"}}}
 ---
 name: metaAndChildrenMarkers
 pog: |
   foo: <metaMarker> {childMarker}
 json: |
   {"foo":{
-    "meta":{"metaMarker":{"is":"sys.Marker"}},
-    "childMarker":{"is":"sys.Marker"}
+    "_metaMarker":{"_is":"sys.Marker"},
+    "childMarker":{"_is":"sys.Marker"}
     }}
 ---
 name: metaAndChildren
@@ -194,8 +191,8 @@ pog: |
   foo: <a:"Meta-A"> {b:"Child-B"}
 json: |
   {"foo":{
-    "meta":{"a":{"val":"Meta-A"}},
-    "b":{"val":"Child-B"}
+    "_a":{"_val":"Meta-A"},
+    "b":{"_val":"Child-B"}
     }}
 ---
 name: everything1
@@ -209,20 +206,20 @@ pog: |
   }
 json: |
   {"foo":{
-    "is":"Person",
-    "meta":{"concrete":{"is":"sys.Marker"}},
-    "nick":{"val":"Brian"},
+    "_is":"Person",
+    "_concrete":{"_is":"sys.Marker"},
+    "nick":{"_val":"Brian"},
     "full":{
-      "is":"Full",
-      "first":{"val":"B"},
-      "last":{"val":"F"}
+      "_is":"Full",
+      "first":{"_val":"B"},
+      "last":{"_val":"F"}
       },
-    "age":{"is":"sys.Int", "val":"10"},
-    "where":{"is":"Place"},
+    "age":{"_is":"sys.Int", "_val":"10"},
+    "where":{"_is":"Place"},
     "addr":{
-      "street":{"val":"100 Main"},
-      "city":{"val":"Richmond"},
-      "post":{"code":{"val":"12345"}}
+      "street":{"_val":"100 Main"},
+      "city":{"_val":"Richmond"},
+      "post":{"code":{"_val":"12345"}}
       }
     }}
 ---
@@ -236,8 +233,8 @@ pog: |
   Bar: {}
 json: |
   {
-    "Foo":{"meta":{"doc":{"is":"sys.Str", "val":"Single line"}}},
-    "Bar":{"meta":{"doc":{"is":"sys.Str", "val":"Double line\n2nd one"}}}
+    "Foo":{"_doc":{"_is":"sys.Str", "_val":"Single line"}},
+    "Bar":{"_doc":{"_is":"sys.Str", "_val":"Double line\n2nd one"}}
     }
 ---
 name: docPost
@@ -252,14 +249,14 @@ pog: |
   }
 json: |
   {
-    "Foo":{"meta":{"doc":{"is":"sys.Str", "val":"Post Foo"}}},
+    "Foo":{"_doc":{"_is":"sys.Str", "_val":"Post Foo"}},
     "Bar":{
       "marker":{
-        "is":"sys.Marker",
-        "meta":{"doc":{"is":"sys.Str", "val":"Post foo"}}
+        "_is":"sys.Marker",
+        "_doc":{"_is":"sys.Str", "_val":"Post foo"}
         },
-      "baz":{"val":"", "meta":{"doc":{"is":"sys.Str", "val":"Post baz"}}},
-      "qux":{"val":"", "meta":{"doc":{"is":"sys.Str", "val":"This trumps"}}}
+      "baz":{"_val":"", "_doc":{"_is":"sys.Str", "_val":"Post baz"}},
+      "qux":{"_val":"", "_doc":{"_is":"sys.Str", "_val":"This trumps"}}
       }
     }
 ---

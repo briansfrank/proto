@@ -72,7 +72,7 @@ internal class Parser
     try
     {
       root := ParsedProto(curToLoc)
-      parseProtos(root)
+      parseProtos(root, false)
       verify(Token.eof)
       return root.map
     }
@@ -90,14 +90,14 @@ internal class Parser
 // Parsing
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parseProtos(ParsedProto parent)
+  private Void parseProtos(ParsedProto parent, Bool isMeta)
   {
     while (true)
     {
       child := parseProto
       if (child == null) break
       parseEndOfProto
-      addToParent(parent, child)
+      addToParent(parent, child, isMeta)
     }
   }
 
@@ -125,7 +125,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
     {
       p.name = consumeName
-      p.map["is"] = "sys.Marker"
+      p.map["_is"] = "sys.Marker"
     }
     else
     {
@@ -155,39 +155,37 @@ internal class Parser
       consume
       qname += "." + consumeName
     }
-    p.map["is"] = qname
+    p.map["_is"] = qname
     return true
   }
 
   private Bool parseMeta(ParsedProto p)
   {
     if (cur !== Token.lt) return false
-    meta := ParsedProto(curToLoc)
-    p.map.add("meta", meta.map)
-    parseChildren(meta, Token.lt, Token.gt)
+    parseChildren(p, Token.lt, Token.gt, true)
     return true
   }
 
   private Bool parseChildrenOrVal(ParsedProto p)
   {
-    if (cur === Token.lbrace) return parseChildren(p, Token.lbrace, Token.rbrace)
+    if (cur === Token.lbrace) return parseChildren(p, Token.lbrace, Token.rbrace, false)
     if (cur.isLiteral) return parseVal(p)
     return false
   }
 
-  private Bool parseChildren(ParsedProto p, Token open, Token close)
+  private Bool parseChildren(ParsedProto p, Token open, Token close, Bool isMeta)
   {
     consume(open)
     skipNewlines
-    parseProtos(p)
-    while (cur !== close) parseProtos(p)
+    parseProtos(p, isMeta)
+    while (cur !== close) parseProtos(p, isMeta)
     consume(close)
     return true
   }
 
   private Bool parseVal(ParsedProto p)
   {
-    p.map.add("val", curVal)
+    p.map.add("_val", curVal)
     consume
     return true
   }
@@ -218,7 +216,7 @@ internal class Parser
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private Void addToParent(ParsedProto parent, ParsedProto child)
+  private Void addToParent(ParsedProto parent, ParsedProto child, Bool isMeta)
   {
     addDoc(child)
     name := child.name
@@ -228,8 +226,12 @@ internal class Parser
     }
     else
     {
-      if (name == "is") throw err("Proto name 'is' is reserved", child.loc)
-      if (name == "meta") throw err("Proto name 'meta' is reserved", child.loc)
+      if (isMeta)
+      {
+        if (name == "is") throw err("Proto name 'is' is reserved", child.loc)
+        if (name == "val") throw err("Proto name 'val' is reserved", child.loc)
+        name = "_" + name
+      }
       if (parent.map[name] != null) throw err("Duplicate names '$name'", child.loc)
     }
     parent.map.add(name, child.map)
@@ -238,9 +240,7 @@ internal class Parser
   private Void addDoc(ParsedProto p)
   {
     if (p.doc == null) return
-    meta := p.map["meta"] as Str:Obj
-    if (meta == null) p.map["meta"] = meta = Str:Obj[:] { ordered = true }
-    meta["doc"] = ["is":"sys.Str", "val":p.doc]
+    p.map["_doc"] = ["_is":"sys.Str", "_val":p.doc]
   }
 
   private Str autoName(ParsedProto parent)
@@ -248,7 +248,7 @@ internal class Parser
     map := parent.map
     for (i := 0; i<1_000_000; ++i)
     {
-      name := i.toStr
+      name := "_" + i.toStr
       if (map[name] == null) return name
     }
     throw err("Too many children", parent.loc)

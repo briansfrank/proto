@@ -133,6 +133,7 @@ class PogTestRunner
     if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
     echo
     echo("TEST FAILED: $msg")
+test.fail(msg)
     e.trace
     echo
   }
