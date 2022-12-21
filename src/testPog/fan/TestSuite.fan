@@ -68,8 +68,13 @@ class PogTestRunner
     echo("   - $qname")
     try
     {
-      // right now only support "parse, json"
-      runParseJson(def)
+      // TODO test basd on filename
+      switch (filename)
+      {
+        case "parse":   runParse(def)
+        case "resolve": runResolve(def)
+        default:        throw Err("Unknown test type: $filename")
+      }
     }
     catch (Err e)
     {
@@ -78,17 +83,28 @@ class PogTestRunner
     return this
   }
 
-  Void runParseJson(Str:Obj def)
+  Void runParse(Str:Obj def)
   {
     pog := def.getChecked("pog")
+    ast := env.transduce("parse", ["read":pog])
+    verifyJson(def, ast)
+  }
+
+  Void runResolve(Str:Obj def)
+  {
+    pog := def.getChecked("pog")
+    ast := env.transduce("parse", ["read":pog])
+    proto := env.transduce("resolve", ["ast":ast])
+    verifyJson(def, proto)
+  }
+
+  Void verifyJson(Str:Obj def, Obj actual)
+  {
     expected := def.getChecked("json").toStr.trim
 
-    // parse pog string to AST
-    ast := env.transduce("parse", ["read":pog])
-
-    // transduce AST to normalized JSON
+    // transduce actual normalized JSON
     buf := StrBuf()
-    env.transduce("json", ["val":ast, "write":buf.out])
+    env.transduce("json", ["val":actual, "write":buf.out])
     json := buf.toStr.trim
 
     if (json != expected)
@@ -133,7 +149,7 @@ class PogTestRunner
     if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
     echo
     echo("TEST FAILED: $msg")
-test.fail(msg)
+//test.fail(msg)
     e.trace
     echo
   }

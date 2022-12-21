@@ -219,6 +219,7 @@ internal class Parser
   private Void addToParent(ParsedProto parent, ParsedProto child, Bool isMeta)
   {
     addDoc(child)
+    addLoc(child)
     name := child.name
     if (name == null)
     {
@@ -241,6 +242,12 @@ internal class Parser
   {
     if (p.doc == null) return
     p.map["_doc"] = ["_is":"sys.Str", "_val":p.doc]
+  }
+
+  private Void addLoc(ParsedProto p)
+  {
+    if (fileLoc === FileLoc.unknown) return
+    p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc.toStr]
   }
 
   private Str autoName(ParsedProto parent)

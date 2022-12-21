@@ -1,0 +1,17 @@
+#
+# Parse tests Pog format => Proto => JSON
+#
+
+---
+name: str
+pog: |
+  foo: Str "hello"
+json: |
+  {"foo":{"_is":"sys.Str", "_val":"hello"}}
+---
+
+
+
+
+
+

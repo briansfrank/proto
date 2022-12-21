@@ -34,8 +34,10 @@ class Build : BuildPod
     srcDirs = [`fan/`]
     index = [
       "pog.transducer": [
-        "pogTransduce::ParseTransducer",
         "pogTransduce::JsonTransducer",
+        "pogTransduce::ParseTransducer",
+        "pogTransduce::ReifyTransducer",
+        "pogTransduce::ResolveTransducer",
       ]
     ]
   }

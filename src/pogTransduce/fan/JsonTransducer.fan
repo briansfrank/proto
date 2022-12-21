@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   20 Aug 2022  Brian Frank  Creation
+//   13 Aug 2022  Brian Frank  Creation
 //
 
 using util
