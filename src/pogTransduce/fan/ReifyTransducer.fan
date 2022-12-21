@@ -13,7 +13,7 @@ using pog
 ** Reify transducer
 **
 @Js
-const class ReifyTransducer : MTransducer
+const class ReifyTransducer : Transducer
 {
   new make(PogEnv env) : super(env, "reify") {}
 
@@ -34,17 +34,9 @@ const class ReifyTransducer : MTransducer
        """
   }
 
-  override Obj? transduce(Str:Obj? args)
+  override Transduction transduce(Str:Obj? args)
   {
-    reify(arg(args, "ast"))
-  }
-
-  Obj? reify(Obj? obj)
-  {
-    map := obj as Str:Obj?
-    if (map == null) throw Err("Expecting Str:Obj map, not $obj [${obj?.typeof}]")
-    echo("reify: " + map)
-    return map
+    throw Err("TODO")
   }
 
 }

@@ -13,7 +13,7 @@ using pog
 ** JSON transducer
 **
 @Js
-const class JsonTransducer : MTransducer
+const class JsonTransducer : Transducer
 {
   new make(PogEnv env) : super(env, "json") {}
 
@@ -36,26 +36,27 @@ const class JsonTransducer : MTransducer
        """
   }
 
-  override Obj? transduce(Str:Obj? args)
+  override Transduction transduce(Str:Obj? args)
   {
+
     if (args.containsKey("read")) return readJson(args)
     if (args.containsKey("write")) return writeJson(args)
     throw ArgErr("Missing read or write argument")
   }
 
-  Obj? readJson(Str:Obj? args)
+  Transduction readJson(Str:Obj? args)
   {
-    read(args) |in, loc|
+    TransduceContext(this, args).read |in, loc|
     {
       JsonInStream(in).readJson
     }
-
   }
 
-  Obj? writeJson(Str:Obj? args)
+  Transduction writeJson(Str:Obj? args)
   {
-    val := arg(args, "val")
-    return write(args) |out|
+    cx := TransduceContext(this, args)
+    val := cx.arg("val")
+    return cx.write |out|
     {
       JsonPrinter(out).printVal(val)
       return val

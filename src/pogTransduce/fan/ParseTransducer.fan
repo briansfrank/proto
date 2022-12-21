@@ -13,7 +13,7 @@ using pog
 ** Parse transducer
 **
 @Js
-const class ParseTransducer : MTransducer
+const class ParseTransducer : Transducer
 {
   new make(PogEnv env) : super(env, "parse") {}
 
@@ -33,9 +33,9 @@ const class ParseTransducer : MTransducer
        """
   }
 
-  override Obj? transduce(Str:Obj? args)
+  override Transduction transduce(Str:Obj? args)
   {
-    read(args) |in, loc|
+    TransduceContext(this, args).read |in, loc|
     {
       Parser(loc, in).parse
     }

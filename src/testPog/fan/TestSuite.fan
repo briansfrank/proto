@@ -86,15 +86,15 @@ class PogTestRunner
   Void runParse(Str:Obj def)
   {
     pog := def.getChecked("pog")
-    ast := env.transduce("parse", ["read":pog])
+    ast := env.transduce("parse", ["read":pog]).get
     verifyJson(def, ast)
   }
 
   Void runResolve(Str:Obj def)
   {
     pog := def.getChecked("pog")
-    ast := env.transduce("parse", ["read":pog])
-    proto := env.transduce("resolve", ["ast":ast])
+    ast := env.transduce("parse", ["read":pog]).get
+    proto := env.transduce("resolve", ["ast":ast]).get
     verifyJson(def, proto)
   }
 

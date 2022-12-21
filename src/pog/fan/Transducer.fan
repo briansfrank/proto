@@ -6,6 +6,8 @@
 //   16 Dec 2022  Brian Frank  Creation
 //
 
+using util
+
 **
 ** Transducer performs a transform from one or more graphs
 ** into one or more graphs.
@@ -38,8 +40,75 @@ abstract const class Transducer
   abstract Str usage()
 
   ** Transduce the given arguments
-  abstract Obj? transduce(Str:Obj? args)
+  abstract Transduction transduce(Str:Obj? args)
 }
+
+**************************************************************************
+** Transduction
+**************************************************************************
+
+**
+** Transduction models the result and events from `Transducer.transduce`
+**
+@Js
+const mixin Transduction
+{
+  ** Get the result.  If the transduction had error events then
+  ** return null or raise exception based on checked flag.
+  abstract Obj? get(Bool checked := true)
+
+  ** Return if there was zero error events (might be other events)
+  abstract Bool isOk()
+
+  ** Return if there was one or more error events
+  abstract Bool isErr()
+
+  ** All events from the transduction
+  abstract TransduceEvent[] events()
+
+  ** Error events from the transduction
+  abstract TransduceEvent[] errs()
+}
+
+**************************************************************************
+** TransductionEvent
+**************************************************************************
+
+**
+** TransduceEvent models an event from `Transducer.transduce`.
+** Typically events are warnings and errors.
+**
+@Js
+const mixin TransduceEvent
+{
+  ** Severity level of the event
+  abstract TransduceEventLevel level()
+
+  ** Message for the event
+  abstract Str msg()
+
+  ** File location or unknown if not applicable
+  abstract FileLoc loc()
+
+  ** Cause exception if applicable
+  abstract Err? err()
+}
+
+**************************************************************************
+** TransduceEventLevel
+**************************************************************************
+
+**
+** Severity level of a transduction event
+**
+@Js
+enum class TransduceEventLevel
+{
+  info,
+  warn,
+  err
+}
+
 
 
 
