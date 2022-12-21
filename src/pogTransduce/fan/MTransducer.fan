@@ -77,11 +77,12 @@ abstract const class MTransducer : Transducer
   ** Get file location from AST node
   FileLoc astToLoc(Str:Obj node)
   {
-    loc := node["_loc"]
+    loc := node["_loc"] as Str:Obj
     if (loc != null)
     {
-      str := loc["_val"]
-      if (str != null) return FileLoc
+      val := loc["_val"]
+      if (val is FileLoc) return val
+      if (val != null) return FileLoc.parse(val.toStr)
     }
     return FileLoc.unknown
   }

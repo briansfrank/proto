@@ -50,12 +50,6 @@ const class ProtoAlreadyParentedErr : Err
   new make(Str msg, Err? cause := null) : super(msg, cause) {}
 }
 
-@NoDoc @Js
-const class FileLocErr : Err
-{
-  new make(Str msg, FileLoc loc, Err? cause := null) : super(msg, cause) { this.loc = loc }
-  const FileLoc loc
-}
 
 
 

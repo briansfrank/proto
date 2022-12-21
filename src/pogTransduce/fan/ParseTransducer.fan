@@ -247,7 +247,7 @@ internal class Parser
   private Void addLoc(ParsedProto p)
   {
     if (fileLoc === FileLoc.unknown) return
-    p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc.toStr]
+    p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc]
   }
 
   private Str autoName(ParsedProto parent)

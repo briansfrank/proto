@@ -59,21 +59,26 @@ const class ResolveTransducer : MTransducer
   {
     if (name.contains(".")) return name
 
-    matches := Str[,]
+    matches := Proto[,]
     depends.each |depend|
     {
       matches.addNotNull(depend.getOwn(name, false))
     }
 
-    if (acc.size == 1) return match[i].qname.toStr
+    if (matches.size == 1) return matches[0].qname.toStr
 
-    if (acc.size == 0)
+    if (matches.size == 0)
       err("Unresolved name '$name'", node)
     else
       err("ambiguous name '$name': $matches", node)
     return name
   }
 
+  private Void err(Str msg, Str:Obj node)
+  {
+    // TODO
+    throw FileLocErr(msg, astToLoc(node))
+  }
 
 
 }
