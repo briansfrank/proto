@@ -407,6 +407,68 @@ json: |
     }}
 ---
 
+##########################################################################
+## Errs
+##########################################################################
+
+---
+name: errsEndStr
+pog: |
+ a: "xxx
+events: |
+  level ; msg
+  err   ; Unexpected end of string literal
+---
+name: errsEscape
+pog: |
+ a: "x\x
+events: |
+  level ; msg
+  err   ; Invalid escape sequence
+---
+name: errsSymbol
+pog: |
+ a: ^
+events: |
+  level ; msg
+  err   ; Unexpected symbol: '^' (0x5e)
+---
+name: errsQName
+pog: |
+ a: foo.{
+events: |
+  level ; msg
+  err   ; Expected identifier not '{' lbrace
+---
+name: errsBody
+pog: |
+ a: ,
+events: |
+  level ; msg
+  err   ; Expecting proto body not ',' comma
+---
+name: errEnd
+pog: |
+ a: b c
+events: |
+  level ; msg
+  err   ; Expecting end of proto: comma or newline, not identifier "c"
+---
+name: errsAnd
+pog: |
+ a: Foo &
+events: |
+  level ; msg
+  err   ; Expecting next proto name after '&' and symbol
+---
+name: errsOr
+pog: |
+ a: Foo |
+events: |
+  level ; msg
+  err   ; Expecting next proto name after '|' or symbol
+---
+
 
 
 

@@ -46,7 +46,7 @@ const class ParseTransducer : Transducer
 
     return cx.read |in, loc|
     {
-      Parser(loc, in).parse
+      parse(cx, loc, in, Parser.newMap)
     }
   }
 
@@ -59,9 +59,26 @@ const class ParseTransducer : Transducer
     root := Parser.newMap
     files.each |file|
     {
-      Parser(FileLoc(file), file.in).parseInto(root)
+      parse(cx, FileLoc(file), file.in, root)
     }
     return cx.toResult(root)
+  }
+
+  private Obj? parse(TransduceContext cx, FileLoc loc, InStream in, Str:Obj root)
+  {
+    try
+    {
+      return Parser(loc, in).parse(root)
+    }
+    catch (FileLocErr e)
+    {
+      cx.err(e.msg, e.loc)
+    }
+    catch (Err e)
+    {
+      cx.err(e.toStr, loc, e)
+    }
+    return root
   }
 
 }
@@ -91,19 +108,13 @@ internal class Parser
 // Public
 //////////////////////////////////////////////////////////////////////////
 
-  Str:Obj parse()
-  {
-    root := newMap
-    parseInto(root)
-    return root
-  }
-
-  Void parseInto(Str:Obj root)
+  Str:Obj parse(Str:Obj root)
   {
     try
     {
       parseProtos(ParsedProto(curToLoc) { it.map = root } , false)
       verify(Token.eof)
+      return root
     }
     catch (ParseErr e)
     {
@@ -172,7 +183,7 @@ internal class Parser
     a := parseIs(p)
     b := parseMeta(p)
     c := parseChildrenOrVal(p)
-    if (!a && !b && !c) throw err("Expecting proto body, not $curToStr")
+    if (!a && !b && !c) throw err("Expecting proto body not $curToStr")
   }
 
   private Bool parseMeta(ParsedProto p)
@@ -227,7 +238,7 @@ internal class Parser
     {
       consume
       skipNewlines
-      addToOf(of, parseIsSimple("Expecting next proto name after '& and' symbol"))
+      addToOf(of, parseIsSimple("Expecting next proto name after '&' and symbol"))
     }
     p.map["_is"] = "sys.And"
     p.map["_of"] = of
@@ -242,7 +253,7 @@ internal class Parser
     {
       consume
       skipNewlines
-      addToOf(of, parseIsSimple("Expecting next proto name after '| or' symbol"))
+      addToOf(of, parseIsSimple("Expecting next proto name after '|' or symbol"))
     }
     p.map["_is"] = "sys.Or"
     p.map["_of"] = of
@@ -637,7 +648,7 @@ internal class Tokenizer
         }
         break
       }
-      if (ch == 0) throw err("Unexpected end of str")
+      if (ch == 0) throw err("Unexpected end of string literal")
       if (ch == '\\') { s.addChar(escape); continue }
       consume
       s.addChar(ch)
@@ -825,7 +836,7 @@ internal enum class Token
 
   private new make(Str dis, Bool isLiteral := false)
   {
-    this.dis  = dis
+    this.dis  = dis.size <= 2 ? "'${dis}' $name" : dis
     this.isLiteral = isLiteral
   }
 

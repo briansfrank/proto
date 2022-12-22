@@ -103,12 +103,18 @@ class PogTestRunner
   Void runParse(Str:Obj def)
   {
     pog    := def.getChecked("pog")
-    json   := def.getChecked("json")
     events := def.get("events")
+    json   := def.getChecked("json", events == null)
 
-    a := transduce("parse", ["read":pog])
-    verifyJson(a, json)
-    verifyEvents(a, events)
+    a := transduce("parse", ["read":pog], events == null)
+    if (events == null)
+    {
+      verifyJson(a, json)
+    }
+    else
+    {
+      verifyEvents(a, events)
+    }
   }
 
   Void runResolve(Str:Obj def)
@@ -140,6 +146,7 @@ class PogTestRunner
     if (verbose || json != expected)
     {
       echo
+      echo("--- JSON [$cur] ---")
       echo(json)
       dump(json, expected)
     }
@@ -149,6 +156,14 @@ class PogTestRunner
   Void verifyEvents(Transduction t, Str? expectedTable)
   {
     if (expectedTable == null) return
+
+    if (verbose)
+    {
+      echo
+      echo("--- Events [$cur] ---")
+      echo(t.events.join("\n"))
+      echo
+    }
 
     // inspect first line to detect separator
     lines := expectedTable.splitLines
@@ -175,6 +190,13 @@ class PogTestRunner
       actual := s.toStr
 
       expected := line.split(sep).join(sep.toChar)
+
+      if (actual != expected)
+      {
+        echo("FAIL Event:")
+        echo("  $actual")
+        echo("  $expected")
+      }
 
       verifyEq(actual, expected)
     }
