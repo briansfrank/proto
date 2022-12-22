@@ -15,12 +15,16 @@ using pog
 **
 class TestSuite : Test
 {
-  Void test()
+  Void main(Str[] args) { run(args) }
+
+  Void test() { run(Str[,]) }
+
+  Void run(Str[] args)
   {
     base := Env.cur.path.find { it.plus(`test/parse.yaml`).exists }
     if (base == null) throw Err("Test dir not found")
-    r := PogTestRunner(this).runDir(base.plus(`test/`))
-    if (r.numFails > 0) fail("TestSuite $r.numFails failures")
+    r := PogTestRunner(this, args).runDir(base.plus(`test/`))
+    if (r.numFails > 0) fail("TestSuite $r.numFails failures: $r.failed")
   }
 }
 
@@ -30,9 +34,12 @@ class TestSuite : Test
 
 class PogTestRunner
 {
-  new make(Test test)
+  new make(Test test, Str[] args)
   {
-    this.test = test
+    this.test     = test
+    this.args     = args
+    this.runAll   = args.isEmpty || args.contains("-all")
+    this.verbose  = args.contains("-v")
   }
 
   This runDir(File dir)
@@ -63,9 +70,13 @@ class PogTestRunner
   This runTest(Str filename, Str:Obj def)
   {
     name := def["name"] ?: "unknown"
-    //if (name != "metaAndChildren") return this
     qname := filename + "." + name
+
+    if (skip(qname)) return this
+
+    cur = qname
     echo("   - $qname")
+
     try
     {
       // TODO test basd on filename
@@ -81,6 +92,12 @@ class PogTestRunner
       fail("$qname failed", e)
     }
     return this
+  }
+
+  Bool skip(Str qname)
+  {
+    if (runAll) return false
+    return !args.any { qname.contains(it) }
   }
 
   Void runParse(Str:Obj def)
@@ -107,7 +124,7 @@ class PogTestRunner
     env.transduce("json", ["val":actual, "write":buf.out])
     json := buf.toStr.trim
 
-    if (json != expected)
+    if (verbose || json != expected)
     {
       echo
       echo(json)
@@ -149,13 +166,18 @@ class PogTestRunner
     if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
     echo
     echo("TEST FAILED: $msg")
-//test.fail(msg)
     e.trace
     echo
+    failed.add(cur)
   }
 
   PogEnv env := PogEnv.cur
+  Str[] args
+  Bool runAll
+  Bool verbose
   Test test
   Int numFails
+  Str cur := "?"
+  Str[] failed := [,]
 }
 

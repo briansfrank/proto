@@ -18,10 +18,16 @@ Productions [#productions]
   <unnamed>          :=  <body>
   <body>             :=  [<is>] [<meta>] [<childrenOrVal>]  // must have at least one of these productions
   <childrenOrVal>    :=  <children> | <val>
-  <is>               :=  <qname>
   <meta>             :=  "<" <protos> ">"
   <children>         :=  "{" <protos> "}"
   <val>              :=  double quoted string literal
+
+  <is>               :=  <isAnd> | <isOr> | <isMaybe> | <isSimple>
+  <isAnd>            :=  <isSimple> ("&" <isSimple>)+
+  <isOr>             :=  <isOrPart> ("|" <isOrPart>)+
+  <isOrPart>         :=  <isSimple> | <val>
+  <isMaybe>          :=  <isSimple> "?"
+  <isSimple>         :=  <qname>
 
   <leadingDoc>       := (<lineComment>)*
   <trailingDoc>      := <lineComment>
@@ -46,6 +52,7 @@ Legend for BNF Grammar:
   (x)     grouping
   s-e     inclusive char range
   x*      zero or more times
+  x+      one or more times
   x|x     or
 
 

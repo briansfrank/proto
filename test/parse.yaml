@@ -223,6 +223,12 @@ json: |
       }
     }}
 ---
+
+##########################################################################
+## Doc Comments
+##########################################################################
+
+---
 name: docPre
 pog: |
   // Single line
@@ -261,7 +267,145 @@ json: |
     }
 ---
 
+##########################################################################
+## Maybe
+##########################################################################
 
+---
+name: maybe
+pog: |
+ a: Foo?
+json: |
+  {"a":{
+    "_is":"sys.Maybe",
+    "_of":{"_is":"Foo"}
+    }}
+---
+name: maybeQual
+pog: |
+ a: some.lib.Foo?
+json: |
+  {"a":{
+    "_is":"sys.Maybe",
+    "_of":{"_is":"some.lib.Foo"}
+    }}
+---
+
+##########################################################################
+## And
+##########################################################################
+
+---
+name: and2
+pog: |
+ a:Foo&Bar
+json: |
+  {"a":{
+    "_is":"sys.And",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"Bar"}
+      }
+    }}
+---
+name: andQual2
+pog: |
+ a:alpha.Foo&beta.gamma.Bar
+json: |
+  {"a":{
+    "_is":"sys.And",
+    "_of":{
+      "_0":{"_is":"alpha.Foo"},
+      "_1":{"_is":"beta.gamma.Bar"}
+      }
+    }}
+---
+name: andMixed3
+pog: |
+ a: Foo & some.lib.Bar & Baz
+json: |
+  {"a":{
+    "_is":"sys.And",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"some.lib.Bar"},
+      "_2":{"_is":"Baz"}
+      }
+    }}
+---
+name: andNewlines
+pog: |
+ a: Foo &
+    some.lib.Bar &
+    Baz
+json: |
+  {"a":{
+    "_is":"sys.And",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"some.lib.Bar"},
+      "_2":{"_is":"Baz"}
+      }
+    }}
+---
+
+##########################################################################
+## Or
+##########################################################################
+
+---
+name: or2
+pog: |
+ a:Foo|Bar
+json: |
+  {"a":{
+    "_is":"sys.Or",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"Bar"}
+      }
+    }}
+---
+name: orQual2
+pog: |
+ a:alpha.Foo|beta.gamma.Bar
+json: |
+  {"a":{
+    "_is":"sys.Or",
+    "_of":{
+      "_0":{"_is":"alpha.Foo"},
+      "_1":{"_is":"beta.gamma.Bar"}
+      }
+    }}
+---
+name: orMixed3
+pog: |
+ a: Foo | some.lib.Bar | Baz
+json: |
+  {"a":{
+    "_is":"sys.Or",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"some.lib.Bar"},
+      "_2":{"_is":"Baz"}
+      }
+    }}
+---
+name: orNewlines
+pog: |
+ a: Foo |
+    some.lib.Bar |
+    Baz
+json: |
+  {"a":{
+    "_is":"sys.Or",
+    "_of":{
+      "_0":{"_is":"Foo"},
+      "_1":{"_is":"some.lib.Bar"},
+      "_2":{"_is":"Baz"}
+      }
+    }}
+---
 
 
 

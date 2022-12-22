@@ -56,8 +56,7 @@ const class ParseTransducer : Transducer
     if (files.isEmpty) throw ArgErr("No pog files in dir [$dir.osPath]")
     files = files.sort |a, b| { a.name <=> b.name }
 
-    root := Str:Obj[:]
-    root.ordered = true
+    root := Parser.newMap
     files.each |file|
     {
       Parser(FileLoc(file), file.in).parseInto(root)
@@ -94,7 +93,7 @@ internal class Parser
 
   Str:Obj parse()
   {
-    root := Str:Obj[:] { ordered = true }
+    root := newMap
     parseInto(root)
     return root
   }
@@ -155,7 +154,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
     {
       p.name = consumeName
-      p.map["_is"] = "sys.Marker"
+      p.map = isMarker
     }
     else
     {
@@ -174,19 +173,6 @@ internal class Parser
     b := parseMeta(p)
     c := parseChildrenOrVal(p)
     if (!a && !b && !c) throw err("Expecting proto body, not $curToStr")
-  }
-
-  private Bool parseIs(ParsedProto p)
-  {
-    if (cur !== Token.id) return false
-    qname := consumeName
-    while (cur === Token.dot)
-    {
-      consume
-      qname += "." + consumeName
-    }
-    p.map["_is"] = qname
-    return true
   }
 
   private Bool parseMeta(ParsedProto p)
@@ -218,6 +204,68 @@ internal class Parser
     p.map.add("_val", curVal)
     consume
     return true
+  }
+
+  private Bool parseIs(ParsedProto p)
+  {
+    if (cur !== Token.id) return false
+
+    qname := consumeQName
+    if (cur === Token.amp)      return parseIsAnd(p, qname)
+    if (cur === Token.pipe)     return parseIsOr(p, qname)
+    if (cur === Token.question) return parseIsMaybe(p, qname)
+
+    p.map["_is"] = qname
+    return true
+  }
+
+  private Bool parseIsAnd(ParsedProto p, Str qname)
+  {
+    of := newMap
+    addToOf(of, qname)
+    while (cur === Token.amp)
+    {
+      consume
+      skipNewlines
+      addToOf(of, parseIsSimple("Expecting next proto name after '& and' symbol"))
+    }
+    p.map["_is"] = "sys.And"
+    p.map["_of"] = of
+    return true
+  }
+
+  private Bool parseIsOr(ParsedProto p, Str qname)
+  {
+    of := newMap
+    addToOf(of, qname)
+    while (cur === Token.pipe)
+    {
+      consume
+      skipNewlines
+      addToOf(of, parseIsSimple("Expecting next proto name after '| or' symbol"))
+    }
+    p.map["_is"] = "sys.Or"
+    p.map["_of"] = of
+    return true
+  }
+
+  private Bool parseIsMaybe(ParsedProto p, Str qname)
+  {
+    consume(Token.question)
+    p.map["_is"] = "sys.Maybe"
+    p.map["_of"] = ["_is":qname]
+    return true
+  }
+
+  private Str parseIsSimple(Str errMsg)
+  {
+    if (cur !== Token.id) throw err(errMsg)
+    return consumeQName
+  }
+
+  private Void addToOf(Str:Obj of, Str qname)
+  {
+    of["_"+of.size] = ["_is":qname]
   }
 
   private Void parseEndOfProto()
@@ -271,12 +319,14 @@ internal class Parser
   private Void addDoc(ParsedProto p)
   {
     if (p.doc == null) return
+    if (p.map.isRO) p.map = p.map.dup
     p.map["_doc"] = ["_is":"sys.Str", "_val":p.doc]
   }
 
   private Void addLoc(ParsedProto p)
   {
     if (fileLoc === FileLoc.unknown) return
+    if (p.map.isRO) p.map = p.map.dup
     p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc]
   }
 
@@ -289,6 +339,13 @@ internal class Parser
       if (map[name] == null) return name
     }
     throw err("Too many children", parent.loc)
+  }
+
+  static Str:Obj newMap()
+  {
+    map := Str:Obj[:]
+    map.ordered = true
+    return map
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -362,6 +419,17 @@ internal class Parser
     curVal != null ? "$cur $curVal.toStr.toCode" : cur.toStr
   }
 
+  private Str consumeQName()
+  {
+    qname := consumeName
+    while (cur === Token.dot)
+    {
+      consume
+      qname += "." + consumeName
+    }
+    return qname
+  }
+
   private Str consumeName()
   {
     verify(Token.id)
@@ -394,6 +462,8 @@ internal class Parser
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
+  static const Str:Obj isMarker := ["_is":"sys.Marker"]
+
   Bool includeLoc
 
   private FileLoc fileLoc
@@ -420,8 +490,7 @@ internal class ParsedProto
   new make(FileLoc loc)
   {
     this.loc = loc
-    this.map = Str:Obj[:]
-    this.map.ordered = true
+    this.map = Parser.newMap
   }
 
   const FileLoc loc
