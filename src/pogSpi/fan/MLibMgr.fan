@@ -88,14 +88,18 @@ internal const class MLibMgr
 
   Lib compile(MLibEntry entry)
   {
-echo("## parse...")
-    x := env.transduce("parse", ["dir":entry.dir]).get
-    dump(x)
-echo("## resolve...")
-    x  = env.transduce("resolve", ["ast":x]).get
-    dump(x)
-echo("## reify...")
-    x  = env.transduce("reify", ["ast":x]).get
+    x := transduce("parse", ["dir":entry.dir])
+    x  = transduce("resolve", ["ast":x, "base":entry.qname])
+    x  = transduce("reify", ["ast":x])
+    return x
+  }
+
+  private Obj? transduce(Str name, Str:Obj args)
+  {
+    echo("\n## $name ...")
+    t := env.transduce(name, args)
+    if (t.isErr) echo(t.events.join("\n"))
+    x := t.get
     dump(x)
     return x
   }

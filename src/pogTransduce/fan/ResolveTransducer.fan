@@ -38,8 +38,8 @@ const class ResolveTransducer : Transducer
     cx := TransduceContext(this, args)
     ast := cx.arg("ast")
     if (ast isnot Str:Obj) throw Err("Expecting Str:Obj map, not $ast [${ast?.typeof}]")
-
-    return cx.toResult(Resolver(cx, ast).resolve)
+    base := args["base"] ?: ""
+    return cx.toResult(Resolver(cx, base, ast).resolve)
   }
 }
 
@@ -50,9 +50,10 @@ const class ResolveTransducer : Transducer
 @Js
 internal class Resolver
 {
-  new make(TransduceContext cx, Str:Obj root)
+  new make(TransduceContext cx, Str base, Str:Obj root)
   {
     this.cx = cx
+    this.base = base
     this.root = root
   }
 
@@ -65,8 +66,11 @@ internal class Resolver
   private Void resolveDepends()
   {
     // TODO
-    dependsGraph := cx.env.create(["sys"])
-    depends = dependsGraph.libs
+    if (base != "sys")
+    {
+      dependsGraph := cx.env.create(["sys"])
+      depends = dependsGraph.libs
+    }
   }
 
   private Obj? resolveNode(Str:Obj node)
@@ -91,7 +95,7 @@ internal class Resolver
 
     // try my own AST
     mine := root[name]
-    if (mine != null) matches.add(".${name}")
+    if (mine != null) matches.add("${base}.${name}")
 
     // try dependencies
     depends.each |depend|
@@ -114,6 +118,10 @@ internal class Resolver
     dot := qname.indexr(".")
     libQName := qname[0..<dot]
     simpleName := qname[dot+1..-1]
+    if (libQName == base)
+    {
+      return root[simpleName] != null
+    }
     return depends.any |lib|
     {
       lib.qname.toStr == libQName && lib.hasOwn(simpleName)
@@ -121,6 +129,7 @@ internal class Resolver
   }
 
   private TransduceContext cx
+  private Str base
   private Lib[] depends := [,]
   private Str:Obj root
 }
