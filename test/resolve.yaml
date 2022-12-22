@@ -29,7 +29,25 @@ json: |
       }
     }
 ---
-
+name: errs
+pog: |
+  a: NotFound
+  b: sys.Nope
+  c: Str
+  Str: {}
+json: |
+  {
+    "a":{"_is":"NotFound"},
+    "b":{"_is":"sys.Nope"},
+    "c":{"_is":"Str"},
+    "Str":{}
+    }
+events: |
+  level | msg
+  err   | Unresolved name 'NotFound'
+  err   | Unresolved qname 'sys.Nope'
+  err   | Ambiguous name 'Str': [.Str, sys.Str]
+---
 
 
 

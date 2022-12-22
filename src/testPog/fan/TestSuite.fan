@@ -102,33 +102,39 @@ class PogTestRunner
 
   Void runParse(Str:Obj def)
   {
-    pog := def.getChecked("pog")
-    ast := transduce("parse", ["read":pog])
-    verifyJson(def, ast)
+    pog    := def.getChecked("pog")
+    json   := def.getChecked("json")
+    events := def.get("events")
+
+    a := transduce("parse", ["read":pog])
+    verifyJson(a, json)
+    verifyEvents(a, events)
   }
 
   Void runResolve(Str:Obj def)
   {
-    pog := def.getChecked("pog")
-    ast := transduce("parse", ["read":pog])
-    proto := transduce("resolve", ["ast":ast])
-    verifyJson(def, proto)
+    pog    := def.getChecked("pog")
+    json   := def.getChecked("json")
+    events := def.get("events")
+
+    a := transduce("parse", ["read":pog]).get
+    b := transduce("resolve", ["ast":a], false)
+    verifyJson(b, json)
+    verifyEvents(b, events)
   }
 
-  Obj transduce(Str name, Str:Obj args)
+  Transduction transduce(Str name, Str:Obj args, Bool dumpErrs := true)
   {
     t := env.transduce(name, args)
-    if (t.isErr) echo(t.errs.join("\n"))
-    return t.get
+    if (t.isErr && dumpErrs) echo(t.errs.join("\n"))
+    return t
   }
 
-  Void verifyJson(Str:Obj def, Obj actual)
+  Void verifyJson(Transduction t, Str expected)
   {
-    expected := def.getChecked("json").toStr.trim
-
-    // transduce actual normalized JSON
+    expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["val":actual, "write":buf.out])
+    env.transduce("json", ["val":t.get(false), "write":buf.out])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
@@ -137,9 +143,42 @@ class PogTestRunner
       echo(json)
       dump(json, expected)
     }
+    verifyEq(json, expected)
+  }
 
-    // verify
-    test.verifyEq(json, expected)
+  Void verifyEvents(Transduction t, Str? expectedTable)
+  {
+    if (expectedTable == null) return
+
+    // inspect first line to detect separator
+    lines := expectedTable.splitLines
+    header := lines[0]
+    sep := '|'
+    for (i := 0; i<header.size; ++i)
+    {
+      ch := header[i]
+      if (ch.isAlphaNum || ch.isSpace) continue
+      sep = ch
+      break
+    }
+
+    // process each line as table of cells with given separator
+    names := header.split(sep)
+    lines = lines[1..-1].findAll { !it.trim.isEmpty }
+    lines.each |line, i|
+    {
+      event := t.events.getSafe(i)
+      if (event == null) return
+
+      s := StrBuf()
+      names.each |n| { s.join(event.trap(n), sep.toChar) }
+      actual := s.toStr
+
+      expected := line.split(sep).join(sep.toChar)
+
+      verifyEq(actual, expected)
+    }
+    verifyEq(t.events.size, lines.size)
   }
 
   Void dump(Str a, Str b)
@@ -165,6 +204,11 @@ class PogTestRunner
         echo("   " + s)
       }
     }
+  }
+
+  Void verifyEq(Obj? a, Obj? b)
+  {
+    test.verifyEq(a, b)
   }
 
   Void fail(Str msg, Err e)

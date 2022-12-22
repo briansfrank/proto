@@ -66,7 +66,7 @@ internal class Resolver
   {
     // TODO
     dependsGraph := cx.env.create(["sys"])
-    depends = Str:Lib[:].addList(dependsGraph.libs) { it.name }
+    depends = dependsGraph.libs
   }
 
   private Obj? resolveNode(Str:Obj node)
@@ -81,7 +81,11 @@ internal class Resolver
 
   private Str resolveName(Str:Obj node, Str name)
   {
-    if (name.contains(".")) return name
+    if (name.contains("."))
+    {
+      if (!resolveQualified(name)) cx.err("Unresolved qname '$name'", node)
+      return name
+    }
 
     matches := Str[,]
 
@@ -101,11 +105,22 @@ internal class Resolver
     if (matches.size == 0)
       cx.err("Unresolved name '$name'", node)
     else
-      cx.err("ambiguous name '$name': $matches", node)
+      cx.err("Ambiguous name '$name': $matches", node)
     return name
   }
 
+  private Bool resolveQualified(Str qname)
+  {
+    dot := qname.indexr(".")
+    libQName := qname[0..<dot]
+    simpleName := qname[dot+1..-1]
+    return depends.any |lib|
+    {
+      lib.qname.toStr == libQName && lib.hasOwn(simpleName)
+    }
+  }
+
   private TransduceContext cx
-  private Str:Lib depends := [:]
+  private Lib[] depends := [,]
   private Str:Obj root
 }

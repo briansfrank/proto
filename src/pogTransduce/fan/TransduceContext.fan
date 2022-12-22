@@ -159,7 +159,7 @@ const class MTransduction : Transduction
   {
     if (isOk) return result
     if (checked) throw TransduceErr("$transducer.name failed with $errs.size errs")
-    return null
+    return result
   }
 }
 

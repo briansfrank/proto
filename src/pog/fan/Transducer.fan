@@ -53,8 +53,8 @@ abstract const class Transducer
 @Js
 const mixin Transduction
 {
-  ** Get the result.  If the transduction had error events then
-  ** return null or raise exception based on checked flag.
+  ** Get the result.  If the transduction had errors and checked flag
+  ** is true then raise an exception instead of returning the result.
   abstract Obj? get(Bool checked := true)
 
   ** Return if there was zero error events (might be other events)
