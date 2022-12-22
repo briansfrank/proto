@@ -9,6 +9,26 @@ pog: |
 json: |
   {"foo":{"_is":"sys.Str", "_val":"hello"}}
 ---
+name: internal
+pog: |
+  Foo: Scalar
+  Bar: Scalar
+  x: {
+    foo: Foo
+    bar: Bar
+    baz: Str
+  }
+json: |
+  {
+    "Foo":{"_is":"sys.Scalar"},
+    "Bar":{"_is":"sys.Scalar"},
+    "x":{
+      "foo":{"_is":".Foo"},
+      "bar":{"_is":".Bar"},
+      "baz":{"_is":"sys.Str"}
+      }
+    }
+---
 
 
 

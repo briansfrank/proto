@@ -39,35 +39,64 @@ const class ResolveTransducer : Transducer
     ast := cx.arg("ast")
     if (ast isnot Str:Obj) throw Err("Expecting Str:Obj map, not $ast [${ast?.typeof}]")
 
-    // TODO
-    dependsGraph := env.create(["sys"])
-    depends := Str:Lib[:].addList(dependsGraph.libs) { it.name }
+    return cx.toResult(Resolver(cx, ast).resolve)
+  }
+}
 
-    ast = resolve(cx, depends, ast)
-    return cx.toResult(ast)
+**************************************************************************
+** Resolver
+**************************************************************************
+
+@Js
+internal class Resolver
+{
+  new make(TransduceContext cx, Str:Obj root)
+  {
+    this.cx = cx
+    this.root = root
   }
 
-  private Obj? resolve(TransduceContext cx, Str:Lib depends, Str:Obj node)
+  Str:Obj resolve()
+  {
+    resolveDepends
+    return resolveNode(root)
+  }
+
+  private Void resolveDepends()
+  {
+    // TODO
+    dependsGraph := cx.env.create(["sys"])
+    depends = Str:Lib[:].addList(dependsGraph.libs) { it.name }
+  }
+
+  private Obj? resolveNode(Str:Obj node)
   {
     node.map |v, n|
     {
-      if (n == "_is") return resolveName(cx, depends, node, v)
-      if (v is Map) return resolve(cx, depends, v)
+      if (n == "_is") return resolveName(node, v)
+      if (v is Map) return resolveNode(v)
       return v
     }
   }
 
-  private Str resolveName(TransduceContext cx, Str:Lib depends, Str:Obj node, Str name)
+  private Str resolveName(Str:Obj node, Str name)
   {
     if (name.contains(".")) return name
 
-    matches := Proto[,]
+    matches := Str[,]
+
+    // try my own AST
+    mine := root[name]
+    if (mine != null) matches.add(".${name}")
+
+    // try dependencies
     depends.each |depend|
     {
-      matches.addNotNull(depend.getOwn(name, false))
+      p := depend.getOwn(name, false)
+      if (p != null) matches.add(p.qname.toStr)
     }
 
-    if (matches.size == 1) return matches[0].qname.toStr
+    if (matches.size == 1) return matches[0]
 
     if (matches.size == 0)
       cx.err("Unresolved name '$name'", node)
@@ -76,5 +105,7 @@ const class ResolveTransducer : Transducer
     return name
   }
 
-
+  private TransduceContext cx
+  private Str:Lib depends := [:]
+  private Str:Obj root
 }

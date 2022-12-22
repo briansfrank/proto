@@ -22,6 +22,9 @@ class TransduceContext
     this.args       = args
   }
 
+  ** Environment
+  PogEnv env() { transducer.env }
+
   ** Parent transducer for context
   const Transducer transducer
 
@@ -180,6 +183,15 @@ const class MTransduceEvent : TransduceEvent
   const override Str msg
   const override FileLoc loc
   const override Err? err
+
+  override Str toStr()
+  {
+    s := StrBuf()
+    if (!loc.isUnknown) s.add(loc).add(" ")
+    s.add("[$level.name.upper] ")
+    s.add(msg)
+    return s.toStr
+  }
 }
 
 
