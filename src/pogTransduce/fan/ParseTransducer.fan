@@ -205,7 +205,11 @@ internal class Parser
     consume(open)
     skipNewlines
     parseProtos(p, isMeta)
-    while (cur !== close) parseProtos(p, isMeta)
+    while (cur !== close)
+    {
+      if (cur === Token.eof) throw err("Unexpected end of file, missing closing $close")
+      parseProtos(p, isMeta)
+    }
     consume(close)
     return true
   }

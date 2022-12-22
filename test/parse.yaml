@@ -468,6 +468,20 @@ events: |
   level ; msg
   err   ; Expecting next proto name after '|' or symbol
 ---
+name: errsEndBrace
+pog: |
+ a: {
+events: |
+  level ; msg
+  err   ; Unexpected end of file, missing closing '}' rbrace
+---
+name: errsEndBrace
+pog: |
+ a: <
+events: |
+  level ; msg
+  err   ; Unexpected end of file, missing closing '>' gt
+---
 
 
 
