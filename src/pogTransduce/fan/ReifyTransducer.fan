@@ -148,6 +148,13 @@ internal const class MProto : Proto
     if (valRef != null) return valRef
     return isa.val(checked)
   }
+
+  override Obj? valOwn(Bool checked := true)
+  {
+    if (valRef != null) return valRef
+    if (checked) throw ProtoMissingValErr(qname.toStr)
+    return null
+  }
   private const Obj? valRef
 
   override Bool has(Str name)

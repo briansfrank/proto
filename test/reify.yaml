@@ -3,7 +3,7 @@
 #
 
 ---
-name: basics
+name: scalar
 src: |
   foo: "hello"
 json: |
@@ -14,6 +14,42 @@ json: |
 get: |
   foo is sys.Str
   foo val "hello"
+---
+name: dict
+src: |
+  foo: {
+    bar: Str
+    baz: "quz"
+  }
+json: |
+  {
+    "_is":"sys.Dict",
+    "foo":{
+      "_is":"sys.Dict",
+      "bar":{"_is":"sys.Str"},
+      "baz":{"_is":"sys.Str", "_val":"quz"}
+      }
+    }
+---
+name: internal
+src: |
+  Foo: {
+    bar: Bar
+    baz: Baz
+  }
+  Bar: Str
+  Baz: {}
+json: |
+  {
+    "_is":"sys.Dict",
+    "Foo":{
+      "_is":"sys.Dict",
+      "bar":{"_is":"test.Bar"},
+      "baz":{"_is":"test.Baz"}
+      },
+    "Bar":{"_is":"sys.Str"},
+    "Baz":{"_is":"sys.Dict"}
+    }
 ---
 
 

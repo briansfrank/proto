@@ -52,8 +52,11 @@ const mixin Proto : ProtoStub
   ** Does this proto have a scalar value
   abstract Bool hasVal()
 
-  ** Scalar value string of the object
+  ** Scalar effective scalar value of the object
   abstract Obj? val(Bool checked := true)
+
+  ** Scalar non-inherited value of this object
+  abstract Obj? valOwn(Bool checked := true)
 
 //////////////////////////////////////////////////////////////////////////
 // Children
@@ -166,8 +169,11 @@ const class AbstractProto :  Proto
   ** Does this proto have a scalar value
   override Bool hasVal() { spiRef.hasVal }
 
-  ** Scalar value string of the object
+  ** Scalar effective scalar value of the object
   override Obj? val(Bool checked := true) { spiRef.val(checked) }
+
+  ** Scalar non-inherited value of this object
+  override Obj? valOwn(Bool checked := true) { spiRef.valOwn(checked) }
 
 //////////////////////////////////////////////////////////////////////////
 // Children
@@ -236,6 +242,7 @@ abstract const class ProtoSpi
   abstract Bool fits(Proto base)
   abstract Bool hasVal()
   abstract Obj? val(Bool checked)
+  abstract Obj? valOwn(Bool checked)
   abstract Bool has(Str name)
   abstract Bool hasOwn(Str name)
   abstract Proto? get(Str name, Bool checked := true)

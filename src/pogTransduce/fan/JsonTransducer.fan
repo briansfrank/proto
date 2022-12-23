@@ -88,7 +88,7 @@ internal class JsonPrinter
     map := Str:Obj[:]
     map.ordered = true
     map.addNotNull("_is", proto.isa?.qname)
-    map.addNotNull("_val", proto.val(false))
+    map.addNotNull("_val", proto.valOwn(false))
     proto.eachOwn |kid|
     {
       map[kid.name] = kid

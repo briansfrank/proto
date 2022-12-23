@@ -50,6 +50,13 @@ const class MProtoSpi : ProtoSpi
     if (checked) throw ProtoMissingValErr(name)
     return null
   }
+
+  override Obj? valOwn(Bool checked)
+  {
+    if (valRef != null) return valRef
+    if (checked) throw ProtoMissingValErr(name)
+    return null
+  }
   private const Obj? valRef
 
   override final Proto? trap(Str name, Obj?[]? args := null)
