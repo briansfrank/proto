@@ -36,10 +36,7 @@ const class ResolveTransducer : Transducer
   override Transduction transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
-    ast := cx.arg("ast")
-    if (ast isnot Str:Obj) throw Err("Expecting Str:Obj map, not $ast [${ast?.typeof}]")
-    base := args["base"] ?: ""
-    return cx.toResult(Resolver(cx, base, ast).resolve)
+    return cx.toResult(Resolver(cx).resolve)
   }
 }
 
@@ -50,26 +47,26 @@ const class ResolveTransducer : Transducer
 @Js
 internal class Resolver
 {
-  new make(TransduceContext cx, Str base, Str:Obj root)
+  new make(TransduceContext cx)
   {
-    this.cx = cx
-    this.base = base
-    this.root = root
+    this.cx   = cx
+    this.ast  = cx.arg("ast") as Str:Obj ?: throw ArgErr("Expecting ast to be Str:Obj not [" + cx.arg("ast").typeof + "]")
+    this.base = cx.arg("base", false) as Str ?: ""
   }
 
   Str:Obj resolve()
   {
     resolveDepends
-    return resolveNode(root)
+    return resolveNode(ast)
   }
 
-  private Void resolveDepends()
+  Void resolveDepends()
   {
     // TODO
     if (base != "sys")
     {
       dependsGraph := cx.env.create(["sys"])
-      depends = dependsGraph.libs
+      depends = ["sys":dependsGraph.lib("sys")]
     }
   }
 
@@ -94,7 +91,7 @@ internal class Resolver
     matches := Str[,]
 
     // try my own AST
-    mine := root[name]
+    mine := ast[name]
     if (mine != null) matches.add("${base}.${name}")
 
     // try dependencies
@@ -120,16 +117,22 @@ internal class Resolver
     simpleName := qname[dot+1..-1]
     if (libQName == base)
     {
-      return root[simpleName] != null
+      return ast[simpleName] != null
     }
-    return depends.any |lib|
-    {
-      lib.qname.toStr == libQName && lib.hasOwn(simpleName)
-    }
+    depend := depends[libQName]
+    return depend != null && depend.hasOwn(simpleName)
   }
 
-  private TransduceContext cx
-  private Str base
-  private Lib[] depends := [,]
-  private Str:Obj root
+  Proto? resolveInDepends(Str qname)
+  {
+    dot := qname.indexr(".")
+    libQName := qname[0..<dot]
+    simpleName := qname[dot+1..-1]
+    return depends.get(libQName)?.getOwn(simpleName, false)
+  }
+
+  TransduceContext cx
+  Str:Obj ast
+  Str base
+  Str:Lib depends := [:]
 }

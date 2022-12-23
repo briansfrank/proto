@@ -1,0 +1,22 @@
+#
+# Reify Pog Src => Resolve => Reify Pog
+#
+
+---
+name: basics
+src: |
+  foo: "hello"
+json: |
+  {
+    "_is":"sys.Dict",
+    "foo":{"_is":"sys.Str", "_val":"hello"}
+    }
+get: |
+  foo is sys.Str
+  foo val "hello"
+---
+
+
+
+
+

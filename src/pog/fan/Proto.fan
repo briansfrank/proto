@@ -25,8 +25,12 @@ const mixin Proto : ProtoStub
   ** Fully qualified name as dotted path from root
   abstract QName qname()
 
+  ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
+  abstract Proto? isa()
+
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
-  abstract Proto? type()
+  ** TODO: to be replaced by isa
+  virtual Proto? type() { isa }
 
   ** Does this proto fit the given proto from a nominal type perspective
   ** Examples:
@@ -81,6 +85,9 @@ const mixin Proto : ProtoStub
   ** Iterate the non-inherited children objects until callback returns non-null.
   abstract Obj? eachOwnWhile(|Proto->Obj?| f)
 
+  ** Iterate over effective children keeping track of each name visited
+  @NoDoc abstract Void eachSeen(Str:Str seen, |Proto| f)
+
   ** Return a list of this object effective children.  This iteration includes
   ** inherited children and can be very expensive; prefer `listOwn()`.
   abstract Proto[] list()
@@ -128,6 +135,9 @@ const class AbstractProto :  Proto
 
   ** Fully qualified name as dotted path from root
   override QName qname() { spiRef.qname }
+
+  ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
+  override Proto? isa() { spiRef.type }
 
   ** Prototype this object inherits from.  Return null if this 'sys.Obj' itself.
   override Proto? type() { spiRef.type }
@@ -188,6 +198,9 @@ const class AbstractProto :  Proto
 
   ** Iterate the non-inherited children objects until callback returns non-null.
   override Obj? eachOwnWhile(|Proto->Obj?| f) { spiRef.eachOwnWhile(f) }
+
+  ** Iterate over effective children keeping track of each name visited
+  @NoDoc override Void eachSeen(Str:Str seen, |Proto| f) { spiRef.eachSeen(seen, f) }
 
   ** Return a list of this object effective children.  This iteration includes
   ** inherited children and can be very expensive; prefer `listOwn()`.

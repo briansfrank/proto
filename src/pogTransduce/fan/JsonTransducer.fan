@@ -58,7 +58,7 @@ const class JsonTransducer : Transducer
     val := cx.arg("val")
     return cx.write |out|
     {
-      JsonPrinter(out).printVal(val)
+      JsonPrinter(out).print(val)
       return val
     }
   }
@@ -73,12 +73,27 @@ internal class JsonPrinter
 {
   new make(OutStream out) { this.out = JsonOutStream(out) }
 
-  Void printVal(Obj? val)
+  Void print(Obj? val)
   {
-    if (val is Map)
+    if (val is Proto)
+      printProto(val)
+    else if (val is Map)
       printMap(val)
     else
       out.writeJson(val.toStr)
+  }
+
+  Void printProto(Proto proto)
+  {
+    map := Str:Obj[:]
+    map.ordered = true
+    map.addNotNull("_is", proto.isa?.qname)
+    map.addNotNull("_val", proto.val(false))
+    proto.eachOwn |kid|
+    {
+      map[kid.name] = kid
+    }
+    printMap(map)
   }
 
   Void printMap(Str:Obj? map)
@@ -134,7 +149,7 @@ internal class JsonPrinter
     }
     out.writeJson(n)
     out.writeChar(':')
-    printVal(v)
+    print(v)
     return false
   }
 
