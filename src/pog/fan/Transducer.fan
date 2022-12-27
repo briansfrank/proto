@@ -87,6 +87,9 @@ const mixin TransduceEvent
   ** Message for the event
   abstract Str msg()
 
+  ** Qualified name of target proto or null if not applicable
+  abstract QName? qname()
+
   ** File location or unknown if not applicable
   abstract FileLoc loc()
 

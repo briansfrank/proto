@@ -82,10 +82,11 @@ class PogTestRunner
       // TODO test basd on filename
       switch (filename)
       {
-        case "parse":   runParse(def)
-        case "resolve": runResolve(def)
-        case "reify":   runReify(def)
-        default:        throw Err("Unknown test type: $filename")
+        case "parse":    runParse(def)
+        case "resolve":  runResolve(def)
+        case "reify":    runReify(def)
+        case "validate": runValidate(def)
+        default:         throw Err("Unknown test type: $filename")
       }
     }
     catch (Err e)
@@ -139,6 +140,18 @@ class PogTestRunner
     b := transduce("resolve", ["ast":a, "base":"test"]).get
     c := transduce("reify",   ["ast":b, "base":"test"])
     verifyJson(c, json)
+  }
+
+  Void runValidate(Str:Obj def)
+  {
+    pog    := def.getChecked("src")
+    events := def.getChecked("events")
+
+    a := transduce("parse",    ["read":pog]).get
+    b := transduce("resolve",  ["ast":a]).get
+    c := transduce("reify",    ["ast":b, "base":"test"]).get
+    d := transduce("validate", ["graph":c])
+    verifyEvents(d, events)
   }
 
   Transduction transduce(Str name, Str:Obj args, Bool dumpErrs := true)

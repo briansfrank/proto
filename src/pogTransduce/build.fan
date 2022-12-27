@@ -38,6 +38,7 @@ class Build : BuildPod
         "pogTransduce::ParseTransducer",
         "pogTransduce::ReifyTransducer",
         "pogTransduce::ResolveTransducer",
+        "pogTransduce::ValidateTransducer",
       ]
     ]
   }

@@ -43,14 +43,19 @@ class TransduceContext
   ** Log an error event
   Void err(Str msg, Obj loc, Err? cause := null)
   {
-    event(MTransduceEvent(TransduceEventLevel.err, msg, toLoc(loc), cause))
+    event(MTransduceEvent(TransduceEventLevel.err, msg, toQName(loc), toLoc(loc), cause))
   }
 
   ** Get an argument by name
-  Obj? arg(Str name, Bool checked := true)
+  Obj? arg(Str name, Bool checked := true, Type? type := null)
   {
     arg := args[name]
-    if (arg != null) return arg
+    if (arg != null)
+    {
+      if (type != null && !arg.typeof.fits(type))
+        throw ArgErr("Expecting '$name' to be $type.signature, not $arg.typeof")
+      return arg
+    }
     if (checked) throw ArgErr("Missing argument: $name")
     return null
   }
@@ -108,12 +113,20 @@ class TransduceContext
       out.close
   }
 
+  ** Get a qualified name from a Proto
+  QName? toQName(Obj x)
+  {
+    if (x is Proto) return ((Proto)x).qname
+    return null
+  }
+
   ** Get a file location from:
   **   - FileLoc return itself
   **   - Str:Obj assume its an AST node and get "_loc" value
   FileLoc toLoc(Obj x)
   {
     if (x is FileLoc) return x
+    if (x is Proto) return ((Proto)x).loc
     if (x is Map)
     {
       loc := ((Map)x).get("_loc") as Str:Obj
@@ -171,17 +184,19 @@ const class MTransduction : Transduction
 @Js
 const class MTransduceEvent : TransduceEvent
 {
-  new make(TransduceEventLevel level, Str msg, FileLoc loc, Err? err := null)
+  new make(TransduceEventLevel level, Str msg, QName? qname, FileLoc loc, Err? err := null)
   {
     this.level = level
     this.msg   = msg
     this.loc   = loc
+    this.qname = qname
     this.err   = err
   }
 
   const override TransduceEventLevel level
   const override Str msg
   const override FileLoc loc
+  const override QName? qname
   const override Err? err
 
   override Str toStr()
@@ -189,6 +204,7 @@ const class MTransduceEvent : TransduceEvent
     s := StrBuf()
     if (!loc.isUnknown) s.add(loc).add(" ")
     s.add("[$level.name.upper] ")
+    if (qname != null) s.add("'").add(qname).add("' ")
     s.add(msg)
     return s.toStr
   }

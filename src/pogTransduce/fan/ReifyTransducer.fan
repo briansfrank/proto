@@ -26,8 +26,8 @@ const class ReifyTransducer : Transducer
   override Str usage()
   {
     """Summary:
-         Construct a Proto tree from an AST object tree.  All
-         qualified and relative names are resolved to their protos.
+         Construct a Proto tree from an AST object tree.
+         All unspecified 'is' references are inferred by the type system.
        Usage:
          reify ast:obj                Transform AST to Protos
        Arguments:

@@ -50,8 +50,8 @@ internal class Resolver
   new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.ast  = cx.arg("ast") as Str:Obj ?: throw ArgErr("Expecting ast to be Str:Obj not [" + cx.arg("ast").typeof + "]")
-    this.base = cx.arg("base", false) as Str ?: ""
+    this.ast  = cx.arg("ast", true, Str:Obj#)
+    this.base = cx.arg("base", false, Str#) ?: ""
   }
 
   Str:Obj resolve()
