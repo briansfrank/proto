@@ -126,6 +126,7 @@ internal class Resolver
   Proto? resolveInDepends(Str qname)
   {
     dot := qname.indexr(".")
+    if (dot == null) return null
     libQName := qname[0..<dot]
     simpleName := qname[dot+1..-1]
     return depends.get(libQName)?.getOwn(simpleName, false)

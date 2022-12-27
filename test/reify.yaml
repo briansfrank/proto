@@ -51,6 +51,23 @@ json: |
     "Baz":{"_is":"sys.Dict"}
     }
 ---
+name: inferSlots
+src: |
+  Foo: { bar: Date }
+  foo: Foo { bar: "2022-12-27" }
+json: |
+  {
+    "_is":"sys.Dict",
+    "Foo":{
+      "_is":"sys.Dict",
+      "bar":{"_is":"sys.Date"}
+      },
+    "foo":{
+      "_is":"test.Foo",
+      "bar":{"_is":"sys.Date", "_val":"2022-12-27"}
+      }
+    }
+---
 
 
 

@@ -56,14 +56,18 @@ internal class Reifier : Resolver
   {
     resolveDepends
     root := reifyNode(QName(base), ast)
-    refs.each |ref, qname| { resolveRef(qname, ref) }
+    resolveRefs
+    resolveIsInfers
     return root
   }
 
   private Proto reifyNode(QName qname, Str:Obj node)
   {
+    isName := node["_is"]
+    inferIs := isName == null
+
     loc      := cx.toLoc(node)
-    isa      := ref(getOrInferIs(qname, node, loc))
+    isa      := inferIs ? AtomicRef() : ref(isName)
     val      := node["_val"]
     children := MProto.noChildren
 
@@ -81,16 +85,8 @@ internal class Reifier : Resolver
 
     proto := MProto(loc, qname, isa, val, children)
     ref(qname.toStr).val = proto
+    if (inferIs) isInfers.add(proto)
     return proto
-  }
-
-  Str getOrInferIs(QName qname, Str:Obj node, FileLoc loc)
-  {
-    explicit := node["_is"]
-    if (explicit != null) return explicit
-
-    if (node["_val"] != null) return "sys.Str"
-    return "sys.Dict"
   }
 
   AtomicRef ref(Str qname)
@@ -98,6 +94,11 @@ internal class Reifier : Resolver
     ref := refs[qname]
     if (ref == null) refs[qname] = ref = AtomicRef()
     return ref
+  }
+
+  Void resolveRefs()
+  {
+    refs.each |ref, qname| { resolveRef(qname, ref) }
   }
 
   Void resolveRef(Str qname, AtomicRef ref)
@@ -109,7 +110,40 @@ internal class Reifier : Resolver
     ref.val = resolveInDepends(qname) ?: throw Err("Unresolved depend qname: $qname")
   }
 
+  Void resolveIsInfers()
+  {
+    // iterate in reverse so parents are inferred first
+    isInfers.eachr |p| { p.isaRef.val = resolveIsInfer(p) }
+  }
+
+  Proto resolveIsInfer(MProto p)
+  {
+     // infer from parent's inherited type
+    inherited := resolveIsInferInherited(p)
+    if (inherited != null) return inherited
+
+    // fallback to Str/Dict
+    return p.valOwn(false) != null  ? str.val : dict.val
+  }
+
+  Proto? resolveIsInferInherited(MProto p)
+  {
+    // resolve parent (its either already in my refs map or in a depdendency)
+    parentQName := p.qname.parent.toStr
+    Proto? parent := refs[parentQName]?.val ?: resolveInDepends(parentQName)
+    if (parent == null) return null
+
+    // get slot from parent's type
+    slot := parent.isa?.get(p.name, false)
+    if (slot == null) return null
+
+    return slot.isa
+  }
+
   Str:AtomicRef refs := [:]
+  AtomicRef str := ref("sys.Str")
+  AtomicRef dict := ref("sys.Dict")
+  MProto[] isInfers := [,]
 }
 
 **************************************************************************
@@ -135,7 +169,7 @@ internal const class MProto : Proto
   override const QName qname
 
   override Proto? isa() { isaRef.val }
-  private const AtomicRef isaRef
+  internal const AtomicRef isaRef
 
   override Int tx() { 0 }
 
