@@ -86,6 +86,7 @@ class PogTestRunner
         case "resolve":  runResolve(def)
         case "reify":    runReify(def)
         case "validate": runValidate(def)
+        case "haystack": runHaystack(def)
         default:         throw Err("Unknown test type: $filename")
       }
     }
@@ -154,6 +155,17 @@ class PogTestRunner
     verifyEvents(d, events)
   }
 
+  Void runHaystack(Str:Obj def)
+  {
+    trio := def.getChecked("trio")
+    pog  := def.getChecked("pog")
+
+    trioFile := Buf().print(trio).toFile(`test.trio`)
+
+    a := transduce("haystack", ["read":trioFile])
+    verifyPog(a, pog)
+  }
+
   Transduction transduce(Str name, Str:Obj args, Bool dumpErrs := true)
   {
     t := env.transduce(name, args)
@@ -176,6 +188,13 @@ class PogTestRunner
       dump(json, expected)
     }
     verifyEq(json, expected)
+  }
+
+  Void verifyPog(Transduction t, Str expected)
+  {
+    actual := (Proto)t.get
+actual.dump
+echo("TODO")
   }
 
   Void verifyEvents(Transduction t, Str? expectedTable)

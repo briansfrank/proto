@@ -77,13 +77,6 @@ class TransduceContext
     throw ArgErr("Invalid write arg for $transducer.name transducer")
   }
 
-  ** Convert an arg into a file location
-  FileLoc toFileLoc(Obj arg)
-  {
-    if (arg is File) return FileLoc.makeFile(arg)
-    return FileLoc.unknown
-  }
-
   ** Wrap result with current events
   MTransduction toResult(Obj? result)
   {
@@ -94,7 +87,7 @@ class TransduceContext
   MTransduction read(|InStream, FileLoc->Obj?| f)
   {
     arg := arg("read")
-    loc := toFileLoc(arg)
+    loc := toLoc(arg)
     in := toInStream(arg)
     try
       return toResult(f(in, loc))
@@ -127,6 +120,7 @@ class TransduceContext
   {
     if (x is FileLoc) return x
     if (x is Proto) return ((Proto)x).loc
+    if (x is File) return FileLoc.makeFile(x)
     if (x is Map)
     {
       loc := ((Map)x).get("_loc") as Str:Obj
@@ -138,7 +132,7 @@ class TransduceContext
       }
       return FileLoc.unknown
     }
-    throw Err("toLoc: $x [$x.typeof]")
+    return FileLoc.unknown
   }
 
 }

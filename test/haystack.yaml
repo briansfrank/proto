@@ -1,0 +1,22 @@
+#
+# Convert between Haystack and Protos
+#
+
+##########################################################################
+## From Haystack
+##########################################################################
+
+---
+name: fromHaystack
+trio: |
+  foo: "string"
+  ref: @abc
+pog: |
+  sys.List {
+    sys.Dict {
+      foo: sys.Str "string"
+      ref: ph.Ref "abc"
+    }
+  }
+---
+
