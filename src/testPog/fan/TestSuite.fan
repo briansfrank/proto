@@ -151,7 +151,6 @@ class PogTestRunner
     b := transduce("resolve",  ["ast":a, "base":"test"]).get
     c := transduce("reify",    ["ast":b, "base":"test"]).get
     d := transduce("validate", ["graph":c])
-((Proto)d.get).dump
     verifyEvents(d, events)
   }
 

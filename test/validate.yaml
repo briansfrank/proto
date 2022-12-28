@@ -2,6 +2,10 @@
 # Validate pog src and check events
 #
 
+##########################################################################
+## Scalar Regex
+##########################################################################
+
 ---
 name: scalarDate
 src: |
@@ -58,4 +62,32 @@ events: |
   err   | test.err2 | Scalar does not match sys.Version pattern: "3."
   err   | test.err3 | Scalar does not match sys.Version pattern: "3.4 x"
 ---
+
+##########################################################################
+## Fits
+##########################################################################
+
+---
+name: fitScalars
+src: |
+  Foo: {
+    date: Date
+    num: Number
+  }
+  ok1: Foo {
+    date: Date "2022-12-28"
+    num: Int "123"
+  }
+  ok2: Foo {
+    date: "2022-12-28"
+    num: "123"
+  }
+  err1: Foo {
+    date: Str "2022-12-28"
+    num: Str "123"
+  }
+events: |
+  level | qname          | msg
+  err   | test.err1.date | Invalid type for 'test.Foo.date': 'sys.Str' does not fit 'sys.Date'
+  err   | test.err1.num  | Invalid type for 'test.Foo.num': 'sys.Str' does not fit 'sys.Number'
 

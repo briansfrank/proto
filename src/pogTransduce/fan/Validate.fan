@@ -60,8 +60,11 @@ internal class Validator
 
   Void validateProto(Proto p)
   {
+    stack.push(p)
     validateVal(p)
+    validateFit(p)
     p.eachOwn |kid| { validateProto(kid) }
+    stack.pop
   }
 
   Void validateVal(Proto p)
@@ -77,8 +80,25 @@ internal class Validator
       cx.err("Scalar does not match ${pattern.qname.parent} pattern: ${valStr.toCode}", p)
   }
 
+  Void validateFit(Proto p)
+  {
+    parentType := parent?.isa
+    if (parentType == null) return
+
+    slotType := parentType.get(p.name, false)?.isa
+    if (slotType == null) return
+
+    if (!p.fits(slotType))
+      cx.err("Invalid type for '${parentType}.${p.name}': '${p.isa}' does not fit '$slotType'", p)
+  }
+
+  Proto? parent()
+  {
+    stack.size <= 1 ? null : stack[-2]
+  }
 
   TransduceContext cx
+  Proto[] stack := [,]
 }
 
 
