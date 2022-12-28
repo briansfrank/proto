@@ -9,13 +9,35 @@
 ---
 name: fromHaystack
 trio: |
-  foo: "string"
+  marker
+  na: NA
+  remove: R
+  str: "string"
+  date: 1996-10-15
+  time: 14:30:00
+  ts: 2022-12-28T17:49:06.193-05:00 New_York
+  num: 123kW
   ref: @abc
+  coord: C(35.0,45.0)
+  sym: ^hot-water
+  xstr: Foo("bar")
+  span: Span("today")
 pog: |
   sys.List {
     sys.Dict {
-      foo: sys.Str "string"
+      marker
+      na: ph.NA
+      remove: ph.Remove
+      str: sys.Str "string"
+      date: sys.Date "1996-10-15"
+      time: sys.Time "14:30:00"
+      ts: sys.DateTime "2022-12-28T17:49:06.193-05:00 New_York"
+      num: sys.Number "123kW"
       ref: sys.Ref "abc"
+      coord: ph.Coord "C(35.0,45.0)"
+      sym: ph.Symbol "hot-water"
+      xstr: ph.XStr "Foo(\"bar\")"
+      span: ph.XStr "Span(\"today\")"
     }
   }
 ---

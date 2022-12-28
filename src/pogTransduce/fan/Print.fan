@@ -182,11 +182,18 @@ internal class PogPrinter : Printer
   This print(Proto p)
   {
     windent
-    printName(p)
-    printIs(p)
-    printVal(p)
-    printChildren(p, true, "<", ">")
-    printChildren(p, false, "{", "}")
+    if (p.isa?.qname?.toStr == "sys.Marker")
+    {
+      w(p.name)
+    }
+    else
+    {
+      printName(p)
+      printIs(p)
+      printVal(p)
+      printChildren(p, true, "<", ">")
+      printChildren(p, false, "{", "}")
+    }
     nl
     return this
   }

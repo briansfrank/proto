@@ -101,6 +101,11 @@ internal class HaystackReader
       if (proto == null) return
       acc[kind.name] = AtomicRef(proto)
     }
+
+    xstr := acc.getChecked("XStr")
+    acc["Span"] = xstr
+    acc["Bin"] = xstr
+
     this.kinds = acc
     this.isDict = acc.getChecked("Dict")
     this.isList = acc.getChecked("List")
@@ -142,9 +147,11 @@ internal class HaystackReader
     return MProto(loc, qname, isDict, null, kids)
   }
 
-  private Proto scalarToProto(QName qname, Obj val, Kind kind)
+  private Proto scalarToProto(QName qname, Obj? val, Kind kind)
   {
     isa := kinds.getChecked(kind.name)
+    if (kind.isSingleton) val = null
+    else if (kind.isXStr) val = kind.valToZinc(val)
     return MProto(loc, qname, isa, val, MProto.noChildren)
   }
 
