@@ -50,9 +50,6 @@ abstract const class PogEnv
   ** the given lib dependent libs.
   abstract Lib? load(Str qname, Bool checked := true)
 
-  ** I/O adaptor and file format registry
-  abstract PogEnvIO io()
-
   ** List the installed transducers
   abstract Transducer[] transducers()
 

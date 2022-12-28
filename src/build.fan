@@ -23,7 +23,6 @@ class Build : BuildGroup
       `pogSpi/build.fan`,
       `pogTransduce/build.fan`,
       `pogc/build.fan`,
-      `pogIO/build.fan`,
       `pogLint/build.fan`,
       `pogCli/build.fan`,
       `ph2pog/build.fan`,

@@ -17,7 +17,7 @@ internal class GenJson : Step
   {
     file := compiler.outDir + `protos.json`
 
-    env.io.write("json-ast", graph, file)
+    //env.io.write("json-ast", graph, file)
 
     info("generated JSON [$file.osPath]")
   }
