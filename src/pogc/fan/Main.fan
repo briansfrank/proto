@@ -53,7 +53,7 @@ class Main : AbstractMain
     try
     {
       g := c.compileMain(output.split(',').findAll { !it.isEmpty })
-      if (dump) g.dump
+      if (dump) g.print
       return 0
     }
     catch (CompilerErr e)

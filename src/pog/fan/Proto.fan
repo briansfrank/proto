@@ -25,6 +25,9 @@ const mixin Proto : ProtoStub
   ** Fully qualified name as dotted path from root
   abstract QName qname()
 
+  ** Is this a meta data object; name starts with underbar
+  abstract Bool isMeta()
+
   ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
   abstract Proto? isa()
 
@@ -106,8 +109,8 @@ const mixin Proto : ProtoStub
   ** Source file location if support or unknown
   abstract FileLoc loc()
 
-  ** Debug dump with some pretty print
-  @NoDoc abstract Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+  ** Print the proto in the pog format
+  abstract Void print(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
 
 }
 
@@ -138,6 +141,9 @@ const class AbstractProto :  Proto
 
   ** Fully qualified name as dotted path from root
   override QName qname() { spiRef.qname }
+
+  ** Is this a meta data object; name starts with underbar
+  override Bool isMeta() { spiRef.qname.isMeta }
 
   ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
   override Proto? isa() { spiRef.type }
@@ -223,8 +229,8 @@ const class AbstractProto :  Proto
   ** Source file location if support or unknown
   override FileLoc loc() { spiRef.loc }
 
-  ** Debug dump with some pretty print
-  @NoDoc override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null) { spiRef.dump(out, opts) }
+  ** Print the proto in the pog format
+  override Void print(OutStream out := Env.cur.out, [Str:Obj]? opts := null) { spiRef.dump(out, opts) }
 
 }
 

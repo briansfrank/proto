@@ -38,7 +38,6 @@ const class JsonTransducer : Transducer
 
   override Transduction transduce(Str:Obj? args)
   {
-
     if (args.containsKey("read")) return readJson(args)
     if (args.containsKey("write")) return writeJson(args)
     throw ArgErr("Missing read or write argument")
@@ -71,7 +70,10 @@ const class JsonTransducer : Transducer
 @Js
 internal class JsonPrinter
 {
-  new make(OutStream out) { this.out = JsonOutStream(out) }
+  new make(OutStream out, [Str:Obj?]? opts := null)
+  {
+    this.out = JsonOutStream(out)
+  }
 
   Void print(Obj? val)
   {

@@ -158,7 +158,7 @@ const class MProtoSpi : ProtoSpi
     {
       kidOpts := (opts ?: Str:Obj?[:]).dup.set("indent", indent+"  ")
       out.printLine(" {")
-      children.each |kid| { kid.dump(out, kidOpts) }
+      children.each |kid| { kid.print(out, kidOpts) }
       out.print(indent).printLine("}")
     }
   }

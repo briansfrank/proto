@@ -37,6 +37,7 @@ class Build : BuildPod
         "pogTransduce::HaystackTransducer",
         "pogTransduce::JsonTransducer",
         "pogTransduce::ParseTransducer",
+        "pogTransduce::PrintTransducer",
         "pogTransduce::ReifyTransducer",
         "pogTransduce::ResolveTransducer",
         "pogTransduce::ValidateTransducer",

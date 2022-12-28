@@ -15,7 +15,7 @@ pog: |
   sys.List {
     sys.Dict {
       foo: sys.Str "string"
-      ref: ph.Ref "abc"
+      ref: sys.Ref "abc"
     }
   }
 ---

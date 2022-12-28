@@ -74,6 +74,7 @@ class TransduceContext
   {
     if (arg is OutStream) return arg
     if (arg is File) return ((File)arg).out
+    if (arg == "stdout") return Env.cur.out
     throw ArgErr("Invalid write arg for $transducer.name transducer")
   }
 
@@ -103,7 +104,7 @@ class TransduceContext
     try
       return toResult(f(out))
     finally
-      out.close
+      if (out !== Env.cur.out) out.close
   }
 
   ** Get a qualified name from a Proto

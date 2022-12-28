@@ -138,6 +138,6 @@ internal const class MLibEntry
     echo("LOAD $qname ...")
     p := PogEnv.cur.load(qname)
     echo("LOADED!")
-    p.dump
+    p.print
   }
 }

@@ -84,7 +84,7 @@ internal class HaystackReader
       protos[name] = dictToProto(base.add(name), dict)
     }
 
-    return MProto(loc, base, isDict, null, protos)
+    return MProto(loc, base, isList, null, protos)
   }
 
   private Void initKinds()
@@ -103,6 +103,7 @@ internal class HaystackReader
     }
     this.kinds = acc
     this.isDict = acc.getChecked("Dict")
+    this.isList = acc.getChecked("List")
   }
 
   private Dict[] initDicts()
@@ -152,6 +153,7 @@ internal class HaystackReader
   private QName base                // make
   private FileLoc loc               // make
   private AtomicRef? isDict         // initKinds
+  private AtomicRef? isList         // initKinds
   private [Str:AtomicRef]? kinds    // initKinds
 }
 

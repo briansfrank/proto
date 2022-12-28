@@ -80,6 +80,12 @@ const mixin QName
   ** Is this the root qname
   abstract Bool isRoot()
 
+  ** Is this a meta data name that starts with underbar
+  Bool isMeta() { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
+
+  ** Is this a numbered index auto assign name
+  Bool isAuto() { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+
   ** Get a segment of the qname
   @Operator abstract Str get(Int i)
 

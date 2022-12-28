@@ -168,6 +168,8 @@ internal const class MProto : Proto
 
   override const QName qname
 
+  override Bool isMeta() { qname.isMeta }
+
   override Proto? isa() { isaRef.val }
   internal const AtomicRef isaRef
 
@@ -272,27 +274,9 @@ internal const class MProto : Proto
 
   override const FileLoc loc
 
-  override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+  override Void print(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
-    indent := opts?.get("indent") as Str ?: ""
-    if (qname.isRoot)
-    {
-      out.print(isa)
-    }
-    else
-    {
-      out.print(indent).print(name)
-      if (isa != null) out.print(": ").print(isa)
-    }
-    if (valRef != null) out.print(" ").print(valRef.toStr.toCode)
-    if (children.size == 0) out.printLine
-    else
-    {
-      kidOpts := (opts ?: Str:Obj?[:]).dup.set("indent", indent+"  ")
-      out.printLine(" {")
-      children.each |kid| { kid.dump(out, kidOpts) }
-      out.print(indent).printLine("}")
-    }
+    PogPrinter(out, opts).print(this)
   }
 
   static const Str:Proto noChildren := [:] { ordered = true }

@@ -151,7 +151,7 @@ class PogTestRunner
     a := transduce("parse",    ["read":pog]).get
     b := transduce("resolve",  ["ast":a, "base":"test"]).get
     c := transduce("reify",    ["ast":b, "base":"test"]).get
-    d := transduce("validate", ["graph":c])
+    d := transduce("validate", ["graph":c], false)
     verifyEvents(d, events)
   }
 
@@ -192,9 +192,19 @@ class PogTestRunner
 
   Void verifyPog(Transduction t, Str expected)
   {
-    actual := (Proto)t.get
-actual.dump
-echo("TODO")
+    expected = expected.trim
+    buf := StrBuf()
+    env.transduce("print", ["val":t.get(false), "write":buf.out])
+    pog := buf.toStr.trim
+
+    if (verbose || pog != expected)
+    {
+      echo
+      echo("--- POG [$cur] ---")
+      echo(pog)
+      dump(pog, expected)
+    }
+    verifyEq(pog, expected)
   }
 
   Void verifyEvents(Transduction t, Str? expectedTable)
