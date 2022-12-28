@@ -70,10 +70,12 @@ abstract internal class Printer
     this.opts = opts
     this.escapeUnicode = optBool("escapeUnicode", false)
     this.indention = optInt("indent", 0)
+    this.theme = out === Env.cur.out ? PrinterTheme.configured : PrinterTheme.none
   }
 
   This wquoted(Str str)
   {
+    wtheme(theme.str)
     wc('"')
     str.each |char|
     {
@@ -97,10 +99,26 @@ abstract internal class Printer
       }
     }
     wc('"')
+    wreset(theme.str)
     return this
   }
 
-  This wsymbol(Str symbol) { w(symbol) }
+  This wtheme(Str? color)
+  {
+    if (color != null) w(color)
+    return this
+  }
+
+  This wreset(Str? color)
+  {
+    if (color != null) w(PrinterTheme.reset)
+    return this
+  }
+
+  This wsymbol(Str symbol)
+  {
+    wtheme(theme.symbol).w(symbol).wreset(theme.symbol)
+  }
 
   This w(Obj str) { out.print(str); return this }
 
@@ -121,7 +139,35 @@ abstract internal class Printer
   OutStream out
   [Str:Obj?]? opts
   Bool escapeUnicode
+  PrinterTheme theme
   Int indention
+}
+
+**************************************************************************
+** PrinterTheme
+**************************************************************************
+
+@Js
+internal const class PrinterTheme
+{
+  static const Str reset  := "\u001B[0m"
+  static const Str black  := "\u001B[30m"
+  static const Str red    := "\u001B[31m"
+  static const Str green  := "\u001B[32m"
+  static const Str yellow := "\u001B[33m"
+  static const Str blue   := "\u001B[34m"
+  static const Str purple := "\u001B[35m"
+  static const Str cyan   := "\u001B[36m"
+  static const Str white  := "\u001B[37m"
+
+  static const PrinterTheme none := make {}
+
+  const static PrinterTheme configured := make { it.symbol = red; it.str = cyan }
+
+  new make(|This| f) { f(this) }
+
+  const Str? symbol
+  const Str? str
 }
 
 **************************************************************************

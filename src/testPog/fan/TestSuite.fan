@@ -201,7 +201,7 @@ class PogTestRunner
     {
       echo
       echo("--- POG [$cur] ---")
-      echo(pog)
+      ((Proto)t.get).print
       dump(pog, expected)
     }
     verifyEq(pog, expected)
