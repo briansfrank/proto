@@ -9,8 +9,9 @@
 using util
 
 **
-** Transducer performs a transform from one or more graphs
-** into one or more graphs.
+** Transducer performs a transformation on one or more input objects.
+** There is always at least one output object and zero more events
+** used to report warnings, errors, and other side channel data.
 **
 @Js
 abstract const class Transducer
