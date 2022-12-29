@@ -120,6 +120,11 @@ abstract internal class Printer
     wtheme(theme.symbol).w(symbol).wreset(theme.symbol)
   }
 
+  This wcomment(Str str)
+  {
+    wtheme(theme.comment).w(str).wreset(theme.comment)
+  }
+
   This w(Obj str) { out.print(str); return this }
 
   This wc(Int char) { out.writeChar(char); return this }
@@ -162,12 +167,13 @@ internal const class PrinterTheme
 
   static const PrinterTheme none := make {}
 
-  const static PrinterTheme configured := make { it.symbol = red; it.str = cyan }
+  const static PrinterTheme configured := make { it.symbol = red; it.str = cyan; it.comment = green }
 
   new make(|This| f) { f(this) }
 
   const Str? symbol
   const Str? str
+  const Str? comment
 }
 
 **************************************************************************
@@ -181,14 +187,16 @@ internal class PogPrinter : Printer
 
   This print(Proto p)
   {
+    if (p.name[0].isUpper) nl
+    printDoc(p)
     windent
-    if (p.isa?.qname?.toStr == "sys.Marker")
+    if (printAsMarker(p))
     {
-      w(p.name)
+      printName(p, true)
     }
     else
     {
-      printName(p)
+      printName(p, false)
       printIs(p)
       printVal(p)
       printChildren(p, true, "<", ">")
@@ -198,10 +206,33 @@ internal class PogPrinter : Printer
     return this
   }
 
-  private Void printName(Proto p)
+  private Bool printAsMarker(Proto p)
+  {
+    if (p.isa?.qname?.toStr != "sys.Marker") return false
+    list := p.listOwn
+    if (list.size == 0) return true
+    if (list.size == 1 && list[0].name == "_doc") return true
+    return false
+  }
+
+  private Void printDoc(Proto p)
+  {
+    doc := p.getOwn("_doc", false)?.val
+    if (doc == null) return
+
+    doc.toStr.splitLines.each |line, i|
+    {
+      windent.wcomment("// $line").nl
+    }
+  }
+
+  private Void printName(Proto p, Bool markerOnly)
   {
     if (p.qname.isRoot || p.qname.isAuto || p.name.isEmpty) return
-    w(p.name).wsymbol(":").sp
+    name := p.name
+    if (PogUtil.isMeta(name)) name = name[1..-1]
+    w(name)
+    if (!markerOnly) wsymbol(":").sp
   }
 
   private Void printIs(Proto p)
@@ -224,6 +255,7 @@ internal class PogPrinter : Printer
     p.eachOwn |kid|
     {
       if (kid.isMeta != meta) return
+      if (kid.name == "_doc") return
       if (first)
       {
         first = false

@@ -90,6 +90,7 @@ internal class Reifier : Resolver
     {
       child := v as Str:Obj
       if (child == null) return
+      if (n == "_loc") return
       if (children.isImmutable)
       {
         children = Str:MProto[:]

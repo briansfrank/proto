@@ -80,8 +80,8 @@ DateTime: Scalar <
   pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
 > "2000-01-01T00:00:00Z UTC"
 
-// Hashmap of name/value tag pairs.  Dict is the base
-// for all collection types.
+// Hashmap of name/value tag pairs.
+// Dict is the base for all collection types.
 Dict: Obj <
   of: Obj    // Item type for dict values
 >
@@ -106,6 +106,7 @@ Or: Dict <
 And: Dict <
   of: List   // List of types to combine
 >
+
 
 
 
