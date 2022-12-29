@@ -34,10 +34,6 @@ abstract const class Graph : AbstractProto
   ** Perform an update to the graph and return new instance
   abstract Graph update(|Update| f)
 
-  ** Run the lint engine on this graph. The return object includes the
-  ** lint report and a new normalized graph instance.  Pass an instance
-  ** of 'sys.lint.LintPlan' or use null to run the standard lint plan.
-  abstract PogLint lint(Proto? plan := null)
 }
 
 

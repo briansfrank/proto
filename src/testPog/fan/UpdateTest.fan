@@ -7,7 +7,6 @@
 //
 
 using pog
-using pogLint
 using haystack
 
 **
@@ -99,9 +98,6 @@ class UpdateTest : AbstractCompileTest
       data.set("dur",  5sec)
       data.set("ver",  Version("1.2.3"))
 
-      // sys lint types
-      data.set("lintLevel", LintLevel.warn)
-
       // haystack types
       data.set("marker", Marker.val)
       data.set("num",    Number(123, Unit("kW")))
@@ -128,9 +124,6 @@ class UpdateTest : AbstractCompileTest
     verifyProto("data.dt",    graph.sys->DateTime, DateTime.boot)
     verifyProto("data.dur",   graph.sys->Duration, 5sec)
     verifyProto("data.ver",   graph.sys->Version, Version("1.2.3"))
-
-    // sys.lint types
-    verifyProto("data.lintLevel",  graph.sys->lint->LintLevel, LintLevel.warn)
 
     // haystack types
     verifyProto("data.marker",  graph.sys->Marker, Marker.val)
