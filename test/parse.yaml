@@ -72,7 +72,7 @@ json: |
   {"foo":{
     "a":{"_val":"Alpha"},
     "b":{"_val":"Bravo"}
-    }}
+  }}
 ---
 name: children2ScalarsCommaTrailing
 pog: |
@@ -81,7 +81,7 @@ json: |
   {"foo":{
     "a":{"_val":"Alpha"},
     "b":{"_val":"Bravo"}
-    }}
+  }}
 ---
 name: children2ScalarsNewline
 pog: |
@@ -93,7 +93,7 @@ json: |
   {"foo":{
     "a":{"_val":"Alpha"},
     "b":{"_val":"Bravo"}
-    }}
+  }}
 ---
 name: children2ScalarsCommaAndNewline
 pog: |
@@ -105,7 +105,7 @@ json: |
   {"foo":{
     "a":{"_val":"Alpha"},
     "b":{"_val":"Bravo"}
-    }}
+  }}
 ---
 name: children2ScalarsCommaAndWhitespace
 pog: |
@@ -120,7 +120,7 @@ json: |
   {"foo":{
     "a":{"_val":"Alpha"},
     "b":{"_val":"Bravo"}
-    }}
+  }}
 ---
 name: children3MixedScalars
 pog: |
@@ -134,7 +134,7 @@ json: |
     "a":{"_val":"Alpha"},
     "b":{"_is":"Color", "_val":"#FFF"},
     "c":{"_is":"sys.Date", "_val":"2022-12-20"}
-    }}
+  }}
 ---
 name: childrenAndIs
 pog: |
@@ -147,7 +147,7 @@ json: |
     "_is":"Person",
     "name":{"_val":"Brian"},
     "age":{"_is":"Int", "_val":"40"}
-    }}
+  }}
 ---
 name: childrenAndQualIs
 pog: |
@@ -157,7 +157,7 @@ json: |
     "_is":"some.lib.Person",
     "name":{"_val":"Brian"},
     "age":{"_is":"Int", "_val":"40"}
-    }}
+  }}
 ---
 name: metaOnly
 pog: |
@@ -184,7 +184,7 @@ json: |
   {"foo":{
     "_metaMarker":{"_is":"sys.Marker"},
     "childMarker":{"_is":"sys.Marker"}
-    }}
+  }}
 ---
 name: metaAndChildren
 pog: |
@@ -193,7 +193,7 @@ json: |
   {"foo":{
     "_a":{"_val":"Meta-A"},
     "b":{"_val":"Child-B"}
-    }}
+  }}
 ---
 name: everything1
 pog: |
@@ -213,15 +213,15 @@ json: |
       "_is":"Full",
       "first":{"_val":"B"},
       "last":{"_val":"F"}
-      },
+    },
     "age":{"_is":"sys.Int", "_val":"10"},
     "where":{"_is":"Place"},
     "addr":{
       "street":{"_val":"100 Main"},
       "city":{"_val":"Richmond"},
       "post":{"code":{"_val":"12345"}}
-      }
-    }}
+    }
+  }}
 ---
 
 ##########################################################################
@@ -241,7 +241,7 @@ json: |
   {
     "Foo":{"_doc":{"_is":"sys.Str", "_val":"Single line"}},
     "Bar":{"_doc":{"_is":"sys.Str", "_val":"Double line\n2nd one"}}
-    }
+  }
 ---
 name: docPost
 pog: |
@@ -260,11 +260,11 @@ json: |
       "marker":{
         "_is":"sys.Marker",
         "_doc":{"_is":"sys.Str", "_val":"Post foo"}
-        },
+      },
       "baz":{"_val":"", "_doc":{"_is":"sys.Str", "_val":"Post baz"}},
       "qux":{"_val":"", "_doc":{"_is":"sys.Str", "_val":"This trumps"}}
-      }
     }
+  }
 ---
 
 ##########################################################################
@@ -279,7 +279,7 @@ json: |
   {"a":{
     "_is":"sys.Maybe",
     "_of":{"_is":"Foo"}
-    }}
+  }}
 ---
 name: maybeQual
 pog: |
@@ -288,7 +288,7 @@ json: |
   {"a":{
     "_is":"sys.Maybe",
     "_of":{"_is":"some.lib.Foo"}
-    }}
+  }}
 ---
 
 ##########################################################################
@@ -305,8 +305,8 @@ json: |
     "_of":{
       "_0":{"_is":"Foo"},
       "_1":{"_is":"Bar"}
-      }
-    }}
+    }
+  }}
 ---
 name: andQual2
 pog: |
@@ -317,8 +317,8 @@ json: |
     "_of":{
       "_0":{"_is":"alpha.Foo"},
       "_1":{"_is":"beta.gamma.Bar"}
-      }
-    }}
+    }
+  }}
 ---
 name: andMixed3
 pog: |
@@ -330,8 +330,8 @@ json: |
       "_0":{"_is":"Foo"},
       "_1":{"_is":"some.lib.Bar"},
       "_2":{"_is":"Baz"}
-      }
-    }}
+    }
+  }}
 ---
 name: andNewlines
 pog: |
@@ -345,8 +345,8 @@ json: |
       "_0":{"_is":"Foo"},
       "_1":{"_is":"some.lib.Bar"},
       "_2":{"_is":"Baz"}
-      }
-    }}
+    }
+  }}
 ---
 
 ##########################################################################
@@ -363,8 +363,8 @@ json: |
     "_of":{
       "_0":{"_is":"Foo"},
       "_1":{"_is":"Bar"}
-      }
-    }}
+    }
+  }}
 ---
 name: orQual2
 pog: |
@@ -375,8 +375,8 @@ json: |
     "_of":{
       "_0":{"_is":"alpha.Foo"},
       "_1":{"_is":"beta.gamma.Bar"}
-      }
-    }}
+    }
+  }}
 ---
 name: orMixed3
 pog: |
@@ -388,8 +388,8 @@ json: |
       "_0":{"_is":"Foo"},
       "_1":{"_is":"some.lib.Bar"},
       "_2":{"_is":"Baz"}
-      }
-    }}
+    }
+  }}
 ---
 name: orNewlines
 pog: |
@@ -403,8 +403,8 @@ json: |
       "_0":{"_is":"Foo"},
       "_1":{"_is":"some.lib.Bar"},
       "_2":{"_is":"Baz"}
-      }
-    }}
+    }
+  }}
 ---
 
 ##########################################################################

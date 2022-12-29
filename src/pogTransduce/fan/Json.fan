@@ -68,12 +68,9 @@ const class JsonTransducer : Transducer
 **************************************************************************
 
 @Js
-internal class JsonPrinter
+internal class JsonPrinter : Printer
 {
-  new make(OutStream out, [Str:Obj?]? opts := null)
-  {
-    this.out = JsonOutStream(out)
-  }
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
 
   Void print(Obj? val)
   {
@@ -81,8 +78,10 @@ internal class JsonPrinter
       printProto(val)
     else if (val is Map)
       printMap(val)
+    else if (val is List)
+      printList(val)
     else
-      out.writeJson(val.toStr)
+      wquoted(val.toStr)
   }
 
   Void printProto(Proto proto)
@@ -102,7 +101,7 @@ internal class JsonPrinter
   {
     keys := map.keys
     if (keys.size == 0)
-      out.print("{}")
+      wsymbol("{}")
     else if (keys.size <= 1 || map["_val"] != null)
       printCompact(map)
     else
@@ -112,51 +111,55 @@ internal class JsonPrinter
   Void printCompact(Str:Obj? map)
   {
     first := true
-    out.print("{")
-    if (map.containsKey("_is"))  first = printPair("_is", map["_is"], -1, first)
-    if (map.containsKey("_val")) first = printPair("_val", map["_val"], -1, first)
+    wsymbol("{")
+    if (map.containsKey("_is"))  first = printPair("_is", map["_is"], false, first)
+    if (map.containsKey("_val")) first = printPair("_val", map["_val"], false, first)
     map.each |v, n|
     {
       if (n == "_is" || n == "_val") return
-      first = printPair(n, v, -1, first)
+      first = printPair(n, v, false, first)
     }
-    out.print("}")
+    wsymbol("}")
   }
 
   Void printComplex(Str:Obj? map)
   {
-    out.printLine("{")
+    wsymbol("{").nl
     indention++
     first := true
     map.each |v, n|
     {
-      first = printPair(n, v, indention, first)
+      first = printPair(n, v, true, first)
     }
-    out.printLine.print(Str.spaces(indention*2)).print("}")
     indention--
+    nl.windent.wsymbol("}")
   }
 
-  Bool printPair(Str n, Obj? v, Int indent, Bool first)
+  Bool printPair(Str n, Obj? v, Bool indenting, Bool first)
   {
     if (first)
     {
-      if (indent > 0) out.print(Str.spaces(indent*2))
+      if (indenting) windent
     }
     else
     {
-      if (indent > 0)
-         out.printLine(",").print(Str.spaces(indent*2))
+      if (indenting)
+         wsymbol(",").nl.windent
       else
-        out.print(", ")
+        wsymbol(",").sp
     }
-    out.writeJson(n)
-    out.writeChar(':')
+    wquoted(n)
+    wsymbol(":")
     print(v)
     return false
   }
 
-  JsonOutStream out
-  Int indention
+  Void printList(Obj?[] list)
+  {
+    // TODO
+    throw Err("TODO")
+  }
+
 }
 
 

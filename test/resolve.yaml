@@ -26,8 +26,8 @@ json: |
       "foo":{"_is":".Foo"},
       "bar":{"_is":".Bar"},
       "baz":{"_is":"sys.Str"}
-      }
     }
+  }
 ---
 name: errs
 pog: |
@@ -41,7 +41,7 @@ json: |
     "b":{"_is":"sys.Nope"},
     "c":{"_is":"Str"},
     "Str":{}
-    }
+  }
 events: |
   level | msg
   err   | Unresolved name 'NotFound'

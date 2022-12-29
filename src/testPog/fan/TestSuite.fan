@@ -184,7 +184,7 @@ class PogTestRunner
     {
       echo
       echo("--- JSON [$cur] ---")
-      echo(json)
+      PogUtil.print(t.get(false))
       dump(json, expected)
     }
     verifyEq(json, expected)
@@ -201,7 +201,7 @@ class PogTestRunner
     {
       echo
       echo("--- POG [$cur] ---")
-      ((Proto)t.get).print
+      PogUtil.print(t.get(false))
       dump(pog, expected)
     }
     verifyEq(pog, expected)

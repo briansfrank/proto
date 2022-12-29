@@ -10,7 +10,7 @@ json: |
   {
     "_is":"sys.Dict",
     "foo":{"_is":"sys.Str", "_val":"hello"}
-    }
+  }
 get: |
   foo is sys.Str
   foo val "hello"
@@ -28,8 +28,8 @@ json: |
       "_is":"sys.Dict",
       "bar":{"_is":"sys.Str"},
       "baz":{"_is":"sys.Str", "_val":"quz"}
-      }
     }
+  }
 ---
 name: internal
 src: |
@@ -46,10 +46,10 @@ json: |
       "_is":"sys.Dict",
       "bar":{"_is":"test.Bar"},
       "baz":{"_is":"test.Baz"}
-      },
+    },
     "Bar":{"_is":"sys.Str"},
     "Baz":{"_is":"sys.Dict"}
-    }
+  }
 ---
 name: inferSlots
 src: |
@@ -69,14 +69,14 @@ json: |
       "_is":"sys.Dict",
       "bar":{"_is":"sys.Date"},
       "qux":{"_is":"test.Qux"}
-      },
+    },
     "foo":{
       "_is":"test.Foo",
       "bar":{"_is":"sys.Date", "_val":"2022-12-27"},
       "qux":{"_is":"test.Qux"}
-      },
+    },
     "Qux":{"_is":"sys.Dict"}
-    }
+  }
 ---
 name: inferChain
 src: |
@@ -99,17 +99,17 @@ json: |
       "_is":"test.Charlie",
       "foo":{"_is":"test.Foo", "_val":"z"},
       "bar":{"_is":"test.Bar"}
-      },
+    },
     "Charlie":{"_is":"test.Bravo"},
     "Bravo":{"_is":"test.Alpha"},
     "Alpha":{
       "_is":"sys.Dict",
       "foo":{"_is":"test.Foo"},
       "bar":{"_is":"test.Bar"}
-      },
+    },
     "Foo":{"_is":"sys.Str", "_val":""},
     "Bar":{"_is":"sys.Dict"}
-    }
+  }
 ---
 
 
