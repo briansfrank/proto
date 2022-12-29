@@ -7,23 +7,23 @@
 //
 
 // Qualified name
-QName : Str
+QName: Scalar
 
 // Library module meta data
-Lib : Dict <
+Lib: Dict <
   version: Version           // Current version of the library
   depends: List <of:Depend>  // Library dependency
   org: LibOrg                // Organization meta data for the library
 >
 
 // Library dependency
-Depend : Dict {
+Depend: Dict {
   lib: QName   // Library qualified dotted name
 }
 
 // Organization meta data
-LibOrg : Dict {
-  dis : Str     // Display name for the organization
-  uri : Uri     // URI for organization website
+LibOrg: Dict {
+  dis: Str     // Display name for the organization
+  uri: Uri     // URI for organization website
 }
 

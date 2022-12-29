@@ -7,24 +7,24 @@
 //
 
 // Singleton for not available to indicate invalid or missing data.
-NA : Obj
+NA: Obj
 
 // Singleton for remove operation.
-Remove : Obj
+Remove: Obj
 
 // Symbol to a def. Symbol values are ASCII strings limited to the
 // following chars: a-z, A-Z, 0-9, underbar, colon, dash, dot.
-Symbol : Scalar "x"
+Symbol: Scalar "x"
 
 // Geographic coordinate in latitude/longitude in decimal degrees.
-Coord : Scalar
+Coord:  Scalar
 
 // Extended string - type name and string value encoding.
-XStr : Scalar
+XStr: Scalar
 
 // Exclusive choice type
-Choice : Scalar <of:Marker>
+Choice: Scalar <of:Marker>
 
 // Two dimension table of columns and rows.
-Grid : Dict
+Grid: Dict
 
