@@ -8,7 +8,6 @@
 
 using util
 using pog
-using pogc
 
 **
 ** Command line main

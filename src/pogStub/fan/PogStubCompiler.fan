@@ -8,8 +8,7 @@
 
 using util
 using pog
-using pogSpi
-using pogc
+using pogEnv
 
 **
 ** PogStubCompiler: pog -> sections of Fantom code
@@ -42,7 +41,6 @@ class PogStubCompiler
   Void compile()
   {
     run([
-      CompileGraph(),
       FindPods(),
       FindTypes(),
       GenSlots(),
@@ -117,7 +115,7 @@ class PogStubCompiler
 
   internal CompilerErr[] errs := [,]     // err
   internal Duration? duration            // run
-  internal Graph? graph                  // CompileGraph
+  internal Lib[]? libs                   // CompileLibs
   internal PodSrc[]? pods                // FindPods
 }
 

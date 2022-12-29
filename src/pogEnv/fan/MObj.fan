@@ -23,8 +23,6 @@ internal const class MObj : Proto
     this.children = init.children
   }
 
-  override ProtoSpi spi() { throw Err("TODO") }
-
   override Str name() { qname.name }
 
   override const QName qname

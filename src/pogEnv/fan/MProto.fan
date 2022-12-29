@@ -25,8 +25,6 @@ internal const class MProto : Proto
     this.children = init.children
   }
 
-  override ProtoSpi spi() { throw Err("TODO") }
-
   override Str name() { qname.name }
 
   override const QName qname

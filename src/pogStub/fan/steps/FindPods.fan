@@ -19,24 +19,26 @@ internal class FindPods : Step
     info("FindPods")
     path := ((PathEnv)Env.cur).path
     acc := PodSrc[,]
-    graph.libs.each |lib|
+    env.installed.each |qname|
     {
-      acc.addNotNull(findPod(path, lib))
+      acc.addNotNull(findPod(path, qname))
     }
     compiler.pods = acc
   }
 
-  PodSrc? findPod(File[] path, Lib lib)
+  PodSrc? findPod(File[] path, Str qname)
   {
     // lookup pod name from lib qname
-    podName := env.factory.toPod[lib.qname.toStr]
+    podName := env.factory.toPod[qname.toStr]
     if (podName == null) return null
 
     // search for source directory
     dir := findPodSrc(path, podName)
     if (dir == null) return null
 
-    info("  $lib.qname [$dir.osPath]")
+    info("  $qname [$dir.osPath]")
+
+    lib := env.load(qname)
 
     return PodSrc(lib, podName, dir)
   }

@@ -31,7 +31,7 @@ internal class GenSlots : Step
     type.proto.eachOwn |x|
     {
       if (x.name.startsWith("_")) return  // skip meta
-      if (type.proto.type.has(x.name)) return // skip inherited
+      if (type.proto.isa.has(x.name)) return // skip inherited
       s.add("\n")
       genSlot(type, s, x)
     }
@@ -53,7 +53,7 @@ internal class GenSlots : Step
     if (type.isEnum) return s.add("  ").add(x.name).add(",\n")
 
     // field getter/setter
-    sig := TypeSig.map(graph, x)
+    sig := TypeSig.map(sys, x)
     s.add("  ").add(sig.toStr).add(" ").add(x.name).add("\n")
     s.add("  {\n")
 
@@ -69,8 +69,8 @@ internal class GenSlots : Step
   Bool isScalar(Proto x)
   {
     if (x.qname.toStr == "sys.Scalar") return true
-    if (x.type == null) return false
-    return isScalar(x.type)
+    if (x.isa == null) return false
+    return isScalar(x.isa)
   }
 
   Str typeSig(Proto x, Bool isList)
@@ -81,7 +81,7 @@ internal class GenSlots : Step
       if (of == null) return "Obj[]"
       return typeSig(of, false) + "[]"
     }
-    type := x.type
+    type := x.isa
     if (type.name == "Obj") return "Proto"
     return type.name
   }
@@ -95,33 +95,33 @@ internal class GenSlots : Step
 ** Map Proto to Fantom type signature
 internal const class TypeSig
 {
-  static TypeSig map(Graph graph, Proto? proto)
+  static TypeSig map(Proto sys, Proto? proto)
   {
     if (proto == null) return TypeSig("Obj", 0)
-    if (proto.type == null) return TypeSig("Proto", 0)
+    if (proto.isa == null) return TypeSig("Proto", 0)
 
-    isList := proto.fits(graph.sys->List)
+    isList := proto.fits(sys->List)
     if (isList)
     {
-      of := map(graph, proto.get("_of", false))
+      of := map(sys, proto.get("_of", false))
       return make(of.sig+"[]", list)
     }
 
-    isMaybe := proto.type?.qname?.toStr == "sys.Maybe"
+    isMaybe := proto.isa?.qname?.toStr == "sys.Maybe"
     if (isMaybe)
     {
-      of := map(graph, proto.get("_of", false))
+      of := map(sys, proto.get("_of", false))
       return make(of.sig+"?", of.flags.or(maybe))
     }
 
-    isEnum := proto.fits(graph.sys->Enum)
-    isScalar := proto.fits(graph.sys->Scalar)
+    isEnum := proto.fits(sys->Enum)
+    isScalar := proto.fits(sys->Scalar)
 
     flags := 0
     if (isEnum)   flags = flags.or(scalar)
     if (isScalar) flags = flags.or(scalar)
 
-    name := proto.type.name
+    name := proto.isa.name
     if (name == "Obj") name = "Proto"
 
     return make(name, flags)

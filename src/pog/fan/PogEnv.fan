@@ -60,10 +60,6 @@ abstract const class PogEnv
   ** Convenience for 'transducer(name).transduce(args)'
   Transduction transduce(Str name, Str:Obj? args) { transducer(name).transduce(args) }
 
-  ** Create a new graph from a list of library qnames.
-  ** Raise exception if there are any compiler errors.
-  abstract Graph create(Str[] libNames)
-
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
 }

@@ -6,10 +6,9 @@
 //   7 Aug 2022  Brian Frank  Creation
 //
 
-using pog
-using pogSpi
-using pogc
 using util
+using pog
+using pogEnv
 
 **
 ** Base class for PogStubCompiler steps
@@ -22,7 +21,9 @@ abstract internal class Step
 
   MPogEnv env() { compiler.env }
 
-  Graph graph() { compiler.graph }
+  Lib[] libs() { compiler.libs }
+
+  Lib sys() { libs.find { it.qname.toStr == "sys" } ?: throw Err() }
 
   PodSrc[] pods() { compiler.pods }
 
