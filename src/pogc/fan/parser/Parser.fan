@@ -75,8 +75,11 @@ internal class Parser
   private Void parseLibMeta(CLib lib)
   {
     doc := parseLeadingDoc
-    if (cur !== Token.libMeta) throw err("Expecting #<> lib meta, not $curToStr")
-    parseProtoChildren(lib.proto, Token.libMeta, Token.gt, true)
+    if (cur !== Token.id || curVal != "pragma") throw err("Expecting lib 'pragma:', not $curToStr")
+    consume(Token.id)
+    consume(Token.colon)
+    if (cur !== Token.lt) throw err("Expecting lib 'pragma: <")
+    parseProtoChildren(lib.proto, Token.lt, Token.gt, true)
   }
 
 //////////////////////////////////////////////////////////////////////////

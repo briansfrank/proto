@@ -31,7 +31,7 @@ abstract class AbstractCompileTest : Test
   Lib compileSrc(Str src)
   {
     prelude :=
-     Str<|test #<
+     Str<|test pragma: <
             version: "0.0.1"
           >
          |>
@@ -87,8 +87,7 @@ abstract class AbstractCompileTest : Test
 
     obj    := verifyProto("sys.Obj",    null,   null)
     marker := verifyProto("sys.Marker", obj,    null)
-    val    := verifyProto("sys.Val",    obj,    null)
-    scalar := verifyProto("sys.Scalar", val,    "")
+    scalar := verifyProto("sys.Scalar", obj,    "")
     str    := verifyProto("sys.Str",    scalar, "")
 
     enum   := verifyProto("sys.Enum",       obj,  null)
@@ -98,7 +97,6 @@ abstract class AbstractCompileTest : Test
 
     objDoc    := verifyProto("sys.Obj._doc", str, "Root type for all objects")
     objDocDoc := verifyProto("sys.Obj._doc._doc", str, "Documentation for object")
-    valDoc    := verifyProto("sys.Val._doc", objDoc, "Data value type")
     scalarDoc := verifyProto("sys.Scalar._doc", objDoc, "Scalar is an atomic value kind")
 
     verifySame(sys->Obj, obj)
@@ -117,7 +115,7 @@ abstract class AbstractCompileTest : Test
     na     := verifyProto("ph.NA",     sys->Obj)
     remove := verifyProto("ph.Remove", sys->Obj)
     ref    := verifyProto("ph.Symbol",  sys->Scalar, "x")
-    grid   := verifyProto("ph.Grid",   sys->Collection)
+    grid   := verifyProto("ph.Grid",   sys->Dict)
     entity := verifyProto("ph.Entity", sys->Dict)
     id     := verifyProto("ph.Entity.id._of", ph->Tag->id, "")
     str    := verifyProto("ph.Entity.dis._of", ph->Tag->dis, "")

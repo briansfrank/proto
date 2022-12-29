@@ -40,7 +40,7 @@ const class MProto : Proto
 
   override final Str toStr() { qname.toStr }
 
-  override Bool hasVal() { valRef != null }
+  override Bool hasVal() { val(false) != null }
 
   override Obj? val(Bool checked := true)
   {
@@ -74,7 +74,7 @@ const class MProto : Proto
 
   @Operator override Proto? get(Str name, Bool checked := true)
   {
-    child := children.get(name, null) ?: isa.get(name)
+    child := children.get(name, null) ?: isa.get(name, false)
     if (child != null) return child
     if (checked) throw UnknownProtoErr(name)
     return null

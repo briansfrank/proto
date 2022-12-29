@@ -21,6 +21,7 @@ abstract const class PogEnv
   {
     try
     {
+      //curRef = Type.find("pogEnv::MPogEnv").make
       curRef = Type.find("pogSpi::LocalPogEnv").make
     }
     catch (Err e)

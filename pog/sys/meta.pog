@@ -10,19 +10,19 @@
 QName : Str
 
 // Library module meta data
-Lib : <
+Lib : Dict <
   version: Version           // Current version of the library
   depends: List <of:Depend>  // Library dependency
   org: LibOrg                // Organization meta data for the library
 >
 
 // Library dependency
-Depend : {
+Depend : Dict {
   lib: QName   // Library qualified dotted name
 }
 
 // Organization meta data
-LibOrg : {
+LibOrg : Dict {
   dis : Str     // Display name for the organization
   uri : Uri     // URI for organization website
 }

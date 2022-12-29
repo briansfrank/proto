@@ -18,11 +18,8 @@ None : Obj
 // Marker labels a dict with typing information
 Marker : Obj
 
-// Data value type
-Val : Obj
-
 // Scalar is an atomic value kind
-Scalar : Val <
+Scalar : Obj <
   pattern: Str?  // Regex pattern that string encoding must match
 > ""
 
@@ -51,7 +48,7 @@ Float : Number
 Duration : Number
 
 // Unicode string of characters
-Str : Scalar
+Str : Scalar ""
 
 // Reference to another object.  The value must be either a
 // dotted qualified name or an id value prefixed with "@".
@@ -83,35 +80,30 @@ DateTime : Scalar <
   pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
 > "2000-01-01T00:00:00Z UTC"
 
-// Collection type
-Collection : Val
-
-// Ordered list of zero or more values
-List : Collection <
-  of: Obj    // Item type for list
+// Hashmap of name/value tag pairs.  Dict is the base
+// for all collection types.
+Dict : Obj <
+  of: Obj    // Item type for dict values
 >
 
-// Hashmap of name/value tag pairs
-Dict : Collection <
-  of: Obj    // Item type for dict values
-> {
-  id: Ref?   // Unique identifier within graph for the object
-}
+// Ordered list of zero or more values.  The dict keys
+// for lists are always "_0", "_1", "_2", etc.
+List : Dict
 
 // Maybe is the option type.  It contains some value or None.
-Maybe : Collection <
+Maybe : Dict <
   of: Obj   // Optional value
 >
 
 // Or type is a choice between one of multiple types.
 // It is a union of the set of types.
-Or : Collection <
+Or : Dict <
   of: List   // List of choices
 >
 
 // And type is a combination of multiple types.
 // It is an intersection of the set of types.
-And : Collection <
+And : Dict <
   of: List   // List of types to combine
 >
 

@@ -51,7 +51,7 @@ internal class InitLibs : Step
     dir := env.libDir(name, false)
     if (dir == null)
     {
-      if (name.contains("#")) return initSrcLib(name)
+      if (name.contains("pragma:")) return initSrcLib(name)
       err("Lib not installed: $name", FileLoc.inputs)
       return null
     }
@@ -71,8 +71,8 @@ internal class InitLibs : Step
   private CLib initSrcLib(Str src)
   {
     // this is backdoor hook to pass the source string for as lib
-    // formatted as "libName #<> ...."
-    pound := src.index("#")
+    // formatted as "libName pragma: <> ...."
+    pound := src.index("pragma:")
     qnameStr := src[0..<pound].trim
     file := src[pound..-1].toBuf.toFile(`${qnameStr}.pog`)
 

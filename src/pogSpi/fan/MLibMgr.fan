@@ -63,7 +63,7 @@ internal const class MLibMgr
     entry(qname, checked)?.dir
   }
 
-  Lib? load(Str qname, Bool checked := true)
+  Proto? load(Str qname, Bool checked := true)
   {
     // check for install
     entry := entry(qname, checked)
@@ -86,21 +86,21 @@ internal const class MLibMgr
     return null
   }
 
-  Lib compile(MLibEntry entry)
+  Proto compile(MLibEntry entry)
   {
-    x := transduce("parse", ["dir":entry.dir])
+    x := transduce("parse",   ["dir":entry.dir])
     x  = transduce("resolve", ["ast":x, "base":entry.qname])
-    x  = transduce("reify", ["ast":x])
+x = ((Str:Obj)x).dup.set("_is", "sys.Lib")
+    x  = transduce("reify",   ["ast":x, "base":entry.qname, "lib":true])
     return x
   }
 
   private Obj? transduce(Str name, Str:Obj args)
   {
-    echo("\n## $name ...")
     t := env.transduce(name, args)
     if (t.isErr) echo(t.events.join("\n"))
     x := t.get
-    dump(x)
+    //dump(x)
     return x
   }
 

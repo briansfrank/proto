@@ -85,7 +85,8 @@ internal const class MLibMgr
   {
     x := transduce("parse",   ["dir":entry.dir])
     x  = transduce("resolve", ["ast":x, "base":entry.qname])
-    x  = transduce("reify",   ["ast":x, "base":entry.qname])
+x = ((Str:Obj)x).dup.set("_is", "sys.Lib")
+    x  = transduce("reify",   ["ast":x, "base":entry.qname, "lib":true])
     return x
   }
 

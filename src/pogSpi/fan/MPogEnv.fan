@@ -60,7 +60,7 @@ const class LocalPogEnv : MPogEnv
   override Str[] installed()  { libMgr.installed }
   override Bool isInstalled(Str qname) { libMgr.isInstalled(qname) }
   override File? libDir(Str qname, Bool checked := true) { libMgr.libDir(qname, checked) }
-  override Lib? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
+  override Proto? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
   const override MFactory factory
 

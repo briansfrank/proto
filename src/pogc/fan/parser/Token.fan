@@ -34,7 +34,6 @@ internal enum class Token
   lbracket      ("["),
   rbracket      ("]"),
   pound         ("#"),
-  libMeta       ("#<"),
   pragma        ("#{"),
   question      ("?"),
   amp           ("&"),
