@@ -57,17 +57,68 @@ internal class Resolver
   Str:Obj resolve()
   {
     resolveDepends
+    if (cx.isErr) return ast
     return resolveNode(ast)
   }
 
   Void resolveDepends()
   {
-    // TODO
-    if (base != "sys")
+    // decode dependencies from pragma
+    pragma := ast["pragma"] as Str:Obj
+    depends := toDependNames(pragma)
+
+    // make sure sys is specified unless this is sys itself
+    if (!depends.any { it.qname == "sys" } && base != "sys")
+      cx.err("Must specify 'sys' in depends", pragma ?: ast)
+
+    // resolve each dependency
+    depends.each |d|
     {
-      dependsGraph := cx.env.create(["sys"])
-      depends = ["sys":dependsGraph.lib("sys")]
+      lib := cx.env.load(d.qname, false)
+      if (lib == null)
+        cx.err("Cannot resolve dependency: $d.qname", d.loc)
+      else
+        this.depends.add(lib)
     }
+  }
+
+  private LibDepend[]? toDependNames([Str:Obj]? pragma)
+  {
+    // if no pragma, we always assume implicit dependency on sys
+    if (pragma == null) return [LibDepend(cx.toLoc(ast), "sys")]
+
+    // get _depends meta data
+    depends := pragma["_depends"] as Str:Obj
+    if (depends == null) return LibDepend[,]
+
+    // map depends auto-names to dependency recs
+    acc := LibDepend[,]
+    depends.each |d, n|
+    {
+      // skip anything not _0, _1, etc
+      if (!PogUtil.isAuto(n)) return
+
+      // object should be a Str:Obj
+      map := d as Str:Obj
+      if (map == null)
+      {
+        cx.err("Invalid depend dict", depends)
+        return
+      }
+
+      // get the lib qname value
+      loc := cx.toLoc(map)
+      qname := (map["lib"] as Str:Obj)?.get("_val") as Str
+      if (qname == null)
+      {
+        cx.err("Depend dict missing 'lib' qname: $map", loc)
+        return
+      }
+
+      // accumulate to our dependency qname + loc recs
+      acc.add(LibDepend(loc, qname))
+    }
+    return acc
   }
 
   private Obj? resolveNode(Str:Obj node)
@@ -84,7 +135,7 @@ internal class Resolver
   {
     if (name.contains("."))
     {
-      if (!resolveQualified(name)) cx.err("Unresolved qname '$name'", node)
+      if (!isResolveQualified(name)) cx.err("Unresolved qname '$name'", node)
       return name
     }
 
@@ -110,30 +161,76 @@ internal class Resolver
     return name
   }
 
-  private Bool resolveQualified(Str qname)
+  private Bool isResolveQualified(Str qname)
   {
-    dot := qname.indexr(".")
-    libQName := qname[0..<dot]
-    simpleName := qname[dot+1..-1]
-    if (libQName == base)
+    // check if its under my base
+    if (resolveInAst(qname) != null) return true
+
+    // resolve in dependencies
+    return resolveInDepends(qname) != null
+  }
+
+  [Str:Obj]? resolveInAst(Str qname)
+  {
+    if (!qnameIsUnder(base, qname)) return null
+    path := qnamePathUnder(base, qname)
+    [Str:Obj?]? node := ast
+    for (i:=0; i<path.size; ++i)
     {
-      return ast[simpleName] != null
+      node = node[path[i]]
+      if (node == null) return null
     }
-    depend := depends[libQName]
-    return depend != null && depend.hasOwn(simpleName)
+    return node
   }
 
   Proto? resolveInDepends(Str qname)
   {
-    dot := qname.indexr(".")
-    if (dot == null) return null
-    libQName := qname[0..<dot]
-    simpleName := qname[dot+1..-1]
-    return depends.get(libQName)?.getOwn(simpleName, false)
+    for (i:=0; i<depends.size; ++i)
+    {
+      proto := resolveInDepend(depends[i], qname)
+      if (proto != null) return proto
+    }
+    return null
+  }
+
+  private Proto? resolveInDepend(Lib lib, Str qname)
+  {
+    if (!qnameIsUnder(lib.qname.toStr, qname)) return null
+    path := qnamePathUnder(lib.qname.toStr, qname)
+    Proto? proto := lib
+    for (i:=0; i<path.size; ++i)
+    {
+      proto = proto.getOwn(path[i], false)
+      if (proto == null) return null
+    }
+    return proto
+  }
+
+  private Bool qnameIsUnder(Str base, Str qname)
+  {
+    qname.startsWith(base) && qname.size >= base.size+2 && qname[base.size] == '.'
+  }
+
+  private Str[] qnamePathUnder(Str base, Str qname)
+  {
+    qname[base.size+1..-1].split('.')
   }
 
   TransduceContext cx
   Str:Obj ast
   Str base
-  Str:Lib depends := [:]
+  Lib[] depends := [,]
+}
+
+**************************************************************************
+** LibDepend
+**************************************************************************
+
+@Js
+internal const class LibDepend
+{
+  new make(FileLoc loc, Str qname) { this.loc = loc; this.qname = qname }
+  const FileLoc loc
+  const Str qname
+  override Str toStr() { qname }
 }

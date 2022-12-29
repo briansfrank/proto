@@ -81,10 +81,10 @@ const mixin QName
   abstract Bool isRoot()
 
   ** Is this a meta data name that starts with underbar
-  Bool isMeta() { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
+  Bool isMeta() { PogUtil.isMeta(name) }
 
   ** Is this a numbered index auto assign name
-  Bool isAuto() { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+  Bool isAuto() { PogUtil.isAuto(name) }
 
   ** Get a segment of the qname
   @Operator abstract Str get(Int i)

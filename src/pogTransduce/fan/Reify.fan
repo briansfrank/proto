@@ -82,7 +82,7 @@ internal class Reifier : Resolver
     inferIs := isName == null
 
     loc      := cx.toLoc(node)
-    isa      := inferIs ? AtomicRef() : ref(isName)
+    isa      := inferIs ? AtomicRef(isName) : ref(isName)
     val      := node["_val"]
     children := MProtoInit.noChildren
 
@@ -107,7 +107,7 @@ internal class Reifier : Resolver
   AtomicRef ref(Str qname)
   {
     ref := refs[qname]
-    if (ref == null) refs[qname] = ref = AtomicRef()
+    if (ref == null) refs[qname] = ref = AtomicRef(qname)
     return ref
   }
 
@@ -119,7 +119,7 @@ internal class Reifier : Resolver
   Void resolveRef(Str qname, AtomicRef ref)
   {
     // short circuit if already resolved
-    if (ref.val != null) return
+    if (ref.val is Proto) return
 
     // any unresolved qnames must be in dependencies
     ref.val = resolveInDepends(qname) ?: throw Err("Unresolved depend qname: $qname")

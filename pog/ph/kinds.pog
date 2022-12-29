@@ -17,7 +17,7 @@ Remove: Obj
 Symbol: Scalar "x"
 
 // Geographic coordinate in latitude/longitude in decimal degrees.
-Coord:  Scalar
+Coord:  Scalar "C(0,0)"
 
 // Extended string - type name and string value encoding.
 XStr: Scalar

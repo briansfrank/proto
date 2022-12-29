@@ -24,6 +24,16 @@ const class PogUtil
   }
 
   **
+  ** Is this a meta data name that starts with underbar
+  **
+  static Bool isMeta(Str name) { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
+
+  **
+  ** Is this a numbered index auto assign name
+  **
+  static Bool isAuto(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+
+  **
   ** Parse qname into its dotted path segments
   **
   static Str[] qnamePath(Str qname) { qname.split('.') }
@@ -46,13 +56,13 @@ const class PogUtil
   }
 
   **
-  ** Utility for Proto.print
+  ** Utility for print transducer
   **
-  @NoDoc static Void print(Proto proto, OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+  @NoDoc static Void print(Obj? val, OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     args := Str:Obj?[:]
     if (opts != null) args.setAll(opts)
-    args["val"] = proto
+    args["val"] = val ?: "null"
     args["write"] = out
     PogEnv.cur.transduce("print", args)
   }

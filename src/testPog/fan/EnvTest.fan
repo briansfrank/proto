@@ -29,9 +29,10 @@ class EnvTest : Test
   {
     env := PogEnv.cur
     lib := env.load("sys")
-    verifySame(lib, env.load("sys"))
 
     // lib meta
+    verifySame(lib, env.load("sys"))
+    verifyEq(lib.qname.toStr, "sys")
     verifySame(lib is Lib, true)
     verifyEq(lib.version, Version("0.9.1"))
     verifyEq(lib->_org->dis.val, "Project Haystack")
@@ -50,6 +51,24 @@ class EnvTest : Test
     verifyEq(lib.get("NotThere", false), null)
     verifyErr(UnknownProtoErr#) { lib.get("NotThere") }
     verifyErr(UnknownProtoErr#) { lib.get("NotThere", true) }
+  }
+
+  Void testPh()
+  {
+    env := PogEnv.cur
+    lib := env.load("ph")
+
+    // lib meta
+    verifySame(lib, env.load("ph"))
+    verifyEq(lib.qname.toStr, "ph")
+    verifySame(lib is Lib, true)
+    verifyEq(lib.version, Pod.find("ph").version)
+    verifyEq(lib->_org->dis.val, "Project Haystack")
+
+    // check some types
+    verifyProto(lib,         "ph",        "sys.Lib")
+    verifyProto(lib->Coord,  "ph.Coord",  "sys.Scalar", "C(0,0)")
+    verifyProto(lib->Grid,   "ph.Grid",   "sys.Dict",   null)
   }
 
   Proto verifyProto(Proto p, Str qname, Str? isa, Obj? val := null)

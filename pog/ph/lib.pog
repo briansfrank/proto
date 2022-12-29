@@ -2,7 +2,7 @@
 
 pragma: Lib <
   doc: "Project haystack core library"
-  version: "3.9.12"
+  version: "3.9.13"
   depends: {
     { lib: "sys" }
   }

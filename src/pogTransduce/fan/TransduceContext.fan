@@ -42,6 +42,9 @@ class TransduceContext
     events.add(e)
   }
 
+  ** Return if there was one or more error events
+  Bool isErr() { events.any { it.level === TransduceEventLevel.err } }
+
   ** Log an error event
   Void err(Str msg, Obj loc, Err? cause := null)
   {

@@ -90,10 +90,8 @@ internal class HaystackReader
 
   private Void initKinds()
   {
-    // TODO
-    depends := cx.env.create(["sys", "ph"])
-    sys := depends.lib("sys")
-    ph  := depends.lib("ph")
+    sys := cx.env.load("sys")
+    ph  := cx.env.load("ph")
 
     acc := Str:AtomicRef[:]
     Kind.listing.each |kind|
