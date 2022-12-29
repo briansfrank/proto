@@ -4,20 +4,20 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   16 Dec 2022  Brian Frank  Creation
+//   1 Dec 2022  Brian Frank  Creation
 //
 
 using build
 
 **
-** Build: pogTransduce
+** Build: pogEnv
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "pogTransduce"
-    summary = "Proto object graph transducers"
+    podName = "pogEnv"
+    summary = "Proto object graph environment implementation"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -28,20 +28,7 @@ class Build : BuildPod
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
-               "pog @{pog.depend}",
-               "pogEnv @{pog.depend}",
-               "haystack @{hx.depend}"]
+               "pog @{pog.depend}"]
     srcDirs = [`fan/`]
-    index = [
-      "pog.transducer": [
-        "pogTransduce::HaystackTransducer",
-        "pogTransduce::JsonTransducer",
-        "pogTransduce::ParseTransducer",
-        "pogTransduce::PrintTransducer",
-        "pogTransduce::ReifyTransducer",
-        "pogTransduce::ResolveTransducer",
-        "pogTransduce::ValidateTransducer",
-      ]
-    ]
   }
 }

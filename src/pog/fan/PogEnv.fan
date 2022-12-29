@@ -48,7 +48,8 @@ abstract const class PogEnv
   ** return cached version.  If library is not installed or has errors
   ** then raise an exception.  This call automatically loads and cached
   ** the given lib dependent libs.
-  abstract Lib? load(Str qname, Bool checked := true)
+// TODO: change this to Lib
+  abstract Proto? load(Str qname, Bool checked := true)
 
   ** List the installed transducers
   abstract Transducer[] transducers()

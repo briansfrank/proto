@@ -21,6 +21,7 @@ class Build : BuildGroup
     [
       `pog/build.fan`,
       `pogSpi/build.fan`,
+      `pogEnv/build.fan`,
       `pogTransduce/build.fan`,
       `pogc/build.fan`,
       `pogCli/build.fan`,

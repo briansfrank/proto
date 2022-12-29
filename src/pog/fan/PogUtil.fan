@@ -44,6 +44,18 @@ const class PogUtil
   {
     qname.split('.').map |n,i| { i == 0 ? n : n.capitalize }.join("")
   }
+
+  **
+  ** Utility for Proto.print
+  **
+  @NoDoc static Void print(Proto proto, OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+  {
+    args := Str:Obj?[:]
+    if (opts != null) args.setAll(opts)
+    args["val"] = proto
+    args["write"] = out
+    PogEnv.cur.transduce("print", args)
+  }
 }
 
 
