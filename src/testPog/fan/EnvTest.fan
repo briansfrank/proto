@@ -18,6 +18,9 @@ class EnvTest : Test
     env := PogEnv.cur
     lib := env.load("sys")
     verifySame(lib, env.load("sys"))
+    verifySame(lib is Lib, true)
+// TODO
+//    verifyEq(lib.version, Version("0.9.1"))
 
     verifyProto(lib,         "sys",        "sys.Lib")
     verifyProto(lib->Obj,    "sys.Obj",    null)
@@ -35,6 +38,9 @@ class EnvTest : Test
 
   Proto verifyProto(Proto p, Str qname, Str? isa, Obj? val := null)
   {
+echo
+echo("===== $qname [$p.typeof]")
+p.print
     verifyEq(p.qname.toStr, qname)
     verifyEq(p.name, QName(qname).name)
     verifyEq(p.isa?.qname?.toStr, isa)

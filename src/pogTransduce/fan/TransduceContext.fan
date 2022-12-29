@@ -6,8 +6,10 @@
 //   21 Dec 2022  Brian Frank  Creation
 //
 
+using concurrent
 using util
 using pog
+using pogEnv
 
 **
 ** Models state for transduce pipelines and resulting Transduction
@@ -105,6 +107,12 @@ class TransduceContext
       return toResult(f(out))
     finally
       if (out !== Env.cur.out) out.close
+  }
+
+  ** Instantiate proto from initialization data
+  Proto instantiate(FileLoc loc, QName qname, AtomicRef isa, Obj? val, [Str:Proto]? children)
+  {
+    ((MPogEnv)env).factory.instantiate(MProtoInit(loc, qname, isa, val, children))
   }
 
   ** Get a qualified name from a Proto

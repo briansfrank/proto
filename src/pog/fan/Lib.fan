@@ -10,10 +10,14 @@
 ** Library is the root object for a module of versioned prototypes
 **
 @Js
-const class Lib : AbstractProto
+const mixin Lib : Proto
 {
   ** Version of the library
-  Version version() { Version.fromStr(getOwn("_version").val) }
+  abstract Version version()
+
+  ** Get the effective child mapped by the given name.  If it is not
+  ** mapped to a non-null value, then throw an UnknownProtoErr.
+  abstract override Proto? trap(Str name, Obj?[]? args := null)
 }
 
 

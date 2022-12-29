@@ -28,8 +28,10 @@ const class MFactory
 
   private static Void initToFantom(MPogEnv env, Str:Str toPod, Str:Str toFantom)
   {
+    toFantom["sys.Obj"] = "pogEnv::MObj"
+    toFantom["sys.Lib"] = "pogEnv::MLib"
 
-    toFantom["sys.Lib"] = "pogSpi::MLib"
+    /*
     Env.cur.index("pog.types").each |str|
     {
       try
@@ -59,6 +61,7 @@ const class MFactory
         e.trace
       }
     }
+    */
   }
 
   private static Str:Str initFromFantomProto(Str:Str toFantom)
@@ -80,8 +83,6 @@ const class MFactory
     acc["sys::Time"]            = "sys.Time"
     acc["sys::DateTime"]        = "sys.DateTime"
     acc["sys::Version"]         = "sys.Version"
-
-    acc["pogLint::LintLevel"]   = "sys.lint.LintLevel"
 
     acc["haystack::Marker"]     = "sys.Marker"
     acc["haystack::Ref"]        = "sys.Ref"
@@ -119,18 +120,16 @@ const class MFactory
   const Str:Str fromFantomScalar
 
   ** Create Fantom instance for library proto
-  Proto init(Str qname, Str type)
+  Proto instantiate(MProtoInit init)
   {
-    fantom := toFantom[qname] ?: toFantom[type]
-    if (fantom != null) return Type.find(fantom).make
-    return AbstractProto()
-  }
-
-  ** Create Fantom instance for library proto
-  Proto instantiate(Str type)
-  {
-    fantom := toFantom[type]
-    if (fantom != null) return Type.find(fantom).make
-    return AbstractProto()
+    fantom := toFantom[init.qname.toStr]
+    if (fantom == null && init.isa.val != null)
+    {
+      isa := init.isa.val.toStr
+      if (isa != "sys.Obj")
+        fantom = toFantom[init.isa.val.toStr]
+    }
+    if (fantom != null) return Type.find(fantom).make([init])
+    return MProto(init)
   }
 }

@@ -14,15 +14,15 @@ using util
 ** Basic implementation for proto
 **
 @Js
-const class MProto : Proto
+internal const class MProto : Proto
 {
-  new make(FileLoc loc, QName qname, AtomicRef isa, Obj? val, Str:MProto children)
+  new make(MProtoInit init)
   {
-    this.loc      = loc
-    this.qname    = qname
-    this.isaRef   = isa
-    this.valRef   = val
-    this.children = children
+    this.loc      = init.loc
+    this.qname    = init.qname
+    this.isaRef   = init.isa
+    this.valRef   = init.val
+    this.children = init.children
   }
 
   override ProtoSpi spi() { throw Err("TODO") }
@@ -142,6 +142,5 @@ const class MProto : Proto
     PogUtil.print(this, out, opts)
   }
 
-  static const Str:Proto noChildren := [:] { ordered = true }
 }
 

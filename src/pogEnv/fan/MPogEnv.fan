@@ -21,6 +21,7 @@ const class MPogEnv : PogEnv
     this.libMgr = MLibMgr(this)
     this.transducersMap = initTransducers(this)
     this.transducers = transducersMap.vals.sort
+    this.factory = MFactory(this)
   }
 
   static Str:Transducer initTransducers(PogEnv env)
@@ -55,7 +56,7 @@ const class MPogEnv : PogEnv
 
   override File? libDir(Str qname, Bool checked := true) { libMgr.libDir(qname, checked) }
 
-  override Proto? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
+  override Lib? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
   override Graph create(Str[] libNames) { throw Err("TODO") }
 
@@ -77,6 +78,8 @@ const class MPogEnv : PogEnv
 //////////////////////////////////////////////////////////////////////////
 // Misc
 //////////////////////////////////////////////////////////////////////////
+
+  const MFactory factory
 
   override Void dump(OutStream out := Env.cur.out)
   {

@@ -14,13 +14,13 @@ using util
 ** Implementation for root object type
 **
 @Js
-const class MObj : Proto
+internal const class MObj : Proto
 {
-  new make(FileLoc loc, Str:Proto children)
+  new make(MProtoInit init)
   {
-    this.loc      = loc
-    this.qname    = QName.make2("sys", "Obj")
-    this.children = children
+    this.loc      = init.loc
+    this.qname    = init.qname
+    this.children = init.children
   }
 
   override ProtoSpi spi() { throw Err("TODO") }

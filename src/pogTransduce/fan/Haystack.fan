@@ -85,7 +85,7 @@ internal class HaystackReader
       protos[name] = dictToProto(base.add(name), dict)
     }
 
-    return MProto(loc, base, isList, null, protos)
+    return cx.instantiate(loc, base, isList, null, protos)
   }
 
   private Void initKinds()
@@ -145,7 +145,7 @@ internal class HaystackReader
     {
       kids[n] = valToProto(qname.add(n), v)
     }
-    return MProto(loc, qname, isDict, null, kids)
+    return cx.instantiate(loc, qname, isDict, null, kids)
   }
 
   private Proto scalarToProto(QName qname, Obj? val, Kind kind)
@@ -153,7 +153,7 @@ internal class HaystackReader
     isa := kinds.getChecked(kind.name)
     if (kind.isSingleton) val = null
     else if (kind.isXStr) val = kind.valToZinc(val)
-    return MProto(loc, qname, isa, val, MProto.noChildren)
+    return cx.instantiate(loc, qname, isa, val, null)
   }
 
   private TransduceContext cx       // make

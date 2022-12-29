@@ -58,7 +58,7 @@ internal const class MLibMgr
     entry(qname, checked)?.dir
   }
 
-  Proto? load(Str qname, Bool checked := true)
+  Lib? load(Str qname, Bool checked := true)
   {
     // check for install
     entry := entry(qname, checked)

@@ -71,13 +71,13 @@ internal class Reifier : Resolver
     loc      := cx.toLoc(node)
     isa      := inferIs ? AtomicRef() : ref(isName)
     val      := node["_val"]
-    children := MProto.noChildren
+    children := MProtoInit.noChildren
 
     node.each |v, n|
     {
       child := v as Str:Obj
       if (child == null) return
-      if (children === MProto.noChildren)
+      if (children.isImmutable)
       {
         children = Str:MProto[:]
         children.ordered = true
@@ -85,7 +85,7 @@ internal class Reifier : Resolver
       children.add(n, reifyNode(qname.add(n), child))
     }
 
-    proto := isObj ? MObj(loc, children) : MProto(loc, qname, isa, val, children)
+    proto := cx.instantiate(loc, qname, isa, val, children)
     ref(qname.toStr).val = proto
     if (inferIs && !isObj) isInfers.add(IsInfer(proto, isa))
     return proto
@@ -118,7 +118,7 @@ internal class Reifier : Resolver
     isInfers.eachr |x| { x.isaRef.val = resolveIsInfer(x.proto) }
   }
 
-  Proto resolveIsInfer(MProto p)
+  Proto resolveIsInfer(Proto p)
   {
      // infer from parent's inherited type
     inherited := resolveIsInferInherited(p)
@@ -128,7 +128,7 @@ internal class Reifier : Resolver
     return p.valOwn(false) != null  ? str.val : dict.val
   }
 
-  Proto? resolveIsInferInherited(MProto p)
+  Proto? resolveIsInferInherited(Proto p)
   {
     // resolve parent (its either already in my refs map or in a depdendency)
     parentQName := p.qname.parent.toStr
@@ -155,7 +155,7 @@ internal class Reifier : Resolver
 @Js
 internal const class IsInfer
 {
-  new make(MProto p, AtomicRef r) { proto = p; isaRef = r }
+  new make(Proto p, AtomicRef r) { proto = p; isaRef = r }
   const Proto proto
   const AtomicRef isaRef
 }

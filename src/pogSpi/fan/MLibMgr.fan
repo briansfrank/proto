@@ -63,7 +63,7 @@ internal const class MLibMgr
     entry(qname, checked)?.dir
   }
 
-  Proto? load(Str qname, Bool checked := true)
+  Lib? load(Str qname, Bool checked := true)
   {
     // check for install
     entry := entry(qname, checked)
@@ -116,6 +116,15 @@ x = ((Str:Obj)x).dup.set("_is", "sys.Lib")
   const File[] path
   const Str[] installed
   const Str:MLibEntry entries
+}
+
+**************************************************************************
+** MLib
+**************************************************************************
+
+internal const class MLib : AbstractProto, Lib
+{
+  once override Version version() { Version.fromStr(getOwn("_version").val.toStr) }
 }
 
 **************************************************************************
