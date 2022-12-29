@@ -230,7 +230,7 @@ internal class PogPrinter : Printer
 
   This print(Proto p)
   {
-    if (p.name[0].isUpper) nl
+    printBlankLine(p)
     printDoc(p)
     windent
     if (printAsMarker(p))
@@ -247,6 +247,13 @@ internal class PogPrinter : Printer
     }
     nl
     return this
+  }
+
+  private Void printBlankLine(Proto p)
+  {
+    name := p.name
+    if (name.isEmpty || !name[0].isUpper) return
+    nl
   }
 
   private Bool printAsMarker(Proto p)
