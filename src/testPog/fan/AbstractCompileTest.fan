@@ -31,7 +31,7 @@ abstract class AbstractCompileTest : Test
   Lib compileSrc(Str src)
   {
     prelude :=
-     Str<|test pragma: <
+     Str<|test pragma: Lib <
             version: "0.0.1"
           >
          |>

@@ -13,15 +13,30 @@ using pog
 **
 class EnvTest : Test
 {
+  Void testInstalled()
+  {
+    env := PogEnv.cur
+    verifyEq(env.installed.contains("sys"), true)
+    verifyEq(env.installed.contains("ph"), true)
+    verifyEq(env.installed.contains("fooBar"), false)
+
+    verifyEq(env.load("fooBar", false), null)
+    verifyErr(UnknownLibErr#) { env.load("fooBar") }
+    verifyErr(UnknownLibErr#) { env.load("fooBar", true) }
+  }
+
   Void testSys()
   {
     env := PogEnv.cur
     lib := env.load("sys")
     verifySame(lib, env.load("sys"))
-    verifySame(lib is Lib, true)
-// TODO
-//    verifyEq(lib.version, Version("0.9.1"))
 
+    // lib meta
+    verifySame(lib is Lib, true)
+    verifyEq(lib.version, Version("0.9.1"))
+    verifyEq(lib->_org->dis.val, "Project Haystack")
+
+    // core system types
     verifyProto(lib,         "sys",        "sys.Lib")
     verifyProto(lib->Obj,    "sys.Obj",    null)
     verifyProto(lib->Dict,   "sys.Dict",   "sys.Obj")
@@ -30,6 +45,7 @@ class EnvTest : Test
     verifyProto(lib->Number, "sys.Number", "sys.Scalar", "0")
     verifyProto(lib->Int,    "sys.Int",    "sys.Number", "0")
 
+    // get
     verifySame(lib.get("Number"), lib->Number)
     verifyEq(lib.get("NotThere", false), null)
     verifyErr(UnknownProtoErr#) { lib.get("NotThere") }
@@ -38,9 +54,7 @@ class EnvTest : Test
 
   Proto verifyProto(Proto p, Str qname, Str? isa, Obj? val := null)
   {
-echo
-echo("===== $qname [$p.typeof]")
-p.print
+    // echo; echo("===== $qname [$p.typeof]"); p.print
     verifyEq(p.qname.toStr, qname)
     verifyEq(p.name, QName(qname).name)
     verifyEq(p.isa?.qname?.toStr, isa)

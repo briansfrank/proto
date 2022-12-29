@@ -78,7 +78,8 @@ internal class Parser
     if (cur !== Token.id || curVal != "pragma") throw err("Expecting lib 'pragma:', not $curToStr")
     consume(Token.id)
     consume(Token.colon)
-    if (cur !== Token.lt) throw err("Expecting lib 'pragma: <")
+    if (consumeName != "Lib") throw Err("Expecting lib 'pragma: Lib <")
+    if (cur !== Token.lt) throw err("Expecting lib 'pragma: Lib <")
     parseProtoChildren(lib.proto, Token.lt, Token.gt, true)
   }
 

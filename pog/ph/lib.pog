@@ -1,6 +1,6 @@
 // Auto-generated 22-Nov-2022
 
-pragma: <
+pragma: Lib <
   doc: "Project haystack core library"
   version: "3.9.12"
   depends: {

@@ -56,10 +56,23 @@ internal class Reifier : Resolver
   Proto reify()
   {
     resolveDepends
+    normalizeLibPragma
     root := reifyNode(QName(base), ast)
     resolveRefs
     resolveIsInfers
     return root
+  }
+
+  private Void normalizeLibPragma()
+  {
+    // if pragma is a sys.Lib, then flatten it as root meta
+    pragma := ast["pragma"] as Str:Obj
+    if (pragma != null && pragma["_is"] == "sys.Lib")
+    {
+      newAst := pragma.findAll |v, n| { n.startsWith("_") }
+      ast.each |v, n| { if (n != "pragma") newAst[n] = v }
+      this.ast = newAst
+    }
   }
 
   private Proto reifyNode(QName qname, Str:Obj node)
