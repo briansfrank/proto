@@ -10,9 +10,6 @@
 Obj : <
   // Documentation for object
   doc: Str "Root type for all objects"
-
-  // Indicates this object is optional in its parent type
-  optional: Marker
 >
 
 // None is the bottom type with no values

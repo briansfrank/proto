@@ -6,20 +6,23 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
+// Qualified name
+QName : Str
+
 // Library module meta data
 Lib : <
   version: Version           // Current version of the library
-  org: Org                   // Organization meta data for the library
   depends: List <of:Depend>  // Library dependency
+  org: LibOrg                // Organization meta data for the library
 >
 
 // Library dependency
 Depend : {
-  lib: Str   // Library qualified dotted name
+  lib: QName   // Library qualified dotted name
 }
 
 // Organization meta data
-Org : {
+LibOrg : {
   dis : Str     // Display name for the organization
   uri : Uri     // URI for organization website
 }
