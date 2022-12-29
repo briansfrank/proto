@@ -167,7 +167,50 @@ internal const class PrinterTheme
 
   static const PrinterTheme none := make {}
 
-  const static PrinterTheme configured := make { it.symbol = red; it.str = cyan; it.comment = green }
+  static const AtomicRef configuredRef := AtomicRef()
+
+  static PrinterTheme configured()
+  {
+    theme := configuredRef.val as PrinterTheme
+    if (theme == null)
+      configuredRef.val = theme = loadConfigured
+    return theme
+  }
+
+  private static PrinterTheme loadConfigured()
+  {
+    try
+    {
+      // load from POG_THEME environment variable
+      var := Env.cur.vars["POG_THEME"]
+      if (var == null) return none
+
+      // variable should be formatted as symbol:color, str:color, comment:color
+      toks := var.split(',')
+      map := Str:Str[:]
+      toks.each |tok|
+      {
+        pair := tok.split(':')
+        if (pair.size != 2) return
+        key := pair[0]
+        color := PrinterTheme#.field(pair[1], false)?.get(null)
+        map.addNotNull(key, color)
+      }
+
+      // construct
+      return make {
+        it.symbol  = map["symbol"]
+        it.str     = map["str"]
+        it.comment = map["comment"]
+      }
+    }
+    catch (Err e)
+    {
+      echo("ERROR: Cannot load pog theme")
+      e.trace
+      return none
+    }
+  }
 
   new make(|This| f) { f(this) }
 
