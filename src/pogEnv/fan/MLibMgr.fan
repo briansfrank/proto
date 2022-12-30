@@ -83,10 +83,34 @@ internal const class MLibMgr
 
   Proto compile(MLibEntry entry)
   {
-    x := transduce("parse",   ["dir":entry.dir])
-    x  = transduce("resolve", ["ast":x, "base":entry.qname])
-    x  = transduce("reify",   ["ast":x, "base":entry.qname, "lib":true])
-    return x
+    compilingPush(entry.qname)
+    try
+    {
+      x := transduce("parse",   ["dir":entry.dir])
+      x  = transduce("resolve", ["ast":x, "base":entry.qname])
+      x  = transduce("reify",   ["ast":x, "base":entry.qname, "lib":true])
+      return x
+    }
+    finally
+    {
+      compilingPop
+    }
+  }
+
+  private Void compilingPush(Str qname)
+  {
+    stack := Actor.locals[compilingKey] as Str[]
+    if (stack == null) Actor.locals[compilingKey] = stack = Str[,]
+    if (stack.contains(qname)) throw Err("Cyclic lib dependency: $stack")
+    stack.push(qname)
+  }
+
+  private Void compilingPop()
+  {
+    stack := Actor.locals[compilingKey] as Str[]
+    if (stack == null) return
+    stack.pop
+    if (stack.isEmpty) Actor.locals.remove(compilingKey)
   }
 
   private Obj? transduce(Str name, Str:Obj args)
@@ -98,6 +122,7 @@ internal const class MLibMgr
   }
 
   const PogEnv env
+  const Str compilingKey := "pogEnv.compiling"
   const File[] path
   const Str[] installed
   const Str:MLibEntry entries
