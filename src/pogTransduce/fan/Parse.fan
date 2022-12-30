@@ -196,7 +196,7 @@ internal class Parser
   private Bool parseChildrenOrVal(ParsedProto p)
   {
     if (cur === Token.lbrace) return parseChildren(p, Token.lbrace, Token.rbrace, false)
-    if (cur.isLiteral) return parseVal(p)
+    if (cur.isVal) return parseVal(p)
     return false
   }
 
@@ -223,11 +223,14 @@ internal class Parser
 
   private Bool parseIs(ParsedProto p)
   {
+    if (cur === Token.str && peek === Token.pipe)
+      return parseIsOr(p, null, consumeVal)
+
     if (cur !== Token.id) return false
 
     qname := consumeQName
     if (cur === Token.amp)      return parseIsAnd(p, qname)
-    if (cur === Token.pipe)     return parseIsOr(p, qname)
+    if (cur === Token.pipe)     return parseIsOr(p, qname, null)
     if (cur === Token.question) return parseIsMaybe(p, qname)
 
     p.map["_is"] = qname
@@ -237,27 +240,30 @@ internal class Parser
   private Bool parseIsAnd(ParsedProto p, Str qname)
   {
     of := newMap
-    addToOf(of, qname)
+    addToOf(of, qname, null)
     while (cur === Token.amp)
     {
       consume
       skipNewlines
-      addToOf(of, parseIsSimple("Expecting next proto name after '&' and symbol"))
+      addToOf(of, parseIsSimple("Expecting next proto name after '&' and symbol"), null)
     }
     p.map["_is"] = "sys.And"
     p.map["_of"] = of
     return true
   }
 
-  private Bool parseIsOr(ParsedProto p, Str qname)
+  private Bool parseIsOr(ParsedProto p, Str? qname, Str? val)
   {
     of := newMap
-    addToOf(of, qname)
+    addToOf(of, qname, val)
     while (cur === Token.pipe)
     {
       consume
       skipNewlines
-      addToOf(of, parseIsSimple("Expecting next proto name after '|' or symbol"))
+      if (cur.isVal)
+        addToOf(of, null, consumeVal)
+      else
+        addToOf(of, parseIsSimple("Expecting next proto name after '|' or symbol"), null)
     }
     p.map["_is"] = "sys.Or"
     p.map["_of"] = of
@@ -278,9 +284,9 @@ internal class Parser
     return consumeQName
   }
 
-  private Void addToOf(Str:Obj of, Str qname)
+  private Void addToOf(Str:Obj of, Str? qname, Str? val)
   {
-    of["_"+of.size] = ["_is":qname]
+    of["_"+of.size] = Str:Obj[:].addNotNull("_is", qname).addNotNull("_val", val)
   }
 
   private Void parseEndOfProto()
@@ -451,6 +457,14 @@ internal class Parser
     name := curVal.toStr
     consume
     return name
+  }
+
+  private Str consumeVal()
+  {
+    verify(Token.str)
+    val := curVal
+    consume
+    return val
   }
 
   private Void consume(Token? expected := null)
@@ -838,13 +852,13 @@ internal enum class Token
   comment  ("comment"),
   eof      ("eof");
 
-  private new make(Str dis, Bool isLiteral := false)
+  private new make(Str dis, Bool isVal := false)
   {
     this.dis  = dis.size <= 2 ? "'${dis}' $name" : dis
-    this.isLiteral = isLiteral
+    this.isVal = isVal
   }
 
   const Str dis
-  const Bool isLiteral
+  const Bool isVal
   override Str toStr() { dis }
 }

@@ -406,6 +406,37 @@ json: |
     }
   }}
 ---
+name: orScalars
+pog: |
+  vals: "foo" | "bar"
+  mix1: Date | "nil" | Str
+  mix2: "nil" | Date
+json: |
+  {
+    "vals":{
+      "_is":"sys.Or",
+      "_of":{
+        "_0":{"_val":"foo"},
+        "_1":{"_val":"bar"}
+      }
+    },
+    "mix1":{
+      "_is":"sys.Or",
+      "_of":{
+        "_0":{"_is":"Date"},
+        "_1":{"_val":"nil"},
+        "_2":{"_is":"Str"}
+      }
+    },
+    "mix2":{
+      "_is":"sys.Or",
+      "_of":{
+        "_0":{"_val":"nil"},
+        "_1":{"_is":"Date"}
+      }
+    }
+  }
+---
 
 ##########################################################################
 ## Errs
