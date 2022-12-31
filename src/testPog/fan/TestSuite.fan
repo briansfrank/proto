@@ -127,7 +127,7 @@ class PogTestRunner
     events := def.get("events")
 
     a := transduce("parse", ["read":pog]).get
-    b := transduce("resolve", ["ast":a], false)
+    b := transduce("resolve", ["it":a], false)
     verifyJson(b, json)
     verifyEvents(b, events)
   }
@@ -138,8 +138,8 @@ class PogTestRunner
     json   := def.getChecked("json")
 
     a := transduce("parse",   ["read":pog]).get
-    b := transduce("resolve", ["ast":a, "base":"test"]).get
-    c := transduce("reify",   ["ast":b, "base":"test"])
+    b := transduce("resolve", ["it":a, "base":"test"]).get
+    c := transduce("reify",   ["it":b, "base":"test"])
     verifyJson(c, json)
   }
 
@@ -149,9 +149,9 @@ class PogTestRunner
     events := def.getChecked("events")
 
     a := transduce("parse",    ["read":pog]).get
-    b := transduce("resolve",  ["ast":a, "base":"test"]).get
-    c := transduce("reify",    ["ast":b, "base":"test"]).get
-    d := transduce("validate", ["graph":c], false)
+    b := transduce("resolve",  ["it":a, "base":"test"]).get
+    c := transduce("reify",    ["it":b, "base":"test"]).get
+    d := transduce("validate", ["it":c], false)
     verifyEvents(d, events)
   }
 
@@ -177,7 +177,7 @@ class PogTestRunner
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["val":t.get(false), "write":buf.out])
+    env.transduce("json", ["it":t.get(false), "write":buf.out])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
@@ -194,7 +194,7 @@ class PogTestRunner
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("print", ["val":t.get(false), "write":buf.out])
+    env.transduce("print", ["it":t.get(false), "write":buf.out])
     pog := buf.toStr.trim
 
     if (verbose || pog != expected)

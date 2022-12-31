@@ -31,7 +31,9 @@ internal abstract const class Cmd
 
   abstract Str summary()
 
-  abstract Void execute(Session session, CmdArg[] args)
+  virtual Str usage() { "" }
+
+  abstract Obj? execute(Session session, CmdArg[] args)
 
   virtual Str sortKey() { name }
 
@@ -50,10 +52,18 @@ internal const class Help : Cmd
   override const Str[] aliases := ["?"]
   override Str summary() { "Print usage help" }
   override Str sortKey() { "_0" }
-  override Void execute(Session session, CmdArg[] args)
+  override Obj? execute(Session session, CmdArg[] args)
   {
+    on := args.first?.val
+    shell := on != "in-main"
+
+    if (on != null && shell)
+    {
+      printOn(session, on)
+      return null
+    }
+
     out := session.out
-    shell := args.first?.name != "main"
     if (shell)
     {
       out.printLine
@@ -61,15 +71,40 @@ internal const class Help : Cmd
     }
     session.cmds.dup.sort.each |cmd|
     {
-      names := StrBuf().add(cmd.name)
-      cmd.aliases.each |alias| { names.join(alias, ", ") }
-
-      out.printLine("  " + names.toStr.padr(18) + "  " + cmd.summary)
+      out.printLine("  " + cmdToNames(cmd).padr(18) + "  " + cmd.summary)
     }
     if (shell)
     {
       out.printLine
     }
+    return null
+  }
+
+  private Void printOn(Session session, Str name)
+  {
+    out := session.out
+    cmd := session.cmd(name)
+    if (cmd == null) return out.printLine("Help command not found: $name")
+
+    out.printLine
+    out.printLine("Command:")
+    out.printLine("  " + cmdToNames(cmd))
+    out.printLine("Summary:")
+    out.printLine("  " + cmd.summary)
+    usage := cmd.usage.trim
+    if (!usage.isEmpty)
+    {
+      out.printLine("Usage:")
+      usage.splitLines.each |line| { out.printLine("  $line") }
+    }
+    out.printLine
+  }
+
+  private Str cmdToNames(Cmd cmd)
+  {
+    s := StrBuf().add(cmd.name)
+    cmd.aliases.each |alias| { s.join(alias, ", ") }
+    return s.toStr
   }
 }
 
@@ -83,9 +118,10 @@ internal const class Quit : Cmd
   override const Str[] aliases := ["bye", "exit"]
   override Str summary() { "Quit the interactive shell" }
   override Str sortKey() { "_1" }
-  override Void execute(Session session, CmdArg[] args)
+  override Obj? execute(Session session, CmdArg[] args)
   {
     session.isDone = true
+    return null
   }
 }
 
@@ -97,7 +133,7 @@ internal const class Version : Cmd
 {
   override const Str name := "version"
   override Str summary() { "Print version info" }
-  override Void execute(Session session, CmdArg[] args)
+  override Obj? execute(Session session, CmdArg[] args)
   {
     out := session.out
     out.printLine
@@ -112,6 +148,7 @@ internal const class Version : Cmd
     out.printLine("fan.homeDir:   " + Env.cur.homeDir.osPath)
     out.printLine("fan.workDir:   " + Env.cur.workDir.osPath)
     out.printLine
+    return null
   }
 }
 
@@ -123,12 +160,43 @@ internal const class EnvCmd : Cmd
 {
   override const Str name := "env"
   override Str summary() { "Print environment info" }
-  override Void execute(Session session, CmdArg[] args)
+  override Obj? execute(Session session, CmdArg[] args)
   {
     out := session.out
     out.printLine
     session.env.dump(out)
     out.printLine
+    return null
+  }
+}
+
+**************************************************************************
+** Vars
+**************************************************************************
+
+internal const class Vars : Cmd
+{
+  override const Str name := "vars"
+  override Str summary() { "Print session variables" }
+  override Obj? execute(Session session, CmdArg[] args)
+  {
+    out := session.out
+    out.printLine
+    out.printLine("Session Vars:")
+    keys := session.vars.keys.sort.moveTo("it", 0)
+    keys.each |k|
+    {
+      out.printLine("  $k: " + valToStr(session.vars[k]))
+    }
+    out.printLine
+    return null
+  }
+
+  Str valToStr(Obj val)
+  {
+    if (val is Str:Obj) return "JSON"
+    if (val is Proto) return "Proto"
+    return val.typeof.name
   }
 }
 
@@ -139,12 +207,39 @@ internal const class EnvCmd : Cmd
 internal const class Transduce : Cmd
 {
   new make(Transducer transducer) { this.transducer = transducer }
+
   const Transducer transducer
+
   override Str name() { transducer.name }
+
   override Str summary() { transducer.summary }
-  override Void execute(Session session, CmdArg[] args)
+
+  override Str usage() { transducer.usage }
+
+  override Obj? execute(Session session, CmdArg[] args)
   {
-    echo("TODO: $transducer")
+    targs := Str:Obj[:]
+    targs.addNotNull("it", session.vars["it"])
+    args.each |arg|
+    {
+      targs[arg.name ?: "it"] = toArg(session, arg.val)
+    }
+
+    result := transducer.transduce(targs)
+    return result.get(true)
+  }
+
+  Obj toArg(Session session, Str arg)
+  {
+    // assume anything with slash or dot if file
+    if (arg.contains(".") || arg.contains("/")) return arg.toUri.toFile
+
+    // check for variable
+    var := session.vars[arg]
+    if (var != null) return var
+
+    // use string literal
+    return arg
   }
 }
 

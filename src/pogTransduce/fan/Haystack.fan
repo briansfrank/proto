@@ -27,14 +27,7 @@ const class HaystackTransducer : Transducer
 
   override Str usage()
   {
-    """Summary:
-         Read or write objects as Haystack data.
-       Usage:
-         haystack read:dicts      Convert haystack dicts to protos
-         haystack write:proto     Convert protos to haystack dicts
-       Arguments:
-         read                     List of dicts
-         write                    Proto graph
+    """haystack read:file      Read zinc, trio, or json to protos"
        """
   }
 
@@ -42,18 +35,12 @@ const class HaystackTransducer : Transducer
   {
     cx := TransduceContext(this, args)
     if (args.containsKey("read")) return readHaystack(cx)
-    if (args.containsKey("write")) return writeHaystack(cx)
     throw ArgErr("Missing read or write argument")
   }
 
   private Transduction readHaystack(TransduceContext cx)
   {
     cx.toResult(HaystackReader(cx).read)
-  }
-
-  private Transduction writeHaystack(TransduceContext cx)
-  {
-    throw Err("TODO")
   }
 }
 

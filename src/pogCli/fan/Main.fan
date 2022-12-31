@@ -27,13 +27,7 @@ class Main
 
   Int shell()
   {
-    out.printLine("Pog shell v${typeof.pod.version} ('?' for help, 'quit' to quit)")
-    session := Session(env, out)
-    while (!session.isDone)
-    {
-      session.execute(Env.cur.prompt("pog> ").trim)
-    }
-    return 0
+    Session(env, out).run
   }
 
   Bool hasArg(Str[] args, Str name, Str? abbr := null)
@@ -51,7 +45,7 @@ class Main
     out.printLine("  -version, -v        Print version info")
     out.printLine("  -shell, -sh         Enter interactive shell")
     out.printLine("Commands:")
-    Session(env, out).execute("help main:true")
+    Session(env, out).execute("help in-main")
     out.printLine
     return 1
   }

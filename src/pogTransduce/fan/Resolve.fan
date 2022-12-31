@@ -19,17 +19,13 @@ const class ResolveTransducer : Transducer
 
   override Str summary()
   {
-    "Resolve unqualified names in an AST to qualified names"
+    "Resolve unqualified names in JSON AST to qualified names"
   }
 
   override Str usage()
   {
-    """Summary:
-         Resolve unqualified names in an AST to qualified names.
-       Usage:
-         resolve ast:obj              Transform AST to AST
-       Arguments:
-         obj                          AST object tree
+    """resolve ast               Resolve JSON AST
+       resolve ast base:qname    Resolve using given base qname
        """
   }
 
@@ -50,7 +46,7 @@ internal class Resolver
   new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.ast  = cx.arg("ast", true, Str:Obj#)
+    this.ast  = cx.arg("it", true, Str:Obj#)
     this.base = cx.arg("base", false, Str#) ?: ""
   }
 

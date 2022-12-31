@@ -24,28 +24,22 @@ const class JsonTransducer : Transducer
 
   override Str usage()
   {
-    """Summary:
-         Read or write objects in JSON format.
-       Usage:
-         json read:input              Read given input stream
-         json val:obj write:output    Write object to output stream
-       Arguments:
-         read                         Input file, string, or 'stdin'
-         write                        Output file or 'stdout'
-         obj                          Object tree or proto graph
+    """json data                 Write data as JSON to stdout
+       json data write:output    Write data as JSON to file
+       json read:file            Read JSON from file
        """
   }
 
   override Transduction transduce(Str:Obj? args)
   {
     if (args.containsKey("read")) return readJson(args)
-    if (args.containsKey("write")) return writeJson(args)
+    if (args.containsKey("it")) return writeJson(args)
     throw ArgErr("Missing read or write argument")
   }
 
   Transduction readJson(Str:Obj? args)
   {
-    TransduceContext(this, args).read |in, loc|
+    TransduceContext(this, args).read("read") |in, loc|
     {
       JsonInStream(in).readJson
     }
@@ -54,8 +48,9 @@ const class JsonTransducer : Transducer
   Transduction writeJson(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
-    val := cx.arg("val")
-    return cx.write |out|
+    val := cx.arg("it")
+    output := cx.arg("write", false) ?: Env.cur.out
+    return cx.write(output) |out|
     {
       JsonPrinter(out).print(val)
       return val

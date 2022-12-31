@@ -87,8 +87,8 @@ internal const class MLibMgr
     try
     {
       x := transduce("parse",   ["dir":entry.dir])
-      x  = transduce("resolve", ["ast":x, "base":entry.qname])
-      x  = transduce("reify",   ["ast":x, "base":entry.qname, "lib":true])
+      x  = transduce("resolve", ["it":x, "base":entry.qname])
+      x  = transduce("reify",   ["it":x, "base":entry.qname, "lib":true])
       return x
     }
     finally

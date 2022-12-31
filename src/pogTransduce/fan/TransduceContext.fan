@@ -90,9 +90,8 @@ class TransduceContext
   }
 
   ** Standard read using 'read' arg as input stream and file location
-  MTransduction read(|InStream, FileLoc->Obj?| f)
+  MTransduction read(Obj arg, |InStream, FileLoc->Obj?| f)
   {
-    arg := arg("read")
     loc := toLoc(arg)
     in := toInStream(arg)
     try
@@ -102,9 +101,8 @@ class TransduceContext
   }
 
   ** Standard write using 'write' arg as output stream
-  MTransduction write(|OutStream->Obj?| f)
+  MTransduction write(Obj arg, |OutStream->Obj?| f)
   {
-    arg := arg("write")
     out := toOutStream(arg)
     try
       return toResult(f(out))

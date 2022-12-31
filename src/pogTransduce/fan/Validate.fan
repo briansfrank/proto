@@ -25,12 +25,7 @@ const class ValidateTransducer : Transducer
 
   override Str usage()
   {
-    """Summary:
-         Validate a proto graph.
-       Usage:
-         validate graph:proto         Validate proto graph
-       Arguments:
-         graph                        Roof to the graph to validate
+    """validate proto          Validate proto
        """
   }
 
@@ -53,7 +48,7 @@ internal class Validator
 
   Proto validate()
   {
-    Proto graph := cx.arg("graph", true, Proto#)
+    Proto graph := cx.arg("it", true, Proto#)
     validateProto(graph)
     return graph
   }

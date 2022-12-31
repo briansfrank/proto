@@ -19,17 +19,15 @@ const class ParseTransducer : Transducer
 
   override Str summary()
   {
-    "Parse pog source into AST"
+    "Parse pog source into JSON AST"
   }
 
   override Str usage()
   {
-    """Summary:
-         Parse pog source file into an AST object structure.
-       Usage:
-         parse read:input         Read given input stream
-       Arguments:
-         read                     Input file, string, or 'stdin'
+    """parse file              Convenience for read:file
+       parse read:             Parse from prompt
+       parse read:file         Parse file into JSON
+       parse dir:file          Parse all pog files in directory
        """
   }
 
@@ -44,7 +42,9 @@ const class ParseTransducer : Transducer
       return parseDir(cx, dir)
     }
 
-    return cx.read |in, loc|
+    input := args["it"] ?: args["read"]
+
+    return cx.read(input) |in, loc|
     {
       parse(cx, loc, in, Parser.newMap)
     }

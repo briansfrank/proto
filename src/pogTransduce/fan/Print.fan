@@ -25,34 +25,33 @@ const class PrintTransducer : Transducer
 
   override Str usage()
   {
-    """Summary:
-         Print data to output stream.
-       Usage:
-         print val:data                Print data to stdout
-         print val:data write:output   Print data to given output stream
-       Arguments:
-         data                          Proto, JSON
-         write                         Output file or 'stdout'
+    """print data              Print data to stdout
+       print data write:file   Print data to given file
        """
   }
 
   override Transduction transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
-    val := cx.arg("val")
-    return cx.write |out|
+    data := cx.arg("it")
+    output := cx.arg("write", false) ?: Env.cur.out
+
+    return cx.write(output) |out|
     {
-      print(cx, out, val)
-      return val
+      print(cx, out, data)
+      return data
     }
   }
 
   private Void print(TransduceContext cx, OutStream out, Obj val)
   {
+    out.printLine
     if (val is Proto)
       PogPrinter(out, cx.args).print(val)
     else
       JsonPrinter(out, cx.args).print(val)
+    out.printLine
+    out.printLine
   }
 
 }

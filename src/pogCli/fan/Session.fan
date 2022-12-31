@@ -35,16 +35,54 @@ internal class Session
 
   Bool isDone
 
-  Int execute(Str expr)
+  Str:Obj vars := [:]
+
+  Int run()
   {
-    CmdExpr.parse(expr).each |c|
+    out.printLine("Pog shell v${typeof.pod.version} ('?' for help, 'quit' to quit)")
+    while (!isDone)
     {
-      executeExpr(c)
+      exprs := prompt
+      executeExprs(exprs)
     }
     return 0
   }
 
-  Int executeExpr(CmdExpr expr)
+  CmdExpr[] prompt()
+  {
+    // prompt for line of commands separated by comma
+    line := Env.cur.prompt("pog> ").trim
+    if (line.isEmpty) return CmdExpr#.emptyList
+
+    // if line ends with colon we are going to prompt from stdin
+    if (!line.endsWith(":")) return CmdExpr.parse(line)
+
+    // get additional lines from stdin
+    x := StrBuf()
+    while (true)
+    {
+      another := Env.cur.prompt("... ")
+      if (another.trim.isEmpty) break
+      x.add(another).add("\n")
+    }
+
+    exprs := CmdExpr.parse(line)
+    exprs[-1] = exprs[-1].replaceLastArg(x.toStr)
+    return exprs
+  }
+
+  Int execute(Str expr)
+  {
+    executeExprs(CmdExpr.parse(expr))
+    return 0
+  }
+
+  Void executeExprs(CmdExpr[] exprs)
+  {
+    exprs.each |expr| { executeExpr(expr) }
+  }
+
+  Void executeExpr(CmdExpr expr)
   {
     name := expr.name
     try
@@ -56,13 +94,12 @@ internal class Session
         return 1
       }
 
-      cmd.execute(this, expr.args)
-      return 0
+      result := cmd.execute(this, expr.args)
+      if (result != null) vars["it"] = result
     }
     catch (Err e)
     {
       err("$name failed\n$e.traceToStr")
-      return 1
     }
   }
 

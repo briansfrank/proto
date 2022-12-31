@@ -71,6 +71,12 @@ internal const class CmdExpr
     return s.toStr
   }
 
+  CmdExpr replaceLastArg(Str val)
+  {
+    last := args[-1]
+    return make(name, args[0..-2].add(CmdArg(last.name, val)))
+  }
+
   static Void main(Str[] args)
   {
     str := args.join(" ")
