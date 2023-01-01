@@ -42,8 +42,15 @@ internal class Session
     out.printLine("Pog shell v${typeof.pod.version} ('?' for help, 'quit' to quit)")
     while (!isDone)
     {
-      exprs := prompt
-      executeExprs(exprs)
+      try
+      {
+        exprs := prompt
+        executeExprs(exprs)
+      }
+      catch (Err e)
+      {
+        err("Internal error", e)
+      }
     }
     return 0
   }
@@ -94,7 +101,7 @@ internal class Session
         return 1
       }
 
-      result := cmd.execute(this, expr.args)
+      result := cmd.execute(this, expr)
       if (result != null) vars["it"] = result
     }
     catch (Err e)
@@ -103,7 +110,7 @@ internal class Session
     }
   }
 
-  private Void err(Str msg, Err? err := null)
+  Obj? err(Str msg, Err? err := null)
   {
     if (err == null)
       Env.cur.err.printLine("ERROR: $msg")
@@ -111,6 +118,7 @@ internal class Session
       Env.cur.err.printLine("ERROR: $msg [" +  ((FileLocErr)err).loc + "]\n$err.traceToStr")
     else
       Env.cur.err.printLine("ERROR: $msg\n$err.traceToStr")
+    return null
   }
 
 }

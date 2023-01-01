@@ -292,25 +292,37 @@ internal class PogPrinter : Printer
 
   private Void printChildren(Proto p, Bool meta, Str open, Str close)
   {
-    first := true
+    // find all the kids to dump
+    kids := Proto[,]
     p.eachOwn |kid|
     {
       if (kid.isMeta != meta) return
       if (kid.name == "_doc") return
-      if (first)
-      {
-        first = false
-        sp.wsymbol(open).nl
-        indention++
-      }
-      else
-      {
-        if (kid.name.size > 1 && kid.name[0].isUpper) nl
-      }
-      print(kid)
+      kids.add(kid)
     }
-    if (!first)
+    if (kids.isEmpty) return
+
+    // if just markers then print in compact mode
+    allMarkers := kids.all { printAsMarker(it) }
+    if (allMarkers)
     {
+      sp.wsymbol(open)
+      kids.each |kid, i|
+      {
+        if (i > 0) wsymbol(",").sp
+        printName(kid, true)
+      }
+      sp.wsymbol(close)
+    }
+    else
+    {
+      sp.wsymbol(open).nl
+      indention++
+      kids.each |kid, i|
+      {
+        if (i > 0 && kid.name.size > 1 && kid.name[0].isUpper) nl
+        print(kid)
+      }
       indention--
       windent
       wsymbol(close)

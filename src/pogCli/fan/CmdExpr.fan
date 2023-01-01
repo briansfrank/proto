@@ -63,6 +63,15 @@ internal const class CmdExpr
 
   const CmdArg[] args
 
+
+  CmdArg? arg(Str name, Bool checked := true)
+  {
+    arg := args.find { it.name == name || (name == "it" && it.name == null) }
+    if (arg != null) return arg
+    if (checked) throw ArgErr("Missing argument: $name")
+    return null
+  }
+
   override Str toStr()
   {
     s := StrBuf()
