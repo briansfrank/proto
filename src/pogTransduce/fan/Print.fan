@@ -229,7 +229,6 @@ internal class PogPrinter : Printer
 
   This print(Proto p)
   {
-    printBlankLine(p)
     printDoc(p)
     windent
     if (printAsMarker(p))
@@ -246,13 +245,6 @@ internal class PogPrinter : Printer
     }
     nl
     return this
-  }
-
-  private Void printBlankLine(Proto p)
-  {
-    name := p.name
-    if (name.isEmpty || !name[0].isUpper) return
-    nl
   }
 
   private Bool printAsMarker(Proto p)
@@ -311,6 +303,10 @@ internal class PogPrinter : Printer
         sp.wsymbol(open).nl
         indention++
       }
+      else
+      {
+        if (kid.name.size > 1 && kid.name[0].isUpper) nl
+      }
       print(kid)
     }
     if (!first)
@@ -320,6 +316,5 @@ internal class PogPrinter : Printer
       wsymbol(close)
     }
   }
-
 }
 
