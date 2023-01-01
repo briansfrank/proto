@@ -74,7 +74,10 @@ internal const class CmdExpr
   CmdExpr replaceLastArg(Str val)
   {
     last := args[-1]
-    return make(name, args[0..-2].add(CmdArg(last.name, val)))
+    args := args[0..-2]
+    args.add(CmdArg(last.name, val))
+    args.add(CmdArg("loc", "shell"))
+    return make(name, args)
   }
 
   static Void main(Str[] args)

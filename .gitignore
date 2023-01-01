@@ -7,6 +7,7 @@ fan.props
 /out/
 
 # pog
+/src/play.pog
 /pog/play/*
 
 # lib/

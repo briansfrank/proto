@@ -92,7 +92,7 @@ class TransduceContext
   ** Standard read using 'read' arg as input stream and file location
   MTransduction read(Obj arg, |InStream, FileLoc->Obj?| f)
   {
-    loc := toLoc(arg)
+    loc := args["loc"] as FileLoc ?: toLoc(arg)
     in := toInStream(arg)
     try
       return toResult(f(in, loc))

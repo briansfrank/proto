@@ -6,6 +6,7 @@
 //   31 Dec 2022  Brian Frank  Creation
 //
 
+using util
 using pog
 
 **
@@ -222,15 +223,24 @@ internal const class Transduce : Cmd
     targs.addNotNull("it", session.vars["it"])
     args.each |arg|
     {
-      targs[arg.name ?: "it"] = toArg(session, arg.val)
+      targs[arg.name ?: "it"] = toArg(session, arg.name, arg.val)
     }
 
     result := transducer.transduce(targs)
-    return result.get(true)
+
+    if (!result.events.isEmpty)
+    {
+      result.events.each |event| { Env.cur.err.printLine(event) }
+    }
+
+    return result.get(false)
   }
 
-  Obj toArg(Session session, Str arg)
+  Obj toArg(Session session, Str? name, Str arg)
   {
+    if (name == "base") return arg
+    if (name == "loc") return FileLoc(arg)
+
     // assume anything with slash or dot if file
     if (arg.contains(".") || arg.contains("/")) return arg.toUri.toFile
 

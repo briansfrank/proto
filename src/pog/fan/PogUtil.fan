@@ -62,7 +62,7 @@ const class PogUtil
   {
     args := Str:Obj?[:]
     if (opts != null) args.setAll(opts)
-    args["val"] = val ?: "null"
+    args["it"] = val ?: "null"
     args["write"] = out
     PogEnv.cur.transduce("print", args)
   }
