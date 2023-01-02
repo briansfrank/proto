@@ -4,13 +4,15 @@
 
 ---
 name: str
-pog: |
+test: parse src, resolve, verify json
+src: |
   foo: Str "hello"
 json: |
   {"foo":{"_is":"sys.Str", "_val":"hello"}}
 ---
 name: internal
-pog: |
+test: parse src, resolve, verify json
+src: |
   Foo: Scalar
   Bar: Scalar
   x: {
@@ -30,7 +32,8 @@ json: |
   }
 ---
 name: errs
-pog: |
+test: parse src, resolve, verify json, verify events
+src: |
   a: NotFound
   b: sys.Nope
   c: Str

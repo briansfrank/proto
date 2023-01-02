@@ -52,7 +52,7 @@ const class JsonTransducer : Transducer
     output := cx.arg("write", false) ?: Env.cur.out
     return cx.write(output) |out|
     {
-      JsonPrinter(out).print(val)
+      JsonPrinter(out, args).print(val)
       return val
     }
   }
@@ -65,7 +65,10 @@ const class JsonTransducer : Transducer
 @Js
 internal class JsonPrinter : Printer
 {
-  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts)
+  {
+    this.noloc = opts?.get("noloc") == true
+  }
 
   Void print(Obj? val)
   {
@@ -95,35 +98,39 @@ internal class JsonPrinter : Printer
   Void printMap(Str:Obj? map)
   {
     keys := map.keys
+    if (noloc) keys.remove("_loc")
+
     if (keys.size == 0)
       wsymbol("{}")
     else if (keys.size <= 1 || map["_val"] != null)
-      printCompact(map)
+      printCompact(keys, map)
     else
-      printComplex(map)
+      printComplex(keys, map)
   }
 
-  Void printCompact(Str:Obj? map)
+  Void printCompact(Str[] keys, Str:Obj? map)
   {
     first := true
     wsymbol("{")
-    if (map.containsKey("_is"))  first = printPair("_is", map["_is"], false, first)
-    if (map.containsKey("_val")) first = printPair("_val", map["_val"], false, first)
-    map.each |v, n|
+    if (keys.contains("_is"))  first = printPair("_is", map["_is"], false, first)
+    if (keys.contains("_val")) first = printPair("_val", map["_val"], false, first)
+    keys.each |n|
     {
       if (n == "_is" || n == "_val") return
+      v := map[n]
       first = printPair(n, v, false, first)
     }
     wsymbol("}")
   }
 
-  Void printComplex(Str:Obj? map)
+  Void printComplex(Str[] keys, Str:Obj? map)
   {
     wsymbol("{").nl
     indention++
     first := true
-    map.each |v, n|
+    keys.each |n|
     {
+      v := map[n]
       first = printPair(n, v, true, first)
     }
     indention--
@@ -155,6 +162,7 @@ internal class JsonPrinter : Printer
     throw Err("TODO")
   }
 
+  const Bool noloc
 }
 
 

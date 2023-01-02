@@ -57,6 +57,8 @@ class TransduceContext
     arg := args[name]
     if (arg != null)
     {
+// TODO
+if (arg is TransduceData) arg = ((TransduceData)arg).get
       if (type != null && !arg.typeof.fits(type))
         throw ArgErr("Expecting '$name' to be $type.signature, not $arg.typeof")
       return arg

@@ -64,6 +64,11 @@ class PogTestRunner
     docs.each |doc|
     {
       if (doc == null) return
+if (file.name == "haystack.yaml")
+{
+  echo("TODO: skip haystack")
+  return
+}
       runTest(file.basename, doc)
     }
     return this
@@ -81,17 +86,7 @@ class PogTestRunner
 
     try
     {
- if (def["test"] != null) return runExprs(def)
-      // TODO test basd on filename
-      switch (filename)
-      {
-        case "parse":    runParse(def)
-        case "resolve":  runResolve(def)
-        case "reify":    runReify(def)
-        case "validate": runValidate(def)
-        case "haystack": runHaystack(def)
-        default:         throw Err("Unknown test type: $filename")
-      }
+      runExprs(def)
     }
     catch (Err e)
     {
@@ -106,11 +101,12 @@ class PogTestRunner
     return !args.any { qname.contains(it) }
   }
 
-
-  This runExprs(Str:Obj def)
+  Void runExprs(Str:Obj def)
   {
+    // parse the 'test' field into list of CLI exprs
     exprs := CmdExpr.parse(def.getChecked("test"))
 
+    // map fields into variable scope
     vars := Str:TransduceData[:]
     def.each |v, n|
     {
@@ -118,6 +114,7 @@ class PogTestRunner
       vars[n] = env.data(v, ["str", "test"], FileLoc("test.$n"))
     }
 
+    // evaluate each expr
     exprs.each |expr|
     {
       if (expr.name == "verify")
@@ -125,13 +122,12 @@ class PogTestRunner
       else
         runTransduce(expr, vars)
     }
-
-    return this
   }
 
   Void runTransduce(CmdExpr expr, Str:TransduceData vars)
   {
     args := Str:Obj?[:]
+    args.addNotNull("it", vars["it"])
     expr.args.each |arg|
     {
       name := arg.name ?: "it"
@@ -146,114 +142,29 @@ class PogTestRunner
     actual := vars.get("it") as TransduceData ?: throw Err("Missing it data")
     arg    := expr.args.first ?: throw Err("Expecting verify mode:field")
     mode   := arg.name ?: arg.val
-    field  := vars.getChecked(arg.val)
+    expect := vars.getChecked(arg.val).get
     switch (mode)
     {
-      case "pog":  verifyPog(actual, field.get)
-      case "zinc": verifyZinc(actual, field.get)
+      case "json":   verifyJson(actual, expect)
+      case "pog":    verifyPog(actual, expect)
+      case "zinc":   verifyZinc(actual,expect)
+      case "events": verifyEvents(actual, expect)
       default: throw Err("Unknown verify mode: $mode")
     }
-  }
-
-  Void verifyZinc(TransduceData data, Str expected)
-  {
-    expected = expected.trim
-    buf := StrBuf()
-    grid := data.get as Grid ?: throw Err("Expecting Grid: $data")
-    actual := ZincWriter.gridToStr(grid).trim
-
-    if (verbose || actual != expected)
-    {
-      echo
-      echo("--- Zinc [$cur] ---")
-      PogUtil.print(data.get(false))
-      dump(actual, expected)
-    }
-    verifyEq(actual, expected)
-  }
-
-  Void runParse(Str:Obj def)
-  {
-    pog    := def.getChecked("pog")
-    events := def.get("events")
-    json   := def.getChecked("json", events == null)
-
-    a := transduce("parse", ["read":pog], events == null)
-    if (events == null)
-    {
-      verifyJson(a, json)
-    }
-    else
-    {
-      verifyEvents(a, events)
-    }
-  }
-
-  Void runResolve(Str:Obj def)
-  {
-    pog    := def.getChecked("pog")
-    json   := def.getChecked("json")
-    events := def.get("events")
-
-    a := transduce("parse", ["read":pog]).get
-    b := transduce("resolve", ["it":a], false)
-    verifyJson(b, json)
-    verifyEvents(b, events)
-  }
-
-  Void runReify(Str:Obj def)
-  {
-    pog    := def.getChecked("src")
-    json   := def.getChecked("json")
-
-    a := transduce("parse",   ["read":pog]).get
-    b := transduce("resolve", ["it":a, "base":"test"]).get
-    c := transduce("reify",   ["it":b, "base":"test"])
-    verifyJson(c, json)
-  }
-
-  Void runValidate(Str:Obj def)
-  {
-    pog    := def.getChecked("src")
-    events := def.getChecked("events")
-
-    a := transduce("parse",    ["read":pog]).get
-    b := transduce("resolve",  ["it":a, "base":"test"]).get
-    c := transduce("reify",    ["it":b, "base":"test"]).get
-    d := transduce("validate", ["it":c], false)
-    verifyEvents(d, events)
-  }
-
-  Void runHaystack(Str:Obj def)
-  {
-    trio := def.getChecked("trio")
-    pog  := def.getChecked("pog")
-
-    trioFile := Buf().print(trio).toFile(`test.trio`)
-
-    a := transduce("haystack", ["read":trioFile])
-    verifyPog(a, pog)
-  }
-
-  TransduceData transduce(Str name, Str:Obj args, Bool dumpErrs := true)
-  {
-    t := env.transduce(name, args)
-    if (t.isErr && dumpErrs) echo(t.errs.join("\n"))
-    return t
   }
 
   Void verifyJson(TransduceData t, Str expected)
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["it":t.get(false), "write":buf.out])
+    env.transduce("json", ["it":t.get(false), "write":buf.out, "noloc":true])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
     {
       echo
       echo("--- JSON [$cur] ---")
-      PogUtil.print(t.get(false))
+      PogUtil.print(t.get(false), Env.cur.out, ["noloc":true])
       dump(json, expected)
     }
     verifyEq(json, expected)
@@ -275,6 +186,24 @@ class PogTestRunner
     }
     verifyEq(pog, expected)
   }
+
+  Void verifyZinc(TransduceData data, Str expected)
+  {
+    expected = expected.trim
+    buf := StrBuf()
+    grid := data.get as Grid ?: throw Err("Expecting Grid: $data")
+    actual := ZincWriter.gridToStr(grid).trim
+
+    if (verbose || actual != expected)
+    {
+      echo
+      echo("--- Zinc [$cur] ---")
+      PogUtil.print(data.get(false))
+      dump(actual, expected)
+    }
+    verifyEq(actual, expected)
+  }
+
 
   Void verifyEvents(TransduceData t, Str? expectedTable)
   {

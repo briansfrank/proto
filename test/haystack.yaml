@@ -8,6 +8,7 @@
 
 ---
 name: fromHaystack
+test: read trio:trio, reify, verify pog
 trio: |
   marker
   na: NA

@@ -4,61 +4,71 @@
 
 ---
 name: markerOnly
-pog: |
+test: parse src, verify json
+src: |
   foo
 json: |
   {"foo":{"_is":"sys.Marker"}}
 ---
 name: nameAndIs
-pog: |
+test: parse src, verify json
+src: |
   foo: Str
 json: |
   {"foo":{"_is":"Str"}}
 ---
 name: nameAndQualIs
-pog: |
+test: parse src, verify json
+src: |
   foo: bar.baz.Elem
 json: |
   {"foo":{"_is":"bar.baz.Elem"}}
 ---
 name: scalarOnly
-pog: |
+test: parse src, verify json
+src: |
   foo: "scalar"
 json: |
   {"foo":{"_val":"scalar"}}
 ---
 name: scalarAndIs
-pog: |
+test: parse src, verify json
+src: |
   foo: Date "2022-12-20"
 json: |
   {"foo":{"_is":"Date", "_val":"2022-12-20"}}
 ---
 name: scalarAndQualIs
-pog: |
+test: parse src, verify json
+src: |
   foo: baz.ui.Color "green"
 json: |
   {"foo":{"_is":"baz.ui.Color", "_val":"green"}}
 ---
 name: children0
-pog: |
+test: parse src, verify json
+src: |
   foo: {}
 json: |
   {"foo":{}}
 ---
 name: children1ScalarOnly
-pog: |
+test: parse src, verify json
+src: |
   foo: {b:"beta"}
 json: |
   {"foo":{"b":{"_val":"beta"}}}
 ---
 name: children1ScalarAndIs
-pog: |
+test: parse src, verify json
+src: |
   foo  :  {  b  :  Color "blue" }
 json: |
   {"foo":{"b":{"_is":"Color", "_val":"blue"}}}
 ---
 name: children1ScalarAndQualIs
-pog: |
+test: parse src, verify json
+src: |
   foo :  {
     b:  graphics.Color "blue"
   }
@@ -66,7 +76,8 @@ json: |
   {"foo":{"b":{"_is":"graphics.Color", "_val":"blue"}}}
 ---
 name: children2ScalarsComma
-pog: |
+test: parse src, verify json
+src: |
   foo: {a:"Alpha", b:"Bravo"}
 json: |
   {"foo":{
@@ -75,7 +86,8 @@ json: |
   }}
 ---
 name: children2ScalarsCommaTrailing
-pog: |
+test: parse src, verify json
+src: |
   foo: {a:"Alpha", b:"Bravo",}
 json: |
   {"foo":{
@@ -84,7 +96,8 @@ json: |
   }}
 ---
 name: children2ScalarsNewline
-pog: |
+test: parse src, verify json
+src: |
   foo: {
     a:"Alpha"
     b:"Bravo"
@@ -96,7 +109,8 @@ json: |
   }}
 ---
 name: children2ScalarsCommaAndNewline
-pog: |
+test: parse src, verify json
+src: |
   foo: {
     a:"Alpha",
     b:"Bravo",
@@ -108,7 +122,8 @@ json: |
   }}
 ---
 name: children2ScalarsCommaAndWhitespace
-pog: |
+test: parse src, verify json
+src: |
   foo:  {
 
     a  :  "Alpha",
@@ -123,7 +138,8 @@ json: |
   }}
 ---
 name: children3MixedScalars
-pog: |
+test: parse src, verify json
+src: |
   foo: {
     a: "Alpha",
     b: Color "#FFF"
@@ -137,7 +153,8 @@ json: |
   }}
 ---
 name: childrenAndIs
-pog: |
+test: parse src, verify json
+src: |
   foo: Person {
     name: "Brian",
     age: Int "40"
@@ -150,7 +167,8 @@ json: |
   }}
 ---
 name: childrenAndQualIs
-pog: |
+test: parse src, verify json
+src: |
   foo:some.lib.Person{name: "Brian",age: Int "40"}
 json: |
   {"foo":{
@@ -160,25 +178,29 @@ json: |
   }}
 ---
 name: metaOnly
-pog: |
+test: parse src, verify json
+src: |
   foo: <markIt>
 json: |
   {"foo":{"_markIt":{"_is":"sys.Marker"}}}
 ---
 name: metaScalar
-pog: |
+test: parse src, verify json
+src: |
   foo: Int<minVal:"100">"123"
 json: |
   {"foo":{"_is":"Int", "_val":"123", "_minVal":{"_val":"100"}}}
 ---
 name: metaScalar2
-pog: |
+test: parse src, verify json
+src: |
   foo: Int<abstract, minVal:"100">"123"
 json: |
   {"foo":{"_is":"Int", "_val":"123", "_abstract":{"_is":"sys.Marker"}, "_minVal":{"_val":"100"}}}
 ---
 name: metaAndChildrenMarkers
-pog: |
+test: parse src, verify json
+src: |
   foo: <metaMarker> {childMarker}
 json: |
   {"foo":{
@@ -187,7 +209,8 @@ json: |
   }}
 ---
 name: metaAndChildren
-pog: |
+test: parse src, verify json
+src: |
   foo: <a:"Meta-A"> {b:"Child-B"}
 json: |
   {"foo":{
@@ -196,7 +219,8 @@ json: |
   }}
 ---
 name: everything1
-pog: |
+test: parse src, verify json
+src: |
   foo: Person <concrete> {
     nick:"Brian"
     full: Full { first:"B", last:"F" }
@@ -230,7 +254,8 @@ json: |
 
 ---
 name: docPre
-pog: |
+test: parse src, verify json
+src: |
   // Single line
   Foo: {}
 
@@ -244,7 +269,8 @@ json: |
   }
 ---
 name: docPost
-pog: |
+test: parse src, verify json
+src: |
   Foo: {}  // Post Foo
   Bar: {
      marker    // Post foo
@@ -273,8 +299,9 @@ json: |
 
 ---
 name: maybe
-pog: |
- a: Foo?
+test: parse src, verify json
+src: |
+  a: Foo?
 json: |
   {"a":{
     "_is":"sys.Maybe",
@@ -282,8 +309,9 @@ json: |
   }}
 ---
 name: maybeQual
-pog: |
- a: some.lib.Foo?
+test: parse src, verify json
+src: |
+  a: some.lib.Foo?
 json: |
   {"a":{
     "_is":"sys.Maybe",
@@ -297,8 +325,9 @@ json: |
 
 ---
 name: and2
-pog: |
- a:Foo&Bar
+test: parse src, verify json
+src: |
+  a:Foo&Bar
 json: |
   {"a":{
     "_is":"sys.And",
@@ -309,8 +338,9 @@ json: |
   }}
 ---
 name: andQual2
-pog: |
- a:alpha.Foo&beta.gamma.Bar
+test: parse src, verify json
+src: |
+  a:alpha.Foo&beta.gamma.Bar
 json: |
   {"a":{
     "_is":"sys.And",
@@ -321,8 +351,9 @@ json: |
   }}
 ---
 name: andMixed3
-pog: |
- a: Foo & some.lib.Bar & Baz
+test: parse src, verify json
+src: |
+  a: Foo & some.lib.Bar & Baz
 json: |
   {"a":{
     "_is":"sys.And",
@@ -334,10 +365,11 @@ json: |
   }}
 ---
 name: andNewlines
-pog: |
- a: Foo &
-    some.lib.Bar &
-    Baz
+test: parse src, verify json
+src: |
+  a: Foo &
+     some.lib.Bar &
+     Baz
 json: |
   {"a":{
     "_is":"sys.And",
@@ -355,8 +387,9 @@ json: |
 
 ---
 name: or2
-pog: |
- a:Foo|Bar
+test: parse src, verify json
+src: |
+  a:Foo|Bar
 json: |
   {"a":{
     "_is":"sys.Or",
@@ -367,8 +400,9 @@ json: |
   }}
 ---
 name: orQual2
-pog: |
- a:alpha.Foo|beta.gamma.Bar
+test: parse src, verify json
+src: |
+  a:alpha.Foo|beta.gamma.Bar
 json: |
   {"a":{
     "_is":"sys.Or",
@@ -379,8 +413,9 @@ json: |
   }}
 ---
 name: orMixed3
-pog: |
- a: Foo | some.lib.Bar | Baz
+test: parse src, verify json
+src: |
+  a: Foo | some.lib.Bar | Baz
 json: |
   {"a":{
     "_is":"sys.Or",
@@ -392,10 +427,11 @@ json: |
   }}
 ---
 name: orNewlines
-pog: |
- a: Foo |
-    some.lib.Bar |
-    Baz
+test: parse src, verify json
+src: |
+  a: Foo |
+     some.lib.Bar |
+     Baz
 json: |
   {"a":{
     "_is":"sys.Or",
@@ -407,7 +443,8 @@ json: |
   }}
 ---
 name: orScalars
-pog: |
+test: parse src, verify json
+src: |
   vals: "foo" | "bar"
   mix1: Date | "nil" | Str
   mix2: "nil" | Date
@@ -444,71 +481,81 @@ json: |
 
 ---
 name: errsEndStr
-pog: |
- a: "xxx
+test: parse src, verify events
+src: |
+  a: "xxx
 events: |
   level ; msg
   err   ; Unexpected end of string literal
 ---
 name: errsEscape
-pog: |
- a: "x\x
+test: parse src, verify events
+src: |
+  a: "x\x
 events: |
   level ; msg
   err   ; Invalid escape sequence
 ---
 name: errsSymbol
-pog: |
- a: ^
+test: parse src, verify events
+src: |
+  a: ^
 events: |
   level ; msg
   err   ; Unexpected symbol: '^' (0x5e)
 ---
 name: errsQName
-pog: |
- a: foo.{
+test: parse src, verify events
+src: |
+  a: foo.{
 events: |
   level ; msg
   err   ; Expected identifier not '{' lbrace
 ---
 name: errsBody
-pog: |
- a: ,
+test: parse src, verify events
+src: |
+  a: ,
 events: |
   level ; msg
   err   ; Expecting proto body not ',' comma
 ---
 name: errEnd
-pog: |
- a: b c
+test: parse src, verify events
+src: |
+  a: b c
 events: |
   level ; msg
   err   ; Expecting end of proto: comma or newline, not identifier "c"
 ---
 name: errsAnd
-pog: |
- a: Foo &
+test: parse src, verify events
+src: |
+  a: Foo &
 events: |
   level ; msg
   err   ; Expecting next proto name after '&' and symbol
 ---
 name: errsOr
-pog: |
- a: Foo |
+test: parse src, verify events
+src: |
+  a: Foo |
 events: |
   level ; msg
   err   ; Expecting next proto name after '|' or symbol
 ---
 name: errsEndBrace
-pog: |
- a: {
+test: parse src, verify events
+src: |
+  a: {
 events: |
   level ; msg
   err   ; Unexpected end of file, missing closing '}' rbrace
 ---
 name: errsEndBrace
-pog: |
- a: <
+test: parse src, verify events
+src: |
+  a: <
 events: |
   level ; msg
   err   ; Unexpected end of file, missing closing '>' gt

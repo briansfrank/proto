@@ -4,6 +4,8 @@
 
 ---
 name: scalar
+test: parse src, resolve base:base, reify base:base, verify json
+base: test
 src: |
   foo: "hello"
 json: |
@@ -11,11 +13,9 @@ json: |
     "_is":"sys.Dict",
     "foo":{"_is":"sys.Str", "_val":"hello"}
   }
-get: |
-  foo is sys.Str
-  foo val "hello"
 ---
 name: dict
+test: parse src, resolve, reify, verify json
 src: |
   foo: {
     bar: Str
@@ -32,6 +32,8 @@ json: |
   }
 ---
 name: internal
+test: parse src, resolve base:base, reify base:base, verify json
+base: test
 src: |
   Foo: {
     bar: Bar
@@ -52,6 +54,8 @@ json: |
   }
 ---
 name: inferSlots
+test: parse src, resolve base:base, reify base:base, verify json
+base: test
 src: |
   Foo: {
     bar: Date
@@ -79,6 +83,8 @@ json: |
   }
 ---
 name: inferChain
+test: parse src, resolve base:base, reify base:base, verify json
+base: test
 src: |
   Delta: Charlie {
     foo: "z"
