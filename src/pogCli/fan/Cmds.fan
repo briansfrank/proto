@@ -247,20 +247,19 @@ internal const class Transduce : Cmd
     return result
   }
 
-  Obj toArg(Session session, Str? name, Str arg)
+  TransduceData toArg(Session session, Str? name, Str arg)
   {
-    if (name == "base") return arg
-    if (name == "loc") return FileLoc(arg)
+    if (name == "base") return session.data(arg)
 
     // assume anything with slash or dot if file
-    if (arg.contains(".") || arg.contains("/")) return arg.toUri.toFile
+    if (arg.contains(".") || arg.contains("/")) return session.data(arg.toUri.toFile)
 
     // check for variable
     var := session.vars[arg]
     if (var != null) return var
 
     // use string literal
-    return arg
+    return session.data(arg)
   }
 }
 

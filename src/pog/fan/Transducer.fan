@@ -41,6 +41,6 @@ abstract const class Transducer
   abstract Str usage()
 
   ** Transduce the given arguments
-  abstract TransduceData transduce(Str:Obj? args)
+  abstract TransduceData transduce(Str:TransduceData args)
 }
 

@@ -126,14 +126,14 @@ if (file.name == "haystack.yaml")
 
   Void runTransduce(CmdExpr expr, Str:TransduceData vars)
   {
-    args := Str:Obj?[:]
-    args.addNotNull("it", vars["it"])
+    targs := Str:TransduceData[:]
+    targs.addNotNull("it", vars["it"])
     expr.args.each |arg|
     {
       name := arg.name ?: "it"
-      args[name] = vars.getChecked(arg.val)
+      targs[name] = env.data(vars.getChecked(arg.val))
     }
-    result := env.transduce(expr.name, args)
+    result := env.transduce(expr.name, targs)
     vars["it"] = result
   }
 
@@ -157,14 +157,14 @@ if (file.name == "haystack.yaml")
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["it":t.get(false), "write":buf.out, "noloc":true])
+    env.transduce("json", ["it":t, "write":env.data(buf.out), "noloc":env.data(true)])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
     {
       echo
       echo("--- JSON [$cur] ---")
-      PogUtil.print(t.get(false), Env.cur.out, ["noloc":true])
+      PogUtil.print(t.get(false), Env.cur.out, ["noloc":env.data(true)])
       dump(json, expected)
     }
     verifyEq(json, expected)
@@ -174,7 +174,7 @@ if (file.name == "haystack.yaml")
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("print", ["it":t.get(false), "write":buf.out])
+    env.transduce("print", ["it":t, "write":env.data(buf.out)])
     pog := buf.toStr.trim
 
     if (verbose || pog != expected)

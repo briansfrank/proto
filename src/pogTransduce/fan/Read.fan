@@ -49,7 +49,7 @@ const class ReadTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
 
@@ -65,7 +65,7 @@ const class ReadTransducer : Transducer
     throw Err("Unknown read file type: $args")
   }
 
-  private TransduceData readPog(TransduceContext cx, Obj data)
+  private TransduceData readPog(TransduceContext cx, TransduceData data)
   {
     args := cx.args.dup
     args["it"] = data
@@ -73,48 +73,48 @@ const class ReadTransducer : Transducer
     x := env.transduce("parse", args)
     if (x.isErr) return x
 
-    x = env.transduce("resolve", args.dup.set("it", x.get))
+    x = env.transduce("resolve", args.dup.set("it", x))
     if (x.isErr) return x
 
-    x = env.transduce("reify", args.dup.set("it", x.get))
+    x = env.transduce("reify", args.dup.set("it", x))
     if (x.isErr) return x
 
     return x
   }
 
-  private TransduceData readZinc(TransduceContext cx, Obj data)
+  private TransduceData readZinc(TransduceContext cx, TransduceData data)
   {
-    cx.read(data) |in, loc|
+    data.withInStream |in|
     {
       grid := ZincReader(in).readGrid
-      return cx.env.data(grid, ["grid", "zinc"], loc)
+      return cx.toResult(grid, ["grid", "zinc"], data.loc)
     }
   }
 
-  private TransduceData readHayson(TransduceContext cx, Obj data)
+  private TransduceData readHayson(TransduceContext cx, TransduceData data)
   {
-    cx.read(data) |in, loc|
+    data.withInStream  |in|
     {
       grid := JsonReader(in).readGrid
-      return cx.env.data(grid, ["grid", "hayson"], loc)
+      return cx.toResult(grid, ["grid", "hayson"], data.loc)
     }
   }
 
-  private TransduceData readTrio(TransduceContext cx, Obj data)
+  private TransduceData readTrio(TransduceContext cx, TransduceData data)
   {
-    cx.read(data) |in, loc|
+    data.withInStream  |in|
     {
       grid := TrioReader(in).readGrid
-      return cx.env.data(grid, ["grid", "trio"], loc)
+      return cx.toResult(grid,  ["grid", "trio"], data.loc)
     }
   }
 
-  private TransduceData readCsv(TransduceContext cx, Obj data)
+  private TransduceData readCsv(TransduceContext cx, TransduceData data)
   {
-    cx.read(data) |in, loc|
+    data.withInStream  |in|
     {
       grid := CsvReader(in).readGrid
-      return cx.env.data(grid, ["grid", "csv"], loc)
+      return cx.toResult(grid,  ["grid", "csv"], data.loc)
     }
   }
 }

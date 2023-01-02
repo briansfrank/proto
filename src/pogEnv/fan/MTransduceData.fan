@@ -63,5 +63,73 @@ class MTransduceData : TransduceData
     if (checked) throw TransduceErr("Failed with $errs.size errs")
     return val
   }
+
+  override Obj? withInStream(|InStream->Obj?| f)
+  {
+    in := getInStream
+    close := in !== Env.cur.in
+    try
+      return f(in)
+    finally
+      if (close) in.close
+  }
+
+  override Obj? withOutStream(|OutStream->Obj?| f)
+  {
+    out := getOutStream
+    close := out !== Env.cur.out && out !== Env.cur.err
+    try
+      return f(out)
+    finally
+      if (close) out.close
+  }
+
+  override InStream getInStream()
+  {
+    if (val == "stdin") return Env.cur.in
+    if (val is InStream) return val
+    if (val is Str) return ((Str)val).in
+    if (val is File) return ((File)val).in
+    throw argErr("InStream")
+  }
+
+  override OutStream getOutStream()
+  {
+    if (val == null) return Env.cur.out
+    if (val == "stdout") return Env.cur.out
+    if (val == "stderr") return Env.cur.err
+    if (val is OutStream) return val
+    if (val is File) return ((File)val).out
+    throw argErr("OutStream")
+  }
+
+  override Str getStr()
+  {
+    if (val is Str) return val
+    throw argErr("Str")
+  }
+
+  override File getDir()
+  {
+    file := val as File
+    if (file != null && file.isDir) return file
+    throw argErr("Dir")
+  }
+
+  override Str:Obj? getAst()
+  {
+    map := val as Str:Obj?
+    if (map != null) return map
+    throw argErr("AST Str:Obj")
+  }
+
+  override Proto getProto()
+  {
+    proto := val as Proto
+    if (proto != null) return proto
+    throw argErr("Proto")
+  }
+
+  ArgErr argErr(Str expected) { ArgErr("Cannot get as $expected: ${val?.typeof} $tags") }
 }
 

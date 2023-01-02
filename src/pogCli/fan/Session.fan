@@ -31,6 +31,11 @@ internal class Session
     cmds.find |c| { c.name == name || c.aliases.contains(name) }
   }
 
+  TransduceData data(Obj? val, Str[]? tags := null, FileLoc? loc := null)
+  {
+    env.data(val, tags, loc, null)
+  }
+
   OutStream out { private set }
 
   Bool isDone

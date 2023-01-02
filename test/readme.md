@@ -27,7 +27,7 @@ field is just an identifier for the test.  The `test` field
 specifies the series of transducers to run separated by a comma.
 The transducer arguments use test field names:
 
-    // run parse tranducer using 'src' field as input
+    // run parse transducer using 'src' field as input
     parse src
 
     // verify last result as JSON  against 'expect' field

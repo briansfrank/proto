@@ -43,5 +43,30 @@ mixin TransduceData
 
   ** Error events from the transduction
   abstract TransduceEvent[] errs()
+
+  ** Get the data as an input stream
+  @NoDoc abstract Obj? withInStream(|InStream->Obj?| f)
+
+  ** Get the data as an output stream
+  @NoDoc abstract Obj? withOutStream(|OutStream->Obj?| f)
+
+  ** Get the data as an input stream
+  @NoDoc abstract InStream getInStream()
+
+  ** Get the data as an output stream
+  @NoDoc abstract OutStream getOutStream()
+
+  ** Get the value as string
+  @NoDoc abstract Str getStr()
+
+  ** Get the data as file directory
+  @NoDoc abstract File getDir()
+
+  ** Get the data AST JSON representation
+  @NoDoc abstract Str:Obj? getAst()
+
+  ** Get the data AST JSON representation
+  @NoDoc abstract Proto getProto()
+
 }
 

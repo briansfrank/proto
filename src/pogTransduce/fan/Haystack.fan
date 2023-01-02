@@ -31,7 +31,7 @@ const class HaystackTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
     if (args.containsKey("read")) return readHaystack(cx)
@@ -40,7 +40,7 @@ const class HaystackTransducer : Transducer
 
   private TransduceData readHaystack(TransduceContext cx)
   {
-    cx.toResult(HaystackReader(cx).read)
+    cx.toResult(HaystackReader(cx).read, ["todo"], FileLoc.unknown)
   }
 }
 
@@ -55,7 +55,7 @@ internal class HaystackReader
   {
     this.cx   = cx
     this.arg  = cx.arg("read", true)
-    this.base = QName.fromStr(cx.arg("base", false, Str#) ?: "")
+    this.base = QName.fromStr(cx.arg("base", false)?.getStr ?: "")
     this.loc  = cx.toLoc(arg)
   }
 

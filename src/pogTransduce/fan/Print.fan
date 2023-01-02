@@ -31,15 +31,13 @@ const class PrintTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
-    cx := TransduceContext(this, args)
+    cx   := TransduceContext(this, args)
     data := cx.arg("it")
-    output := cx.arg("write", false) ?: Env.cur.out
-
-    return cx.write(output) |out|
+    return cx.argWrite.withOutStream |out|
     {
-      print(cx, out, data)
+      print(cx, out, data.get)
       return data
     }
   }

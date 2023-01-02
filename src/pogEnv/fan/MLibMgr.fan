@@ -86,10 +86,10 @@ internal const class MLibMgr
     compilingPush(entry.qname)
     try
     {
-      x := transduce("parse",   ["dir":entry.dir])
-      x  = transduce("resolve", ["it":x, "base":entry.qname])
-      x  = transduce("reify",   ["it":x, "base":entry.qname, "lib":true])
-      return x
+      x := transduce("parse",   ["dir":env.data(entry.dir)])
+      x  = transduce("resolve", ["it":x, "base":env.data(entry.qname)])
+      x  = transduce("reify",   ["it":x, "base":env.data(entry.qname)])
+      return x.get
     }
     finally
     {
@@ -113,11 +113,10 @@ internal const class MLibMgr
     if (stack.isEmpty) Actor.locals.remove(compilingKey)
   }
 
-  private Obj? transduce(Str name, Str:Obj args)
+  private TransduceData transduce(Str name, Str:Obj args)
   {
-    t := env.transduce(name, args)
-    if (t.isErr) echo(t.events.join("\n"))
-    x := t.get
+    x := env.transduce(name, args)
+    if (x.isErr) echo(x.events.join("\n"))
     return x
   }
 

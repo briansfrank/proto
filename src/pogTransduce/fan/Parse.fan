@@ -31,37 +31,34 @@ const class ParseTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
 
-    dirArg := cx.arg("dir", false)
-    if (dirArg != null)
-    {
-      dir := dirArg as File ?: throw ArgErr("Expecting dir to be File, not ${dirArg.typeof}")
-      return parseDir(cx, dir)
-    }
+    input := cx.arg("dir", false)
+    if (input != null) return parseDir(cx, input)
 
-    input := args["it"] ?: args["read"]
-
-    return cx.read(input) |in, loc|
+    input = cx.arg("it")
+    return input.withInStream |in|
     {
-      parse(cx, loc, in, Parser.newMap)
+      toAstResult(cx, input, parse(cx, input.loc, in, Parser.newMap))
     }
   }
 
-  private TransduceData parseDir(TransduceContext cx, File dir)
+  private TransduceData parseDir(TransduceContext cx, TransduceData input)
   {
+    dir := input.get as File ?: throw ArgErr("Expecting dir to be File, not ${input.get.typeof}")
     files := dir.list.findAll { it.ext == "pog" }
     if (files.isEmpty) throw ArgErr("No pog files in dir [$dir.osPath]")
     files = files.sort |a, b| { a.name <=> b.name }
 
-    root := Parser.newMap
+    loc := FileLoc(dir)
+    ast := Parser.newMap
     files.each |file|
     {
-      parse(cx, FileLoc(file), file.in, root)
+      parse(cx, FileLoc(file), file.in, ast)
     }
-    return cx.toResult(root)
+    return toAstResult(cx, input, ast)
   }
 
   private Obj? parse(TransduceContext cx, FileLoc loc, InStream in, Str:Obj root)
@@ -79,6 +76,11 @@ const class ParseTransducer : Transducer
       cx.err(e.toStr, loc, e)
     }
     return root
+  }
+
+  private TransduceData toAstResult(TransduceContext cx, TransduceData input, Str:Obj? ast)
+  {
+    cx.toResult(ast, ["json", "ast", "unresolved"], input.loc)
   }
 
 }

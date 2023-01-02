@@ -32,18 +32,18 @@ const class CompileTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     x := env.transduce("parse", args)
     if (x.isErr) return x
 
-    x = env.transduce("resolve", args.dup.set("it", x.get))
+    x = env.transduce("resolve", args.dup.set("it", x))
     if (x.isErr) return x
 
-    x = env.transduce("reify", args.dup.set("it", x.get))
+    x = env.transduce("reify", args.dup.set("it", x))
     if (x.isErr) return x
 
-    x = env.transduce("validate", args.dup.set("it", x.get))
+    x = env.transduce("validate", args.dup.set("it", x))
     if (x.isErr) return x
 
     return x

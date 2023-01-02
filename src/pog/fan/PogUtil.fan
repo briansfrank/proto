@@ -64,6 +64,7 @@ const class PogUtil
     if (opts != null) args.setAll(opts)
     args["it"] = val ?: "null"
     args["write"] = out
+    args = args.map |v| { PogEnv.cur.data(v) }
     PogEnv.cur.transduce("print", args)
   }
 }

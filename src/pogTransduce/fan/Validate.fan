@@ -29,10 +29,12 @@ const class ValidateTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
-    cx := TransduceContext(this, args)
-    return cx.toResult(Validator(cx).validate)
+    cx    := TransduceContext(this, args)
+    data  := cx.arg("it")
+    proto := Validator(cx).validate(data.getProto)
+    return cx.toResult(proto, ["proto", "validated"], data.loc)
   }
 
 }
@@ -46,20 +48,14 @@ internal class Validator
 {
   new make(TransduceContext cx) { this.cx = cx }
 
-  Proto validate()
-  {
-    Proto graph := cx.arg("it", true, Proto#)
-    validateProto(graph)
-    return graph
-  }
-
-  Void validateProto(Proto p)
+  Proto validate(Proto p)
   {
     stack.push(p)
     validateVal(p)
     validateFit(p)
-    p.eachOwn |kid| { validateProto(kid) }
+    p.eachOwn |kid| { validate(kid) }
     stack.pop
+    return p
   }
 
   Void validateVal(Proto p)

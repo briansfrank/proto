@@ -30,10 +30,11 @@ const class ReifyTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
-    return cx.toResult(Reifier(cx).reify)
+    proto := Reifier(cx).reify
+    return cx.toResult(proto, ["proto", "unvalidated"], proto.loc)
   }
 
 }

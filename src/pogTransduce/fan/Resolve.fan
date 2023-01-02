@@ -29,10 +29,13 @@ const class ResolveTransducer : Transducer
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
-    return cx.toResult(Resolver(cx).resolve)
+    ast := Resolver(cx).resolve
+    tags := ["json", "ast"]
+    tags.add(cx.isErr ? "unresolved" : "resolve")
+    return cx.toResult(ast, tags, cx.toLoc(ast))
   }
 }
 
@@ -46,8 +49,8 @@ internal class Resolver
   new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.ast  = cx.arg("it", true, Str:Obj#)
-    this.base = cx.arg("base", false, Str#) ?: ""
+    this.ast  = cx.arg("it").getAst
+    this.base = cx.arg("base", false)?.getStr ?: ""
   }
 
   Str:Obj resolve()

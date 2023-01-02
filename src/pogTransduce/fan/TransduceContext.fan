@@ -18,7 +18,7 @@ using pogEnv
 class TransduceContext
 {
   ** Constructor
-  new make(Transducer transducer, Str:Obj? args)
+  new make(Transducer transducer, Str:TransduceData args)
   {
     this.transducer = transducer
     this.args       = args
@@ -31,7 +31,7 @@ class TransduceContext
   const Transducer transducer
 
   ** Arguments passed to transduce
-  Str:Obj args
+  Str:TransduceData args
 
   ** Accumulated events
   MTransduceEvent[] events := [,]
@@ -52,73 +52,25 @@ class TransduceContext
   }
 
   ** Get an argument by name
-  Obj? arg(Str name, Bool checked := true, Type? type := null)
+  TransduceData? arg(Str name, Bool checked := true)
   {
     arg := args[name]
-    if (arg != null)
-    {
-// TODO
-if (arg is TransduceData) arg = ((TransduceData)arg).get
-      if (type != null && !arg.typeof.fits(type))
-        throw ArgErr("Expecting '$name' to be $type.signature, not $arg.typeof")
-      return arg
-    }
+    if (arg != null) return arg
     if (checked) throw ArgErr("Missing argument: $name")
     return null
   }
 
-  ** Convert arg into an input stream
-  InStream toInStream(Obj arg)
+  ** Get the 'write' arg or default to stdout
+  TransduceData argWrite()
   {
-    if (arg is TransduceData) return toInStream(((TransduceData)arg).get)
-    if (arg is InStream) return arg
-    if (arg is Str) return ((Str)arg).in
-    if (arg is File) return ((File)arg).in
-    throw ArgErr("Invalid read arg for $transducer.name transducer")
-  }
-
-  ** Convert arg into an output stream
-  OutStream toOutStream(Obj arg)
-  {
-    if (arg is TransduceData) return toOutStream(((TransduceData)arg).get)
-    if (arg is OutStream) return arg
-    if (arg is File) return ((File)arg).out
-    if (arg == "stdout") return Env.cur.out
-    throw ArgErr("Invalid write arg for $transducer.name transducer")
+    arg("write", false) ?: env.data(Env.cur.out, ["stdout"])
   }
 
   ** Wrap result with current events
-  TransduceData toResult(Obj? result)
+  TransduceData toResult(Obj? val, Str[] tags, FileLoc loc)
   {
-    if (result is TransduceData) return result
-    return MTransduceData(result, null, null, events)
-  }
-
-  ** Standard read using 'read' arg as input stream and file location
-  TransduceData read(Obj arg, |InStream, FileLoc->Obj?| f)
-  {
-    loc := args["loc"] as FileLoc ?: toLoc(arg)
-    in := toInStream(arg)
-    try
-      return toResult(f(in, loc))
-    finally
-      in.close
-  }
-
-  ** Standard write using 'write' arg as output stream
-  TransduceData write(Obj arg, |OutStream->Obj?| f)
-  {
-    out := toOutStream(arg)
-    try
-      return toResult(f(out))
-    finally
-      if (out !== Env.cur.out) out.close
-  }
-
-  ** Instantiate proto from initialization data
-  Proto instantiate(FileLoc loc, QName qname, AtomicRef isa, Obj? val, [Str:Proto]? children)
-  {
-    ((MPogEnv)env).factory.instantiate(MProtoInit(loc, qname, isa, val, children))
+    if (val is TransduceData) throw Err("Already data")
+    return MTransduceData(val, tags, loc, events)
   }
 
   ** Get a qualified name from a Proto
@@ -128,15 +80,13 @@ if (arg is TransduceData) arg = ((TransduceData)arg).get
     return null
   }
 
-  ** Get a file location from:
-  **   - FileLoc return itself
-  **   - Str:Obj assume its an AST node and get "_loc" value
-  FileLoc toLoc(Obj x)
+  ** Coerce an object to its location
+  FileLoc toLoc(Obj? x)
   {
+    if (x is TransduceData) return ((TransduceData)x).loc
     if (x is FileLoc) return x
     if (x is Proto) return ((Proto)x).loc
     if (x is File) return FileLoc.makeFile(x)
-    if (x is TransduceData) return ((TransduceData)x).loc
     if (x is Map)
     {
       loc := ((Map)x).get("_loc") as Str:Obj
@@ -149,6 +99,12 @@ if (arg is TransduceData) arg = ((TransduceData)arg).get
       return FileLoc.unknown
     }
     return FileLoc.unknown
+  }
+
+  ** Instantiate proto from initialization data
+  Proto instantiate(FileLoc loc, QName qname, AtomicRef isa, Obj? val, [Str:Proto]? children)
+  {
+    ((MPogEnv)env).factory.instantiate(MProtoInit(loc, qname, isa, val, children))
   }
 
 }

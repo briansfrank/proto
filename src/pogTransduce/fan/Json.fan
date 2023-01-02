@@ -26,34 +26,23 @@ const class JsonTransducer : Transducer
   {
     """json data                 Write data as JSON to stdout
        json data write:output    Write data as JSON to file
-       json read:file            Read JSON from file
        """
   }
 
-  override TransduceData transduce(Str:Obj? args)
+  override TransduceData transduce(Str:TransduceData args)
   {
-    if (args.containsKey("read")) return readJson(args)
     if (args.containsKey("it")) return writeJson(args)
     throw ArgErr("Missing read or write argument")
   }
 
-  TransduceData readJson(Str:Obj? args)
-  {
-    TransduceContext(this, args).read("read") |in, loc|
-    {
-      JsonInStream(in).readJson
-    }
-  }
-
   TransduceData writeJson(Str:Obj? args)
   {
-    cx := TransduceContext(this, args)
-    val := cx.arg("it")
-    output := cx.arg("write", false) ?: Env.cur.out
-    return cx.write(output) |out|
+    cx  := TransduceContext(this, args)
+    data := cx.arg("it")
+    return cx.argWrite.withOutStream |out|
     {
-      JsonPrinter(out, args).print(val)
-      return val
+      JsonPrinter(out, args).print(data.get(false))
+      return data
     }
   }
 }
@@ -67,7 +56,7 @@ internal class JsonPrinter : Printer
 {
   new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts)
   {
-    this.noloc = opts?.get("noloc") == true
+    this.noloc = opts?.get("noloc") != null
   }
 
   Void print(Obj? val)
