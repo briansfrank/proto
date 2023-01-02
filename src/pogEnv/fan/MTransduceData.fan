@@ -13,7 +13,7 @@ using pog
 ** MTransduceData is implementation of TransduceData
 **
 @Js
-const class MTransduceData : TransduceData
+class MTransduceData : TransduceData
 {
   new make(Obj? val, Str[]? tags, FileLoc? loc, TransduceEvent[]? events)
   {
@@ -21,7 +21,7 @@ const class MTransduceData : TransduceData
     this.tags   = initTags(val, tags)
     this.loc    = initLoc(val, loc)
     this.events = events ?: TransduceEvent#.emptyList
-    this.errs   = events.findAll |e| { e.level === TransduceEventLevel.err }
+    this.errs   = this.events.findAll |e| { e.level === TransduceEventLevel.err }
     this.isOk   = errs.isEmpty
     this.isErr  = !isOk
   }
@@ -41,13 +41,21 @@ const class MTransduceData : TransduceData
     return FileLoc.unknown
   }
 
-  const Obj? val
+  Obj? val
   const override Str[] tags
   const override FileLoc loc
   const override Bool isOk
   const override Bool isErr
   const override TransduceEvent[] events
   const override TransduceEvent[] errs
+
+  override Str toStr()
+  {
+    if (tags.isEmpty) return val == null ? "Null" : val.typeof.name
+    str := tags[0].capitalize
+    if (tags.size > 1) str += " (" + tags[1..-1].join(" ") + ")"
+    return str
+  }
 
   override Obj? get(Bool checked := true)
   {

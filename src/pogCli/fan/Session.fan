@@ -35,7 +35,7 @@ internal class Session
 
   Bool isDone
 
-  Str:Obj vars := [:]
+  Str:TransduceData vars := [:]
 
   Int run()
   {

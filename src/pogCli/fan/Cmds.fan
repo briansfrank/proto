@@ -34,7 +34,7 @@ internal abstract const class Cmd
 
   virtual Str usage() { "" }
 
-  abstract Obj? execute(Session session, CmdExpr expr)
+  abstract TransduceData? execute(Session session, CmdExpr expr)
 
   virtual Str sortKey() { name }
 
@@ -53,7 +53,7 @@ internal const class Help : Cmd
   override const Str[] aliases := ["?"]
   override Str summary() { "Print usage help" }
   override Str sortKey() { "_0" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     on := expr.args.first?.val
     shell := on != "in-main"
@@ -119,7 +119,7 @@ internal const class Quit : Cmd
   override const Str[] aliases := ["bye", "exit"]
   override Str summary() { "Quit the interactive shell" }
   override Str sortKey() { "_1" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     session.isDone = true
     return null
@@ -134,7 +134,7 @@ internal const class Version : Cmd
 {
   override const Str name := "version"
   override Str summary() { "Print version info" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     out := session.out
     out.printLine
@@ -161,7 +161,7 @@ internal const class EnvCmd : Cmd
 {
   override const Str name := "env"
   override Str summary() { "Print environment info" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     out := session.out
     out.printLine
@@ -179,7 +179,7 @@ internal const class Vars : Cmd
 {
   override const Str name := "vars"
   override Str summary() { "Print session variables" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     out := session.out
     out.printLine
@@ -187,17 +187,10 @@ internal const class Vars : Cmd
     keys := session.vars.keys.sort.moveTo("it", 0)
     keys.each |k|
     {
-      out.printLine("  $k: " + valToStr(session.vars[k]))
+      out.printLine("  $k: " + session.vars[k])
     }
     out.printLine
     return null
-  }
-
-  Str valToStr(Obj val)
-  {
-    if (val is Str:Obj) return "JSON"
-    if (val is Proto) return "Proto"
-    return val.typeof.name
   }
 }
 
@@ -210,11 +203,12 @@ internal const class Load : Cmd
   override const Str name := "load"
   override Str summary() { "Load library by qname" }
   override Str usage() { """load qname      Load library by name""" }
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     qname := expr.arg("it", false)?.val
     if (qname == null) return session.err("Load qname not specified")
-    return session.env.load(qname)
+    lib := session.env.load(qname)
+    return session.env.data(lib, ["proto", "lib"])
   }
 }
 
@@ -234,7 +228,7 @@ internal const class Transduce : Cmd
 
   override Str usage() { transducer.usage }
 
-  override Obj? execute(Session session, CmdExpr expr)
+  override TransduceData? execute(Session session, CmdExpr expr)
   {
     targs := Str:Obj[:]
     targs.addNotNull("it", session.vars["it"])
@@ -250,7 +244,7 @@ internal const class Transduce : Cmd
       result.events.each |event| { Env.cur.err.printLine(event) }
     }
 
-    return result.get(false)
+    return result
   }
 
   Obj toArg(Session session, Str? name, Str arg)

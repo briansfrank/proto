@@ -14,7 +14,7 @@ using util
 ** and error events.  Create instances via `PogEnv.data`.
 **
 @Js
-const mixin TransduceData
+mixin TransduceData
 {
   ** Get the wrapped data object.  If the transduce had errors and checked
   ** flag is true then raise an exception instead of returning the result.
