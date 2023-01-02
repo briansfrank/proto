@@ -68,6 +68,7 @@ class TransduceContext
   ** Convert arg into an input stream
   InStream toInStream(Obj arg)
   {
+    if (arg is TransduceData) return toInStream(((TransduceData)arg).get)
     if (arg is InStream) return arg
     if (arg is Str) return ((Str)arg).in
     if (arg is File) return ((File)arg).in
@@ -77,6 +78,7 @@ class TransduceContext
   ** Convert arg into an output stream
   OutStream toOutStream(Obj arg)
   {
+    if (arg is TransduceData) return toOutStream(((TransduceData)arg).get)
     if (arg is OutStream) return arg
     if (arg is File) return ((File)arg).out
     if (arg == "stdout") return Env.cur.out
@@ -86,7 +88,8 @@ class TransduceContext
   ** Wrap result with current events
   TransduceData toResult(Obj? result)
   {
-    MTransduceData(result, null, null, events)
+    if (result is TransduceData) return result
+    return MTransduceData(result, null, null, events)
   }
 
   ** Standard read using 'read' arg as input stream and file location
@@ -131,6 +134,7 @@ class TransduceContext
     if (x is FileLoc) return x
     if (x is Proto) return ((Proto)x).loc
     if (x is File) return FileLoc.makeFile(x)
+    if (x is TransduceData) return ((TransduceData)x).loc
     if (x is Map)
     {
       loc := ((Map)x).get("_loc") as Str:Obj

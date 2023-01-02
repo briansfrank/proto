@@ -1,0 +1,90 @@
+#
+# Read transducer tests
+# TODO: add json tests
+#
+
+---
+name: pog
+test: read pog:src, verify pog:expect
+src: |
+  a: {id: Ref "a", dis: "Alpha", site}
+  b: {id: Ref "b", dis: "Beta", site}
+expect: |
+  sys.Dict {
+    a: sys.Dict {
+      id: sys.Ref "a"
+      dis: sys.Str "Alpha"
+      site
+    }
+    b: sys.Dict {
+      id: sys.Ref "b"
+      dis: sys.Str "Beta"
+      site
+    }
+  }
+---
+name: zinc
+test: read zinc:src, verify zinc:expect
+src: |
+  ver:"3.0"
+  id, dis, site
+  @a, "Alpha", M
+  @b, "Bravo", M
+expect: |
+  ver:"3.0"
+  id,dis,site
+  @a,"Alpha",M
+  @b,"Bravo",M
+---
+name: hayson
+test: read hayson:src, verify zinc:expect
+src: |
+  {"_kind": "grid",
+   "meta": {"ver":"3.0"},
+   "cols": [
+     {"name":"id"},
+     {"name":"dis"},
+     {"name":"site"}
+   ],
+   "rows":[
+     {"id":{"_kind":"ref", "val":"a"}, "dis":"Alpha", "site":{"_kind":"marker"}},
+     {"id":{"_kind":"ref", "val":"b"}, "dis":"Bravo", "site":{"_kind":"marker"}}
+  ]}
+expect: |
+  ver:"3.0"
+  id,dis,site
+  @a,"Alpha",M
+  @b,"Bravo",M
+---
+name: trio
+test: read trio:src, verify zinc:expect
+src: |
+  id:@a
+  dis:"Alpha"
+  site
+  ---
+  id:@b
+  dis:"Bravo"
+  site
+expect: |
+  ver:"3.0"
+  id,dis,site
+  @a,"Alpha",M
+  @b,"Bravo",M
+---
+name: csv
+test: read csv:src, verify zinc:expect
+src: |
+  id,dis,site
+  @a,Alpha,M
+  @b,Bravo,M
+expect: |
+  ver:"3.0"
+  id orig:"id",dis orig:"dis",site orig:"site"
+  "@a","Alpha","M"
+  "@b","Bravo","M"
+---
+
+
+
+

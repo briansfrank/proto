@@ -11,7 +11,7 @@ using util
 **
 ** CmdExpr models one parsed command and its arguments
 **
-internal const class CmdExpr
+const class CmdExpr
 {
   static CmdExpr[] parse(Str s)
   {
@@ -100,7 +100,7 @@ internal const class CmdExpr
 ** CmdArg
 **************************************************************************
 
-internal const class CmdArg
+const class CmdArg
 {
   new make(Str? name, Str val)
   {

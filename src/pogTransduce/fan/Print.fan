@@ -9,6 +9,7 @@
 using concurrent
 using util
 using pog
+using haystack
 
 **
 ** Print transducer
@@ -48,6 +49,8 @@ const class PrintTransducer : Transducer
     out.printLine
     if (val is Proto)
       PogPrinter(out, cx.args).print(val)
+    else if (val is Grid)
+      ((Grid)val).dump(out)
     else
       JsonPrinter(out, cx.args).print(val)
     out.printLine

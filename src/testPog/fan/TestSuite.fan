@@ -9,6 +9,8 @@
 using util
 using yaml
 using pog
+using pogCli
+using haystack
 
 **
 ** TestSuite runs all the declartive tests captured YAML files.
@@ -79,6 +81,7 @@ class PogTestRunner
 
     try
     {
+ if (def["test"] != null) return runExprs(def)
       // TODO test basd on filename
       switch (filename)
       {
@@ -101,6 +104,72 @@ class PogTestRunner
   {
     if (runAll) return false
     return !args.any { qname.contains(it) }
+  }
+
+
+  This runExprs(Str:Obj def)
+  {
+    exprs := CmdExpr.parse(def.getChecked("test"))
+
+    vars := Str:TransduceData[:]
+    def.each |v, n|
+    {
+      if (n == "name" || n == "test") return
+      vars[n] = env.data(v, ["str", "test"], FileLoc("test.$n"))
+    }
+
+    exprs.each |expr|
+    {
+      if (expr.name == "verify")
+        runVerify(expr, vars)
+      else
+        runTransduce(expr, vars)
+    }
+
+    return this
+  }
+
+  Void runTransduce(CmdExpr expr, Str:TransduceData vars)
+  {
+    args := Str:Obj?[:]
+    expr.args.each |arg|
+    {
+      name := arg.name ?: "it"
+      args[name] = vars.getChecked(arg.val)
+    }
+    result := env.transduce(expr.name, args)
+    vars["it"] = result
+  }
+
+  Void runVerify(CmdExpr expr, Str:TransduceData vars)
+  {
+    actual := vars.get("it") as TransduceData ?: throw Err("Missing it data")
+    arg    := expr.args.first ?: throw Err("Expecting verify mode:field")
+    mode   := arg.name ?: arg.val
+    field  := vars.getChecked(arg.val)
+    switch (mode)
+    {
+      case "pog":  verifyPog(actual, field.get)
+      case "zinc": verifyZinc(actual, field.get)
+      default: throw Err("Unknown verify mode: $mode")
+    }
+  }
+
+  Void verifyZinc(TransduceData data, Str expected)
+  {
+    expected = expected.trim
+    buf := StrBuf()
+    grid := data.get as Grid ?: throw Err("Expecting Grid: $data")
+    actual := ZincWriter.gridToStr(grid).trim
+
+    if (verbose || actual != expected)
+    {
+      echo
+      echo("--- Zinc [$cur] ---")
+      PogUtil.print(data.get(false))
+      dump(actual, expected)
+    }
+    verifyEq(actual, expected)
   }
 
   Void runParse(Str:Obj def)
