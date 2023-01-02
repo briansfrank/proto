@@ -30,7 +30,7 @@ const class ReifyTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
     return cx.toResult(Reifier(cx).reify)

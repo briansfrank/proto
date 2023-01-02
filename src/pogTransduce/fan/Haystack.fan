@@ -31,14 +31,14 @@ const class HaystackTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
     if (args.containsKey("read")) return readHaystack(cx)
     throw ArgErr("Missing read or write argument")
   }
 
-  private Transduction readHaystack(TransduceContext cx)
+  private TransduceData readHaystack(TransduceContext cx)
   {
     cx.toResult(HaystackReader(cx).read)
   }

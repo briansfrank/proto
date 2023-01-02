@@ -84,13 +84,13 @@ class TransduceContext
   }
 
   ** Wrap result with current events
-  MTransduction toResult(Obj? result)
+  TransduceData toResult(Obj? result)
   {
-    MTransduction(transducer, result, events)
+    MTransduceData(result, null, null, events)
   }
 
   ** Standard read using 'read' arg as input stream and file location
-  MTransduction read(Obj arg, |InStream, FileLoc->Obj?| f)
+  TransduceData read(Obj arg, |InStream, FileLoc->Obj?| f)
   {
     loc := args["loc"] as FileLoc ?: toLoc(arg)
     in := toInStream(arg)
@@ -101,7 +101,7 @@ class TransduceContext
   }
 
   ** Standard write using 'write' arg as output stream
-  MTransduction write(Obj arg, |OutStream->Obj?| f)
+  TransduceData write(Obj arg, |OutStream->Obj?| f)
   {
     out := toOutStream(arg)
     try
@@ -145,39 +145,6 @@ class TransduceContext
     return FileLoc.unknown
   }
 
-}
-
-**************************************************************************
-** MTransduction
-**************************************************************************
-
-** Transduction implementation
-@Js
-const class MTransduction : Transduction
-{
-  new make(Transducer transducer, Obj? result, MTransduceEvent[] events)
-  {
-    this.transducer = transducer
-    this.result     = result
-    this.events     = events
-    this.errs       = events.findAll |e| { e.level === TransduceEventLevel.err }
-    this.isOk       = errs.isEmpty
-    this.isErr      = !isOk
-  }
-
-  const Transducer transducer
-  const Obj? result
-  const override Bool isOk
-  const override Bool isErr
-  const override TransduceEvent[] events
-  const override TransduceEvent[] errs
-
-  override Obj? get(Bool checked := true)
-  {
-    if (isOk) return result
-    if (checked) throw TransduceErr("$transducer.name failed with $errs.size errs")
-    return result
-  }
 }
 
 **************************************************************************

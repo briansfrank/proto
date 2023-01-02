@@ -62,6 +62,11 @@ const class MPogEnv : PogEnv
 // Transducers
 //////////////////////////////////////////////////////////////////////////
 
+  override TransduceData data(Obj? val, Str[]? tags := null, FileLoc? loc := null, TransduceEvent[]? events := null)
+  {
+    MTransduceData(val, tags, loc, events)
+  }
+
   override const Transducer[] transducers
 
   override Transducer? transducer(Str name, Bool checked := true)

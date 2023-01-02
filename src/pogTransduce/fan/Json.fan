@@ -30,14 +30,14 @@ const class JsonTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     if (args.containsKey("read")) return readJson(args)
     if (args.containsKey("it")) return writeJson(args)
     throw ArgErr("Missing read or write argument")
   }
 
-  Transduction readJson(Str:Obj? args)
+  TransduceData readJson(Str:Obj? args)
   {
     TransduceContext(this, args).read("read") |in, loc|
     {
@@ -45,7 +45,7 @@ const class JsonTransducer : Transducer
     }
   }
 
-  Transduction writeJson(Str:Obj? args)
+  TransduceData writeJson(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
     val := cx.arg("it")

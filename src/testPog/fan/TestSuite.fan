@@ -166,14 +166,14 @@ class PogTestRunner
     verifyPog(a, pog)
   }
 
-  Transduction transduce(Str name, Str:Obj args, Bool dumpErrs := true)
+  TransduceData transduce(Str name, Str:Obj args, Bool dumpErrs := true)
   {
     t := env.transduce(name, args)
     if (t.isErr && dumpErrs) echo(t.errs.join("\n"))
     return t
   }
 
-  Void verifyJson(Transduction t, Str expected)
+  Void verifyJson(TransduceData t, Str expected)
   {
     expected = expected.trim
     buf := StrBuf()
@@ -190,7 +190,7 @@ class PogTestRunner
     verifyEq(json, expected)
   }
 
-  Void verifyPog(Transduction t, Str expected)
+  Void verifyPog(TransduceData t, Str expected)
   {
     expected = expected.trim
     buf := StrBuf()
@@ -207,7 +207,7 @@ class PogTestRunner
     verifyEq(pog, expected)
   }
 
-  Void verifyEvents(Transduction t, Str? expectedTable)
+  Void verifyEvents(TransduceData t, Str? expectedTable)
   {
     if (expectedTable == null) return
 

@@ -32,7 +32,7 @@ const class CompileTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     x := env.transduce("parse", args)
     if (x.isErr) return x

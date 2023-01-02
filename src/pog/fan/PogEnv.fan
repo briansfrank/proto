@@ -6,6 +6,8 @@
 //   23 Feb 2022  Brian Frank  Creation
 //
 
+using util
+
 **
 ** Proto object graph environment for the current VM.
 **
@@ -51,6 +53,10 @@ abstract const class PogEnv
   ** the given lib dependent libs.
   abstract Lib? load(Str qname, Bool checked := true)
 
+  ** Construct data wrapper for given value.
+  ** Pass null for tags and loc to infer from the value.
+  abstract TransduceData data(Obj? val, Str[]? tags := null, FileLoc? loc := null, TransduceEvent[]? events := null)
+
   ** List the installed transducers
   abstract Transducer[] transducers()
 
@@ -58,7 +64,7 @@ abstract const class PogEnv
   abstract Transducer? transducer(Str name, Bool checked := true)
 
   ** Convenience for 'transducer(name).transduce(args)'
-  Transduction transduce(Str name, Str:Obj? args) { transducer(name).transduce(args) }
+  TransduceData transduce(Str name, Str:Obj? args) { transducer(name).transduce(args) }
 
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}

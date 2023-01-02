@@ -30,7 +30,7 @@ const class PrintTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
     data := cx.arg("it")

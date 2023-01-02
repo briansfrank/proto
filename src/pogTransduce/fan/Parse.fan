@@ -31,7 +31,7 @@ const class ParseTransducer : Transducer
        """
   }
 
-  override Transduction transduce(Str:Obj? args)
+  override TransduceData transduce(Str:Obj? args)
   {
     cx := TransduceContext(this, args)
 
@@ -50,7 +50,7 @@ const class ParseTransducer : Transducer
     }
   }
 
-  private Transduction parseDir(TransduceContext cx, File dir)
+  private TransduceData parseDir(TransduceContext cx, File dir)
   {
     files := dir.list.findAll { it.ext == "pog" }
     if (files.isEmpty) throw ArgErr("No pog files in dir [$dir.osPath]")
