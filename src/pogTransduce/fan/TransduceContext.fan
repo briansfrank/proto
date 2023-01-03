@@ -22,6 +22,7 @@ class TransduceContext
   {
     this.transducer = transducer
     this.args       = args
+    this.isTest     = args["isTest"]?.get(false) == true
   }
 
   ** Environment
@@ -29,6 +30,9 @@ class TransduceContext
 
   ** Parent transducer for context
   const Transducer transducer
+
+  ** Are we running within the test suite
+  const Bool isTest
 
   ** Arguments passed to transduce
   Str:TransduceData args

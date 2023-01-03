@@ -128,6 +128,7 @@ if (file.name == "haystack.yaml")
   {
     targs := Str:TransduceData[:]
     targs.addNotNull("it", vars["it"])
+    targs["isTest"] = env.data(true)
     expr.args.each |arg|
     {
       name := arg.name ?: "it"
@@ -157,7 +158,7 @@ if (file.name == "haystack.yaml")
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["it":t, "write":env.data(buf.out), "showloc":env.data(false)])
+    env.transduce("json", ["it":t, "write":env.data(buf.out), "showloc":env.data(false), "isTest":env.data(true)])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
@@ -174,7 +175,7 @@ if (file.name == "haystack.yaml")
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("print", ["it":t, "write":env.data(buf.out)])
+    env.transduce("print", ["it":t, "write":env.data(buf.out), "isTest":env.data(true)])
     pog := buf.toStr.trim
 
     if (verbose || pog != expected)

@@ -40,20 +40,20 @@ const class PrintTransducer : Transducer
     data := cx.arg("it")
     return cx.argWrite.withOutStream |out|
     {
-      print(cx, out, data.get)
+      print(cx, out, data)
       return data
     }
   }
 
-  private Void print(TransduceContext cx, OutStream out, Obj val)
+  private Void print(TransduceContext cx, OutStream out, TransduceData data)
   {
+    val := data.get
     out.printLine
-    if (val is Proto)
-      PogPrinter(out, cx.args).print(val)
-    else if (val is Grid)
-      ((Grid)val).dump(out)
-    else
-      JsonPrinter(out, cx.args).print(val)
+    if (!cx.isTest) out.printLine(data).printLine
+    if (val is Proto) PogPrinter(out, cx.args).print(val)
+    else if (val is Grid) ((Grid)val).dump(out)
+    else if (val is File) out.print(((File)val).readAllStr)
+    else JsonPrinter(out, cx.args).print(val)
     out.printLine
     out.printLine
   }
