@@ -21,6 +21,8 @@ internal class Session
     this.out = out
     this.cmds = Cmd.findCmds(this)
     this.varsRef["dir"] = data(`./`.toFile.normalize)
+    this.varsRef["showloc"] = data(false)
+    this.varsRef["showdoc"] = data(true)
   }
 
   const PogEnv env
@@ -44,19 +46,19 @@ internal class Session
     name := arg.name
     val  := arg.val
 
-    // check for variable
-    if (name != null)
-    {
-      var := vars[name]
-      if (var != null) return var
+    // fixed names
+    if (name == "base") return data(arg)
 
-      // fixed typed
-      if (name == "base") return data(arg)
-    }
+    // fixed values
+    if (val == "false") return data(false)
+    if (val == "true") return data(true)
 
     // assume anything with slash or dot if file
     if (val.contains(".") || val.contains("/"))
       return data(curDir.plus(val.toUri, false))
+
+    // check for variable
+    if (name != null && vars[name] != null) return vars[name]
 
     // use string literal
     return data(val)

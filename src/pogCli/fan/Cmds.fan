@@ -228,7 +228,7 @@ internal const class Vars : Cmd
     out := session.out
     out.printLine
     out.printLine("Session Vars:")
-    keys := session.vars.keys.sort.moveTo("it", 0)
+    keys := session.vars.keys.sort.moveTo("it", -1)
     keys.each |k|
     {
       out.printLine("  " + (k+":").padr(8) + "  " + session.vars[k])
@@ -304,8 +304,10 @@ internal const class Transduce : Cmd
 
   override TransduceData? execute(Session session, CmdExpr expr)
   {
-    targs := Str:Obj[:]
-    targs.addNotNull("it", session.vars["it"])
+    // inherit all the session variables
+    targs := session.vars.dup
+
+    // override the specific command arguments
     expr.args.each |arg|
     {
       targs[arg.name ?: "it"] = session.argToData(arg)

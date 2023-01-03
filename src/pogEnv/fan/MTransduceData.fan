@@ -64,6 +64,7 @@ class MTransduceData : TransduceData
     }
     if (!loc.isUnknown) s.add(" [").add(loc).add("]")
     if (val is Str) s.add(" ").add(val.toStr.toCode)
+    if (val is Bool) s.add(" ").add(val.toStr)
     return s.toStr
   }
 

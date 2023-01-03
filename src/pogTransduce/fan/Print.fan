@@ -26,8 +26,11 @@ const class PrintTransducer : Transducer
 
   override Str usage()
   {
-    """print data              Print data to stdout
-       print data write:file   Print data to given file
+    """print                       Print last value to stdout
+       print <data>                Print data to stdout
+       print <data> write:<file>   Print data to given file
+       print showdoc:<bool>        Toggle doc meta in results
+       print showloc:<bool>        Toggle file location meta in results
        """
   }
 
@@ -69,6 +72,8 @@ abstract internal class Printer
     this.out  = out
     this.opts = opts
     this.escapeUnicode = optBool("escapeUnicode", false)
+    this.showloc = optBool("showloc", true)
+    this.showdoc = optBool("showdoc", true)
     this.indention = optInt("indent", 0)
     this.theme = out === Env.cur.out ? PrinterTheme.configured : PrinterTheme.none
   }
@@ -135,7 +140,12 @@ abstract internal class Printer
 
   This windent() { w(Str.spaces(indention*2)) }
 
-  Obj? opt(Str name, Obj? def := null) { opts?.get(name, null) ?: def }
+  Obj? opt(Str name, Obj? def := null)
+  {
+    val := opts?.get(name, null)
+    if (val is TransduceData) val = ((TransduceData)val).get(false)
+    return val ?: def
+  }
 
   Bool optBool(Str name, Bool def) { opt(name, def) as Bool ?: def }
 
@@ -144,6 +154,8 @@ abstract internal class Printer
   OutStream out
   [Str:Obj?]? opts
   Bool escapeUnicode
+  Bool showloc
+  Bool showdoc
   PrinterTheme theme
   Int indention
 }

@@ -24,8 +24,10 @@ const class JsonTransducer : Transducer
 
   override Str usage()
   {
-    """json data                 Write data as JSON to stdout
-       json data write:output    Write data as JSON to file
+    """json <data>                 Write data as JSON to stdout
+       json <data> write:output    Write data as JSON to file
+       json showdoc:<bool>         Toggle doc meta in results
+       json showloc:<bool>         Toggle file location meta in results
        """
   }
 
@@ -54,10 +56,7 @@ const class JsonTransducer : Transducer
 @Js
 internal class JsonPrinter : Printer
 {
-  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts)
-  {
-    this.noloc = opts?.get("noloc") != null
-  }
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
 
   Void print(Obj? val)
   {
@@ -87,7 +86,8 @@ internal class JsonPrinter : Printer
   Void printMap(Str:Obj? map)
   {
     keys := map.keys
-    if (noloc) keys.remove("_loc")
+    if (!showloc) keys.remove("_loc")
+    if (!showdoc) keys.remove("_doc")
 
     if (keys.size == 0)
       wsymbol("{}")
@@ -151,7 +151,6 @@ internal class JsonPrinter : Printer
     throw Err("TODO")
   }
 
-  const Bool noloc
 }
 
 

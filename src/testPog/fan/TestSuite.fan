@@ -157,14 +157,14 @@ if (file.name == "haystack.yaml")
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["it":t, "write":env.data(buf.out), "noloc":env.data(true)])
+    env.transduce("json", ["it":t, "write":env.data(buf.out), "showloc":env.data(false)])
     json := buf.toStr.trim
 
     if (verbose || json != expected)
     {
       echo
       echo("--- JSON [$cur] ---")
-      PogUtil.print(t.get(false), Env.cur.out, ["noloc":env.data(true)])
+      PogUtil.print(t.get(false), Env.cur.out, ["showloc":env.data(false)])
       dump(json, expected)
     }
     verifyEq(json, expected)
