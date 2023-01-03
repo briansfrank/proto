@@ -23,6 +23,17 @@ internal class Session
     this.varsRef["dir"] = data(`./`.toFile.normalize)
     this.varsRef["showloc"] = data(false)
     this.varsRef["showdoc"] = data(true)
+    initEnvVars
+  }
+
+  private Void initEnvVars()
+  {
+    try
+    {
+      expr := Env.cur.vars["POG_INIT"]
+      if (expr != null) execute(expr)
+    }
+    catch (Err e) err("Cannot init from POG_INIT", e)
   }
 
   const PogEnv env
