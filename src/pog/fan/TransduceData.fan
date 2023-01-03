@@ -51,22 +51,22 @@ mixin TransduceData
   @NoDoc abstract Obj? withOutStream(|OutStream->Obj?| f)
 
   ** Get the data as an input stream
-  @NoDoc abstract InStream getInStream()
+  @NoDoc abstract InStream? getInStream(Bool checked := true)
 
   ** Get the data as an output stream
-  @NoDoc abstract OutStream getOutStream()
+  @NoDoc abstract OutStream? getOutStream(Bool checked := true)
 
   ** Get the value as string
-  @NoDoc abstract Str getStr()
+  @NoDoc abstract Str? getStr(Bool checked := true)
 
-  ** Get the data as file directory
-  @NoDoc abstract File getDir()
-
-  ** Get the data AST JSON representation
-  @NoDoc abstract Str:Obj? getAst()
+  ** Get the data as directory file
+  @NoDoc abstract File? getDir(Bool checked := true)
 
   ** Get the data AST JSON representation
-  @NoDoc abstract Proto getProto()
+  @NoDoc abstract [Str:Obj?]? getAst(Bool checked := true)
+
+  ** Get the data AST JSON representation
+  @NoDoc abstract Proto? getProto(Bool checked := true)
 
 }
 

@@ -172,6 +172,50 @@ internal const class EnvCmd : Cmd
 }
 
 **************************************************************************
+** Get
+**************************************************************************
+
+internal const class Get : Cmd
+{
+  override const Str name := "get"
+  override Str summary() { "Get a variable by name" }
+  override Str usage() { """get name      Get variable by name""" }
+  override TransduceData? execute(Session session, CmdExpr expr)
+  {
+    if (expr.args.isEmpty) return session.err("Must specify var name")
+    name := expr.args[0].val
+    var := session.vars[name]
+    if (var == null) return session.err("Var not found: $name")
+    session.setVar("it", var)
+    return var
+  }
+}
+
+**************************************************************************
+** Set
+**************************************************************************
+
+internal const class Set : Cmd
+{
+  override const Str name := "set"
+  override Str summary() { "Save current value to variable" }
+  override Str usage()
+  {
+    """set <name>         Set var to current value
+       set <name> <val>   Set var to given value
+       """
+  }
+  override TransduceData? execute(Session session, CmdExpr expr)
+  {
+    if (expr.args.isEmpty) return session.err("Must specify var name")
+    name := expr.args[0].val
+    data := expr.args.size >= 2 ? session.argToData(expr.args[1]) : session.vars["it"]
+    session.setVar(name, data)
+    return data
+  }
+}
+
+**************************************************************************
 ** Vars
 **************************************************************************
 
@@ -187,10 +231,40 @@ internal const class Vars : Cmd
     keys := session.vars.keys.sort.moveTo("it", 0)
     keys.each |k|
     {
-      out.printLine("  $k: " + session.vars[k])
+      out.printLine("  " + (k+":").padr(8) + "  " + session.vars[k])
     }
     out.printLine
     return null
+  }
+}
+
+**************************************************************************
+** Dir
+**************************************************************************
+
+internal const class Dir : Cmd
+{
+  override const Str name := "dir"
+  override Str summary() { "List files in the dir" }
+  override Str usage()
+  {
+    """dir           List files in current working dir
+       dir <path>    List files in the given dir
+       """
+  }
+  override TransduceData? execute(Session session, CmdExpr expr)
+  {
+    data := expr.args.size >= 1 ? session.argToData(expr.args[0]) : session.vars["dir"]
+    dir := data?.getDir(false)
+    if (dir == null) return session.err("Not a directory: " + expr.args[0].val)
+    out := session.out
+    out.printLine
+    out.printLine(dir.osPath)
+
+    dir.listDirs.sort.each |f| { out.print("  ").print(f.name).printLine("/") }
+    dir.listFiles.sort.each |f| { out.print("  ").print(f.name).printLine }
+    out.printLine
+    return data
   }
 }
 
@@ -234,7 +308,7 @@ internal const class Transduce : Cmd
     targs.addNotNull("it", session.vars["it"])
     expr.args.each |arg|
     {
-      targs[arg.name ?: "it"] = toArg(session, arg.name, arg.val)
+      targs[arg.name ?: "it"] = session.argToData(arg)
     }
 
     result := transducer.transduce(targs)
@@ -245,21 +319,6 @@ internal const class Transduce : Cmd
     }
 
     return result
-  }
-
-  TransduceData toArg(Session session, Str? name, Str arg)
-  {
-    if (name == "base") return session.data(arg)
-
-    // assume anything with slash or dot if file
-    if (arg.contains(".") || arg.contains("/")) return session.data(arg.toUri.toFile)
-
-    // check for variable
-    var := session.vars[arg]
-    if (var != null) return var
-
-    // use string literal
-    return session.data(arg)
   }
 }
 

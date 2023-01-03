@@ -29,8 +29,8 @@ class MTransduceData : TransduceData
   private static Str[] initTags(Obj? val, Str[]? tags)
   {
     if (tags != null) return tags
-    if (val is Proto) return Str["proto"]
-    if (val is File) return Str["file"]
+    if (val is Proto) return ["proto"]
+    if (val is File) return ((File)val).isDir ? ["dir"] : ["file"]
     return Str#.emptyList
   }
 
@@ -51,10 +51,20 @@ class MTransduceData : TransduceData
 
   override Str toStr()
   {
-    if (tags.isEmpty) return val == null ? "Null" : val.typeof.name
-    str := tags[0].capitalize
-    if (tags.size > 1) str += " (" + tags[1..-1].join(" ") + ")"
-    return str
+    s := StrBuf()
+    if (tags.isEmpty)
+    {
+      if (val == null) s.add("Null")
+      else s.add(val.typeof.name)
+    }
+    else
+    {
+      s.add(tags[0].capitalize)
+      if (tags.size > 1) s.add(" (").add(tags[1..-1].join(" ")).add(")")
+    }
+    if (!loc.isUnknown) s.add(" [").add(loc).add("]")
+    if (val is Str) s.add(" ").add(val.toStr.toCode)
+    return s.toStr
   }
 
   override Obj? get(Bool checked := true)
@@ -84,52 +94,56 @@ class MTransduceData : TransduceData
       if (close) out.close
   }
 
-  override InStream getInStream()
+  override InStream? getInStream(Bool checked := true)
   {
     if (val == "stdin") return Env.cur.in
     if (val is InStream) return val
     if (val is Str) return ((Str)val).in
     if (val is File) return ((File)val).in
-    throw argErr("InStream")
+    return argErr("InStream", checked)
   }
 
-  override OutStream getOutStream()
+  override OutStream? getOutStream(Bool checked := true)
   {
     if (val == null) return Env.cur.out
     if (val == "stdout") return Env.cur.out
     if (val == "stderr") return Env.cur.err
     if (val is OutStream) return val
     if (val is File) return ((File)val).out
-    throw argErr("OutStream")
+    return argErr("OutStream", checked)
   }
 
-  override Str getStr()
+  override Str? getStr(Bool checked := true)
   {
     if (val is Str) return val
-    throw argErr("Str")
+    return argErr("Str", checked)
   }
 
-  override File getDir()
+  override File? getDir(Bool checked := true)
   {
     file := val as File
     if (file != null && file.isDir) return file
-    throw argErr("Dir")
+    return argErr("Dir", checked)
   }
 
-  override Str:Obj? getAst()
+  override [Str:Obj?]? getAst(Bool checked := true)
   {
     map := val as Str:Obj?
     if (map != null) return map
-    throw argErr("AST Str:Obj")
+    return argErr("AST Str:Obj", checked)
   }
 
-  override Proto getProto()
+  override Proto? getProto(Bool checked := true)
   {
     proto := val as Proto
     if (proto != null) return proto
-    throw argErr("Proto")
+    return argErr("Proto", checked)
   }
 
-  ArgErr argErr(Str expected) { ArgErr("Cannot get as $expected: ${val?.typeof} $tags") }
+  Obj? argErr(Str expected, Bool checked)
+  {
+    if (checked) throw ArgErr("Cannot get as $expected: ${val?.typeof} $tags")
+    return null
+  }
 }
 

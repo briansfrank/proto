@@ -20,11 +20,14 @@ internal class Session
     this.env = env
     this.out = out
     this.cmds = Cmd.findCmds(this)
+    this.varsRef["dir"] = data(`./`.toFile.normalize)
   }
 
   const PogEnv env
 
   const Cmd[] cmds
+
+  File curDir() { vars["dir"]?.getDir(false) ?: `./`.toFile }
 
   Cmd? cmd(Str name)
   {
@@ -36,11 +39,47 @@ internal class Session
     env.data(val, tags, loc, null)
   }
 
+  TransduceData argToData(CmdArg arg)
+  {
+    name := arg.name
+    val  := arg.val
+
+    // check for variable
+    if (name != null)
+    {
+      var := vars[name]
+      if (var != null) return var
+
+      // fixed typed
+      if (name == "base") return data(arg)
+    }
+
+    // assume anything with slash or dot if file
+    if (val.contains(".") || val.contains("/"))
+      return data(curDir.plus(val.toUri, false))
+
+    // use string literal
+    return data(val)
+  }
+
   OutStream out { private set }
 
   Bool isDone
 
-  Str:TransduceData vars := [:]
+  Str:TransduceData vars() { varsRef.ro }
+
+  Void setVar(Str name, TransduceData? val)
+  {
+    if (val == null) return
+    if (!PogUtil.isName(name)) return err("Invalid var name: $name")
+    if (name == "dir" && val.getDir(false) == null)
+    {
+      return err("Invalid directory for dir var: $val.loc")
+    }
+    varsRef[name] = val
+  }
+
+  private Str:TransduceData varsRef := [:]
 
   Int run()
   {
@@ -107,7 +146,7 @@ internal class Session
       }
 
       result := cmd.execute(this, expr)
-      if (result != null) vars["it"] = result
+      if (result != null) setVar("it", result)
     }
     catch (Err e)
     {
