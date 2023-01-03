@@ -33,8 +33,7 @@ const class ReifyTransducer : Transducer
   override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
-    proto := Reifier(cx).reify
-    return cx.toResult(proto, ["proto", "unvalidated"], proto.loc)
+    return Reifier(cx).reify
   }
 
 }
@@ -48,14 +47,14 @@ internal class Reifier : Resolver
 {
   new make(TransduceContext cx) : super(cx) {}
 
-  Proto reify()
+  TransduceData reify()
   {
     resolveDepends
     normalizeLibPragma
-    root := reifyNode(QName(base), ast)
+    root := reifyNode(QName(base), ast, this.loc)
     resolveRefs
     resolveIsInfers
-    return root
+    return cx.toResult(root, ["proto", "unvalidated"], loc)
   }
 
   private Void normalizeLibPragma()
@@ -70,13 +69,12 @@ internal class Reifier : Resolver
     }
   }
 
-  private Proto reifyNode(QName qname, Str:Obj node)
+  private Proto reifyNode(QName qname, Str:Obj node, FileLoc loc)
   {
     isObj := qname.toStr == "sys.Obj"
     isName := node["_is"]
     inferIs := isName == null
 
-    loc      := cx.toLoc(node)
     isa      := inferIs ? AtomicRef(isName) : ref(isName)
     val      := node["_val"]
     children := MProtoInit.noChildren
@@ -91,7 +89,7 @@ internal class Reifier : Resolver
         children = Str:MProto[:]
         children.ordered = true
       }
-      children.add(n, reifyNode(qname.add(n), child))
+      children.add(n, reifyNode(qname.add(n), child, cx.toLoc(child)))
     }
 
     proto := cx.instantiate(loc, qname, isa, val, children)

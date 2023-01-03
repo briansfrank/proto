@@ -35,8 +35,9 @@ const class ParseTransducer : Transducer
   {
     cx := TransduceContext(this, args)
 
-    input := cx.arg("dir", false)
-    if (input != null) return parseDir(cx, input)
+    input := cx.arg("it")
+    dir := input.getDir(false)
+    if (dir != null) return parseDir(cx, input)
 
     input = cx.arg("it")
     return input.withInStream |in|
@@ -47,7 +48,7 @@ const class ParseTransducer : Transducer
 
   private TransduceData parseDir(TransduceContext cx, TransduceData input)
   {
-    dir := input.get as File ?: throw ArgErr("Expecting dir to be File, not ${input.get.typeof}")
+    dir := input.getDir
     files := dir.list.findAll { it.ext == "pog" }
     if (files.isEmpty) throw ArgErr("No pog files in dir [$dir.osPath]")
     files = files.sort |a, b| { a.name <=> b.name }

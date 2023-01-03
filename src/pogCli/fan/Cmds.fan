@@ -313,6 +313,16 @@ internal const class Transduce : Cmd
       targs[arg.name ?: "it"] = session.argToData(arg)
     }
 
+    // debug
+    if (targs["verbose"]?.get(false) == true)
+    {
+      out := session.out
+      out.printLine
+      out.printLine("Transduce: $expr")
+      targs.keys.sort.each |k| { out.printLine("  $k: " + targs[k]) }
+      out.printLine
+    }
+
     result := transducer.transduce(targs)
 
     if (!result.events.isEmpty)

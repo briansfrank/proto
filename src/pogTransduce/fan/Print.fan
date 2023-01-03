@@ -50,14 +50,48 @@ const class PrintTransducer : Transducer
     val := data.get
     out.printLine
     if (!cx.isTest) out.printLine(data).printLine
-    if (val is Proto) PogPrinter(out, cx.args).print(val)
-    else if (val is Grid) ((Grid)val).dump(out)
-    else if (val is File) out.print(((File)val).readAllStr)
-    else JsonPrinter(out, cx.args).print(val)
+    printContent(cx, out, data.get(false))
     out.printLine
     out.printLine
   }
 
+  private Void printContent(TransduceContext cx, OutStream out, Obj? val)
+  {
+    if (val is Proto) return printProto(cx, out, val)
+    if (val is Grid)  return printGrid(cx, out, val)
+    if (val is File)  return printFile(cx, out, val)
+    printJson(cx, out, val)
+  }
+
+  private Void printProto(TransduceContext cx, OutStream out, Proto proto)
+  {
+    PogPrinter(out, cx.args).print(proto)
+  }
+
+  private Void printGrid(TransduceContext cx, OutStream out, Grid grid)
+  {
+    grid.dump(out)
+  }
+
+  private Void printFile(TransduceContext cx, OutStream out, File file)
+  {
+    if (file.isDir)
+      printDir(cx, out, file)
+    else if (file.exists)
+      out.print(file.readAllStr)
+    else out.printLine("File does not exist: $file")
+  }
+
+  private Void printDir(TransduceContext cx, OutStream out, File dir)
+  {
+    dir.listDirs.sort.each |f| { out.printLine(f.name + "/") }
+    dir.listFiles.sort.each |f| { out.printLine(f.name) }
+  }
+
+  private Void printJson(TransduceContext cx, OutStream out, Obj? val)
+  {
+    JsonPrinter(out, cx.args).print(val)
+  }
 }
 
 **************************************************************************

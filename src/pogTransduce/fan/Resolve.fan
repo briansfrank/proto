@@ -32,10 +32,7 @@ const class ResolveTransducer : Transducer
   override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
-    ast := Resolver(cx).resolve
-    tags := ["json", "ast"]
-    tags.add(cx.isErr ? "unresolved" : "resolve")
-    return cx.toResult(ast, tags, cx.toLoc(ast))
+    return Resolver(cx).resolve
   }
 }
 
@@ -49,15 +46,18 @@ internal class Resolver
   new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.ast  = cx.arg("it").getAst
+    this.data = cx.arg("it")
     this.base = cx.arg("base", false)?.getStr ?: ""
+    this.ast  = data.getAst
+    this.loc  = data.loc
   }
 
-  Str:Obj resolve()
+  TransduceData resolve()
   {
     resolveDepends
-    if (cx.isErr) return ast
-    return resolveNode(ast)
+    if (cx.isErr) return cx.toResult(ast, ["json", "ast", "unresolved"], loc)
+    resolved := resolveNode(ast)
+    return cx.toResult(resolved, ["json", "ast", "resolved"], loc)
   }
 
   Void resolveDepends()
@@ -216,7 +216,9 @@ internal class Resolver
   }
 
   TransduceContext cx
-  Str:Obj ast
+  TransduceData data
+  FileLoc loc
+  Str:Obj? ast
   Str base
   Lib[] depends := [,]
 }
