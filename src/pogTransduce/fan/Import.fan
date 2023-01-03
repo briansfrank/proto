@@ -46,7 +46,7 @@ const class ImportTransducer : Transducer
       if (data.get is Grid) return importGrid(cx, data)
     }
 
-    throw Err("Unknown import type: $args")
+    throw Err("Unknown import type: $args.keys.sort")
   }
 
   private TransduceData importGrid(TransduceContext cx, TransduceData data)
@@ -122,6 +122,7 @@ internal class HaystackImporter
     kids.ordered = true
     d.each |v, n|
     {
+      if (v == null) return
       kids[n] = valToProto(qname.add(n), v)
     }
     return cx.instantiate(loc, qname, isDict, null, kids)

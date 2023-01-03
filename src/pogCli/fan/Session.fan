@@ -47,18 +47,19 @@ internal class Session
     val  := arg.val
 
     // fixed names
-    if (name == "base") return data(arg)
+    if (name == "base") return data(val)
 
     // fixed values
     if (val == "false") return data(false)
     if (val == "true") return data(true)
+    if (val.toInt(10, false) != null) return data(val.toInt)
 
     // assume anything with slash or dot if file
     if (val.contains(".") || val.contains("/"))
       return data(curDir.plus(val.toUri, false))
 
     // check for variable
-    if (name != null && vars[name] != null) return vars[name]
+    if (name != null && vars[val] != null) return vars[val]
 
     // use string literal
     return data(val)

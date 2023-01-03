@@ -71,7 +71,7 @@ const class ReadTransducer : Transducer
       return method.callOn(this, [cx, cx.arg("it")])
     }
 
-    throw Err("Unknown read file type: $args")
+    throw Err("Unknown read file type: $args.keys.sort")
   }
 
   private TransduceData readPog(TransduceContext cx, TransduceData data)

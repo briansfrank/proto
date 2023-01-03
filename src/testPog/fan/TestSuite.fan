@@ -153,7 +153,8 @@ class PogTestRunner
   {
     expected = expected.trim
     buf := StrBuf()
-    env.transduce("json", ["it":t, "write":env.data(buf.out), "showloc":env.data(false), "isTest":env.data(true)])
+    if (t.tags.first == "proto") t = env.transduce("export", ["ast":t, "isTest":env.data(true)])
+    env.transduce("print", ["it":t, "write":env.data(buf.out), "showloc":env.data(false), "isTest":env.data(true)])
     json := buf.toStr.trim
 
     if (verbose || json != expected)

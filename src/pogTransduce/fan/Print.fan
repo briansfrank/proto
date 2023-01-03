@@ -47,7 +47,6 @@ const class PrintTransducer : Transducer
 
   private Void print(TransduceContext cx, OutStream out, TransduceData data)
   {
-    val := data.get
     out.printLine
     if (!cx.isTest) out.printLine(data).printLine
     printContent(cx, out, data.get(false))
@@ -108,6 +107,7 @@ abstract internal class Printer
     this.escapeUnicode = optBool("escapeUnicode", false)
     this.showloc = optBool("showloc", true)
     this.showdoc = optBool("showdoc", true)
+    this.terminalWidth = optInt("terminalWidth", 150).max(40)
     this.indention = optInt("indent", 0)
     this.theme = out === Env.cur.out ? PrinterTheme.configured : PrinterTheme.none
   }
@@ -190,6 +190,7 @@ abstract internal class Printer
   Bool escapeUnicode
   Bool showloc
   Bool showdoc
+  Int terminalWidth
   PrinterTheme theme
   Int indention
 }
@@ -378,6 +379,109 @@ internal class PogPrinter : Printer
 }
 
 **************************************************************************
+** JsonPrinter
+**************************************************************************
+
+@Js
+internal class JsonPrinter : Printer
+{
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
+
+  Void print(Obj? val)
+  {
+    if (val is Proto)
+      printProto(val)
+    else if (val is Map)
+      printMap(val)
+    else if (val is List)
+      printList(val)
+    else
+      wquoted(val.toStr)
+  }
+
+  Void printProto(Proto proto)
+  {
+    map := Str:Obj[:]
+    map.ordered = true
+    map.addNotNull("_is", proto.isa?.qname)
+    map.addNotNull("_val", proto.valOwn(false))
+    proto.eachOwn |kid|
+    {
+      map[kid.name] = kid
+    }
+    printMap(map)
+  }
+
+  Void printMap(Str:Obj? map)
+  {
+    keys := map.keys
+    if (!showloc) keys.remove("_loc")
+    if (!showdoc) keys.remove("_doc")
+
+    if (keys.size == 0)
+      wsymbol("{}")
+    else if (keys.size <= 1 || map["_val"] != null)
+      printCompact(keys, map)
+    else
+      printComplex(keys, map)
+  }
+
+  Void printCompact(Str[] keys, Str:Obj? map)
+  {
+    first := true
+    wsymbol("{")
+    if (keys.contains("_is"))  first = printPair("_is", map["_is"], false, first)
+    if (keys.contains("_val")) first = printPair("_val", map["_val"], false, first)
+    keys.each |n|
+    {
+      if (n == "_is" || n == "_val") return
+      v := map[n]
+      first = printPair(n, v, false, first)
+    }
+    wsymbol("}")
+  }
+
+  Void printComplex(Str[] keys, Str:Obj? map)
+  {
+    wsymbol("{").nl
+    indention++
+    first := true
+    keys.each |n|
+    {
+      v := map[n]
+      first = printPair(n, v, true, first)
+    }
+    indention--
+    nl.windent.wsymbol("}")
+  }
+
+  Bool printPair(Str n, Obj? v, Bool indenting, Bool first)
+  {
+    if (first)
+    {
+      if (indenting) windent
+    }
+    else
+    {
+      if (indenting)
+         wsymbol(",").nl.windent
+      else
+        wsymbol(",").sp
+    }
+    wquoted(n)
+    wsymbol(":")
+    print(v)
+    return false
+  }
+
+  Void printList(Obj?[] list)
+  {
+    // TODO
+    throw Err("TODO")
+  }
+}
+
+**************************************************************************
 ** TablePrinter
 **************************************************************************
 
@@ -401,6 +505,17 @@ internal class TablePrinter : Printer
       }
     }
 
+    // if total width exceeds terminal width, shrink down the biggest ones
+    while (true)
+    {
+      total := 0
+      colWidths.each |w| { total += w + 2 }
+      if (total <= terminalWidth) break
+      maxi := colWidths.size-1
+      colWidths.each |w, i| { if (w > colWidths[maxi]) maxi = i }
+      colWidths[maxi] = colWidths[maxi] - 1
+    }
+
     // output
     cells.each |row, rowIndex|
     {
@@ -408,8 +523,9 @@ internal class TablePrinter : Printer
       if (isHeader) wtheme(theme.comment)
       row.each |cell, col|
       {
-        str := cell
+        str := cell.replace("\n", " ")
         colw := colWidths[col]
+        if (str.size > colw) str = str[0..<(colw-2)] + ".."
         w(str).w(Str.spaces(colw - str.size + 2))
       }
         nl
@@ -437,7 +553,14 @@ internal class TablePrinter : Printer
     {
       cells := Str[,]
       cells.capacity = g.cols.size
-      g.cols.each |c| { cells.add(row.dis(c.name)) }
+      g.cols.each |c|
+      {
+        val := row.val(c)
+        if (val is Str)
+          cells.add(val)
+        else
+          cells.add(row.dis(c.name))
+      }
       table.add(cells)
     }
     return print(table)
