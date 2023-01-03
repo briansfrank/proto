@@ -64,11 +64,6 @@ class PogTestRunner
     docs.each |doc|
     {
       if (doc == null) return
-if (file.name == "haystack.yaml")
-{
-  echo("TODO: skip haystack")
-  return
-}
       runTest(file.basename, doc)
     }
     return this

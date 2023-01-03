@@ -47,7 +47,7 @@ internal class Resolver
   {
     this.cx   = cx
     this.data = cx.arg("it")
-    this.base = cx.arg("base", false)?.getStr ?: ""
+    this.base = cx.base.toStr
     this.ast  = data.getAst
     this.loc  = data.loc
   }

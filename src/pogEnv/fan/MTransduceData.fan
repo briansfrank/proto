@@ -120,6 +120,13 @@ class MTransduceData : TransduceData
     return argErr("Str", checked)
   }
 
+  override File? getFile(Bool checked := true)
+  {
+    file := val as File
+    if (file != null) return file
+    return argErr("File", checked)
+  }
+
   override File? getDir(Bool checked := true)
   {
     file := val as File

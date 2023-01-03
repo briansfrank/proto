@@ -70,7 +70,7 @@ const class PrintTransducer : Transducer
 
   private Void printGrid(TransduceContext cx, OutStream out, Grid grid)
   {
-    grid.dump(out)
+    TablePrinter(out, cx.args).printGrid(grid)
   }
 
   private Void printFile(TransduceContext cx, OutStream out, File file)
@@ -376,4 +376,73 @@ internal class PogPrinter : Printer
     }
   }
 }
+
+**************************************************************************
+** TablePrinter
+**************************************************************************
+
+@Js
+internal class TablePrinter : Printer
+{
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
+
+  This print(Str[][] cells)
+  {
+    if (cells.isEmpty) return this
+
+    // compute col widths
+    numCols := cells[0].size
+    colWidths := Int[,].fill(0, numCols)
+    cells.each |row|
+    {
+      row.each |cell, col|
+      {
+        colWidths[col] = colWidths[col].max(cell.size)
+      }
+    }
+
+    // output
+    cells.each |row, rowIndex|
+    {
+      isHeader := rowIndex == 0
+      if (isHeader) wtheme(theme.comment)
+      row.each |cell, col|
+      {
+        str := cell
+        colw := colWidths[col]
+        w(str).w(Str.spaces(colw - str.size + 2))
+      }
+        nl
+      if (isHeader)
+      {
+        numCols.times |col|
+        {
+          colw := colWidths[col]
+          colw.times { wc('-') }
+          w("  ")
+        }
+        nl
+        wreset(theme.comment)
+      }
+    }
+
+    return this
+  }
+
+  This printGrid(Grid g)
+  {
+    table := Str[][,]
+    table.add(g.cols.map |c->Str| { c.dis })
+    g.each |row|
+    {
+      cells := Str[,]
+      cells.capacity = g.cols.size
+      g.cols.each |c| { cells.add(row.dis(c.name)) }
+      table.add(cells)
+    }
+    return print(table)
+  }
+
+}
+
 

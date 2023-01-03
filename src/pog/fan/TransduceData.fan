@@ -59,6 +59,9 @@ mixin TransduceData
   ** Get the value as string
   @NoDoc abstract Str? getStr(Bool checked := true)
 
+  ** Get the data as file
+  @NoDoc abstract File? getFile(Bool checked := true)
+
   ** Get the data as directory file
   @NoDoc abstract File? getDir(Bool checked := true)
 

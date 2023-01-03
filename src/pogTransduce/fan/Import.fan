@@ -13,56 +13,67 @@ using pogEnv
 using haystack
 
 **
-** Haystack transducer
+** Import transducer
 **
 @Js
-const class HaystackTransducer : Transducer
+const class ImportTransducer : Transducer
 {
-  new make(PogEnv env) : super(env, "haystack") {}
+  new make(PogEnv env) : super(env, "import") {}
 
   override Str summary()
   {
-    "Convert between Haystack and Proto data models"
+    "Import a foreign data model into protos"
   }
 
   override Str usage()
   {
-    """haystack read:file      Read zinc, trio, or json to protos"
+    """import <data>         Import inferred on data type"
+       import grid:<data>    Import a Haystack grid to protos
        """
   }
 
   override TransduceData transduce(Str:TransduceData args)
   {
     cx := TransduceContext(this, args)
-    if (args.containsKey("read")) return readHaystack(cx)
-    throw ArgErr("Missing read or write argument")
+
+    // named arguments
+    if (cx.hasArg("grid")) return importGrid(cx, cx.arg("grid"))
+
+    // infer from it
+    data := cx.arg("it", false)
+    if (data != null)
+    {
+      if (data.get is Grid) return importGrid(cx, data)
+    }
+
+    throw Err("Unknown import type: $args")
   }
 
-  private TransduceData readHaystack(TransduceContext cx)
+  private TransduceData importGrid(TransduceContext cx, TransduceData data)
   {
-    cx.toResult(HaystackReader(cx).read, ["todo"], FileLoc.unknown)
+    grid := data.get as Grid ?: throw Err("Not a grid [$data.get.typeof]")
+    proto := HaystackImporter(cx, data).import(grid.toRows)
+    return cx.toResult(proto, ["proto", "unvalidated"], data.loc)
   }
 }
 
 **************************************************************************
-** HaystackReader
+** HaystackImporter
 **************************************************************************
 
 @Js
-internal class HaystackReader
+internal class HaystackImporter
 {
-  new make(TransduceContext cx)
+  new make(TransduceContext cx, TransduceData data)
   {
     this.cx   = cx
-    this.arg  = cx.arg("read", true)
-    this.base = QName.fromStr(cx.arg("base", false)?.getStr ?: "")
-    this.loc  = cx.toLoc(arg)
+    this.base = cx.base
+    this.loc  = data.loc
   }
 
-  Proto read()
+  Proto import(Dict[] dicts)
   {
     initKinds
-    dicts := initDicts
 
     protos := Str:Proto[:]
     protos.ordered = true
@@ -97,23 +108,6 @@ internal class HaystackReader
     this.isList = acc.getChecked("List")
   }
 
-  private Dict[] initDicts()
-  {
-    if (arg is Dict) return Dict[arg]
-    if (arg is List) return Dict[,].addAll(arg)
-    if (arg is Grid) return ((Grid)arg).toRows
-    if (arg is File) return fileToDicts(arg)
-    throw ArgErr("Read arg not supported: $arg [$arg.typeof]")
-  }
-
-  private Dict[] fileToDicts(File f)
-  {
-    if (f.ext == "zinc") return ZincReader(f.in).readGrid.toRows
-    if (f.ext == "json") return JsonReader(f.in).readGrid.toRows
-    if (f.ext == "trio") return TrioReader(f.in).readAllDicts
-    throw ArgErr("Unsupported haystack file type: $f.name")
-  }
-
   private Proto valToProto(QName qname, Obj val)
   {
     kind := Kind.fromVal(val)
@@ -142,7 +136,6 @@ internal class HaystackReader
   }
 
   private TransduceContext cx       // make
-  private Obj arg                   // make
   private QName base                // make
   private FileLoc loc               // make
   private AtomicRef? isDict         // initKinds

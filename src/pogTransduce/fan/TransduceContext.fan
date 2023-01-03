@@ -23,6 +23,7 @@ class TransduceContext
     this.transducer = transducer
     this.args       = args
     this.isTest     = args["isTest"]?.get(false) == true
+    this.base       = QName.fromStr(args["base"]?.getStr ?: "")
   }
 
   ** Environment
@@ -34,8 +35,14 @@ class TransduceContext
   ** Are we running within the test suite
   const Bool isTest
 
+  ** Base qname or the root
+  const QName base
+
   ** Arguments passed to transduce
   Str:TransduceData args
+
+  ** Is given argument defined
+  Bool hasArg(Str name) { args[name] != null }
 
   ** Accumulated events
   MTransduceEvent[] events := [,]

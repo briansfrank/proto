@@ -1,14 +1,14 @@
 #
-# Convert between Haystack and Protos
+# Test import transducer
 #
 
 ##########################################################################
-## From Haystack
+## Haystack
 ##########################################################################
 
 ---
-name: fromHaystack
-test: read trio:trio, reify, verify pog
+name: haystack
+test: read trio:trio, import, verify pog
 trio: |
   marker
   na: NA

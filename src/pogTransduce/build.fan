@@ -35,7 +35,7 @@ class Build : BuildPod
     index = [
       "pog.transducer": [
         "pogTransduce::CompileTransducer",
-        "pogTransduce::HaystackTransducer",
+        "pogTransduce::ImportTransducer",
         "pogTransduce::JsonTransducer",
         "pogTransduce::ParseTransducer",
         "pogTransduce::PrintTransducer",

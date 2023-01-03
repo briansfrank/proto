@@ -62,6 +62,15 @@ const class ReadTransducer : Transducer
     }
     if (result != null) return result
 
+    // check by extension
+    file := cx.arg("it", false)?.getFile(false)
+    if (file != null && file.ext != null)
+    {
+      method := methods[file.ext]
+      if (method == null) throw ArgErr("No reader for file extension: $file.name")
+      return method.callOn(this, [cx, cx.arg("it")])
+    }
+
     throw Err("Unknown read file type: $args")
   }
 
