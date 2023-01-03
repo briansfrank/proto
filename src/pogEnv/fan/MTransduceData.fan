@@ -148,6 +148,12 @@ class MTransduceData : TransduceData
     return argErr("Proto", checked)
   }
 
+  override Obj? getAs(Type expected, Bool checked := true)
+  {
+    if (val != null && val.typeof.fits(expected)) return val
+    return argErr(expected.name, checked)
+  }
+
   Obj? argErr(Str expected, Bool checked)
   {
     if (checked) throw ArgErr("Cannot get as $expected: ${val?.typeof} $tags")

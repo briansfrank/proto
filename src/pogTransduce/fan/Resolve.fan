@@ -24,8 +24,8 @@ const class ResolveTransducer : Transducer
 
   override Str usage()
   {
-    """resolve ast               Resolve JSON AST
-       resolve ast base:qname    Resolve using given base qname
+    """resolve <ast>                 Resolve JSON AST
+       resolve <ast> base:<qname>    Resolve using given base qname
        """
   }
 
@@ -46,7 +46,7 @@ internal class Resolver
   new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.data = cx.arg("it")
+    this.data = cx.argIt
     this.base = cx.base.toStr
     this.ast  = data.getAst
     this.loc  = data.loc

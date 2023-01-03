@@ -26,9 +26,8 @@ const class CompileTransducer : Transducer
 
   override Str usage()
   {
-    """compile file            Convenience for read:file
-       compile read:           Compile from prompt
-       compile read:file       Compile file
+    """compile <file>    Compile given file to validated proto
+       compile it:       Compile from prompt
        """
   }
 

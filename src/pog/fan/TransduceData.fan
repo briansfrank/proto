@@ -71,5 +71,8 @@ mixin TransduceData
   ** Get the data AST JSON representation
   @NoDoc abstract Proto? getProto(Bool checked := true)
 
+  ** Get the data and check that it fits given type
+  @NoDoc abstract Obj? getAs(Type expected, Bool checked := true)
+
 }
 

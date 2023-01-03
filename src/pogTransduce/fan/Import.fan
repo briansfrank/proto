@@ -27,8 +27,8 @@ const class ImportTransducer : Transducer
 
   override Str usage()
   {
-    """import <data>         Import inferred on data type"
-       import grid:<data>    Import a Haystack grid to protos
+    """import <data>         Import inferred on data type
+       import grid:<data>    Import a haystack grid to protos
        """
   }
 
@@ -40,7 +40,7 @@ const class ImportTransducer : Transducer
     if (cx.hasArg("grid")) return importGrid(cx, cx.arg("grid"))
 
     // infer from it
-    data := cx.arg("it", false)
+    data := cx.argIt(false)
     if (data != null)
     {
       if (data.get is Grid) return importGrid(cx, data)

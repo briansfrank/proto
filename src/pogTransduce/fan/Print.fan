@@ -26,53 +26,51 @@ const class PrintTransducer : Transducer
 
   override Str usage()
   {
-    """print                       Print last value to stdout
-       print <data>                Print data to stdout
-       print <data> write:<file>   Print data to given file
-       print showdoc:<bool>        Toggle doc meta in results
-       print showloc:<bool>        Toggle file location meta in results
+    """print                     Print last value to stdout
+       print <data>              Print data to stdout
+       print <data> to:<file>    Print data to given file
+       print showdoc:<bool>      Toggle doc meta in output
+       print showloc:<bool>      Toggle file location meta in output
        """
   }
 
   override TransduceData transduce(Str:TransduceData args)
   {
-    cx   := TransduceContext(this, args)
-    data := cx.arg("it")
-    return cx.argWrite.withOutStream |out|
-    {
-      print(cx, out, data)
-      return data
-    }
+    cx := TransduceContext(this, args)
+    data := cx.argIt
+    cx.argWriteTo.withOutStream |out| { print(cx, data, out) }
+    return data
   }
 
-  private Void print(TransduceContext cx, OutStream out, TransduceData data)
+  private Obj? print(TransduceContext cx, TransduceData data, OutStream out)
   {
     out.printLine
     if (!cx.isTest) out.printLine(data).printLine
-    printContent(cx, out, data.get(false))
+    printContent(cx, data.get(false), out)
     out.printLine
     out.printLine
+    return null
   }
 
-  private Void printContent(TransduceContext cx, OutStream out, Obj? val)
+  private Void printContent(TransduceContext cx, Obj? val, OutStream out)
   {
-    if (val is Proto) return printProto(cx, out, val)
-    if (val is Grid)  return printGrid(cx, out, val)
-    if (val is File)  return printFile(cx, out, val)
+    if (val is Proto) return printProto(cx, val, out)
+    if (val is Grid)  return printGrid(cx, val, out)
+    if (val is File)  return printFile(cx, val, out)
     printJson(cx, out, val)
   }
 
-  private Void printProto(TransduceContext cx, OutStream out, Proto proto)
+  private Void printProto(TransduceContext cx, Proto proto, OutStream out)
   {
     PogPrinter(out, cx.args).print(proto)
   }
 
-  private Void printGrid(TransduceContext cx, OutStream out, Grid grid)
+  private Void printGrid(TransduceContext cx, Grid grid, OutStream out)
   {
     TablePrinter(out, cx.args).printGrid(grid)
   }
 
-  private Void printFile(TransduceContext cx, OutStream out, File file)
+  private Void printFile(TransduceContext cx, File file, OutStream out)
   {
     if (file.isDir)
       printDir(cx, out, file)

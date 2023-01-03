@@ -72,7 +72,7 @@ internal const class Help : Cmd
     }
     session.cmds.dup.sort.each |cmd|
     {
-      out.printLine("  " + cmdToNames(cmd).padr(18) + "  " + cmd.summary)
+      out.printLine("  " + cmdToNames(cmd).padr(18) + " " + cmd.summary)
     }
     if (shell)
     {
@@ -179,7 +179,11 @@ internal const class Get : Cmd
 {
   override const Str name := "get"
   override Str summary() { "Get a variable by name" }
-  override Str usage() { """get name      Get variable by name""" }
+  override Str usage()
+  {
+    """get <name>    Get variable by name
+       """
+  }
   override TransduceData? execute(Session session, CmdExpr expr)
   {
     if (expr.args.isEmpty) return session.err("Must specify var name")
@@ -201,8 +205,8 @@ internal const class Set : Cmd
   override Str summary() { "Save current value to variable" }
   override Str usage()
   {
-    """set <name>         Set var to current value
-       set <name> <val>   Set var to given value
+    """set <name>          Set var to current value
+       set <name> <val>    Set var to given value
        """
   }
   override TransduceData? execute(Session session, CmdExpr expr)
@@ -276,7 +280,11 @@ internal const class Load : Cmd
 {
   override const Str name := "load"
   override Str summary() { "Load library by qname" }
-  override Str usage() { """load qname      Load library by name""" }
+  override Str usage()
+  {
+    """load <qname>    Load library by name
+       """
+  }
   override TransduceData? execute(Session session, CmdExpr expr)
   {
     qname := expr.arg("it", false)?.val

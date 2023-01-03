@@ -71,10 +71,16 @@ class TransduceContext
     return null
   }
 
-  ** Get the 'write' arg or default to stdout
-  TransduceData argWrite()
+  ** Get standard "it" argument
+  TransduceData? argIt(Bool checked := true)
   {
-    arg("write", false) ?: env.data(Env.cur.out, ["stdout"])
+    arg("it", checked)
+  }
+
+  ** Get standard write "to" arg or default to stdout
+  TransduceData argWriteTo()
+  {
+    arg("to", false) ?: env.data(Env.cur.out, ["stdout"])
   }
 
   ** Wrap result with current events

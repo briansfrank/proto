@@ -21,12 +21,12 @@ const class ReifyTransducer : Transducer
 
   override Str summary()
   {
-    "Construct a Proto tree from an JSON AST"
+    "Construct a proto tree from an JSON AST"
   }
 
   override Str usage()
   {
-    """reify ast       Transform AST to Protos
+    """reify <ast>    Transform JSON AST to unvalidated proto
        """
   }
 

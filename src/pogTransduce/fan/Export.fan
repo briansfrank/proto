@@ -25,8 +25,8 @@ const class ExportTransducer : Transducer
 
   override Str usage()
   {
-    """export ast:<data>      Export protos to JSON AST
-       export grid:<data>     Export protos to Haystack grid
+    """export ast:<data>     Export proto to JSON AST
+       export grid:<data>    Export proto to haystack grid
        """
   }
 

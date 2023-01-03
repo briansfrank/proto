@@ -42,10 +42,10 @@ const class ReadTransducer : Transducer
     """read <file>            Read file type based on file name extension
        read pog:<file>        Read pog file as unvalidated Proto
        read json:<file>       Read JSON file as json object
-       read zinc:<file>       Read Zinc file as Haystack grid
-       read hayson:<file>     Read Hayson JSON file as Haystack grid
-       read trio:<file>       Read Trio file as Haystack grid
-       read csv:<file>        Read CSV file as Haystack grid
+       read zinc:<file>       Read Zinc file as haystack grid
+       read hayson:<file>     Read Hayson JSON file as haystack grid
+       read trio:<file>       Read Trio file as haystack grid
+       read csv:<file>        Read CSV file as haystack grid
        """
   }
 
@@ -56,28 +56,36 @@ const class ReadTransducer : Transducer
     // lookup reader method by argument name
     result := methods.eachWhile |method, name|
     {
-      arg := args[name]
-      if (arg == null) return null
-      return method.callOn(this, [cx, arg])
+      from := args[name]
+      if (from == null) return null
+      return readMethod(cx, from, method)
     }
     if (result != null) return result
 
     // check by extension
-    file := cx.arg("it", false)?.getFile(false)
+    file := cx.argIt(false)?.getFile(false)
     if (file != null && file.ext != null)
     {
       method := methods[file.ext]
       if (method == null) throw ArgErr("No reader for file extension: $file.name")
-      return method.callOn(this, [cx, cx.arg("it")])
+      return readMethod(cx, cx.argIt, method)
     }
 
     throw Err("Unknown read file type: $args.keys.sort")
   }
 
-  private TransduceData readPog(TransduceContext cx, TransduceData data)
+  private TransduceData readMethod(TransduceContext cx, TransduceData from, Method method)
+  {
+    if (method.params.size == 2)
+      return method.callOn(this, [cx, from])
+    else
+      return from.withInStream |in| { method.callOn(this, [cx, from, in]) }
+  }
+
+  private TransduceData readPog(TransduceContext cx, TransduceData from)
   {
     args := cx.args.dup
-    args["it"] = data
+    args["it"] = from
 
     x := env.transduce("parse", args)
     if (x.isErr) return x
@@ -91,40 +99,28 @@ const class ReadTransducer : Transducer
     return x
   }
 
-  private TransduceData readZinc(TransduceContext cx, TransduceData data)
+  private TransduceData readZinc(TransduceContext cx, TransduceData from, InStream in)
   {
-    data.withInStream |in|
-    {
-      grid := ZincReader(in).readGrid
-      return cx.toResult(grid, ["grid", "zinc"], data.loc)
-    }
+    grid := ZincReader(in).readGrid
+    return cx.toResult(grid, ["grid", "zinc"], from.loc)
   }
 
-  private TransduceData readHayson(TransduceContext cx, TransduceData data)
+  private TransduceData readHayson(TransduceContext cx, TransduceData from, InStream in)
   {
-    data.withInStream  |in|
-    {
-      grid := JsonReader(in).readGrid
-      return cx.toResult(grid, ["grid", "hayson"], data.loc)
-    }
+    grid := JsonReader(in).readGrid
+    return cx.toResult(grid, ["grid", "hayson"], from.loc)
   }
 
-  private TransduceData readTrio(TransduceContext cx, TransduceData data)
+  private TransduceData readTrio(TransduceContext cx, TransduceData from, InStream in)
   {
-    data.withInStream  |in|
-    {
-      grid := TrioReader(in).readGrid
-      return cx.toResult(grid,  ["grid", "trio"], data.loc)
-    }
+    grid := TrioReader(in).readGrid
+    return cx.toResult(grid,  ["grid", "trio"], from.loc)
   }
 
-  private TransduceData readCsv(TransduceContext cx, TransduceData data)
+  private TransduceData readCsv(TransduceContext cx, TransduceData from, InStream in)
   {
-    data.withInStream  |in|
-    {
-      grid := CsvReader(in).readGrid
-      return cx.toResult(grid,  ["grid", "csv"], data.loc)
-    }
+    grid := CsvReader(in).readGrid
+    return cx.toResult(grid,  ["grid", "csv"], from.loc)
   }
 }
 

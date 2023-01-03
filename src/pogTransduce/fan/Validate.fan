@@ -25,14 +25,14 @@ const class ValidateTransducer : Transducer
 
   override Str usage()
   {
-    """validate proto          Validate proto
+    """validate <proto>    Validate proto
        """
   }
 
   override TransduceData transduce(Str:TransduceData args)
   {
     cx    := TransduceContext(this, args)
-    data  := cx.arg("it")
+    data  := cx.argIt
     proto := Validator(cx).validate(data.getProto)
     return cx.toResult(proto, ["proto", "validated"], data.loc)
   }

@@ -24,10 +24,9 @@ const class ParseTransducer : Transducer
 
   override Str usage()
   {
-    """parse file              Convenience for read:file
-       parse read:             Parse from prompt
-       parse read:file         Parse file into JSON
-       parse dir:file          Parse all pog files in directory
+    """parse <file>    Parse pog file to unresolved JSON AST
+       parse <dir>     Parse all pog files in directory
+       parse it:       Parse from prompt
        """
   }
 
@@ -35,11 +34,10 @@ const class ParseTransducer : Transducer
   {
     cx := TransduceContext(this, args)
 
-    input := cx.arg("it")
+    input := cx.argIt
     dir := input.getDir(false)
     if (dir != null) return parseDir(cx, input)
 
-    input = cx.arg("it")
     return input.withInStream |in|
     {
       toAstResult(cx, input, parse(cx, input.loc, in, Parser.newMap))
