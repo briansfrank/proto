@@ -33,6 +33,9 @@ The transducer arguments use test field names:
     // verify last result as JSON  against 'expect' field
     verify json:expect
 
+All evaluations should provide access to an implicit "temp"
+variable which is an in-memory buffer used for scratch results.
+
 # Verify Modes
 
 The special "verify" expression in a test is used to verify the last
@@ -54,11 +57,12 @@ The following verify modes are supported:
   - **pog**: last result is Proto and printed string matches field
   - **json**: last result is JSON and printed string matches field
   - **zinc**: last result is Grid and printed string matches field
+  - **str**: last result is in-memory buffer that matches expected string
   - **events**: last result events as delimited table of expected error events
 
 In the Fantom reference implementation all verifies are whitespace
-sensitive (to ensure pretty print is tested exactly).
-
+sensitive (to ensure pretty print is tested exactly).  However, we do trim
+the start and end of the string before comparison.
 
 
 

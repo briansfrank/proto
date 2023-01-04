@@ -89,7 +89,7 @@ const class WriteTransducer : Transducer
   private TransduceData writeMethod(TransduceContext cx, TransduceData data, TransduceData to, Method method)
   {
     to.withOutStream |out| { method.callOn(this, [cx, data, out]) }
-    return data
+    return to
   }
 
   private Void writePog(TransduceContext cx, TransduceData data, OutStream out)

@@ -101,6 +101,7 @@ class MTransduceData : TransduceData
     if (val is InStream) return val
     if (val is Str) return ((Str)val).in
     if (val is File) return ((File)val).in
+    if (val is Buf) return ((Buf)val).seek(0).in
     return argErr("InStream", checked)
   }
 
@@ -111,12 +112,14 @@ class MTransduceData : TransduceData
     if (val == "stderr") return Env.cur.err
     if (val is OutStream) return val
     if (val is File) return ((File)val).out
+    if (val is Buf) return ((Buf)val).out
     return argErr("OutStream", checked)
   }
 
   override Str? getStr(Bool checked := true)
   {
     if (val is Str) return val
+    if (val is Buf) return ((Buf)val).seek(0).readAllStr
     return argErr("Str", checked)
   }
 

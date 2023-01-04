@@ -17,8 +17,6 @@ using haystack
 **
 class TestSuite : Test
 {
-  Void main(Str[] args) { run(args) }
-
   Void test() { run(Str[,]) }
 
   Void run(Str[] args)
@@ -29,6 +27,9 @@ class TestSuite : Test
     if (r.numFails > 0) fail("TestSuite $r.numFails failures: $r.failed")
   }
 }
+
+** Main to run test suite straight from command line
+class Main { Void main(Str[] args) { TestSuite().run(args) } }
 
 **************************************************************************
 ** PogTestRunner
@@ -108,6 +109,7 @@ class PogTestRunner
       if (n == "name" || n == "test") return
       vars[n] = env.data(v, ["str", "test"], FileLoc("test.$n"))
     }
+    vars["temp"] = env.data(Buf())
 
     // evaluate each expr
     exprs.each |expr|
@@ -127,7 +129,8 @@ class PogTestRunner
     expr.args.each |arg|
     {
       name := arg.name ?: "it"
-      targs[name] = env.data(vars.getChecked(arg.val))
+      val := arg.val
+      targs[name] = env.data(vars.getChecked(val))
     }
     result := env.transduce(expr.name, targs)
     vars["it"] = result
@@ -138,12 +141,13 @@ class PogTestRunner
     actual := vars.get("it") as TransduceData ?: throw Err("Missing it data")
     arg    := expr.args.first ?: throw Err("Expecting verify mode:field")
     mode   := arg.name ?: arg.val
-    expect := vars.getChecked(arg.val).get
+    expect := vars.getChecked(arg.val).getStr
     switch (mode)
     {
       case "json":   verifyJson(actual, expect)
       case "pog":    verifyPog(actual, expect)
       case "zinc":   verifyZinc(actual,expect)
+      case "str":    verifyStr(actual,expect)
       case "events": verifyEvents(actual, expect)
       default: throw Err("Unknown verify mode: $mode")
     }
@@ -188,7 +192,7 @@ class PogTestRunner
   {
     expected = expected.trim
     buf := StrBuf()
-    grid := data.get as Grid ?: throw Err("Expecting Grid: $data")
+    grid := data.getAs(Grid#)
     actual := ZincWriter.gridToStr(grid).trim
 
     if (verbose || actual != expected)
@@ -201,6 +205,20 @@ class PogTestRunner
     verifyEq(actual, expected)
   }
 
+  Void verifyStr(TransduceData data, Str expected)
+  {
+    expected = expected.trim
+    actual := data.getStr.trim
+
+    if (verbose || actual != expected)
+    {
+      echo
+      echo("--- Str [$cur] ---")
+      echo(data.getStr)
+      dump(actual, expected)
+    }
+    verifyEq(actual, expected)
+  }
 
   Void verifyEvents(TransduceData t, Str? expectedTable)
   {

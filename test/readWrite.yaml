@@ -1,11 +1,11 @@
 #
-# Read transducer tests
+# Read and write transducer tests
 # TODO: add json tests
 #
 
 ---
 name: pog
-test: read pog:src, verify pog:expect
+test: read pog:src, verify pog:expect, write pog:temp, verify str:expect
 src: |
   a: {id: Ref "a", dis: "Alpha", site}
   b: {id: Ref "b", dis: "Beta", site}
@@ -24,7 +24,7 @@ expect: |
   }
 ---
 name: zinc
-test: read zinc:src, verify zinc:expect
+test: read zinc:src, verify zinc:expect, write zinc:temp, verify str:expect
 src: |
   ver:"3.0"
   id, dis, site
@@ -57,14 +57,14 @@ expect: |
   @b,"Bravo",M
 ---
 name: trio
-test: read trio:src, verify zinc:expect
+test: read trio:src, verify zinc:expect, write trio:temp, verify str:src
 src: |
   id:@a
-  dis:"Alpha"
+  dis:Alpha
   site
   ---
   id:@b
-  dis:"Bravo"
+  dis:Bravo
   site
 expect: |
   ver:"3.0"
@@ -73,7 +73,7 @@ expect: |
   @b,"Bravo",M
 ---
 name: csv
-test: read csv:src, verify zinc:expect
+test: read csv:src, verify zinc:expect, write csv:temp, verify str:src
 src: |
   id,dis,site
   @a,Alpha,M
