@@ -23,7 +23,6 @@ class TransduceContext
     this.transducer = transducer
     this.args       = args
     this.isTest     = args["isTest"]?.get(false) == true
-    this.base       = QName.fromStr(args["base"]?.getStr ?: "")
   }
 
   ** Environment
@@ -35,9 +34,6 @@ class TransduceContext
   ** Are we running within the test suite
   const Bool isTest
 
-  ** Base qname or the root
-  const QName base
-
   ** Arguments passed to transduce
   Str:TransduceData args
 
@@ -46,6 +42,15 @@ class TransduceContext
 
   ** Accumulated events
   MTransduceEvent[] events := [,]
+
+  ** Explicit base qname from arguments or auto-generate one
+  once QName base()
+  {
+    base := args["base"]?.getStr
+    if (base == null) base = "_" + baseCounter.getAndIncrement
+    return QName.fromStr(base)
+  }
+  private static const AtomicInt baseCounter := AtomicInt()
 
   ** Log an event
   Void event(MTransduceEvent e)
