@@ -64,6 +64,7 @@ const mixin QName
   ** Names are not validated.
   static new make(Str[] names)
   {
+    if (names.size == 0) return root
     if (names.size == 1) return QName1(names[0])
     if (names.size == 2) return QName2(names[0], names[1])
     if (names.size == 3) return QName3(names[0], names[1], names[2])
@@ -99,6 +100,17 @@ const mixin QName
     names.capacity = size
     for (i := 0; i<size; ++i) names.add(get(i))
     return make(names.getRange(range))
+  }
+
+  ** Get the library portion of this qname.  This is anything up to
+  ** the first capitalized name.  Or if no names are capitalized then
+  ** return itself.
+  QName lib()
+  {
+    if (isRoot) return this
+    for (i:=0; i<size; ++i)
+      if (PogUtil.isUpper(get(i))) return getRange(0..<i)
+    return this
   }
 
   ** Iterate each name in the qname

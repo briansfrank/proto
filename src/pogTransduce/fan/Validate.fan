@@ -51,12 +51,39 @@ internal class Validator
   Proto validate(Proto p)
   {
     stack.push(p)
+    if (p is Lib) validateLib(p)
     validateVal(p)
     validateFit(p)
     p.eachOwn |kid| { validate(kid) }
     stack.pop
     return p
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Libs
+//////////////////////////////////////////////////////////////////////////
+
+  Void validateLib(Proto lib)
+  {
+    validateLibName(lib)
+    lib.eachOwn |kid| { validateLibChild(lib, kid) }
+  }
+
+  Void validateLibName(Proto lib)
+  {
+    if (lib.qname !== lib.qname.lib && lib.qname.toStr != "sys.Lib")
+      err("Invalid qname for lib, each name must be start with lower case", lib)
+  }
+
+  Void validateLibChild(Proto lib, Proto proto)
+  {
+    if (!PogUtil.isUpper(proto.name) && !PogUtil.isMeta(proto.name))
+      err("Invalid name for lib child, name must start with upper case", proto)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Vals
+//////////////////////////////////////////////////////////////////////////
 
   Void validateVal(Proto p)
   {
@@ -81,12 +108,26 @@ internal class Validator
 
     if (!p.fits(slotType))
       cx.err("Invalid type for '${parentType}.${p.name}': '${p.isa}' does not fit '$slotType'", p)
+
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
 
   Proto? parent()
   {
     stack.size <= 1 ? null : stack[-2]
   }
+
+  Void err(Str msg, Proto proto)
+  {
+    cx.err(msg, proto)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
 
   TransduceContext cx
   Proto[] stack := [,]

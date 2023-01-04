@@ -11,6 +11,8 @@ using pog
 **
 ** PogEnv tests
 **
+** TODO: test lib qname, and lib children name errors
+**
 class EnvTest : Test
 {
   Void testInstalled()
@@ -24,6 +26,10 @@ class EnvTest : Test
     verifyErr(UnknownLibErr#) { env.load("fooBar") }
     verifyErr(UnknownLibErr#) { env.load("fooBar", true) }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Sys
+//////////////////////////////////////////////////////////////////////////
 
   Void testSys()
   {
@@ -52,6 +58,10 @@ class EnvTest : Test
     verifyErr(UnknownProtoErr#) { lib.get("NotThere") }
     verifyErr(UnknownProtoErr#) { lib.get("NotThere", true) }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Ph
+//////////////////////////////////////////////////////////////////////////
 
   Void testPh()
   {

@@ -34,6 +34,11 @@ const class PogUtil
   static Bool isAuto(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
 
   **
+  ** Is this an upper case name
+  **
+  static Bool isUpper(Str name) { name.size >= 1 && name[0].isUpper }
+
+  **
   ** Parse qname into its dotted path segments
   **
   static Str[] qnamePath(Str qname) { qname.split('.') }

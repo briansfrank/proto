@@ -43,6 +43,14 @@ class MiscTest : Test
     verifyEq(QName("a.b.c.d.e")[1..-1], QName("b.c.d.e"))
     verifyEq(QName("a.b.c.d.e")[0..-2], QName("a.b.c.d"))
     verifyEq(QName("a.b.c.d.e")[1..-2], QName("b.c.d"))
+
+    // libs
+    verifySame(QName.root.lib, QName.root)
+    verifyEq(QName("Foo").lib, QName.root)
+    verifyEq(QName("bar.Foo").lib, QName("bar"))
+    verifyEq(QName("bar.baz.Foo").lib, QName("bar.baz"))
+    verifyEq(QName("a.b.c.Foo.Bar").lib, QName("a.b.c"))
+    verifyEq(QName("a.b.c").lib, QName("a.b.c"))
   }
 
   Void verifyQName(Str s, Str[] names)
@@ -50,6 +58,7 @@ class MiscTest : Test
     x := QName(s)
     verifyEq(x.isRoot, names.isEmpty)
     if (x.isRoot) verifySame(QName.root, x)
+    verifyEq(x, QName(names))
     verifyEq(x.size, names.size)
     verifyEq(x.name, names.last ?: "")
     verifyEq(x.toStr, s)

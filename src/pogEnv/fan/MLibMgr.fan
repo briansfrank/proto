@@ -86,10 +86,9 @@ internal const class MLibMgr
     compilingPush(entry.qname)
     try
     {
-      x := transduce("parse",   ["it":env.data(entry.dir)])
-      x  = transduce("resolve", ["it":x, "base":env.data(entry.qname)])
-      x  = transduce("reify",   ["it":x, "base":env.data(entry.qname)])
-      return x.get
+      // TODO: change this to compile once we get ph working
+      args := ["pog":env.data(entry.dir), "base":env.data(entry.qname)]
+      return transduce("read", args).get
     }
     finally
     {
