@@ -393,6 +393,10 @@ internal class JsonPrinter : Printer
       printMap(val)
     else if (val is List)
       printList(val)
+    else if (val == null)
+      w("null")
+    else if (val is Bool)
+      w(val.toStr)
     else
       wquoted(val.toStr)
   }
@@ -474,8 +478,16 @@ internal class JsonPrinter : Printer
 
   Void printList(Obj?[] list)
   {
-    // TODO
-    throw Err("TODO")
+    wsymbol("[").nl
+    indention++
+    list.each |item, i|
+    {
+      if (i > 0) wsymbol(",").nl
+      windent
+      print(item)
+    }
+    indention--
+    nl.windent.wsymbol("]")
   }
 }
 

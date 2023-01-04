@@ -1,5 +1,5 @@
 #
-# Reify Pog Src => Resolve => Reify Pog
+# Reify: resolved AST JSON -> unvalidated proto
 #
 
 ---

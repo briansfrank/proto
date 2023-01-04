@@ -99,6 +99,12 @@ const class ReadTransducer : Transducer
     return x
   }
 
+  private TransduceData readJson(TransduceContext cx, TransduceData from, InStream in)
+  {
+    json := JsonInStream(in).readJson
+    return cx.toResult(json, ["json"], from.loc)
+  }
+
   private TransduceData readZinc(TransduceContext cx, TransduceData from, InStream in)
   {
     grid := ZincReader(in).readGrid

@@ -1,6 +1,5 @@
 #
 # Read and write transducer tests
-# TODO: add json tests
 #
 
 ---
@@ -21,6 +20,31 @@ expect: |
       dis: sys.Str "Beta"
       site
     }
+  }
+---
+name: json
+test: read json:src, verify json:expect, write json:temp, verify str:expect
+src: |
+  {
+    "str": "hello",
+    "num": 123,
+    "bool": true,
+    "null": null,
+    "obj": { "foo":"bar"},
+    "list": ["a", "b", "c"]
+  }
+expect: |
+  {
+    "str":"hello",
+    "num":"123",
+    "bool":true,
+    "null":null,
+    "obj":{"foo":"bar"},
+    "list":[
+      "a",
+      "b",
+      "c"
+    ]
   }
 ---
 name: zinc

@@ -1,5 +1,5 @@
 #
-# Parse tests Pog format => Proto => JSON
+# Resolve: unresolved AST JSON -> resolved AST JSON
 #
 
 ---

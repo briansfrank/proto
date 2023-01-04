@@ -1,5 +1,5 @@
 #
-# Parse tests Pog format => JSON
+# Parse: pog source -> unresolved AST JSON
 #
 
 ---
