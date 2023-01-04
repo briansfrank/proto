@@ -88,14 +88,26 @@ internal class HaystackExporter
     dicts := Dict[,]
     proto.each |kid|
     {
-      dicts.add(exportToDict(kid))
+      // for now just assume proto is list
+      if (PogUtil.isAuto(kid.name))
+        dicts.add(exportToDict(kid))
     }
     return Etc.makeDictsGrid(null, dicts)
   }
 
+  Obj?[] exportToList(Proto proto)
+  {
+    acc := Obj?[,]
+    proto.each |kid|
+    {
+      if (PogUtil.isAuto(kid.name)) acc.add(export(kid))
+    }
+    return acc.toImmutable
+  }
+
   Dict exportToDict(Proto proto)
   {
-    if (proto.hasVal) return Etc.makeDict1("val", exportToScalar(proto))
+    if (proto.hasVal) return Etc.makeDict1("val", export(proto))
     acc := Str:Obj[:]
     acc.ordered = true
     proto.each |kid|
@@ -106,17 +118,40 @@ internal class HaystackExporter
     return Etc.makeDict(acc)
   }
 
-  Obj exportToScalar(Proto proto)
-  {
-    // TODO
-    proto.val
-  }
 
   Obj? export(Proto proto)
   {
-    if (proto.isa?.qname?.toStr == "sys.Marker") return Marker.val
-    if (proto.hasVal) return exportToScalar(proto)
-    return exportToDict(proto)
+    kind := toKind(proto)
+
+    // singletons
+    if (kind.isSingleton) return kind.defVal
+
+    // collections
+    if (kind.isDict) return exportToDict(proto)
+    if (kind.isList) return exportToList(proto)
+    if (kind.isGrid) return exportToGrid(proto)
+
+    // scalars
+    val := proto.val(false)
+    if (val == null) return null
+    switch (kind)
+    {
+      case Kind.str:      return val.toStr
+      case Kind.number:   return val as Number ?: Number.fromStr(val.toStr)
+      case Kind.ref:      return val as Ref ?: Ref.fromStr(val.toStr)
+      case Kind.date:     return val as Date ?: Date.fromStr(val.toStr)
+      case Kind.time:     return val as Time ?: Time.fromStr(val.toStr)
+      case Kind.dateTime: return val as DateTime ?: DateTime.fromStr(val.toStr)
+      case Kind.symbol:   return val as Symbol ?: Symbol.fromStr(val.toStr)
+      case Kind.coord:    return val as Coord  ?: Coord.fromStr(val.toStr)
+      case Kind.xstr:     return val as XStr ?: ZincReader(val.toStr.in).readVal
+      default: throw Err("Unhandled haystack kind $kind: $val ($val.typeof)")
+    }
+  }
+
+  Kind toKind(Proto proto)
+  {
+    Kind.fromStr(proto.isa?.name ?: "", false) ?: Kind.dict
   }
 }
 
