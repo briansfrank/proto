@@ -31,6 +31,20 @@ json: |
     }
   }
 ---
+name: rootDict
+test: parse src, resolve, reify, verify json
+src: |
+  {
+    bar: Str
+    baz: "quz"
+  }
+json: |
+  {
+    "_is":"sys.Dict",
+    "bar":{"_is":"sys.Str"},
+    "baz":{"_is":"sys.Str", "_val":"quz"}
+  }
+---
 name: internal
 test: parse src, resolve base:base, reify base:base, verify json
 base: test

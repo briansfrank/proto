@@ -79,7 +79,11 @@ const class ParseTransducer : Transducer
 
   private TransduceData toAstResult(TransduceContext cx, TransduceData input, Str:Obj? ast)
   {
-    cx.toResult(ast, ["json", "ast", "unresolved"], input.loc)
+    // if ast contains only one auto-named object, then make it the root
+    if (ast.size == 1 && ast.keys[0] == "_0")
+      ast = ast["_0"]
+
+    return cx.toResult(ast, ["json", "ast", "unresolved"], input.loc)
   }
 
 }

@@ -14,9 +14,12 @@ src: |
     {}
   }
 expect: |
-  List {
+  sys.List {
     sys.Str "A"
+    sys.Int "123"
     sys.Str "C"
+    sys.Date "2023-01-04"
+    sys.Dict
   }
 ---
 
