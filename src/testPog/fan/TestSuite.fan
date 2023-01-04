@@ -130,7 +130,8 @@ class PogTestRunner
     {
       name := arg.name ?: "it"
       val := arg.val
-      targs[name] = env.data(vars.getChecked(val))
+      data := PogUtil.isName(val) ? vars.getChecked(val) : env.data(val)
+      targs[name] = data
     }
     result := env.transduce(expr.name, targs)
     vars["it"] = result

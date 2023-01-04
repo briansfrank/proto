@@ -1,0 +1,26 @@
+#
+# Find transducer
+#
+
+---
+name: str
+test: compile src, find filter:sys.Str, verify pog:expect
+src: |
+  List {
+    "A"
+    Int "123"
+    sys.Str "C"
+    Date "2023-01-04"
+    {}
+  }
+expect: |
+  List {
+    sys.Str "A"
+    sys.Str "C"
+  }
+---
+
+
+
+
+
