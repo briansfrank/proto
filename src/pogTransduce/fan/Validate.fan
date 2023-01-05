@@ -51,7 +51,7 @@ internal class Validator
   Proto validate(Proto p)
   {
     stack.push(p)
-    if (p is Lib) validateLib(p)
+    validateLib(p)
     validateVal(p)
     validateFit(p)
     p.eachOwn |kid| { validate(kid) }
@@ -63,21 +63,22 @@ internal class Validator
 // Libs
 //////////////////////////////////////////////////////////////////////////
 
-  Void validateLib(Proto lib)
+  Void validateLib(Proto p)
   {
-    validateLibName(lib)
-    lib.eachOwn |kid| { validateLibChild(lib, kid) }
+    if (!p.info.isLib) return
+    validateLibName(p)
+    p.eachOwn |kid| { validateLibChild(p, kid) }
   }
 
   Void validateLibName(Proto lib)
   {
-    if (lib.qname !== lib.qname.lib && lib.qname.toStr != "sys.Lib")
+    if (lib.qname !== lib.qname.lib)
       err("Invalid qname for lib, each name must be start with lower case", lib)
   }
 
   Void validateLibChild(Proto lib, Proto proto)
   {
-    if (!PogUtil.isUpper(proto.name) && !PogUtil.isMeta(proto.name))
+    if (!proto.qname.isUpperName && !proto.isMeta)
       err("Invalid name for lib child, name must start with upper case", proto)
   }
 

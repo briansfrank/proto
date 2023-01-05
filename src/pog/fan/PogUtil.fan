@@ -26,17 +26,22 @@ const class PogUtil
   **
   ** Is this a meta data name that starts with underbar
   **
-  static Bool isMeta(Str name) { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
+  static Bool isMetaName(Str name) { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
 
   **
   ** Is this a numbered index auto assign name
   **
-  static Bool isAuto(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+  static Bool isAutoName(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+
+  **
+  ** Is this an lower case name
+  **
+  static Bool isLowerName(Str name) { name.size >= 1 && name[0].isLower }
 
   **
   ** Is this an upper case name
   **
-  static Bool isUpper(Str name) { name.size >= 1 && name[0].isUpper }
+  static Bool isUpperName(Str name) { name.size >= 1 && name[0].isUpper }
 
   **
   ** Parse qname into its dotted path segments

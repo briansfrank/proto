@@ -19,4 +19,6 @@ internal const class MLib : MProto, Lib
   new make(MProtoInit init) : super(init) {}
 
   once override Version version() { Version.fromStr(getOwn("_version").val.toStr) }
+
+  override Bool isLib() { true }
 }

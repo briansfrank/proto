@@ -41,6 +41,9 @@ const mixin Proto
   ** Transaction version for when this proto was last modified
   abstract Int tx()
 
+  ** Additional identity info
+  abstract ProtoInfo info()
+
 //////////////////////////////////////////////////////////////////////////
 // Scalar
 //////////////////////////////////////////////////////////////////////////
@@ -106,3 +109,37 @@ const mixin Proto
   abstract Void print(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
 
 }
+
+**************************************************************************
+** ProtoInfo
+**************************************************************************
+
+**
+** Proto additional information methods and flags
+**
+@Js
+const mixin ProtoInfo
+{
+  ** Is this 'sys.Obj' - the root top type
+  abstract Bool isObj()
+
+  ** Is this 'sys.None' - the bottom type
+  abstract Bool isNone()
+
+  ** Does the proto fit 'sys.Scalar' - all non-collection types
+  abstract Bool isScalar()
+
+  ** Does the proto fit 'sys.Marker'
+  abstract Bool isMarker()
+
+  ** Does the proto fit 'sys.Dict' - all collection types
+  abstract Bool isDict()
+
+  ** Does the proto fit 'sys.List' - indexed based collection
+  abstract Bool isList()
+
+  ** Does the proto inherit from 'sys.Lib' - all libraries.
+  ** This method returns false for the 'sys.Lib' proto itself.
+  abstract Bool isLib()
+}
+

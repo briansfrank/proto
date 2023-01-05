@@ -15,13 +15,13 @@ Obj: <
 // None is the bottom type with no values
 None: Obj
 
-// Marker labels a dict with typing information
-Marker: Obj
-
 // Scalar is an atomic value kind
 Scalar: Obj <
   pattern: Str?  // Regex pattern that string encoding must match
 > ""
+
+// Marker labels a dict with typing information
+Marker: Scalar "marker"
 
 // Closed enumerated choice
 Enum: Obj

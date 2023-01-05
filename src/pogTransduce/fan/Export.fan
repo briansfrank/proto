@@ -89,7 +89,7 @@ internal class HaystackExporter
     proto.each |kid|
     {
       // for now just assume proto is list
-      if (PogUtil.isAuto(kid.name))
+      if (kid.qname.isAutoName)
         dicts.add(exportToDict(kid))
     }
     return Etc.makeDictsGrid(null, dicts)
@@ -100,7 +100,7 @@ internal class HaystackExporter
     acc := Obj?[,]
     proto.each |kid|
     {
-      if (PogUtil.isAuto(kid.name)) acc.add(export(kid))
+      if (kid.qname.isAutoName) acc.add(export(kid))
     }
     return acc.toImmutable
   }

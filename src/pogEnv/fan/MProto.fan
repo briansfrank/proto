@@ -14,7 +14,7 @@ using util
 ** Basic implementation for proto
 **
 @Js
-internal const class MProto : Proto
+internal const class MProto : Proto, ProtoInfo
 {
   new make(MProtoInit init)
   {
@@ -29,7 +29,7 @@ internal const class MProto : Proto
 
   override const QName qname
 
-  override Bool isMeta() { qname.isMeta }
+  override Bool isMeta() { qname.isMetaName }
 
   override Proto? isa() { isaRef.val }
   private const AtomicRef isaRef
@@ -140,5 +140,29 @@ internal const class MProto : Proto
     PogUtil.print(this, out, opts)
   }
 
+  override ProtoInfo info() { this }
+
+  override Bool isObj() { false }
+
+  override Bool isNone() { false }
+
+  override Bool isScalar() { flags("sys.Scalar") }
+
+  override Bool isMarker() { flags("sys.Marker") }
+
+  override Bool isDict() { flags("sys.Dict") }
+
+  override Bool isList() { flags("sys.List") }
+
+  override Bool isLib() { false }
+
+  // TODO: temp shim to get APIs working
+  Bool flags(Str base)
+  {
+    if (qname.toStr == base) return true
+    p := isa as MProto
+    if (p == null) return false
+    return p.flags(base)
+  }
 }
 

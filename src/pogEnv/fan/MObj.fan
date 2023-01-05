@@ -14,7 +14,7 @@ using util
 ** Implementation for root object type
 **
 @Js
-internal const class MObj : Proto
+internal const final class MObj : Proto, ProtoInfo
 {
   new make(MProtoInit init)
   {
@@ -126,5 +126,21 @@ internal const class MObj : Proto
   {
     PogUtil.print(this, out, opts)
   }
+
+  override ProtoInfo info() { this }
+
+  override Bool isObj() { true }
+
+  override Bool isNone() { false }
+
+  override Bool isScalar() { false }
+
+  override Bool isMarker() { false }
+
+  override Bool isDict() { false }
+
+  override Bool isList() { false }
+
+  override Bool isLib() { false }
 }
 

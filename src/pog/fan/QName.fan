@@ -82,10 +82,16 @@ const mixin QName
   abstract Bool isRoot()
 
   ** Is this a meta data name that starts with underbar
-  Bool isMeta() { PogUtil.isMeta(name) }
+  Bool isMetaName() { PogUtil.isMetaName(name) }
 
-  ** Is this a numbered index auto assign name
-  Bool isAuto() { PogUtil.isAuto(name) }
+  ** Is this a numbered index auto assigned name
+  Bool isAutoName() { PogUtil.isAutoName(name) }
+
+  ** Does the name start with lower case letter
+  Bool isLowerName() { PogUtil.isLowerName(name) }
+
+  ** Does the name start with an upper case letter
+  Bool isUpperName() { PogUtil.isUpperName(name) }
 
   ** Get a segment of the qname
   @Operator abstract Str get(Int i)
@@ -109,7 +115,7 @@ const mixin QName
   {
     if (isRoot) return this
     for (i:=0; i<size; ++i)
-      if (PogUtil.isUpper(get(i))) return getRange(0..<i)
+      if (PogUtil.isUpperName(get(i))) return getRange(0..<i)
     return this
   }
 

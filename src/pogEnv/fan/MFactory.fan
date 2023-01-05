@@ -28,8 +28,9 @@ const class MFactory
 
   private static Void initToFantom(MPogEnv env, Str:Str toPod, Str:Str toFantom)
   {
-    toFantom["sys.Obj"] = "pogEnv::MObj"
-    toFantom["sys.Lib"] = "pogEnv::MLib"
+    toFantom["sys.Obj"]  = "pogEnv::MObj"
+    toFantom["sys.Lib"]  = "pogEnv::MLib"
+    toFantom["sys.None"] = "pogEnv::MNone"
 
     /*
     Env.cur.index("pog.types").each |str|
@@ -129,7 +130,15 @@ const class MFactory
       if (isa != "sys.Obj")
         fantom = toFantom[init.isa.val.toStr]
     }
-    if (fantom != null) return Type.find(fantom).make([init])
+
+    if (fantom != null)
+    {
+      // don't use MLib for base class
+      if (init.qname.toStr == "sys.Lib") return MProto(init)
+
+      return Type.find(fantom).make([init])
+    }
+
     return MProto(init)
   }
 }
