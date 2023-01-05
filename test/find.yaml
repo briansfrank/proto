@@ -3,8 +3,9 @@
 #
 
 ---
-name: str
-test: compile src, find filter:sys.Str, verify pog:expect
+name: strOnList
+test: compile src, find filter:predicate, verify pog:expect
+predicate: sys.Str
 src: |
   List {
     "A"
@@ -16,10 +17,44 @@ src: |
 expect: |
   sys.List {
     sys.Str "A"
-    sys.Int "123"
     sys.Str "C"
-    sys.Date "2023-01-04"
-    sys.Dict
+  }
+---
+name: strOnDict
+test: compile src, find filter:predicate, verify pog:expect
+predicate: sys.Str
+src: |
+  {
+    "A"
+    Int "123"
+    sys.Str "C"
+    Date "2023-01-04"
+    {}
+  }
+expect: |
+  sys.Dict {
+    sys.Str "A"
+    sys.Str "C"
+  }
+---
+name: numbers
+test: compile src, find filter:predicate, verify pog:expect
+predicate: sys.Number
+src: |
+  List {
+    "A"
+    Int "123"
+    sys.Str "C"
+    Date "2023-01-04"
+    {}
+    Float "2.0"
+    sys.Number "50kW"
+  }
+expect: |
+  sys.List {
+    sys.Int "123"
+    sys.Float "2.0"
+    sys.Number "50kW"
   }
 ---
 

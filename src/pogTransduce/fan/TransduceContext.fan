@@ -88,6 +88,18 @@ class TransduceContext
     arg("to", false) ?: env.data(Env.cur.out, ["stdout"])
   }
 
+  ** Get an arg which is a proto or pog soruce
+  Proto? argToProto(Str name, Bool checked := true)
+  {
+    arg := arg(name, checked)
+    if (arg == null) return null
+    proto := arg.getProto(false)
+    if (proto != null) return proto
+    src := arg.getStr(false)
+    if (src != null) return env.transduce("compile", ["it":arg]).getProto
+    throw ArgErr("Cannot coerce arg '$name' to proto: $arg")
+  }
+
   ** Wrap result with current events
   TransduceData toResult(Obj? val, Str[] tags, FileLoc loc)
   {
@@ -128,7 +140,6 @@ class TransduceContext
   {
     ((MPogEnv)env).factory.instantiate(MProtoInit(loc, qname, isa, val, children))
   }
-
 }
 
 **************************************************************************
