@@ -25,8 +25,17 @@ const mixin Proto
   ** Fully qualified name as dotted path from root
   abstract QName qname()
 
-  ** Is this a meta data object; name starts with underbar
+  ** Is this a type object; name starts with uppercase
+  abstract Bool isType()
+
+  ** Is this a field object; name starts with lowercase
+  abstract Bool isField()
+
+  ** Is this a meta object; name starts with underbar followed by letter
   abstract Bool isMeta()
+
+  ** Is this a indexed/auto-named object; name starts with underbar followed by digits
+  abstract Bool isOrdinal()
 
   ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
   abstract Proto? isa()

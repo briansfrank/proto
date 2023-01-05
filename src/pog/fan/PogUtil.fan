@@ -24,24 +24,24 @@ const class PogUtil
   }
 
   **
-  ** Is this a meta data name that starts with underbar
+  ** Does name start with an underbar followed by letter
   **
   static Bool isMetaName(Str name) { name.size >= 2 && name[0] == '_' && name[1].isAlpha }
 
   **
-  ** Is this a numbered index auto assign name
+  ** Does name start with an underbar followed by digits
   **
-  static Bool isAutoName(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
+  static Bool isOrdinalName(Str name) { name.size >= 2 && name[0] == '_' && name[1].isDigit }
 
   **
-  ** Is this an lower case name
+  ** Does name start with an upper case name
   **
-  static Bool isLowerName(Str name) { name.size >= 1 && name[0].isLower }
+  static Bool isTypeName(Str name) { name.size >= 1 && name[0].isUpper }
 
   **
-  ** Is this an upper case name
+  ** Does name start with a lower case
   **
-  static Bool isUpperName(Str name) { name.size >= 1 && name[0].isUpper }
+  static Bool isFieldName(Str name) { name.size >= 1 && name[0].isLower }
 
   **
   ** Parse qname into its dotted path segments

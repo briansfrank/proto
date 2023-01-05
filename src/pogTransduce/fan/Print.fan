@@ -315,7 +315,7 @@ internal class PogPrinter : Printer
 
   private Void printName(Proto p, Bool markerOnly)
   {
-    if (p.qname.isRoot || p.qname.isAutoName || p.name.isEmpty) return
+    if (p.qname.isRoot || p.qname.isOrdinal || p.name.isEmpty) return
     name := p.name
     if (PogUtil.isMetaName(name)) name = name[1..-1]
     w(name)

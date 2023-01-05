@@ -51,12 +51,39 @@ internal class Validator
   Proto validate(Proto p)
   {
     stack.push(p)
+    validateIs(p)
     validateLib(p)
     validateVal(p)
     validateFit(p)
     p.eachOwn |kid| { validate(kid) }
     stack.pop
     return p
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Isa
+//////////////////////////////////////////////////////////////////////////
+
+  Void validateIs(Proto p)
+  {
+    if (p.isa == null)
+    {
+      if (p.qname.toStr != "sys.Obj") err("Missing is base object", p)
+      return
+    }
+
+    if (p.isType)
+    {
+      validateIsObj(p)
+    }
+  }
+
+  private Void validateIsObj(Proto p)
+  {
+    if (!p.isa.info.isObj) return
+    qname := p.qname.toStr
+    if (qname == "sys.None" || qname == "sys.Scalar" || qname == "sys.Dict") return
+    err("Cannot extend Obj directly", p)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,10 +103,10 @@ internal class Validator
       err("Invalid qname for lib, each name must be start with lower case", lib)
   }
 
-  Void validateLibChild(Proto lib, Proto proto)
+  Void validateLibChild(Proto lib, Proto p)
   {
-    if (!proto.qname.isUpperName && !proto.isMeta)
-      err("Invalid name for lib child, name must start with upper case", proto)
+    if (!p.isType && !p.isMeta)
+      err("Invalid name for lib child - must be capitalized type name", p)
   }
 
 //////////////////////////////////////////////////////////////////////////

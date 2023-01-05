@@ -81,17 +81,17 @@ const mixin QName
   ** Is this the root qname
   abstract Bool isRoot()
 
-  ** Is this a meta data name that starts with underbar
-  Bool isMetaName() { PogUtil.isMetaName(name) }
+  ** Is this a type object; name starts with uppercase
+  Bool isType() { PogUtil.isTypeName(name) }
 
-  ** Is this a numbered index auto assigned name
-  Bool isAutoName() { PogUtil.isAutoName(name) }
+  ** Is this a field object; name starts with lowercase
+  Bool isField() { PogUtil.isFieldName(name) }
 
-  ** Does the name start with lower case letter
-  Bool isLowerName() { PogUtil.isLowerName(name) }
+  ** Is this a meta object; name starts with underbar followed by letter
+  Bool isMeta() { PogUtil.isMetaName(name) }
 
-  ** Does the name start with an upper case letter
-  Bool isUpperName() { PogUtil.isUpperName(name) }
+  ** Is this a indexed/auto-named object; name starts with underbar followed by digits
+  Bool isOrdinal() { PogUtil.isOrdinalName(name) }
 
   ** Get a segment of the qname
   @Operator abstract Str get(Int i)
@@ -115,7 +115,7 @@ const mixin QName
   {
     if (isRoot) return this
     for (i:=0; i<size; ++i)
-      if (PogUtil.isUpperName(get(i))) return getRange(0..<i)
+      if (PogUtil.isTypeName(get(i))) return getRange(0..<i)
     return this
   }
 

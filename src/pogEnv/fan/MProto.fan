@@ -29,7 +29,13 @@ internal const class MProto : Proto, ProtoInfo
 
   override const QName qname
 
-  override Bool isMeta() { qname.isMetaName }
+  override Bool isType() { qname.isType }
+
+  override Bool isField() { qname.isField }
+
+  override Bool isMeta() { qname.isMeta }
+
+  override Bool isOrdinal() { qname.isOrdinal }
 
   override Proto? isa() { isaRef.val }
   private const AtomicRef isaRef

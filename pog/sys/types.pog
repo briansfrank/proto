@@ -24,7 +24,7 @@ Scalar: Obj <
 Marker: Scalar "marker"
 
 // Closed enumerated choice
-Enum: Obj
+Enum: Scalar
 
 // Boolean value either true or false
 Bool: Enum {

@@ -27,7 +27,13 @@ internal const final class MObj : Proto, ProtoInfo
 
   override const QName qname
 
+  override Bool isType() { true }
+
+  override Bool isField() { false }
+
   override Bool isMeta() { false }
+
+  override Bool isOrdinal() { false }
 
   override Proto? isa() { null }
 

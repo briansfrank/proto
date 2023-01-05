@@ -95,7 +95,7 @@ internal class Resolver
     depends.each |d, n|
     {
       // skip anything not _0, _1, etc
-      if (!PogUtil.isAutoName(n)) return
+      if (!PogUtil.isOrdinalName(n)) return
 
       // object should be a Str:Obj
       map := d as Str:Obj

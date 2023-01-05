@@ -38,7 +38,7 @@ const class FindTransducer : Transducer
 
     // not sure about how this should work, but if the filter
     // is auto-named, then use it's actual type
-    if (filter.qname.isAutoName) filter = filter.isa
+    if (filter.isOrdinal) filter = filter.isa
 
     result := find(cx, data.getProto, filter)
     return cx.toResult(result, ["proto"], result.loc)
@@ -54,7 +54,7 @@ const class FindTransducer : Transducer
     {
       if (kid.isMeta) return
       if (!kid.fits(filter)) return
-      name := PogUtil.isAutoName(kid.name) ? "_${acc.size}" : kid.name
+      name := PogUtil.isOrdinalName(kid.name) ? "_${acc.size}" : kid.name
       acc[name] = kid
     }
 
