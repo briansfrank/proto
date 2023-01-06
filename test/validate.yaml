@@ -8,7 +8,7 @@
 
 ---
 name: scalarDate
-test: compile src base:base
+test: compile src base:base, verify events
 base: test
 src: |
   ok1: Date "2022-12-09"
@@ -18,7 +18,7 @@ events: |
   err   | test.err1 | Scalar does not match sys.Date pattern: "2023.12.09"
 ---
 name: scalarTime
-test: compile src base:base
+test: compile src base:base, verify events
 base: test
 src: |
   ok1: Time "23:10:03"
@@ -33,7 +33,7 @@ events: |
   err   | test.err3 | Scalar does not match sys.Time pattern: "23:10:10."
 ---
 name: scalarDateTime
-test: compile src base:base
+test: compile src base:base, verify events
 base: test
 src: |
   ok1: DateTime "2000-01-01T00:00:00Z UTC"
@@ -54,7 +54,7 @@ events: |
   err   | test.err3 | Scalar does not match sys.DateTime pattern: "2022-12-12T09:51-05:00 New_York"
 ---
 name: scalarVersion
-test: compile src base:base
+test: compile src base:base, verify events
 base: test
 src: |
   ok1: Version "3"
@@ -77,7 +77,7 @@ events: |
 
 ---
 name: fitScalars
-test: compile src base:base
+test: compile src base:base, verify events
 base: test
 src: |
   Foo: {

@@ -119,6 +119,9 @@ class PogTestRunner
       else
         runTransduce(expr, vars)
     }
+
+    hasVerify := exprs.any |expr| { expr.name == "verify" }
+    if (!hasVerify) fail("No verify expr", null)
   }
 
   Void runTransduce(CmdExpr expr, Str:TransduceData vars)
@@ -301,13 +304,13 @@ class PogTestRunner
     test.verifyEq(a, b)
   }
 
-  Void fail(Str msg, Err e)
+  Void fail(Str msg, Err? e)
   {
     numFails++
     if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
     echo
     echo("TEST FAILED: $msg")
-    e.trace
+    e?.trace
     echo
     failed.add(cur)
   }
