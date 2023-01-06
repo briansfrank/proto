@@ -3,6 +3,30 @@
 #
 
 ##########################################################################
+## Sealed
+##########################################################################
+
+---
+name: sealed
+test: compile src base:base, verify events
+base: test
+src: |
+  Foo: {
+    ok1: Obj
+    ok2: None
+    ok3: Marker
+  }
+  Err1 : Obj
+  Err2 : None
+  Err3 : Marker
+events: |
+  level | qname     | msg
+  err   | test.Err1 | Cannot extend sealed type 'sys.Obj'
+  err   | test.Err2 | Cannot extend sealed type 'sys.None'
+  err   | test.Err3 | Cannot extend sealed type 'sys.Marker'
+---
+
+##########################################################################
 ## Scalar Regex
 ##########################################################################
 

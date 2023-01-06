@@ -8,12 +8,15 @@
 
 // Root type for all objects
 Obj: <
+  // Sealed objects cannot be extened outside of their own lib
+  sealed
+
   // Documentation for object
   doc: Str "Root type for all objects"
 >
 
 // None is the bottom type with no values
-None: Obj
+None: Obj <sealed>
 
 // Scalar is an atomic value kind
 Scalar: Obj <
@@ -21,7 +24,7 @@ Scalar: Obj <
 > ""
 
 // Marker labels a dict with typing information
-Marker: Scalar "marker"
+Marker: Scalar <sealed> "marker"
 
 // Closed enumerated choice
 Enum: Scalar

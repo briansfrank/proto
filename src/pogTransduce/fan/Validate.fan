@@ -74,16 +74,15 @@ internal class Validator
 
     if (p.isType)
     {
-      validateIsObj(p)
+      validateIsSealed(p)
     }
   }
 
-  private Void validateIsObj(Proto p)
+  private Void validateIsSealed(Proto p)
   {
-    if (!p.isa.info.isObj) return
-    qname := p.qname.toStr
-    if (qname == "sys.None" || qname == "sys.Scalar" || qname == "sys.Dict") return
-    err("Cannot extend Obj directly", p)
+    if (p.isa.getOwn("_sealed", false) == null) return
+    if (p.qname.lib == p.isa.qname.lib) return
+    err("Cannot extend sealed type '$p.isa'", p)
   }
 
 //////////////////////////////////////////////////////////////////////////
