@@ -64,6 +64,16 @@ internal const final class MObj : Proto, ProtoInfo
     children.containsKey(name)
   }
 
+  override Bool missing(Str name)
+  {
+    missingOwn(name)
+  }
+
+  override Bool missingOwn(Str name)
+  {
+    !children.containsKey(name)
+  }
+
   override final Proto? trap(Str name, Obj?[]? args := null)
   {
     get(name, true)

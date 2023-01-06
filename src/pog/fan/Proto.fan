@@ -77,6 +77,12 @@ const mixin Proto
   ** Does this object contain a non-inherited child with the given name.
   abstract Bool hasOwn(Str name)
 
+  ** Does this object not contain an effective child with the given name.
+  abstract Bool missing(Str name)
+
+  ** Does this object not contain a non-inherited child with the given name.
+  abstract Bool missingOwn(Str name)
+
   ** Get the effective child mapped by the given name.  If it is not
   ** mapped to a non-null value, then throw an UnknownProtoErr.
   abstract override Proto? trap(Str name, Obj?[]? args := null)

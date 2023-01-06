@@ -80,7 +80,7 @@ internal class Validator
 
   private Void validateIsSealed(Proto p)
   {
-    if (p.isa.getOwn("_sealed", false) == null) return
+    if (p.isa.missingOwn("_sealed")) return
     if (p.qname.lib == p.isa.qname.lib) return
     err("Cannot extend sealed type '$p.isa'", p)
   }

@@ -358,7 +358,7 @@ internal class PogPrinter : Printer
         if (i > 0) wsymbol(",").sp
         printName(kid, true)
       }
-      sp.wsymbol(close)
+      wsymbol(close)
     }
     else
     {
