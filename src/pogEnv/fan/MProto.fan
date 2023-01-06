@@ -101,6 +101,12 @@ internal const class MProto : Proto, ProtoInfo
     eachSeen(seen, f)
   }
 
+  override Obj? eachWhile(|Proto->Obj?| f)
+  {
+    // TODO: get API working, but very inefficient
+    list.eachWhile(f)
+  }
+
   override Void eachSeen(Str:Str seen, |Proto| f)
   {
     children.each |kid|
@@ -134,9 +140,9 @@ internal const class MProto : Proto, ProtoInfo
     children.vals
   }
 
-  override Bool fits(Proto that)
+  override Bool fits(Proto type)
   {
-     this === that || isa.fits(that)
+    MFitter.fits(this, type)
   }
 
   override const FileLoc loc

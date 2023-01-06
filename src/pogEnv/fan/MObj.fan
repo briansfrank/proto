@@ -89,6 +89,11 @@ internal const final class MObj : Proto, ProtoInfo
     eachOwn(f)
   }
 
+  override Obj? eachWhile(|Proto->Obj?| f)
+  {
+    eachOwnWhile(f)
+  }
+
   override Void eachSeen(Str:Str seen, |Proto| f)
   {
     children.each |kid|

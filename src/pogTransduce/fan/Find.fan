@@ -25,8 +25,8 @@ const class FindTransducer : Transducer
 
   override Str usage()
   {
-    """find filter:<filter>           Filter last value with given filter
-       find <data> filter:<filter>    Filter proto data with given filter
+    """find fits:<type>           Find children of last value that fit type
+       find <data> fits:<type>    Find children of data that fit given type
        """
   }
 
@@ -34,31 +34,31 @@ const class FindTransducer : Transducer
   {
     cx := TransduceContext(this, args)
     data := cx.argIt
-    filter := cx.argToProto("filter")
+    type := cx.argToProto("fits")
 
-    // not sure about how this should work, but if the filter
-    // is auto-named, then use it's actual type
-    if (filter.isOrdinal) filter = filter.isa
+    // not sure about how this should work, but if the type
+    // is auto-named and not a dict, then use it's actual type
+    if (type.isOrdinal && !type.info.fitsDict) type = type.isa
 
-    result := find(cx, data.getProto, filter)
+    result := find(cx, data.getProto, type)
     return cx.toResult(result, ["proto"], result.loc)
   }
 
-  private Proto find(TransduceContext cx, Proto set, Proto filter)
+  private Proto find(TransduceContext cx, Proto data, Proto type)
   {
     qname := cx.base
-    isa := AtomicRef(set.isa)
+    isa := AtomicRef(data.isa)
     acc := Str:Proto[:]
 
-    set.each |kid|
+    data.each |kid|
     {
       if (kid.isMeta) return
-      if (!kid.fits(filter)) return
+      if (!kid.fits(type)) return
       name := PogUtil.isOrdinalName(kid.name) ? "_${acc.size}" : kid.name
       acc[name] = kid
     }
 
-    return cx.instantiate(set.loc, qname, isa, null, acc)
+    return cx.instantiate(data.loc, qname, isa, null, acc)
   }
 
 }

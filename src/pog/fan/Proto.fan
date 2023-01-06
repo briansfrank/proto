@@ -91,6 +91,9 @@ const mixin Proto
   ** inherited children and can be very expensive; prefer `eachOwn()`.
   abstract Void each(|Proto| f)
 
+  ** Iterate the effective children objects until callback returns non-null
+  abstract Obj? eachWhile(|Proto->Obj?| f)
+
   ** Iterate the non-inherited children objects.
   abstract Void eachOwn(|Proto| f)
 

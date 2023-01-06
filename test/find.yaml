@@ -4,7 +4,7 @@
 
 ---
 name: strOnList
-test: compile src, find filter:predicate, verify pog:expect
+test: compile src, find fits:predicate, verify pog:expect
 predicate: sys.Str
 src: |
   List {
@@ -21,7 +21,7 @@ expect: |
   }
 ---
 name: strOnDict
-test: compile src, find filter:predicate, verify pog:expect
+test: compile src, find fits:predicate, verify pog:expect
 predicate: sys.Str
 src: |
   {
@@ -38,7 +38,7 @@ expect: |
   }
 ---
 name: numbers
-test: compile src, find filter:predicate, verify pog:expect
+test: compile src, find fits:predicate, verify pog:expect
 predicate: sys.Number
 src: |
   List {
@@ -55,6 +55,29 @@ expect: |
     sys.Int "123"
     sys.Float "2.0"
     sys.Number "50kW"
+  }
+---
+name: dictMarker
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  {meter}
+src: |
+  List {
+    {dis:"A", boiler},
+    {dis:"B", meter},
+    {dis:"C", meter},
+    {dis:"D", tank},
+  }
+expect: |
+  sys.List {
+    sys.Dict {
+      dis: sys.Str "B"
+      meter
+    }
+    sys.Dict {
+      dis: sys.Str "C"
+      meter
+    }
   }
 ---
 
