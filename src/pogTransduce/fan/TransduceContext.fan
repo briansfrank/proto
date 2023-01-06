@@ -38,7 +38,7 @@ class TransduceContext
   Str:TransduceData args
 
   ** Is given argument defined
-  Bool hasArg(Str name) { args[name] != null }
+  Bool hasArg(Str name) { args[name] != null && args[name].get(false) != false }
 
   ** Accumulated events
   MTransduceEvent[] events := [,]

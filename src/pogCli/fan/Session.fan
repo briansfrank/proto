@@ -131,7 +131,8 @@ internal class Session
       x.add(another).add("\n")
     }
 
-    exprs := CmdExpr.parse(line)
+
+    exprs := CmdExpr.parse(line+"x")
     exprs[-1] = exprs[-1].replaceLastArg(x.toStr)
     return exprs
   }

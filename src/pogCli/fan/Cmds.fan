@@ -273,6 +273,28 @@ internal const class Dir : Cmd
 }
 
 **************************************************************************
+** Dir
+**************************************************************************
+
+internal const class Summary : Cmd
+{
+  override const Str name := "summary"
+  override Str summary() { "Print in summary mode" }
+  override Str usage()
+  {
+    """summary           Convenience for print summary:true
+       summary <data>    Convenience for print <data> summary:true
+       """
+  }
+  override TransduceData? execute(Session session, CmdExpr expr)
+  {
+    print := session.env.transducer("print")
+    expr = CmdExpr("print", expr.args.dup.add(CmdArg("summary", "true")))
+    return Transduce(print).execute(session, expr)
+  }
+}
+
+**************************************************************************
 ** Load
 **************************************************************************
 

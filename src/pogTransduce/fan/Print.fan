@@ -31,6 +31,7 @@ const class PrintTransducer : Transducer
        print <data> to:<file>    Print data to given file
        print showdoc:<bool>      Toggle doc meta in output
        print showloc:<bool>      Toggle file location meta in output
+       print summary:<bool>      Print in compact summary mode
        """
   }
 
@@ -46,18 +47,25 @@ const class PrintTransducer : Transducer
   {
     out.printLine
     if (!cx.isTest) out.printLine(data).printLine
-    printContent(cx, data.get(false), out)
+    printContent(cx, data, out)
     out.printLine
     out.printLine
     return null
   }
 
-  private Void printContent(TransduceContext cx, Obj? val, OutStream out)
+  private Void printContent(TransduceContext cx, TransduceData data, OutStream out)
   {
+    val := data.get(false)
+    if (cx.hasArg("summary")) return printSummary(cx, val, out)
     if (val is Proto) return printProto(cx, val, out)
     if (val is Grid)  return printGrid(cx, val, out)
     if (val is File)  return printFile(cx, val, out)
     printJson(cx, out, val)
+  }
+
+  private Void printSummary(TransduceContext cx, Obj val, OutStream out)
+  {
+    SummaryPrinter(out, cx.args).print(val)
   }
 
   private Void printProto(TransduceContext cx, Proto proto, OutStream out)
@@ -515,7 +523,7 @@ internal class TablePrinter : Printer
       }
     }
 
-    // if total width exceeds terminal width, shrink down the biggest ones
+    // if total width exceeds terminal, first try to shrink down the biggest ones
     while (true)
     {
       total := 0
@@ -523,7 +531,18 @@ internal class TablePrinter : Printer
       if (total <= terminalWidth) break
       maxi := colWidths.size-1
       colWidths.each |w, i| { if (w > colWidths[maxi]) maxi = i }
+      if (colWidths[maxi] < 16) break
       colWidths[maxi] = colWidths[maxi] - 1
+    }
+
+    // if total width still exceeds terminal, chop off last columns
+    lastCol := numCols
+    total := 0
+    for (i := 0; i<numCols; ++i)
+    {
+      total += colWidths[i] + 2
+      if (total > terminalWidth) break
+      lastCol = i
     }
 
     // output
@@ -533,6 +552,7 @@ internal class TablePrinter : Printer
       if (isHeader) wtheme(theme.comment)
       row.each |cell, col|
       {
+        if (col > lastCol) return
         str := cell.replace("\n", " ")
         colw := colWidths[col]
         if (str.size > colw) str = str[0..<(colw-2)] + ".."
@@ -543,6 +563,7 @@ internal class TablePrinter : Printer
       {
         numCols.times |col|
         {
+          if (col > lastCol) return
           colw := colWidths[col]
           colw.times { wc('-') }
           w("  ")
@@ -578,4 +599,52 @@ internal class TablePrinter : Printer
 
 }
 
+**************************************************************************
+** SummaryPrinter
+**************************************************************************
+
+@Js
+internal class SummaryPrinter : Printer
+{
+  new make(OutStream out, [Str:Obj?]? opts := null) : super(out, opts) {}
+
+  This print(Obj? val)
+  {
+    if (val == null)
+      w("null").nl
+    if (val is Proto)
+      ((Proto)val).each |kid| { printProto(kid) }
+    else if (val is Grid)
+      ((Grid)val).each |row| { printDict(row) }
+    else
+      w("$val [$val.typeof]")
+    return this
+  }
+
+  Void printProto(Proto p)
+  {
+    w(p.qname).wsymbol(":").sp
+    if (p.isa != null) w(p.isa.qname)
+    if (p.hasValOwn) sp.wquoted(p.valOwn.toStr)
+    nl
+  }
+
+  Void printDict(Dict d)
+  {
+    wquoted(d.dis).sp.wsymbol("{")
+    first := true
+    d.each |v, n|
+    {
+      if (v == Marker.val)
+      {
+        if (first)
+          first = false
+        else
+          sp
+        w(n)
+      }
+    }
+    wsymbol("}").nl
+  }
+}
 
