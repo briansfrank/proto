@@ -18,9 +18,25 @@ class MFitter
 {
   static Bool fits(Proto x, Proto type)
   {
-    if (fitsNominal(x, type)) return true
-    if (fitsStructural(x, type)) return true
+    // echo("~~ fits $x: $x.isa ${x.val(false)} FITS $type: $type.isa ${type.valOwn(false)} ===> $r")
+
+    if (fitsNominal(x, toNominalType(type)))
+    {
+      return fitsVal(x, type)
+    }
+
+    if (fitsStructural(x, type))
+    {
+      return true
+    }
+
     return false
+  }
+
+  private static Proto toNominalType(Proto type)
+  {
+    if (type.isType) return type
+    return type.isa
   }
 
   private static Bool fitsSame(Proto x, Proto type)
@@ -33,6 +49,17 @@ class MFitter
     if (x.info.isObj || x.info.isDict) return false
     if (fitsSame(x, type)) return true
     return fitsNominal(x.isa, type)
+  }
+
+  private static Bool fitsVal(Proto x, Proto type)
+  {
+    expect := type.valOwn(false)
+    if (expect == null) return true
+
+    actual := x.val(false)
+    if (actual == null) return false
+
+    return actual == expect || actual.toStr == expect.toStr
   }
 
   private static Bool fitsStructural(Proto x, Proto type)

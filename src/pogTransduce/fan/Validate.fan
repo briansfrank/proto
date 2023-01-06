@@ -131,12 +131,11 @@ internal class Validator
     parentType := parent?.isa
     if (parentType == null) return
 
-    slotType := parentType.get(p.name, false)?.isa
+    slotType := parentType.get(p.name, false)
     if (slotType == null) return
 
     if (!p.fits(slotType))
       cx.err("Invalid type for '${parentType}.${p.name}': '${p.isa}' does not fit '$slotType'", p)
-
   }
 
 //////////////////////////////////////////////////////////////////////////

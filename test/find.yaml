@@ -57,6 +57,47 @@ expect: |
     sys.Number "50kW"
   }
 ---
+name: strVal
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  Str "match"
+src: |
+  List {
+    "A"
+    Int "123"
+    sys.Str "match"
+    Date "2023-01-04"
+    {}
+    Float "2.0"
+    Ref "match"
+    sys.Number "50kW"
+  }
+expect: |
+  sys.List {
+    sys.Str "match"
+  }
+---
+name: numberVal
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  Number "123"
+src: |
+  List {
+    "A"
+    Str "123"
+    Int "123"
+    sys.Str "123"
+    Float "123"
+    Ref "123"
+    Number "123"
+  }
+expect: |
+  sys.List {
+    sys.Int "123"
+    sys.Float "123"
+    sys.Number "123"
+  }
+---
 name: dictMarker
 test: compile src, find fits:predicate, verify pog:expect
 predicate: |
@@ -76,6 +117,26 @@ expect: |
     }
     sys.Dict {
       dis: sys.Str "C"
+      meter
+    }
+  }
+---
+name: dictMarkers
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  {elec, meter}
+src: |
+  List {
+    {dis:"A", boiler},
+    {dis:"B", meter},
+    {dis:"C", elec, meter},
+    {dis:"D", tank},
+  }
+expect: |
+  sys.List {
+    sys.Dict {
+      dis: sys.Str "C"
+      elec
       meter
     }
   }
