@@ -58,8 +58,11 @@ const mixin Proto
 // Scalar
 //////////////////////////////////////////////////////////////////////////
 
-  ** Does this proto have a scalar value
+  ** Does this proto have an effective scalar value
   abstract Bool hasVal()
+
+  ** Does this proto have a non-inherited scalar value
+  abstract Bool hasValOwn()
 
   ** Scalar effective scalar value of the object
   abstract Obj? val(Bool checked := true)

@@ -46,6 +46,8 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool hasVal() { val(false) != null }
 
+  override Bool hasValOwn() { valRef != null }
+
   override Obj? val(Bool checked := true)
   {
     if (valRef != null) return valRef

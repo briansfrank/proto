@@ -43,6 +43,8 @@ internal const final class MObj : Proto, ProtoInfo
 
   override Bool hasVal() { false }
 
+  override Bool hasValOwn() { false }
+
   override Obj? val(Bool checked := true)
   {
     valOwn(checked)
