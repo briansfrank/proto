@@ -147,6 +147,12 @@ internal const final class MObj : Proto, ProtoInfo
 
   override Bool isList() { false }
 
-  override Bool isLib() { false }
+  override Bool isLibRoot() { false }
+
+  override Bool fitsScalar() { false }
+
+  override Bool fitsDict() { false }
+
+  override Bool fitsList() { false }
 }
 

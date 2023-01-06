@@ -136,7 +136,7 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool fits(Proto that)
   {
-    this === that || isa.fits(that)
+     this === that || isa.fits(that)
   }
 
   override const FileLoc loc
@@ -152,23 +152,29 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool isNone() { false }
 
-  override Bool isScalar() { flags("sys.Scalar") }
+  override Bool isScalar() { qname.toStr == "sys.Scalar" }
 
-  override Bool isMarker() { flags("sys.Marker") }
+  override Bool isMarker() { qname.toStr == "sys.Marker" }
 
-  override Bool isDict() { flags("sys.Dict") }
+  override Bool isDict() { qname.toStr == "sys.Dict" }
 
-  override Bool isList() { flags("sys.List") }
+  override Bool isList() { qname.toStr == "sys.List" }
 
-  override Bool isLib() { false }
+  override Bool isLibRoot() { false }
+
+  override Bool fitsScalar() { fitsQName("sys.Scalar") }
+
+  override Bool fitsDict() { fitsQName("sys.Dict") }
+
+  override Bool fitsList() { fitsQName("sys.List") }
 
   // TODO: temp shim to get APIs working
-  Bool flags(Str base)
+  Bool fitsQName(Str base)
   {
     if (qname.toStr == base) return true
     p := isa as MProto
     if (p == null) return false
-    return p.flags(base)
+    return p.fitsQName(base)
   }
 }
 

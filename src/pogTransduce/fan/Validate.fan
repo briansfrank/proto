@@ -92,7 +92,7 @@ internal class Validator
 
   Void validateLib(Proto p)
   {
-    if (!p.info.isLib) return
+    if (!p.info.isLibRoot) return
     validateLibName(p)
     p.eachOwn |kid| { validateLibChild(p, kid) }
   }

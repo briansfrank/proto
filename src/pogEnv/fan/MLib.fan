@@ -20,5 +20,5 @@ internal const class MLib : MProto, Lib
 
   once override Version version() { Version.fromStr(getOwn("_version").val.toStr) }
 
-  override Bool isLib() { true }
+  override Bool isLibRoot() { true }
 }

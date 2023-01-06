@@ -40,18 +40,19 @@ const mixin Proto
   ** Prototype this object extends from.  Return null if this 'sys.Obj' itself.
   abstract Proto? isa()
 
-  ** Does this proto fit the given proto from a nominal type perspective
+  ** Does this proto fit the given proto from a type perspective
+  **
   ** Examples:
   **   Str.fits(Str)     >>>  true
   **   Str.fits(Scalar)  >>>  true
   **   Scalar.fits(Str)  >>>  false
-  abstract Bool fits(Proto base)
+  abstract Bool fits(Proto type)
 
   ** Transaction version for when this proto was last modified
   abstract Int tx()
 
   ** Additional identity info
-  abstract ProtoInfo info()
+  @NoDoc abstract ProtoInfo info()
 
 //////////////////////////////////////////////////////////////////////////
 // Scalar
@@ -126,29 +127,38 @@ const mixin Proto
 **
 ** Proto additional information methods and flags
 **
-@Js
+@NoDoc @Js
 const mixin ProtoInfo
 {
-  ** Is this 'sys.Obj' - the root top type
+  ** Is this 'sys.Obj'
   abstract Bool isObj()
 
-  ** Is this 'sys.None' - the bottom type
+  ** Is this 'sys.None'
   abstract Bool isNone()
 
-  ** Does the proto fit 'sys.Scalar' - all non-collection types
+  ** Is this 'sys.Scalar'
   abstract Bool isScalar()
 
-  ** Does the proto fit 'sys.Marker'
+  ** Is this 'sys.Marker'
   abstract Bool isMarker()
 
-  ** Does the proto fit 'sys.Dict' - all collection types
+  ** Is this 'sys.Dict'
   abstract Bool isDict()
 
-  ** Does the proto fit 'sys.List' - indexed based collection
+  ** Is this 'sys.List'
   abstract Bool isList()
 
-  ** Does the proto inherit from 'sys.Lib' - all libraries.
-  ** This method returns false for the 'sys.Lib' proto itself.
-  abstract Bool isLib()
+  ** Is this a library root object.  Return false for 'sys.Lib' itself.
+  abstract Bool isLibRoot()
+
+  ** Does the proto fit 'sys.Scalar' - all non-collection types
+  abstract Bool fitsScalar()
+
+  ** Does the proto fit 'sys.Dict' - all collection types
+  abstract Bool fitsDict()
+
+  ** Does the proto fit 'sys.List' - indexed based collection
+  abstract Bool fitsList()
+
 }
 
