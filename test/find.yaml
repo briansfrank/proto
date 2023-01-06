@@ -57,10 +57,10 @@ expect: |
     sys.Number "50kW"
   }
 ---
-name: strVal
+name: strEquals
 test: compile src, find fits:predicate, verify pog:expect
 predicate: |
-  Str "match"
+  Str <equals> "match"
 src: |
   List {
     "A"
@@ -141,10 +141,10 @@ expect: |
     }
   }
 ---
-name: dictVal
+name: dictEquals
 test: compile src, find fits:predicate, verify pog:expect
 predicate: |
-  {dis:"D"}
+  {dis:<equals>"D"}
 src: |
   List {
     {dis:"A", boiler},

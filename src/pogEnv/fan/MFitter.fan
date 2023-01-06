@@ -22,7 +22,7 @@ class MFitter
 
     if (fitsNominal(x, toNominalType(type)))
     {
-      return fitsVal(x, type)
+      return fitsEquals(x, type)
     }
 
     if (fitsStructural(x, type))
@@ -51,8 +51,10 @@ class MFitter
     return fitsNominal(x.isa, type)
   }
 
-  private static Bool fitsVal(Proto x, Proto type)
+  private static Bool fitsEquals(Proto x, Proto type)
   {
+    if (type.missing("_equals")) return true
+
     expect := type.valOwn(false)
     if (expect == null) return true
 
