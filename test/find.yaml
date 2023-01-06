@@ -25,16 +25,16 @@ test: compile src, find fits:predicate, verify pog:expect
 predicate: sys.Str
 src: |
   {
-    "A"
-    Int "123"
-    sys.Str "C"
-    Date "2023-01-04"
-    {}
+    a: "A"
+    b: Int "123"
+    c: sys.Str "C"
+    d: Date "2023-01-04"
+    e: {}
   }
 expect: |
   sys.Dict {
-    sys.Str "A"
-    sys.Str "C"
+    a: sys.Str "A"
+    c: sys.Str "C"
   }
 ---
 name: numbers
@@ -138,6 +138,25 @@ expect: |
       dis: sys.Str "C"
       elec
       meter
+    }
+  }
+---
+name: dictVal
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  {dis:"D"}
+src: |
+  List {
+    {dis:"A", boiler},
+    {dis:"B", meter},
+    {dis:"C", elec, meter},
+    {dis:"D", tank},
+  }
+expect: |
+  sys.List {
+    sys.Dict {
+      dis: sys.Str "D"
+      tank
     }
   }
 ---

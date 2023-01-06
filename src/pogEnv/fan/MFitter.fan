@@ -72,7 +72,7 @@ class MFitter
       if (expect.isMeta) return null
 
       actual := x.get(expect.name, false)
-      if (actual != null && fits(actual, expect.isa)) return null
+      if (actual != null && fits(actual, expect)) return null
 
       return "non-fit"
     }
