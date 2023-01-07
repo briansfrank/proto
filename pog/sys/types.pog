@@ -94,19 +94,19 @@ Dict: Obj <
 List: Dict
 
 // Maybe is the option type.  It contains some value or None.
-Maybe: Dict <
+Maybe: Obj <
   of: Obj   // Optional value
 >
 
 // Or type is a choice between one of multiple types.
 // It is a union of the set of types.
-Or: Dict <
+Or: Obj <
   of: List   // List of choices
 >
 
 // And type is a combination of multiple types.
 // It is an intersection of the set of types.
-And: Dict <
+And: Obj <
   of: List   // List of types to combine
 >
 
