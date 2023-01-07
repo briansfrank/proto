@@ -131,6 +131,20 @@ json: |
     "Bar":{"_is":"sys.Dict"}
   }
 ---
+name: maybe
+test: parse src, resolve base:base, reify base:base, verify pog
+base: test
+src: |
+  foo: Str?
+  bar: Date? // bar comment
+pog: |
+  test: sys.Dict {
+    foo: sys.Str?
+    // bar comment
+    bar: sys.Date?
+  }
+---
+
 
 
 

@@ -303,7 +303,7 @@ internal class PogPrinter : Printer
 
   private Bool printAsMarker(Proto p)
   {
-    if (p.isa?.qname?.toStr != "sys.Marker") return false
+    if (p.isa == null || !p.isa.info.isMarker) return false
     list := p.listOwn
     if (list.size == 0) return true
     if (list.size == 1 && list[0].name == "_doc") return true
@@ -334,7 +334,15 @@ internal class PogPrinter : Printer
   {
     isa := p.isa
     if (isa == null) return
+    if (isa.info.isMaybe) return printIsMaybe(p)
     w(p.isa.qname.toStr)
+  }
+
+  private Void printIsMaybe(Proto p)
+  {
+    of := p.getOwn("_of", false)?.isa
+    w(of == null ? "sys.Obj" : of.qname.toStr)
+    wsymbol("?")
   }
 
   private Void printVal(Proto p)
@@ -352,6 +360,7 @@ internal class PogPrinter : Printer
     {
       if (kid.isMeta != meta) return
       if (kid.name == "_doc") return
+      if (kid.name == "_of" && p.isa.info.isMaybe) return
       kids.add(kid)
     }
     if (kids.isEmpty) return
