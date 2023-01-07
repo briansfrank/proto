@@ -16,7 +16,8 @@ using pog
 @Js
 class MFitter
 {
-  static const AtomicBool debug := AtomicBool()
+  /*
+  static const AtomicBool debug := AtomicBool(true)
 
   static Bool explain(Proto x, Proto type)
   {
@@ -29,9 +30,20 @@ class MFitter
     debug.val = false
     return result
   }
+  */
 
-  static Bool fits(Proto x, Proto type)
+  static Bool fits(Proto? x, Proto type)
   {
+    if (type.isa != null && type.isa.info.isMaybe)
+    {
+      if (x == null) return true
+      of := type.getOwn("_of", false)
+      if (of == null) return true
+      return fits(x, of)
+    }
+
+    if (x == null) return false
+
     if (fitsNominal(x, toNominalType(type)))
     {
       return fitsEquals(x, type)
@@ -58,7 +70,6 @@ class MFitter
 
   private static Bool fitsNominal(Proto x, Proto type)
   {
-if (debug.val) echo("~~  fitsNominal $x | $type")
     if (type.info.isObj) return true
     if (x.info.isObj || x.info.isDict) return false
     if (fitsSame(x, type)) return true
@@ -80,22 +91,17 @@ if (debug.val) echo("~~  fitsNominal $x | $type")
 
   private static Bool fitsStructural(Proto x, Proto type)
   {
-if (debug.val) echo("~~  fitsStructural $x | $type")
     if (!x.info.fitsDict) return false
     if (!type.info.fitsDict) return false
 
     result := type.eachWhile |expect|
     {
       if (expect.isMeta) return null
-
       actual := x.get(expect.name, false)
-if (debug.val) echo("~~  fitsStructural $actual fits $expect")
-      if (actual != null && fits(actual, expect)) return null
-
+      if (fits(actual, expect)) return null
       return "non-fit"
     }
 
-if (debug.val) echo("~~  fitsStructural result=$result")
     return result == null
   }
 

@@ -160,6 +160,40 @@ expect: |
     }
   }
 ---
+name: maybe
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+   Date?
+src: |
+  List {
+    Str "x",
+    Date "2023-01-07",
+  }
+expect: |
+  sys.List {
+    sys.Date "2023-01-07"
+  }
+---
+name: maybeDict
+test: compile src, find fits:predicate, verify pog:expect
+predicate: |
+  {date: Date?}
+src: |
+  List {
+    {date: Str "x"},
+    {date: Date "2023-01-07"},
+    {dis:"no date"},
+  }
+expect: |
+  sys.List {
+    sys.Dict {
+      date: sys.Date "2023-01-07"
+    }
+    sys.Dict {
+      dis: sys.Str "no date"
+    }
+  }
+---
 
 
 
