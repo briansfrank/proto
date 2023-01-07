@@ -19,11 +19,17 @@ src: |
   Err1 : Obj
   Err2 : None
   Err3 : Marker
+  Err4 : Maybe
+  Err5 : And
+  Err6 : Or
 events: |
   level | qname     | msg
   err   | test.Err1 | Cannot extend sealed type 'sys.Obj'
   err   | test.Err2 | Cannot extend sealed type 'sys.None'
   err   | test.Err3 | Cannot extend sealed type 'sys.Marker'
+  err   | test.Err4 | Cannot extend sealed type 'sys.Maybe'
+  err   | test.Err5 | Cannot extend sealed type 'sys.And'
+  err   | test.Err6 | Cannot extend sealed type 'sys.Or'
 ---
 
 ##########################################################################

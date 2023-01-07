@@ -28,9 +28,12 @@ const class MFactory
 
   private static Void initToFantom(MPogEnv env, Str:Str toPod, Str:Str toFantom)
   {
-    toFantom["sys.Obj"]  = "pogEnv::MObj"
-    toFantom["sys.Lib"]  = "pogEnv::MLib"
-    toFantom["sys.None"] = "pogEnv::MNone"
+    toFantom["sys.Obj"]   = "pogEnv::MObj"
+    toFantom["sys.Lib"]   = "pogEnv::MLib"
+    toFantom["sys.None"]  = "pogEnv::MNone"
+    toFantom["sys.Maybe"] = "pogEnv::MMaybe"
+    toFantom["sys.And"]   = "pogEnv::MAnd"
+    toFantom["sys.Or"]    = "pogEnv::MOr"
 
     /*
     Env.cur.index("pog.types").each |str|

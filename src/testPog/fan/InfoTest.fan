@@ -24,6 +24,9 @@ class InfoTest : Test
     verifyInfo("sys.Dict",    "sys.Obj",    "isDict, fitsDict")
     verifyInfo("sys.List",    "sys.Dict",   "isList, fitsDict, fitsList")
     verifyInfo("sys.Lib",     "sys.Dict",   "fitsDict")
+    verifyInfo("sys.Maybe",   "sys.Obj",    "isMaybe")
+    verifyInfo("sys.And",     "sys.Obj",    "isAnd")
+    verifyInfo("sys.Or",      "sys.Obj",    "isOr")
     verifyInfo("sys",         "sys.Lib",    "isLibRoot, fitsDict")
   }
 

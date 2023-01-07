@@ -163,6 +163,15 @@ const mixin ProtoInfo
   ** Is this a library root object.  Return false for 'sys.Lib' itself.
   abstract Bool isLibRoot()
 
+  ** Is this 'sys.Maybe'
+  abstract Bool isMaybe()
+
+  ** Is this 'sys.And'
+  abstract Bool isAnd()
+
+  ** Is this 'sys.Or'
+  abstract Bool isOr()
+
   ** Does the proto fit 'sys.Scalar' - all non-collection types
   abstract Bool fitsScalar()
 

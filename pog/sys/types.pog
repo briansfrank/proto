@@ -95,18 +95,21 @@ List: Dict
 
 // Maybe is the option type.  It contains some value or None.
 Maybe: Obj <
+  sealed
   of: Obj   // Optional value
 >
 
 // Or type is a choice between one of multiple types.
 // It is a union of the set of types.
 Or: Obj <
+  sealed
   of: List   // List of choices
 >
 
 // And type is a combination of multiple types.
 // It is an intersection of the set of types.
 And: Obj <
+  sealed
   of: List   // List of types to combine
 >
 

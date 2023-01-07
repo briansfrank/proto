@@ -180,6 +180,12 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool isLibRoot() { false }
 
+  override Bool isMaybe() { false }
+
+  override Bool isAnd() { false }
+
+  override Bool isOr() { false }
+
   override Bool fitsScalar() { fitsQName("sys.Scalar") }
 
   override Bool fitsDict() { fitsQName("sys.Dict") }
