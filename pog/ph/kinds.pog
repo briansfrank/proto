@@ -7,10 +7,10 @@
 //
 
 // Singleton for not available to indicate invalid or missing data.
-NA: Obj
+NA: Scalar <sealed> "NA"
 
 // Singleton for remove operation.
-Remove: Obj
+Remove: Scalar <sealed> "Remove"
 
 // Symbol to a def. Symbol values are ASCII strings limited to the
 // following chars: a-z, A-Z, 0-9, underbar, colon, dash, dot.
