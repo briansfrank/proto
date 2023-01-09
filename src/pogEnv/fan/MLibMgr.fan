@@ -119,6 +119,13 @@ internal const class MLibMgr
     return x
   }
 
+  Lib compileTestLib(Str qname, Str src)
+  {
+    if (!src.startsWith("pragma")) throw ArgErr("Source must start with pragma")
+    args := ["it":env.data(src), "base":env.data(qname)]
+    return transduce("compile", args).get
+  }
+
   const PogEnv env
   const Str compilingKey := "pogEnv.compiling"
   const File[] path

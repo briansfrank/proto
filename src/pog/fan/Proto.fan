@@ -90,6 +90,9 @@ const mixin Proto
   ** mapped to a non-null value, then throw an UnknownProtoErr.
   abstract override Proto? trap(Str name, Obj?[]? args := null)
 
+  ** Get effective descendent object by qualified name.
+  abstract Proto? getq(QName qname, Bool checked := true)
+
   ** Get effective child object by name.
   @Operator abstract Proto? get(Str name, Bool checked := true)
 

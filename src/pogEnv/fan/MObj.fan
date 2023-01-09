@@ -81,6 +81,11 @@ internal const final class MObj : Proto, ProtoInfo
     get(name, true)
   }
 
+  @Operator override Proto? getq(QName qname, Bool checked := true)
+  {
+    PogUtil.getq(this, qname, checked)
+  }
+
   @Operator override Proto? get(Str name, Bool checked := true)
   {
     getOwn(name, checked)

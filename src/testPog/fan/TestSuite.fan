@@ -137,6 +137,7 @@ class PogTestRunner
       targs[name] = data
     }
     result := env.transduce(expr.name, targs)
+    //if (result.isErr) echo(result.events.join("\n"))
     vars["it"] = result
   }
 

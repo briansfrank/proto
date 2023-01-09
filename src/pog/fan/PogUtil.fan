@@ -66,6 +66,22 @@ const class PogUtil
   }
 
   **
+  ** Get effective child object by name.
+  **
+  @NoDoc static Proto? getq(Proto base, QName qname, Bool checked := true)
+  {
+    Proto? x := base
+    for (i := 0; i<qname.size; ++i)
+    {
+      x = x.get(qname[i], false)
+      if (x == null) break
+    }
+    if (x != null) return x
+    if (checked) throw UnknownProtoErr(qname.toStr)
+    return null
+  }
+
+  **
   ** Utility for print transducer
   **
   @NoDoc static Void print(Obj? val, OutStream out := Env.cur.out, [Str:Obj]? opts := null)

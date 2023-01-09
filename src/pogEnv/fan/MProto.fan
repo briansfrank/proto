@@ -88,6 +88,11 @@ internal const class MProto : Proto, ProtoInfo
     get(name, true)
   }
 
+  override Proto? getq(QName qname, Bool checked := true)
+  {
+    PogUtil.getq(this, qname, checked)
+  }
+
   @Operator override Proto? get(Str name, Bool checked := true)
   {
     child := children.get(name, null) ?: isa.get(name, false)

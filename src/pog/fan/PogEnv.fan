@@ -66,6 +66,9 @@ abstract const class PogEnv
   ** Convenience for 'transducer(name).transduce(args)'
   TransduceData transduce(Str name, Str:Obj? args) { transducer(name).transduce(args) }
 
+  ** Compile test lib, raise exception if any errors
+  @NoDoc abstract Lib compileTestLib(Str qname, Str src)
+
   ** Debug dump
   @NoDoc virtual Void dump(OutStream out := Env.cur.out) {}
 }
