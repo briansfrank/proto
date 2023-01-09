@@ -107,7 +107,10 @@ internal class HaystackExporter
 
   Dict exportToDict(Proto proto)
   {
+    // shouldn't happen, if proto has value map it as a scalar
     if (proto.hasVal) return Etc.makeDict1("val", export(proto))
+
+    // map proto to a haystack dict
     acc := Str:Obj[:]
     acc.ordered = true
     proto.each |kid|
@@ -127,7 +130,7 @@ internal class HaystackExporter
     if (kind.isSingleton) return kind.defVal
 
     // collections
-    if (kind.isDict) return exportToDict(proto)
+    if (kind.isDict) return exportToDictOrRef(proto)
     if (kind.isList) return exportToList(proto)
     if (kind.isGrid) return exportToGrid(proto)
 
@@ -147,6 +150,16 @@ internal class HaystackExporter
       case Kind.xstr:     return val as XStr ?: ZincReader(val.toStr.in).readVal
       default: throw Err("Unhandled haystack kind $kind: $val ($val.typeof)")
     }
+  }
+
+  Obj exportToDictOrRef(Proto proto)
+  {
+    // if target proto has id then export as ref to it
+    id := proto.isa?.get("id", false)?.valOwn(false)
+    if (id != null)
+      return id as Ref ?: Ref.make(id.toStr, null)
+    else
+      return exportToDict(proto)
   }
 
   Kind toKind(Proto proto)

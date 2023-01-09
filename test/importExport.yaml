@@ -7,7 +7,7 @@
 ##########################################################################
 
 ---
-name: haystack
+name: haystackKinds
 test: read trio:trio, import, verify pog, export grid:it, write trio:temp, verify str:trio
 trio: |
   coord:C(35.0,45.0)
@@ -42,4 +42,32 @@ pog: |
     }
   }
 ---
-
+name: haystackGraph
+test: read trio:trio, import base:base, verify pog, export grid:it, write trio:temp, verify str:trio
+base: test
+trio: |
+  id:@site
+  dis:Site
+  site
+  weatherStationRef:@extern
+  ---
+  id:@eq
+  dis:Equip
+  equip
+  siteRef:@site
+pog: |
+  test: sys.List {
+    sys.Dict {
+      id: sys.Ref "site"
+      dis: sys.Str "Site"
+      site
+      weatherStationRef: sys.Ref "extern"
+    }
+    sys.Dict {
+      id: sys.Ref "eq"
+      dis: sys.Str "Equip"
+      equip
+      siteRef: test._0
+    }
+  }
+---

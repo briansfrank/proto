@@ -74,13 +74,17 @@ internal class HaystackImporter
   Proto import(Dict[] dicts)
   {
     initKinds
+    initIds(dicts)
 
     protos := Str:Proto[:]
     protos.ordered = true
     dicts.each |dict, i|
     {
       name := "_$i"
-      protos[name] = dictToProto(base.add(name), dict)
+      id := dict["id"] as Ref
+      proto := dictToProto(base.add(name), dict)
+      protos[name] = proto
+      if (id != null) byId[id].val = proto
     }
 
     return cx.instantiate(loc, base, isList, null, protos)
@@ -108,10 +112,23 @@ internal class HaystackImporter
     this.isList = acc.getChecked("List")
   }
 
+  private Void initIds(Dict[] dicts)
+  {
+    acc := Ref:AtomicRef[:]
+    dicts.each |dict|
+    {
+      id := dict["id"] as Ref
+      if (id == null) return
+      acc[id] = AtomicRef()
+    }
+    this.byId = acc
+  }
+
   private Proto valToProto(QName qname, Obj val)
   {
     kind := Kind.fromVal(val)
-    if (kind === Kind.dict) return dictToProto(qname, val)
+    if (kind.isDict) return dictToProto(qname, val)
+    if (kind.isRef) return refToProto(qname, val)
     if (kind.isScalar) return scalarToProto(qname, val, kind)
     throw Err("TODO: valToProto $kind")
   }
@@ -128,6 +145,17 @@ internal class HaystackImporter
     return cx.instantiate(loc, qname, isDict, null, kids)
   }
 
+  private Proto refToProto(QName qname, Ref val)
+  {
+    // if ref maps to id within our dataset then make
+    // it a direct reference to the target proto dict
+    deref := byId[val]
+    if (qname.name == "id" || deref == null)
+      return scalarToProto(qname, val, Kind.ref)
+    else
+      return cx.instantiate(loc, qname, deref, null, null)
+  }
+
   private Proto scalarToProto(QName qname, Obj? val, Kind kind)
   {
     isa := kinds.getChecked(kind.name)
@@ -136,11 +164,12 @@ internal class HaystackImporter
     return cx.instantiate(loc, qname, isa, val, null)
   }
 
-  private TransduceContext cx       // make
-  private QName base                // make
-  private FileLoc loc               // make
-  private AtomicRef? isDict         // initKinds
-  private AtomicRef? isList         // initKinds
-  private [Str:AtomicRef]? kinds    // initKinds
+  private TransduceContext cx        // make
+  private QName base                 // make
+  private FileLoc loc                // make
+  private AtomicRef? isDict          // initKinds
+  private AtomicRef? isList          // initKinds
+  private [Str:AtomicRef]? kinds     // initKinds
+  private [Ref:AtomicRef]? byId      // initIds
 }
 

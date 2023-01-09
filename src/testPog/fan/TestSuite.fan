@@ -188,6 +188,8 @@ class PogTestRunner
       echo("--- POG [$cur] ---")
       PogUtil.print(t.get(false))
       dump(pog, expected)
+      echo
+      PogUtil.print(t.get(false), Env.cur.out, ["summary":true])
     }
     verifyEq(pog, expected)
   }

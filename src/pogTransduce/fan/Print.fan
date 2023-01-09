@@ -622,7 +622,7 @@ internal class SummaryPrinter : Printer
     if (val == null)
       w("null").nl
     if (val is Proto)
-      ((Proto)val).each |kid| { printProto(kid) }
+      ((Proto)val).eachOwn |kid| { printProto(kid) }
     else if (val is Grid)
       ((Grid)val).each |row| { printDict(row) }
     else
