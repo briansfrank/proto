@@ -132,9 +132,31 @@ internal class Resolver
 
   private Str resolveName(Str:Obj node, Str name)
   {
+    // if the name as a dot its fully or partially qualified
     if (name.contains("."))
     {
-      if (!isResolveQualified(name)) cx.err("Unresolved qname '$name'", node)
+      // check if its fully qualified
+      if (isResolveQualified(name)) return name
+
+      // TODO: needs some cleaup
+      // if its a type name, then try pathing thru
+      qname := QName(name)
+      baseName := qname[0]
+      if (PogUtil.isTypeName(baseName))
+      {
+        baseQName := resolveName(node, baseName)
+        if (baseQName != baseName)
+        {
+          [Str:Obj?]? x := this.ast
+          for (i := 0; i<qname.size; ++i)
+          {
+            x = x[qname.get(i)]
+            if (x == null) { cx.err("Unresolved qname: '$name'", node); return name }
+          }
+          return baseQName + "." + qname[1..-1].toStr
+        }
+      }
+      cx.err("Unresolved qname '$name'", node)
       return name
     }
 
