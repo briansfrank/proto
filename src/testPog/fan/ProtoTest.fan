@@ -11,28 +11,44 @@ using pog
 **
 ** ProtoTest
 **
-class ProtoTest : Test
+class ProtoTest : AbstractPogTest
 {
+  Void testLibErrs()
+  {
+    src :=
+    Str<|bad: {}
+         |>
+    env := PogEnv.cur
+    events := compileLibErrs(src, "sys", "test.BadName")
+    // echo(events.join("\n"))
+    verifyEq(events.size, 2)
+    verifyEq(events[0].msg, "Invalid qname for lib, each name must be start with lower case")
+    verifyEq(events[1].msg, "Invalid name for lib child - must be capitalized type name")
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Gets
+//////////////////////////////////////////////////////////////////////////
+
   Void testGets()
   {
     src :=
-    Str<|pragma: Lib <depends:{ {lib:"sys"} }>
-         Foo: {
-          a: Str "Foo a"
-          b: Str "Foo b"
-          c: Str "Foo c"
+    Str<|Foo: {
+           a: Str "Foo a"
+           b: Str "Foo b"
+           c: Str "Foo c"
          }
          Bar: Foo {
-          b: Str "Bar b"
-          c: Str "Bar c"
+           b: Str "Bar b"
+           c: Str "Bar c"
          }
          Baz: Bar {
-          c: Str "Baz c"
+           c: Str "Baz c"
          }
          |>
     env := PogEnv.cur
     sys := env.load("sys")
-    lib := env.compileTestLib("test.gets", src)
+    lib := compileLib(src, "sys", "test.gets")
 
     // sanity check sys
     verifyGet(sys,      "Obj",     "sys.Obj",         null)

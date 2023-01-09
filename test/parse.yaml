@@ -574,7 +574,7 @@ src: |
   a: {
 events: |
   level ; msg
-  err   ; Unexpected end of file, missing closing '}' rbrace
+  err   ; Unmatched closing '}'
 ---
 name: errsEndBrace
 test: parse src, verify events
@@ -582,7 +582,7 @@ src: |
   a: <
 events: |
   level ; msg
-  err   ; Unexpected end of file, missing closing '>' gt
+  err   ; Unmatched closing '>'
 ---
 
 

@@ -11,8 +11,6 @@ using pog
 **
 ** PogEnv tests
 **
-** TODO: test lib qname, and lib children name errors
-**
 class EnvTest : Test
 {
   Void testInstalled()
@@ -91,4 +89,5 @@ class EnvTest : Test
     verifyEq(p.val(false), val)
     return p
   }
+
 }

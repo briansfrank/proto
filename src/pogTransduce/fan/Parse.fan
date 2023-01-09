@@ -207,13 +207,14 @@ internal class Parser
 
   private Bool parseChildren(ParsedProto p, Token open, Token close, Bool isMeta)
   {
+    loc := curToLoc
     consume(open)
     skipNewlines
     parseProtos(p, isMeta)
-    while (cur !== close)
+    parseProtos(p, isMeta)
+    if (cur !== close)
     {
-      if (cur === Token.eof) throw err("Unexpected end of file, missing closing $close")
-      parseProtos(p, isMeta)
+      throw err("Unmatched closing '$close.symbol'", loc)
     }
     consume(close)
     return true
@@ -859,11 +860,13 @@ internal enum class Token
 
   private new make(Str dis, Bool isVal := false)
   {
+    this.symbol = dis
     this.dis  = dis.size <= 2 ? "'${dis}' $name" : dis
     this.isVal = isVal
   }
 
   const Str dis
+  const Str symbol
   const Bool isVal
   override Str toStr() { dis }
 }

@@ -58,8 +58,6 @@ const class MPogEnv : PogEnv
 
   override Lib? load(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
-  override Lib compileTestLib(Str qname, Str src) { libMgr.compileTestLib(qname, src) }
-
 //////////////////////////////////////////////////////////////////////////
 // Transducers
 //////////////////////////////////////////////////////////////////////////
