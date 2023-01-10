@@ -1,0 +1,32 @@
+#
+# Query
+#
+
+---
+name: via
+test: compile src base:base, query qname:query, verify pog:expect
+base: test
+query: |
+  Data.a.boxes
+src: |
+  Box: { box }
+  Item: {
+    item
+    boxes: Query<of:Box, via:"myBox">
+  }
+  Data: {
+    box1: Box
+    box2: Box
+    box3: Box
+    a: Item { myBox: Data.box1 }
+    b: Item { myBox: Data.box1 }
+    c: Item { myBox: Data.box1 }
+    d: Item { myBox: Data.box2 }
+    e: Item { myBox: Data.box2 }
+  }
+expect: |
+  sys.Dict {
+    box1: test.Box
+  }
+---
+

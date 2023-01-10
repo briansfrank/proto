@@ -191,11 +191,15 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool isOr() { false }
 
+  override Bool isQuery() { qname.toStr == "sys.Query" }
+
   override Bool fitsScalar() { fitsQName("sys.Scalar") }
 
   override Bool fitsDict() { fitsQName("sys.Dict") }
 
   override Bool fitsList() { fitsQName("sys.List") }
+
+  override Bool fitsQuery() { fitsQName("sys.Query") }
 
   // TODO: temp shim to get APIs working
   Bool fitsQName(Str base)

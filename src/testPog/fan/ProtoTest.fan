@@ -13,6 +13,11 @@ using pog
 **
 class ProtoTest : AbstractPogTest
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Lib Errs
+//////////////////////////////////////////////////////////////////////////
+
   Void testLibErrs()
   {
     src :=
@@ -46,7 +51,6 @@ class ProtoTest : AbstractPogTest
            c: Str "Baz c"
          }
          |>
-    env := PogEnv.cur
     sys := env.load("sys")
     lib := compileLib(src, "sys", "test.gets")
 
@@ -124,4 +128,50 @@ class ProtoTest : AbstractPogTest
       verifyEq(p.missingOwn(n), false)
     }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Fits
+//////////////////////////////////////////////////////////////////////////
+
+  Void testFits()
+  {
+    src :=
+    Str<|A: { a }
+         B: { b }
+         AX: A {}
+         BX: B {}
+         Data: {
+           a: A
+           b: B
+           ax: AX
+           bx: BX
+         }
+         |>
+
+    sys := env.load("sys")
+    lib := compileLib(src, "sys", "test")
+
+    a := lib->A
+    b := lib->B
+    ax := lib->AX
+    bx := lib->BX
+
+    verifyFits(a, sys->Obj,  true)
+    verifyFits(a, sys->Dict, true)
+    // TODO should we check the name ordinal rules?
+    //verifyFits(a, sys->List, false)
+    verifyFits(a, a, true)
+    verifyFits(a, b, false)
+    verifyFits(ax, a, true)
+    verifyFits(ax, b, false)
+    verifyFits(ax, ax, true)
+  }
+
+  Void verifyFits(Proto x, Proto type, Bool expect)
+  {
+    // echo("~~ fits $x | $type")
+    actual := x.fits(type)
+    verifyEq(actual, expect, x.qname.toStr)
+  }
+
 }

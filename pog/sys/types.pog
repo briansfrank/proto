@@ -113,6 +113,12 @@ And: Obj <
   of: List   // List of types to combine
 >
 
+// Query defines a named data set
+Query: Dict <
+  of: Dict   // Type for query items
+  via: Str   // Named path to traverse to execute query
+>
+
 
 
 

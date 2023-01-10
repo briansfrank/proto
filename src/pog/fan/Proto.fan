@@ -175,6 +175,9 @@ const mixin ProtoInfo
   ** Is this 'sys.Or'
   abstract Bool isOr()
 
+  ** Is this 'sys.Query'
+  abstract Bool isQuery()
+
   ** Does the proto fit 'sys.Scalar' - all non-collection types
   abstract Bool fitsScalar()
 
@@ -184,5 +187,7 @@ const mixin ProtoInfo
   ** Does the proto fit 'sys.List' - indexed based collection
   abstract Bool fitsList()
 
+  ** Does this proto fit 'sys.Query'
+  abstract Bool fitsQuery()
 }
 

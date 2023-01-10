@@ -177,10 +177,14 @@ internal const final class MObj : Proto, ProtoInfo
 
   override Bool isOr() { false }
 
+  override Bool isQuery() { false }
+
   override Bool fitsScalar() { false }
 
   override Bool fitsDict() { false }
 
   override Bool fitsList() { false }
+
+  override Bool fitsQuery() { false }
 }
 
