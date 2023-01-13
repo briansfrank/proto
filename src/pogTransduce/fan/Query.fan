@@ -89,8 +89,26 @@ const class QueryTransducer : Transducer
 
   private Bool inQueryVia(Proto parent, Proto query, Proto item, Str via)
   {
+    multiHop := false
+    if (via.endsWith("+"))
+    {
+      multiHop = true
+      via = via[0..-2]
+    }
+
     x := parent.get(via, false)?.isa
-    return x === item
+    if (x === item) return true
+
+    if (multiHop)
+    {
+      while (x != null)
+      {
+        x = x.get(via, false)?.isa
+        if (x === item) return true
+      }
+    }
+
+    return false
   }
 
 }

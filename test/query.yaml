@@ -3,30 +3,67 @@
 #
 
 ---
-name: via
+name: viaSingleHop
 test: compile src base:base, query qname:query, verify pog:expect
 base: test
 query: |
-  Data.a.boxes
+  Data.c.boxes
 src: |
-  Box: { box }
+  Box: {
+    box
+    myBox: Box?
+  }
   Item: {
     item
+    mybox: Box
     boxes: Query<of:Box, via:"myBox">
   }
   Data: {
     box1: Box
-    box2: Box
-    box3: Box
+    box2: Box { myBox: Data.box1 }
+    box3: Box { myBox: Data.box2 }
     a: Item { myBox: Data.box1 }
-    b: Item { myBox: Data.box1 }
-    c: Item { myBox: Data.box1 }
-    d: Item { myBox: Data.box2 }
-    e: Item { myBox: Data.box2 }
+    b: Item { myBox: Data.box2 }
+    c: Item { myBox: Data.box3 }
   }
 expect: |
   sys.Dict {
-    box1: test.Box
+    box3: test.Box {
+      myBox: test.Data.box2
+    }
   }
 ---
-
+name: viaMultiHop
+test: compile src base:base, query qname:query, verify pog:expect
+base: test
+query: |
+  Data.c.boxes
+src: |
+  Box: {
+    box
+    myBox: Box?
+  }
+  Item: {
+    item
+    mybox: Box
+    boxes: Query<of:Box, via:"myBox+">
+  }
+  Data: {
+    box1: Box
+    box2: Box { myBox: Data.box1 }
+    box3: Box { myBox: Data.box2 }
+    a: Item { myBox: Data.box1 }
+    b: Item { myBox: Data.box2 }
+    c: Item { myBox: Data.box3 }
+  }
+expect: |
+  sys.Dict {
+    box3: test.Box {
+      myBox: test.Data.box2
+    }
+    box1: test.Box
+    box2: test.Box {
+      myBox: test.Data.box1
+    }
+  }
+---
