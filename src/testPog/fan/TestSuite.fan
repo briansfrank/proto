@@ -112,19 +112,28 @@ class PogTestRunner
     vars["temp"] = env.data(Buf())
 
     // evaluate each expr
-    exprs.each |expr|
+    exprs.each |expr, i|
     {
       if (expr.name == "verify")
         runVerify(expr, vars)
       else
-        runTransduce(expr, vars)
+        runTransduce(expr, vars, !isNextVerifyEvents(exprs.getSafe(i+1)))
     }
+
 
     hasVerify := exprs.any |expr| { expr.name == "verify" }
     if (!hasVerify) fail("No verify expr", null)
   }
 
-  Void runTransduce(CmdExpr expr, Str:TransduceData vars)
+  private Bool isNextVerifyEvents(CmdExpr? next)
+  {
+    if (next == null) return false
+    if (next.name != "verify") return false
+    return next.args.first?.val == "events"
+  }
+
+
+  Void runTransduce(CmdExpr expr, Str:TransduceData vars, Bool dumpErrs)
   {
     targs := Str:TransduceData[:]
     targs.addNotNull("it", vars["it"])
@@ -137,7 +146,7 @@ class PogTestRunner
       targs[name] = data
     }
     result := env.transduce(expr.name, targs)
-    //if (result.isErr) echo(result.events.join("\n"))
+    if (result.isErr && dumpErrs) echo(result.events.join("\n"))
     vars["it"] = result
   }
 

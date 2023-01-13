@@ -33,7 +33,7 @@ json: |
   }
 ---
 name: errs
-test: parse src, resolve base:base, verify json, verify events
+test: parse src, resolve base:base, verify events, verify json
 base: foo.bar
 src: |
   a: NotFound
