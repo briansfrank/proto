@@ -115,8 +115,9 @@ And: Obj <
 
 // Query defines a named data set
 Query: Dict <
-  of: Dict   // Type for query items
-  via: Str   // Named path to traverse to execute query
+  of: Dict         // Type for query items
+  via: Str         // Named path to traverse to execute query
+  inverse: Query   // Inverse query to run against parent
 >
 
 
