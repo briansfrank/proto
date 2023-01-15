@@ -37,6 +37,7 @@ class Build : BuildPod
         "pogTransduce::CompileTransducer",
         "pogTransduce::ExportTransducer",
         "pogTransduce::FindTransducer",
+        "pogTransduce::FitsTransducer",
         "pogTransduce::ImportTransducer",
         "pogTransduce::ParseTransducer",
         "pogTransduce::QueryTransducer",

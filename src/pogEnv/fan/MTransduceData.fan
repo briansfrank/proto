@@ -116,6 +116,12 @@ class MTransduceData : TransduceData
     return argErr("OutStream", checked)
   }
 
+  override Bool? getBool(Bool checked := true)
+  {
+    if (val is Bool) return val
+    return argErr("Bool", checked)
+  }
+
   override Str? getStr(Bool checked := true)
   {
     if (val is Str) return val

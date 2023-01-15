@@ -159,7 +159,8 @@ internal const class MProto : Proto, ProtoInfo
 
   override Bool fits(Proto type)
   {
-    MFitter.fits(this, type)
+    env := PogEnv.cur
+    return env.transduce("fits", ["it":env.data(this), "type":env.data(type)]).getBool
   }
 
   override const FileLoc loc

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, Brian Frank
+// Copyright (c) 2023, Brian Frank
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -11,35 +11,63 @@ using util
 using pog
 
 **
-** MFitter is used to implement Proto.fits
+** Fits transducer
 **
 @Js
-class MFitter
+const class FitsTransducer : Transducer
 {
-  /*
-  static const AtomicBool debug := AtomicBool(true)
+  new make(PogEnv env) : super(env, "fits") {}
 
-  static Bool explain(Proto x, Proto type)
+  override Str summary()
   {
-    debug.val = true
-    echo("~~ fits")
-    echo("~~   $x: $x.isa ${x.val(false)}")
-    echo("~~   $type: $type.isa ${type.valOwn(false)}")
-    result := fits(x, type)
-    echo("~~   ==> $result")
-    debug.val = false
-    return result
+    "Return if proto fits a type"
   }
-  */
 
-  static Bool fits(Proto? x, Proto type)
+  override Str usage()
+  {
+    """fits type:<proto>           Does last value fit type
+       fits <data> type:<proto>    Does given data fit type
+       """
+  }
+
+  override TransduceData transduce(Str:TransduceData args)
+  {
+    cx := TransduceContext(this, args)
+    data := cx.argIt.getProto
+    type := cx.arg("type").getProto
+
+    result := Fitter(cx, data, type).fits
+    return cx.toResult(result, [,], data.loc)
+  }
+}
+
+**************************************************************************
+** Fitter
+**************************************************************************
+
+@Js
+internal class Fitter
+{
+  new make(TransduceContext cx, Proto data, Proto type)
+  {
+    this.cx   = cx
+    this.data = data
+    this.type = type
+  }
+
+  Bool fits()
+  {
+    doFits(data, type)
+  }
+
+  static Bool doFits(Proto? x, Proto type)
   {
     if (type.isa != null && type.isa.info.isMaybe)
     {
       if (x == null) return true
       of := type.getOwn("_of", false)
       if (of == null) return true
-      return fits(x, of)
+      return doFits(x, of)
     }
 
     if (x == null) return false
@@ -98,12 +126,15 @@ class MFitter
     {
       if (expect.isMeta) return null
       actual := x.get(expect.name, false)
-      if (fits(actual, expect)) return null
+      if (doFits(actual, expect)) return null
       return "non-fit"
     }
 
     return result == null
   }
 
+  TransduceContext cx       // make
+  const Proto data          // make
+  const Proto type          // make
 }
 

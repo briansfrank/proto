@@ -56,6 +56,9 @@ mixin TransduceData
   ** Get the data as an output stream
   @NoDoc abstract OutStream? getOutStream(Bool checked := true)
 
+  ** Get the value as boolean
+  @NoDoc abstract Bool? getBool(Bool checked := true)
+
   ** Get the value as string
   @NoDoc abstract Str? getStr(Bool checked := true)
 
