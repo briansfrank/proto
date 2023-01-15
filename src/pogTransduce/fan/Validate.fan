@@ -54,7 +54,7 @@ internal class Validator
     validateIs(p)
     validateLib(p)
     validateVal(p)
-    validateFit(p)
+    validateDict(p)
     p.eachOwn |kid| { validate(kid) }
     stack.pop
     return p
@@ -75,6 +75,7 @@ internal class Validator
     if (p.isType)
     {
       validateIsSealed(p)
+      validateIsFits(p)
     }
   }
 
@@ -83,6 +84,11 @@ internal class Validator
     if (p.isa.missingOwn("_sealed")) return
     if (p.qname.lib == p.isa.qname.lib) return
     err("Cannot extend sealed type '$p.isa'", p)
+  }
+
+  private Void validateIsFits(Proto p)
+  {
+    Fitter(cx).validate(p, p.isa)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -125,16 +131,34 @@ internal class Validator
       cx.err("Scalar does not match ${pattern.qname.parent} pattern: ${valStr.toCode}", p)
   }
 
-  Void validateFit(Proto p)
+//////////////////////////////////////////////////////////////////////////
+// Dict
+//////////////////////////////////////////////////////////////////////////
+
+  Void validateDict(Proto p)
   {
-    parentType := parent?.isa
-    if (parentType == null) return
+    if (!p.info.fitsDict || p.info.isDict) return
 
-    slotType := parentType.get(p.name, false)
-    if (slotType == null) return
+    type := p.isa
+    type.each |slot|
+    {
+      if (!slot.isField) return
 
-    if (!p.fits(slotType))
-      cx.err("Invalid type for '${parentType}.${p.name}': '${p.isa}' does not fit '$slotType'", p)
+      slotObj := p.get(slot.name)
+
+      if (slot === slotObj)
+      {
+        // if we have have inherited the field, then check for default value
+        if (slot.info.fitsScalar && !slot.hasValOwn && !slotObj.hasValOwn && !slot.isa.info.isMarker)
+          err("Missing scalar value for '${type}.${slot.name}'", p)
+      }
+      else
+      {
+        // check that slot object fits the slot type
+        if (!slotObj.fits(slot))
+          cx.err("Invalid type for '${type}.${slot.name}': '${slotObj.isa}' does not fit '$slot.isa'", slotObj)
+      }
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////

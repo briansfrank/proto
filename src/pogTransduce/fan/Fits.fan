@@ -36,8 +36,8 @@ const class FitsTransducer : Transducer
     data := cx.argIt.getProto
     type := cx.arg("type").getProto
 
-    result := Fitter(cx, data, type).fits
-    return cx.toResult(result, [,], data.loc)
+    result := Fitter(cx).fits(data, type)
+    return cx.toResult(result, Str[,], data.loc)
   }
 }
 
@@ -48,29 +48,31 @@ const class FitsTransducer : Transducer
 @Js
 internal class Fitter
 {
-  new make(TransduceContext cx, Proto data, Proto type)
+  new make(TransduceContext cx)
   {
     this.cx   = cx
-    this.data = data
-    this.type = type
+    this.isExplain = true // cx.hasArg("explain")
   }
 
-  Bool fits()
+  Void validate(Proto x, Proto type)
   {
-    doFits(data, type)
+    if (!fits(x, type))
+      cx.err("No fit: $x | $type", x)
   }
 
-  static Bool doFits(Proto? x, Proto type)
+  Bool fits(Proto? x, Proto type)
   {
     if (type.isa != null && type.isa.info.isMaybe)
     {
       if (x == null) return true
       of := type.getOwn("_of", false)
       if (of == null) return true
-      return doFits(x, of)
+      return fits(x, of)
     }
 
     if (x == null) return false
+
+    if (type.info.isObj) return true
 
     if (fitsNominal(x, toNominalType(type)))
     {
@@ -85,18 +87,18 @@ internal class Fitter
     return false
   }
 
-  private static Proto toNominalType(Proto type)
+  private Proto toNominalType(Proto type)
   {
     if (type.isType) return type
     return type.isa
   }
 
-  private static Bool fitsSame(Proto x, Proto type)
+  private Bool fitsSame(Proto x, Proto type)
   {
     x === type
   }
 
-  private static Bool fitsNominal(Proto x, Proto type)
+  private Bool fitsNominal(Proto x, Proto type)
   {
     if (type.info.isObj) return true
     if (x.info.isObj || x.info.isDict) return false
@@ -104,7 +106,7 @@ internal class Fitter
     return fitsNominal(x.isa, type)
   }
 
-  private static Bool fitsEquals(Proto x, Proto type)
+  private Bool fitsEquals(Proto x, Proto type)
   {
     if (type.missing("_equals")) return true
 
@@ -117,7 +119,7 @@ internal class Fitter
     return actual == expect || actual.toStr == expect.toStr
   }
 
-  private static Bool fitsStructural(Proto x, Proto type)
+  private Bool fitsStructural(Proto x, Proto type)
   {
     if (!x.info.fitsDict) return false
     if (!type.info.fitsDict) return false
@@ -126,7 +128,7 @@ internal class Fitter
     {
       if (expect.isMeta) return null
       actual := x.get(expect.name, false)
-      if (doFits(actual, expect)) return null
+      if (fits(actual, expect)) return null
       return "non-fit"
     }
 
@@ -134,7 +136,6 @@ internal class Fitter
   }
 
   TransduceContext cx       // make
-  const Proto data          // make
-  const Proto type          // make
+  const Bool isExplain      // make
 }
 
