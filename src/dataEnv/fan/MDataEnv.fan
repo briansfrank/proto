@@ -19,7 +19,7 @@ internal const class MDataEnv : DataEnv
 {
   new make()
   {
-    this.sys = MSys(load("sys"))
+    this.sys = MSys(lib("sys"))
     this.emptyDict = MEmptyDict(sys.dict)
   }
 
@@ -52,11 +52,27 @@ internal const class MDataEnv : DataEnv
 
   override Str[] installed() { PogEnv.cur.installed }
 
-  override DataLib? load(Str qname, Bool checked := true)
+  override DataLib? lib(Str qname, Bool checked := true)
   {
+try
+{
     lib := libs.get(qname)
     if (lib == null) lib = libs.getOrAdd(qname, MDataLib(this, qname))
     return lib
+}
+catch (pog::UnknownLibErr e)
+{
+  if (checked) throw data::UnknownLibErr(qname)
+  return null
+}
+  }
+
+  override DataType? type(Str qname, Bool checked := true)
+  {
+    dot := qname.indexr(".") ?: throw ArgErr("Invalid qname: qname")
+    libName := qname[0..<dot]
+    typeName := qname[dot+1..-1]
+    return lib(libName, checked)?.type(typeName, checked)
   }
 
   private const ConcurrentMap libs := ConcurrentMap()

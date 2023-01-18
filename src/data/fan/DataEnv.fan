@@ -53,7 +53,10 @@ const abstract class DataEnv
   ** List the library qnames installed by this environment
   abstract Str[] installed()
 
-  ** Load the given library qualified name
-  abstract DataLib? load(Str qname, Bool checked := true)
+  ** Get or load library by the given qualified name
+  abstract DataLib? lib(Str qname, Bool checked := true)
+
+  ** Get or load type by the given qualified name
+  abstract DataType? type(Str qname, Bool checked := true)
 
 }

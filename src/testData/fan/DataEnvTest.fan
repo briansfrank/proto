@@ -18,9 +18,8 @@ class DataEnvTest : Test
   Void testSys()
   {
     // lib basics
-    env := DataEnv.cur
-    sys := env.load("sys")
-    verifySame(env.load("sys"), sys)
+    sys := env.lib("sys")
+    verifySame(env.lib("sys"), sys)
     verifyEq(sys.qname, "sys")
     verifyEq(sys.version, typeof.pod.version)
 
@@ -43,6 +42,7 @@ class DataEnvTest : Test
     verifySlot(org, "dis", str)
     verifySlot(org, "uri", uri)
 
+    /*
     echo("--- dump ---")
     sys.types.each |t|
     {
@@ -51,6 +51,28 @@ class DataEnvTest : Test
       t.slots.each |s| { echo("  $s.name: <$s.meta> $s.type") }
       if (hasSlots) echo("}")
     }
+    */
+  }
+
+  Void testLookups()
+  {
+    // sys
+    sys := env.lib("sys")
+    verifySame(env.lib("sys"), sys)
+    verifySame(env.type("sys.Dict"), sys.type("Dict"))
+
+    // bad libs
+    verifyEq(env.lib("bad.one", false), null)
+    verifyEq(env.type("bad.one.Foo", false), null)
+    verifyErr(UnknownLibErr#) { env.lib("bad.one") }
+    verifyErr(UnknownLibErr#) { env.lib("bad.one", true) }
+    verifyErr(UnknownLibErr#) { env.type("bad.one.Foo") }
+    verifyErr(UnknownLibErr#) { env.type("bad.one", true) }
+
+    // good lib, bad type
+    verifyEq(env.type("sys.Foo", false), null)
+    verifyErr(UnknownTypeErr#) { env.type("sys.Foo") }
+    verifyErr(UnknownTypeErr#) { env.type("sys.Foo", true) }
   }
 
   DataType verifyLibType(DataLib lib, Str name, DataType? base)
@@ -74,4 +96,6 @@ class DataEnvTest : Test
     verifySame(slot.type, type)
     return slot
   }
+
+  DataEnv env() { DataEnv.cur }
 }
