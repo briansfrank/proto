@@ -18,12 +18,21 @@ internal const class MDataSet : DataSet
 {
   static MDataSet factory(MDataEnv env, Obj recs)
   {
-    if (recs is List) return makeList(recs)
-    if (recs is Map) return makeMap(recs)
+    if (recs is Map) return make(env, recs)
+    if (recs is List) return make(env, listToMap(recs))
+    if (recs is Proto) return makePog(env, recs)
     throw ArgErr("Invalid set recs: $recs.typeof")
   }
 
-  new makeList(DataDict[] recs)
+  static MDataSet makePog(MDataEnv env, Proto pog)
+  {
+echo("----> MDataSet.makePog")
+pog.print
+map := Str:DataDict[:]
+return make(env, map)
+  }
+
+  static Obj:DataDict listToMap(DataDict[] recs)
   {
     map := Obj:DataDict[:]
     Str? autoPrefix
@@ -42,10 +51,17 @@ internal const class MDataSet : DataSet
       }
       map[id] = rec
     }
+    return map
+  }
+
+  new make(MDataEnv env, Obj:DataDict map)
+  {
+    this.envRef = env
     this.map = map
   }
 
-  new makeMap(Obj:DataDict map) { this.map = map }
+  override MDataEnv env() { envRef }
+  const MDataEnv envRef
 
   const Obj:DataDict map
 
@@ -84,7 +100,7 @@ internal const class MDataSet : DataSet
 
   override DataSet findAll(|DataDict rec, Obj id->Bool| f)
   {
-    MDataSet(map.findAll(f))
+    MDataSet(env, map.findAll(f))
   }
 
   override DataSet findAllFits(DataType type)

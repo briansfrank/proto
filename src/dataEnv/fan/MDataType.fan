@@ -76,6 +76,8 @@ internal const class MDataType : DataType
   const override DataSlot[] slots
   const Str:DataSlot slotsMap
 
+  override DataEnv env() { lib.env }
+
   override Str doc() { meta.getData("doc", false) as Str ?: "" }
   override Str toStr() { qname }
 

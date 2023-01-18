@@ -54,3 +54,24 @@ internal const class MDataDict : DataDict
 
   const Str:Obj? map
 }
+
+**************************************************************************
+** MEmptyDict
+**************************************************************************
+
+@Js
+internal const class MEmptyDict : DataDict
+{
+  new make(DataType type) { this.type = type }
+
+  const override DataType type
+
+  override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
+
+  override Void eachData(|DataObj,Str| f) {}
+
+  override Obj? get(Str name, Obj? def := null) { def }
+
+  override Str toStr() { "{}" }
+}
+

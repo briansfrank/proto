@@ -16,6 +16,9 @@ using util
 @Js
 const mixin DataSet
 {
+  ** Environment
+  abstract DataEnv env()
+
   ** Number of records in the data
   abstract Int size()
 

@@ -57,7 +57,7 @@ internal const class MDataEvent : DataDict, DataEvent
 @Js
 internal const class MDataEventSet : MDataSet, DataEventSet
 {
-  new make(DataSet subjectSet, DataEvent[] events) : super.makeList(events)
+  new make(DataSet subjectSet, DataEvent[] events) : super(subjectSet.env, listToMap(events))
   {
     this.subjectSet = subjectSet
     this.events = events
@@ -65,5 +65,6 @@ internal const class MDataEventSet : MDataSet, DataEventSet
 
   const override DataSet subjectSet
   const override DataEvent[] events
+  override MDataEnv env() { envRef }
 }
 
