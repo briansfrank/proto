@@ -20,12 +20,15 @@ class Build : BuildGroup
     childrenScripts =
     [
       `pog/build.fan`,
+      `data/build.fan`,
+      `dataEnv/build.fan`,
       `pogEnv/build.fan`,
       `pogTransduce/build.fan`,
       `pogCli/build.fan`,
       `ph2pog/build.fan`,
       `pogStub/build.fan`,
       `testPog/build.fan`,
+      `testData/build.fan`,
     ]
   }
 
