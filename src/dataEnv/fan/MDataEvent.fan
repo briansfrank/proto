@@ -33,6 +33,8 @@ internal const class MDataEvent : DataDict, DataEvent
 
   override DataType type() { ((MDataEnv)DataEnv.cur).sys.dict }
 
+  override DataDict val() { this }
+
   override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
 
   override Void eachData(|DataObj,Str| f) { throw Err("TODO") }

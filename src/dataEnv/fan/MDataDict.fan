@@ -24,13 +24,28 @@ internal const class MDataDict : DataDict
       if (kid.isMeta && kid.hasVal)
         acc[kid.name[1..-1]] = kid.val
     }
-    return make(acc)
+    return make(null, acc)
   }
 
-  new make(Str:Obj? map, DataType? type := null) { this.map = map; typeRef = type }
+  static MDataDict fromPog(MDataEnv env, Proto p)
+  {
+    acc := Str:Obj?[:]
+    p.eachOwn |kid|
+    {
+      if (kid.hasVal)
+        acc[kid.name] = kid.val
+      else
+        acc[kid.name] = fromPog(env, kid)
+    }
+    return make(null, acc)
+  }
 
-  override DataType type() { typeRef ?: ((MDataEnv)DataEnv.cur).sys.dict }
+  new make(DataType? type, Str:Obj? map) { this.typeRef = type; this.map = map }
+
+  override DataType type() { typeRef ?: ((MDataEnv)DataEnv.cur).sys.dict } // TODO
   const DataType? typeRef
+
+  override DataDict val() { this }
 
   override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
 
@@ -65,6 +80,8 @@ internal const class MEmptyDict : DataDict
   new make(DataType type) { this.type = type }
 
   const override DataType type
+
+  override DataDict val() { this }
 
   override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
 

@@ -14,6 +14,9 @@ using util
 @Js
 const mixin DataDict : DataObj
 {
+  ** Return this
+  override abstract DataDict val()
+
   ** Get the value for the given name or 'def' is not mapped
   @Operator abstract Obj? get(Str name, Obj? def := null)
 

@@ -16,4 +16,9 @@ const mixin DataObj
 {
   ** Data type for this object
   abstract DataType type()
+
+  ** Return Fantom value representation.  For scalars this is the
+  ** parsed instance such as Str, Date, Time.  For all collection
+  ** DataDict types this method return self.
+  abstract Obj val()
 }

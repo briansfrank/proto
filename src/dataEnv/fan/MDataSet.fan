@@ -26,10 +26,12 @@ internal const class MDataSet : DataSet
 
   static MDataSet makePog(MDataEnv env, Proto pog)
   {
-echo("----> MDataSet.makePog")
-pog.print
-map := Str:DataDict[:]
-return make(env, map)
+    map := Str:DataDict[:]
+    pog.eachOwn |kid|
+    {
+      map[kid.name] = MDataDict.fromPog(env, kid)
+    }
+    return make(env, map)
   }
 
   static Obj:DataDict listToMap(DataDict[] recs)

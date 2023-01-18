@@ -33,6 +33,9 @@ const abstract class DataEnv
     }
   }
 
+  ** Map fantom object to its DataObj representation
+  abstract DataObj obj(Obj val)
+
   ** Empty dict
   abstract DataDict emptyDict()
 

@@ -15,6 +15,11 @@ using data
 @Js
 class DataEnvTest : Test
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Sys Lib
+//////////////////////////////////////////////////////////////////////////
+
   Void testSys()
   {
     // lib basics
@@ -54,6 +59,10 @@ class DataEnvTest : Test
     */
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Lookups
+//////////////////////////////////////////////////////////////////////////
+
   Void testLookups()
   {
     // sys
@@ -74,6 +83,44 @@ class DataEnvTest : Test
     verifyErr(UnknownTypeErr#) { env.type("sys.Foo") }
     verifyErr(UnknownTypeErr#) { env.type("sys.Foo", true) }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Scalars
+//////////////////////////////////////////////////////////////////////////
+
+  Void testScalars()
+  {
+    verifyScalar("hi", "sys.Str")
+    verifyScalar(true, "sys.Bool")
+    verifyScalar(`foo`, "sys.Uri")
+    verifyScalar(123, "sys.Int")
+    verifyScalar(123f, "sys.Float")
+    verifyScalar(123sec,"sys.Duration")
+    verifyScalar(Date.today, "sys.Date")
+    verifyScalar(Time.now, "sys.Time")
+    verifyScalar(DateTime.now, "sys.DateTime")
+
+    // any other type is mapped as string
+    me := env.obj(this)
+    verifyEq(me.type.qname, "sys.Str")
+    verifyEq(me, env.obj(this.toStr))
+  }
+
+  Void verifyScalar(Obj val, Str qname)
+  {
+    obj := env.obj(val)
+    // echo(">> $obj.type | $obj")
+    verifySame(obj.val, val)
+    verifyEq(obj.type.qname, qname)
+    verifySame(obj.type, env.type(qname))
+    verifyEq(obj, env.obj(val))
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  DataEnv env() { DataEnv.cur }
 
   DataType verifyLibType(DataLib lib, Str name, DataType? base)
   {
@@ -97,5 +144,4 @@ class DataEnvTest : Test
     return slot
   }
 
-  DataEnv env() { DataEnv.cur }
 }
