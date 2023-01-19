@@ -47,13 +47,21 @@ internal const class MDataType : DataType
     // get proto and resolve its base
     // TODO just sys right now
     proto := protos[name]
-    base := proto.info.isObj ? null : doFromPog(lib, protos, types, proto.isa.name, stack)
+    DataType? base := null
+    if (proto.isa != null)
+    {
+      if (proto.isa.qname.lib.toStr == lib.qname)
+        base = doFromPog(lib, protos, types, proto.isa.name, stack)
+      else
+        base = lib.env.type(proto.isa.qname.toStr)
+    }
     type = make(lib, proto, base)
     types[name] = type
 
     stack.pop
     return type
   }
+
 
   new make(MDataLib lib, Proto p, MDataType? base)
   {

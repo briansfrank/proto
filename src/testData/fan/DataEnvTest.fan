@@ -26,7 +26,7 @@ class DataEnvTest : Test
   Void testSys()
   {
     // lib basics
-    sys := env.lib("sys")
+    sys := verifyLibBasics("sys", typeof.pod.version)
     verifySame(env.lib("sys"), sys)
     verifyEq(sys.qname, "sys")
     verifyEq(sys.version, typeof.pod.version)
@@ -42,25 +42,24 @@ class DataEnvTest : Test
     lib    := verifyLibType(sys, "Lib",    dict)
     org    := verifyLibType(sys, "LibOrg", dict)
 
-    // bad types
-    verifyEq(sys.type("Bad", false), null)
-    verifyErr(UnknownTypeErr#) { sys.type("Bad") }
-    verifyErr(UnknownTypeErr#) { sys.type("Bad", true) }
-
     // slots
     verifySlot(org, "dis", str)
     verifySlot(org, "uri", uri)
+  }
 
-    /*
-    echo("--- dump ---")
-    sys.types.each |t|
-    {
-      hasSlots := !t.slots.isEmpty
-      echo("$t.name: $t.base <$t.meta>" + (hasSlots ? " {" : ""))
-      t.slots.each |s| { echo("  $s.name: <$s.meta> $s.type") }
-      if (hasSlots) echo("}")
-    }
-    */
+//////////////////////////////////////////////////////////////////////////
+// Ph Lib
+//////////////////////////////////////////////////////////////////////////
+
+  Void testPh()
+  {
+    // lib basics
+    ph := verifyLibBasics("ph", Version("3.9.13"))
+
+    entity := verifyLibType(ph, "Entity", env.type("sys.Dict"))
+    equip  := verifyLibType(ph, "Equip",  entity)
+    meter  := verifyLibType(ph, "Meter",  equip)
+
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -175,6 +174,22 @@ class DataEnvTest : Test
 
   DataEnv env() { DataEnv.cur }
 
+  DataLib verifyLibBasics(Str qname, Version version)
+  {
+    lib := env.lib(qname)
+
+    verifySame(env.lib(qname), lib)
+    verifyEq(lib.qname, qname)
+    verifyEq(lib.version, version)
+    verifySame(lib.meta.type, env.type("sys.Dict"))
+
+    verifyEq(lib.type("Bad", false), null)
+    verifyErr(UnknownTypeErr#) { lib.type("Bad") }
+    verifyErr(UnknownTypeErr#) { lib.type("Bad", true) }
+
+    return lib
+  }
+
   DataType verifyLibType(DataLib lib, Str name, DataType? base)
   {
     type := lib.type(name)
@@ -197,6 +212,18 @@ class DataEnvTest : Test
     verifySame(slot.type, type)
     verifySame(slot.meta.type, env.type("sys.Dict"))
     return slot
+  }
+
+  Void dumpLib(DataLib lib)
+  {
+    echo("--- dump $lib.qname ---")
+    lib.types.each |t|
+    {
+      hasSlots := !t.slots.isEmpty
+      echo("$t.name: $t.base <$t.meta>" + (hasSlots ? " {" : ""))
+      t.slots.each |s| { echo("  $s.name: <$s.meta> $s.type") }
+      if (hasSlots) echo("}")
+    }
   }
 
 }
