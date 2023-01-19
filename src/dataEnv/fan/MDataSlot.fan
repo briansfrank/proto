@@ -28,26 +28,23 @@ internal const class MDataSlot : DataSlot
 
   new make(MDataType parent, Proto proto)
   {
-    this.parent  = parent
-    this.name    = proto.name
-    this.loc     = proto.loc
-    this.qname   = StrBuf(parent.qname.size + 1 + name.size).add(parent.qname).addChar('.').add(name).toStr
-    this.proto   = proto
-    this.meta    = MDataDict.fromPogMeta(proto)
+    this.parent   = parent
+    this.name     = proto.name
+    this.loc      = proto.loc
+    this.qname    = StrBuf(parent.qname.size + 1 + name.size).add(parent.qname).addChar('.').add(name).toStr
+    this.meta     = MProtoDict.fromMeta(parent.env, proto)
+    this.typeName = proto.isa.qname.toStr
   }
 
   const override MDataType parent
   const override FileLoc loc
   const override Str name
   const override Str qname
-  const Proto proto
-
   override const DataDict meta
-  override Str doc() { meta.getData("doc", false) as Str ?: "" }
+
+  override Str doc() { meta["doc"] as Str ?: "" }
   override Str toStr() { qname }
 
-  override MDataType type()
-  {
-    parent.lib.type(proto.isa.name)
-  }
+  override MDataType type() { parent.env.type(typeName) }
+  private const Str typeName
 }

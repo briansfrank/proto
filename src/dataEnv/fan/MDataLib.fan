@@ -26,7 +26,7 @@ internal const class MDataLib : DataLib
     this.loc      = pog.loc
     this.qname    = qname
     this.version  = pog.version
-    this.meta     = MDataDict.fromPogMeta(pog)
+    this.meta     = MProtoDict.fromMeta(env, pog)
 
     this.types = MDataType.fromPog(this, pog)
     this.typesMap = Str:DataType[:].addList(types) { it.name }
@@ -40,7 +40,7 @@ internal const class MDataLib : DataLib
   const override DataType[] types := [,]
   const Str:DataType typesMap
 
-  override Str doc() { meta.getData("doc", false) as Str ?: "" }
+  override Str doc() { meta["doc"] as Str ?: "" }
   override Str toStr() { qname }
 
   override DataType? type(Str name, Bool checked := true)

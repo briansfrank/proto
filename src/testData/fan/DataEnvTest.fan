@@ -27,6 +27,7 @@ class DataEnvTest : Test
     verifySame(env.lib("sys"), sys)
     verifyEq(sys.qname, "sys")
     verifyEq(sys.version, typeof.pod.version)
+    verifySame(sys.meta.type, env.type("sys.Dict"))
 
     // types
     obj    := verifyLibType(sys, "Obj",    null)
@@ -114,6 +115,51 @@ class DataEnvTest : Test
     verifyEq(obj.type.qname, qname)
     verifySame(obj.type, env.type(qname))
     verifyEq(obj, env.obj(val))
+    verifySame(env.obj(obj), obj)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Dicts
+//////////////////////////////////////////////////////////////////////////
+
+  Void testDicts()
+  {
+    verifyDict(Str:Obj[:])
+    verifyDict(["str":"hi there!"])
+    verifyDict(["str":"hi", "int":123])
+  }
+
+  Void verifyDict(Str:Obj map, Str qname := "sys.Dict")
+  {
+    d := env.dict(map)
+
+    verifyEq(d.type.qname, qname)
+    verifySame(d.type, env.type(qname))
+    if (map.isEmpty) verifySame(d, env.emptyDict)
+    verifySame(d.val, d)
+
+    map.each |v, n|
+    {
+      verifyEq(d.has(n), true)
+      verifyEq(d.missing(n), false)
+      verifySame(d.get(n), v)
+      verifySame(d.trap(n), v)
+    }
+
+    keys := map.keys
+    if (keys.isEmpty)
+      verifyEq(d.eachWhile |v,n| { "break" }, null)
+    else
+      verifyEq(d.eachWhile |v,n| { n == keys[0] ? "foo" : null }, "foo")
+
+    verifyEq(d.has("badOne"), false)
+    verifyEq(d.missing("badOne"), true)
+    verifyEq(d.get("badOne", null), null)
+    verifyEq(d.get("badOne", "foo"), "foo")
+
+    verifySame(env.obj(d), d)
+    dobj := env.obj(map)
+    verifyEq(dobj is DataDict, true)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -130,6 +176,7 @@ class DataEnvTest : Test
     verifySame(type.base, base)
     verifyEq(type.qname, lib.qname + "." + name)
     verifyEq(type.toStr, type.qname)
+    verifySame(type.meta.type, env.type("sys.Dict"))
     return type
   }
 
@@ -141,6 +188,7 @@ class DataEnvTest : Test
     verifyEq(slot.qname, parent.qname + "." + name)
     verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
+    verifySame(slot.meta.type, env.type("sys.Dict"))
     return slot
   }
 

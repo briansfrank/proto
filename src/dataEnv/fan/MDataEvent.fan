@@ -35,11 +35,34 @@ internal const class MDataEvent : DataDict, DataEvent
 
   override DataDict val() { this }
 
-  override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
+  override Bool has(Str name) { get(name, null) != null }
 
-  override Void eachData(|DataObj,Str| f) { throw Err("TODO") }
+  override Bool missing(Str name) { get(name, null) == null }
 
-  override Obj? get(Str name, Obj? def := null) { throw Err("TODO") }
+  override Obj? get(Str name, Obj? def := null)
+  {
+    if (name == "level")     return level
+    if (name == "subjectId") return subjectId ?: def
+    if (name == "msg")       return msg
+    if (name == "loc")       return loc
+    if (name == "err")       return err ?: def
+    return def
+  }
+
+  override Void each(|Obj?,Str| f)
+  {
+    eachWhile |v, n| { f(v, n); return null }
+  }
+
+  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  {
+    r := f(level, "level"); if (r != null) return f
+    if (subjectId != null) { r = f(subjectId, "subjectId"); if (r != null) return r }
+    r = f(msg, "msg"); if (r != null) return r
+    r = f(loc, "loc"); if (r != null) return r
+    r = f(err, "err"); if (r != null) return r
+    return null
+  }
 
   override Str toStr()
   {

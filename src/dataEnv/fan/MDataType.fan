@@ -62,7 +62,7 @@ internal const class MDataType : DataType
     this.qname    = lib.qname + "." + name
     this.loc      = p.loc
     this.base     = base
-    this.meta    = MDataDict.fromPogMeta(p)
+    this.meta    =  MProtoDict.fromMeta(lib.env, p)
     this.slots    = MDataSlot.fromPog(this, p)
     this.slotsMap = Str:MDataSlot[:].addList(slots) { it.name }
   }
@@ -78,9 +78,8 @@ internal const class MDataType : DataType
 
   override DataEnv env() { lib.env }
 
-  override Str doc() { meta.getData("doc", false) as Str ?: "" }
+  override Str doc() { meta["doc"] as Str ?: "" }
   override Str toStr() { qname }
-
 
   override DataSlot? slot(Str name, Bool checked := true)
   {

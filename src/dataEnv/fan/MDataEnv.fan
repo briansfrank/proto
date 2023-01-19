@@ -38,7 +38,7 @@ internal const class MDataEnv : DataEnv
     if (val is Time)     return MDataScalar(sys.time, val)
     if (val is DateTime) return MDataScalar(sys.dateTime, val)
     if (val is Uri)      return MDataScalar(sys.uri, val)
-    if (val is Map)      return MDataDict(sys.dict, val)
+    if (val is Map)      return dict(val)
     return MDataScalar(sys.str, val.toStr)
   }
 
@@ -46,7 +46,9 @@ internal const class MDataEnv : DataEnv
 
   override DataDict dict(Str:Obj? map, DataType? type := null)
   {
-    MDataDict(type, map)
+    if (type == null) type = sys.dict
+    if (map.isEmpty) return type === sys.dict ? emptyDict : MEmptyDict(type)
+    return MMapDict(type, map)
   }
 
   override DataSet set(Obj recs)

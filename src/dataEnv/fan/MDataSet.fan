@@ -29,7 +29,7 @@ internal const class MDataSet : DataSet
     map := Str:DataDict[:]
     pog.eachOwn |kid|
     {
-      map[kid.name] = MDataDict.fromPog(env, kid)
+      map[kid.name] = MProtoDict.fromOwn(env, kid)
     }
     return make(env, map)
   }

@@ -10,65 +10,6 @@ using util
 using data
 using pog
 
-**
-** DataDict implementation
-**
-@Js
-internal const class MDataDict : DataDict
-{
-  static MDataDict fromPogMeta(Proto p)
-  {
-    acc := Str:Obj?[:]
-    p.each |kid|
-    {
-      if (kid.isMeta && kid.hasVal)
-        acc[kid.name[1..-1]] = kid.val
-    }
-    return make(null, acc)
-  }
-
-  static MDataDict fromPog(MDataEnv env, Proto p)
-  {
-    acc := Str:Obj?[:]
-    p.eachOwn |kid|
-    {
-      if (kid.hasVal)
-        acc[kid.name] = kid.val
-      else
-        acc[kid.name] = fromPog(env, kid)
-    }
-    return make(null, acc)
-  }
-
-  new make(DataType? type, Str:Obj? map) { this.typeRef = type; this.map = map }
-
-  override DataType type() { typeRef ?: ((MDataEnv)DataEnv.cur).sys.dict } // TODO
-  const DataType? typeRef
-
-  override DataDict val() { this }
-
-  override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
-
-  override Void eachData(|DataObj,Str| f) { throw Err("TODO") }
-
-  override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
-
-  override Str toStr()
-  {
-    s := StrBuf()
-    map.each |v, n|
-    {
-      s.join(n, ", ")
-      if (v.toStr != "marker")
-      {
-        s.add(":").add(v.toStr.toCode)
-      }
-    }
-    return s.toStr
-  }
-
-  const Str:Obj? map
-}
 
 **************************************************************************
 ** MEmptyDict
@@ -78,17 +19,80 @@ internal const class MDataDict : DataDict
 internal const class MEmptyDict : DataDict
 {
   new make(DataType type) { this.type = type }
-
   const override DataType type
-
   override DataDict val() { this }
-
-  override DataObj? getData(Str name, Bool checked := true) { throw Err("TODO") }
-
-  override Void eachData(|DataObj,Str| f) {}
-
+  override Bool has(Str name) { false }
+  override Bool missing(Str name) { true }
   override Obj? get(Str name, Obj? def := null) { def }
-
+  override Obj? trap(Str n, Obj?[]? a := null) { throw UnknownSlotErr(n) }
+  override Void each(|Obj?, Str| f) {}
+  override Obj? eachWhile(|Obj?, Str->Obj?| f) { null }
   override Str toStr() { "{}" }
 }
+
+**************************************************************************
+** MMapDict
+**************************************************************************
+
+@Js
+internal const class MMapDict : DataDict
+{
+  new make(DataType type, Str:Obj map) { this.type = type; this.map = map }
+  const override DataType type
+  override DataDict val() { this }
+  override Bool has(Str name) { map[name] != null }
+  override Bool missing(Str name) { map[name] == null }
+  override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
+  override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
+  override Void each(|Obj?,Str| f) { map.each(f) }
+  override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+  override Str toStr() { MDataUtil.dictToStr(this) }
+  const Str:Obj? map
+}
+
+**************************************************************************
+** MProtoDict (TODO)
+**************************************************************************
+
+@Js
+internal const class MProtoDict : DataDict
+{
+  static DataDict fromMeta(MDataEnv env, Proto p)
+  {
+    acc := Str:Obj?[:]
+    p.each |kid|
+    {
+      if (kid.isMeta && kid.hasVal)
+        acc[kid.name[1..-1]] = kid.val
+    }
+    return make(env, acc)
+  }
+
+  static DataDict fromOwn(MDataEnv env, Proto p)
+  {
+    acc := Str:Obj?[:]
+    p.eachOwn |kid|
+    {
+      if (kid.hasVal)
+        acc[kid.name] = kid.val
+      else
+        acc[kid.name] = fromOwn(env, kid)
+    }
+    return make(env, acc)
+  }
+
+  new make(MDataEnv env, Str:Obj map) { this.env = env; this.map = map }
+  const MDataEnv env
+  override DataType type() { env.sys.dict }
+  override DataDict val() { this }
+  override Bool has(Str name) { map[name] != null }
+  override Bool missing(Str name) { map[name] == null }
+  override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
+  override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
+  override Void each(|Obj?,Str| f) { map.each(f) }
+  override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+  override Str toStr() { MDataUtil.dictToStr(this) }
+  const Str:Obj? map
+}
+
 
