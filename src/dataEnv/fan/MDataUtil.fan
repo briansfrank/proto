@@ -12,7 +12,7 @@ using data
 ** Data implementation utilities
 **
 @Js
-internal const class MDataUtil
+const class MDataUtil
 {
   static Obj dictTrap(DataDict dict, Str name)
   {
@@ -33,5 +33,19 @@ internal const class MDataUtil
       }
     }
     return s.toStr
+  }
+
+  static DataObj? dictGetData(DataDict dict, Str name, Bool checked)
+  {
+    val := dict.get(name, null)
+    if (val != null) return dict.type.env.obj(val)
+    if (checked) throw UnknownSlotErr(name)
+    return null
+  }
+
+  static Void dictEachData(DataDict dict, |DataObj, Str| f)
+  {
+    env := dict.type.env
+    dict.each |v, n| { f(env.obj(v), n) }
   }
 }

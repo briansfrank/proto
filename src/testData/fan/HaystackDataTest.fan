@@ -16,6 +16,11 @@ using haystack
 @Js
 class HaystackDataTest : HaystackTest
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Grid
+//////////////////////////////////////////////////////////////////////////
+
   Void testGrid()
   {
     gb := GridBuilder()
@@ -45,13 +50,14 @@ class HaystackDataTest : HaystackTest
   Void verifyDataDict(DataDict a, Dict b)
   {
     verifyEq(a.type.qname, "sys.Dict")
-    a.each |v, n|
+
+    a.each |v, n| { verifyEq(v, b[n]) }
+    b.each |v, n| { verifyEq(v, a[n]) }
+
+    a.eachData |x, n|
     {
-      verifyEq(v, b[n])
-    }
-    b.each |v, n|
-    {
-      verifyEq(v, a[n])
+      verifySame(a.getData(n).type, x.type)
+      verifyEq(x.type.name, Kind.fromVal(b[n]).name)
     }
   }
 

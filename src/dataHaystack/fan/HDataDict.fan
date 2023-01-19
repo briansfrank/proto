@@ -38,9 +38,13 @@ internal const class HDataDict : DataDict, Dict
 
   override Obj? trap(Str n, Obj?[]? a := null) { dict.trap(n, a) }
 
+  override DataObj? getData(Str name, Bool checked := true) { MDataUtil.dictGetData(this, name, checked) }
+
   override Void each(|Obj?,Str| f) { dict.each(f) }
 
   override Obj? eachWhile(|Obj?,Str->Obj?| f) { dict.eachWhile(f) }
+
+  override Void eachData(|DataObj,Str| f) { MDataUtil.dictEachData(this, f) }
 
   override Str toStr() { dict.toStr }
 

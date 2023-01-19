@@ -8,6 +8,9 @@
 
 using util
 using data
+using haystack::Marker
+using haystack::Number
+using haystack::Ref
 
 **
 ** DataEnvTest
@@ -100,6 +103,10 @@ class DataEnvTest : Test
     verifyScalar(Date.today, "sys.Date")
     verifyScalar(Time.now, "sys.Time")
     verifyScalar(DateTime.now, "sys.DateTime")
+
+    verifyScalar(Marker.val,  "sys.Marker")
+    verifyScalar(Number(123), "sys.Number")
+    verifyScalar(Ref.gen,     "sys.Ref")
 
     // any other type is mapped as string
     me := env.obj(this)

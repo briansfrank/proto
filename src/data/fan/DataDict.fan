@@ -33,9 +33,15 @@ const mixin DataDict : DataObj
   ** mapped to a non-null value, then throw an exception.
   override abstract Obj? trap(Str name, Obj?[]? args := null)
 
+  ** Get the value for given name a typed data object
+  abstract DataObj? getData(Str name, Bool checked := true)
+
   ** Iterate the data object values
   abstract Void each(|Obj?,Str| f)
 
   ** Iterate the data object values until callback returns non-null
   abstract Obj? eachWhile(|Obj?,Str->Obj?| f)
+
+  ** Iterate the data objects
+  abstract Void eachData(|DataObj,Str| f)
 }

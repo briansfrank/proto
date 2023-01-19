@@ -27,7 +27,7 @@ internal const class MDataEnv : DataEnv
 
   override DataObj obj(Obj val)
   {
-    // hard code mapping to get us started with this API
+    // TODO hard code mapping to get us started with this API
     if (val is DataObj)  return val
     if (val is Str)      return MDataScalar(sys.str, val)
     if (val is Bool)     return MDataScalar(sys.bool, val)
@@ -39,6 +39,16 @@ internal const class MDataEnv : DataEnv
     if (val is DateTime) return MDataScalar(sys.dateTime, val)
     if (val is Uri)      return MDataScalar(sys.uri, val)
     if (val is Map)      return dict(val)
+
+    // TODO
+    qname := val.typeof.qname
+    switch (qname)
+    {
+      case "haystack::Marker": return MDataScalar(sys.marker, val)
+      case "haystack::Number": return MDataScalar(sys.number, val)
+      case "haystack::Ref":    return MDataScalar(sys.ref, val)
+    }
+
     return MDataScalar(sys.str, val.toStr)
   }
 
@@ -119,30 +129,36 @@ internal const class MSys
     this.obj      = lib.type("Obj")
     this.dict     = lib.type("Dict")
     this.libType  = lib.type("Lib")
+    this.marker   = lib.type("Marker")
     this.bool     = lib.type("Bool")
     this.str      = lib.type("Str")
     this.uri      = lib.type("Uri")
+    this.number   = lib.type("Number")
     this.int      = lib.type("Int")
     this.float    = lib.type("Float")
     this.duration = lib.type("Duration")
     this.date     = lib.type("Date")
     this.time     = lib.type("Time")
     this.dateTime = lib.type("DateTime")
+    this.ref      = lib.type("Ref")
   }
 
   const DataLib lib
   const DataType obj
   const DataType dict
   const DataType libType
+  const DataType marker
   const DataType bool
   const DataType str
   const DataType uri
+  const DataType number
   const DataType int
   const DataType float
   const DataType duration
   const DataType date
   const DataType time
   const DataType dateTime
+  const DataType ref
 }
 
 

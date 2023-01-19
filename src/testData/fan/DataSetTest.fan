@@ -65,7 +65,8 @@ class DataSetTest : Test
                 b: {dis:"Beta"}
                 |>
     set := env.read(src.in, MimeType("text/pog"))
-set.dump
+    //set.dump
+    // TODO
   }
 
 //////////////////////////////////////////////////////////////////////////

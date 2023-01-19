@@ -51,6 +51,11 @@ internal const class MDataEvent : DataDict, DataEvent
     return def
   }
 
+  override DataObj? getData(Str name, Bool checked := true)
+  {
+    MDataUtil.dictGetData(this, name, checked)
+  }
+
   override Void each(|Obj?,Str| f)
   {
     eachWhile |v, n| { f(v, n); return null }
@@ -64,6 +69,11 @@ internal const class MDataEvent : DataDict, DataEvent
     r = f(loc, "loc"); if (r != null) return r
     r = f(err, "err"); if (r != null) return r
     return null
+  }
+
+  override Void eachData(|DataObj,Str| f)
+  {
+    MDataUtil.dictEachData(this, f)
   }
 
   override Str toStr()
