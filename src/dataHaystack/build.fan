@@ -4,20 +4,20 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   16 Jan 2023  Brian Frank  Creation
+//   19 Jan 2023  Brian Frank  Creation
 //
 
 using build
 
 **
-** Build: testData
+** Build: dataHaystack
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "testData"
-    summary = "Data processing test suite"
+    podName = "dataHaystack"
+    summary = "Haystack support for data processing APIs"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -29,6 +29,7 @@ class Build : BuildPod
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
                "data @{pog.depend}",
+               "dataEnv @{pog.depend}",
                "haystack @{hx.depend}",
                ]
     srcDirs = [`fan/`]

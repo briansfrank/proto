@@ -23,6 +23,7 @@ internal const class MEmptyDict : DataDict
   override DataDict val() { this }
   override Bool has(Str name) { false }
   override Bool missing(Str name) { true }
+  override Bool isEmpty() { true }
   override Obj? get(Str name, Obj? def := null) { def }
   override Obj? trap(Str n, Obj?[]? a := null) { throw UnknownSlotErr(n) }
   override Void each(|Obj?, Str| f) {}
@@ -42,6 +43,7 @@ internal const class MMapDict : DataDict
   override DataDict val() { this }
   override Bool has(Str name) { map[name] != null }
   override Bool missing(Str name) { map[name] == null }
+  override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
   override Void each(|Obj?,Str| f) { map.each(f) }
@@ -87,6 +89,7 @@ internal const class MProtoDict : DataDict
   override DataDict val() { this }
   override Bool has(Str name) { map[name] != null }
   override Bool missing(Str name) { map[name] == null }
+  override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
   override Void each(|Obj?,Str| f) { map.each(f) }

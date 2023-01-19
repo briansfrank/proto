@@ -23,6 +23,9 @@ const mixin DataDict : DataObj
   ** Does this dict not contain the given slot name
   abstract Bool missing(Str name)
 
+  ** Return true if this dict contains no name/value pairs
+  abstract Bool isEmpty()
+
   ** Get the data object value for the given name or 'def' is not mapped.
   @Operator abstract Obj? get(Str name, Obj? def := null)
 

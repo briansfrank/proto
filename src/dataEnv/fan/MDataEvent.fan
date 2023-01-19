@@ -39,6 +39,8 @@ internal const class MDataEvent : DataDict, DataEvent
 
   override Bool missing(Str name) { get(name, null) == null }
 
+  override Bool isEmpty() { false }
+
   override Obj? get(Str name, Obj? def := null)
   {
     if (name == "level")     return level

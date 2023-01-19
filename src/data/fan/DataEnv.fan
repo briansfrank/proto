@@ -40,7 +40,10 @@ const abstract class DataEnv
   abstract DataDict emptyDict()
 
   ** Create DataDict from a map of raw data values
-  abstract DataDict dict(Str:Obj? map, DataType? type := null)
+  abstract DataDict dict(Str:Obj map, DataType? type := null)
+
+  ** Set name/value pair in given dict,.
+  abstract DataDict dictSet(DataDict? dict, Str name, Obj val)
 
   ** Create DataSet from a list or map of data dict records
   abstract DataSet set(Obj recs)

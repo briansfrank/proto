@@ -44,11 +44,19 @@ internal const class MDataEnv : DataEnv
 
   const override DataDict emptyDict
 
-  override DataDict dict(Str:Obj? map, DataType? type := null)
+  override DataDict dict(Str:Obj map, DataType? type := null)
   {
     if (type == null) type = sys.dict
     if (map.isEmpty) return type === sys.dict ? emptyDict : MEmptyDict(type)
     return MMapDict(type, map)
+  }
+
+  override DataDict dictSet(DataDict? dict, Str name, Obj val)
+  {
+    map := Str:Obj[:]
+    if (dict != null) dict.each |v, n| { map[n] = v }
+    map[name] = val
+    return this.dict(map, dict?.type)
   }
 
   override DataSet set(Obj recs)
@@ -58,15 +66,16 @@ internal const class MDataEnv : DataEnv
 
   override DataSet read(InStream in, MimeType type, DataDict? opts := null)
   {
-    reader := Reader.factory(this, type, FileLoc.unknown, opts)
-    return reader.read(in)
+    reader := DataReader.factory(this, type, opts ?: emptyDict)
+    return reader.readSet(in)
   }
 
   override DataSet readFile(File file, DataDict? opts := null)
   {
     type := file.mimeType ?: throw ArgErr("Cannot determine mime type from file ext: $file.name")
-    reader := Reader.factory(this, type, FileLoc(file), opts)
-    return reader.read(file.in)
+    opts = dictSet(opts, "loc", FileLoc(file))
+    reader := DataReader.factory(this, type, opts)
+    return reader.readSet(file.in)
   }
 
   override Str[] installed() { PogEnv.cur.installed }

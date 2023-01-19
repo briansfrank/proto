@@ -22,6 +22,7 @@ class Build : BuildGroup
       `pog/build.fan`,
       `data/build.fan`,
       `dataEnv/build.fan`,
+      `dataHaystack/build.fan`,
       `pogEnv/build.fan`,
       `pogTransduce/build.fan`,
       `pogCli/build.fan`,
