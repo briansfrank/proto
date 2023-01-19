@@ -27,18 +27,32 @@ class HaystackDataTest : HaystackTest
     verifyGridRead(g, "text/zinc", ZincWriter.gridToStr(g))
     verifyGridRead(g, "application/json", JsonWriter.valToStr(g))
     verifyGridRead(g, "text/trio", TrioWriter.gridToStr(g))
-    verifyGridRead(g, "text/csv", CsvWriter.gridToStr(g))
+    verifyGridRead(CsvReader(CsvWriter.gridToStr(g).in).readGrid, "text/csv", CsvWriter.gridToStr(g))
   }
 
-  Void verifyGridRead(Grid g, Str mime, Str data)
+  Void verifyGridRead(Grid grid, Str mime, Str data)
   {
-echo
-echo("==== $mime")
-echo(data)
     file := Buf().print(data).toFile(`foo.zinc`)
     set := env.read(data.in, MimeType(mime))
-echo
-set.dump
+    verifyEq(set.size, grid.size)
+    i := 0
+    set.each |rec|
+    {
+      verifyDataDict(rec, grid[i++])
+    }
+  }
+
+  Void verifyDataDict(DataDict a, Dict b)
+  {
+    verifyEq(a.type.qname, "sys.Dict")
+    a.each |v, n|
+    {
+      verifyEq(v, b[n])
+    }
+    b.each |v, n|
+    {
+      verifyEq(v, a[n])
+    }
   }
 
   DataEnv env() { DataEnv.cur }
