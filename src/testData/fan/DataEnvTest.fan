@@ -60,9 +60,7 @@ class DataEnvTest : Test
     findAllType := verifyLibFunc(lint, "FindAllType")
 
     // TODO: simple test
-echo("--> call $findAllType")
     r := findAllType.call(env.emptyDict)
-echo("<-- $r")
   }
 
 //////////////////////////////////////////////////////////////////////////

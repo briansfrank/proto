@@ -41,8 +41,21 @@ internal const class MDataFunc : MDataType, DataFunc
 
   override DataObj call(DataDict args)
   {
-echo(">>>> call $qname($args)")
-    return env.emptyDict
+    method.call(args)
+  }
+
+  once Method method()
+  {
+    Str? pod
+    switch (lib.qname)
+    {
+      case "sys.lint": pod = "dataLint"
+      default: throw UnsupportedErr("No registered pod for DataFuncs: $lib.qname")
+    }
+    funcs := Pod.find(pod).type("Funcs")
+    method := funcs.method(name.decapitalize)
+    if (!method.isStatic) throw Err("DataFunc method must be static: $method")
+    return method
   }
 
 }
