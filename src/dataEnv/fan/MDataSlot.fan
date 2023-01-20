@@ -42,6 +42,7 @@ internal const class MDataSlot : DataSlot
   const override Str qname
   override const DataDict meta
 
+  override DataEnv env() { parent.env }
   override Str doc() { meta["doc"] as Str ?: "" }
   override Str toStr() { qname }
 

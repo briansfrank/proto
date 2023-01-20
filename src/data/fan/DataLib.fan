@@ -14,9 +14,6 @@ using util
 @Js
 const mixin DataLib : DataDef
 {
-  ** Environment
-  abstract DataEnv env()
-
   ** Qualified name of the library
   abstract Str qname()
 

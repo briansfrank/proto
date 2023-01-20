@@ -120,6 +120,12 @@ Query: Dict <
   inverse: Query   // Inverse query to run against parent
 >
 
+// Function specification.  Each slot is a named parameter
+// and 'return' specifies the result type.
+Func: Dict {
+  return: Obj
+}
+
 
 
 

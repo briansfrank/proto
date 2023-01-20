@@ -113,6 +113,14 @@ catch (pog::UnknownLibErr e)
     return lib(libName, checked)?.type(typeName, checked)
   }
 
+  override DataFunc? func(Str qname, Bool checked := true)
+  {
+    func := type(qname, false) as DataFunc
+    if (func != null) return func
+    if (checked) throw UnknownFuncErr(qname)
+    return null
+  }
+
   private const ConcurrentMap libs := ConcurrentMap()
 }
 
@@ -141,6 +149,7 @@ internal const class MSys
     this.time     = lib.type("Time")
     this.dateTime = lib.type("DateTime")
     this.ref      = lib.type("Ref")
+    this.func     = lib.type("Func")
   }
 
   const DataLib lib
@@ -159,6 +168,7 @@ internal const class MSys
   const DataType time
   const DataType dateTime
   const DataType ref
+  const DataType func
 }
 
 

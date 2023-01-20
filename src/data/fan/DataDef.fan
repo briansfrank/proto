@@ -14,6 +14,9 @@ using util
 @Js
 const mixin DataDef
 {
+  ** Environment
+  abstract DataEnv env()
+
   ** Source code location for this definition
   abstract FileLoc loc()
 

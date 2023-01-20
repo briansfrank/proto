@@ -55,17 +55,26 @@ internal const class MDataType : DataType
       else
         base = lib.env.type(proto.isa.qname.toStr)
     }
-    type = make(lib, proto, base)
+
+    type = init(lib, proto, base)
     types[name] = type
 
     stack.pop
     return type
   }
 
+  private static MDataType init(MDataLib lib, Proto proto, MDataType? base)
+  {
+    if (lib.qname != "sys")
+    {
+      if (base === lib.env.sys.func) return MDataFunc(lib, proto, base)
+    }
+    return make(lib, proto, base)
+  }
 
   new make(MDataLib lib, Proto p, MDataType? base)
   {
-    this.lib      = lib
+    this.libRef   = lib
     this.name     = p.name
     this.qname    = lib.qname + "." + name
     this.loc      = p.loc
@@ -75,7 +84,8 @@ internal const class MDataType : DataType
     this.slotsMap = Str:MDataSlot[:].addList(slots) { it.name }
   }
 
-  const override MDataLib lib
+  override MDataLib lib() { libRef }
+  const MDataLib libRef
   const override FileLoc loc
   const override Str name
   const override Str qname

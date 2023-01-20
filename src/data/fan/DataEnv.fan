@@ -65,4 +65,7 @@ const abstract class DataEnv
   ** Get or load type by the given qualified name
   abstract DataType? type(Str qname, Bool checked := true)
 
+  ** Get or load function type by the given qualified name
+  abstract DataFunc? func(Str qname, Bool checked := true)
+
 }

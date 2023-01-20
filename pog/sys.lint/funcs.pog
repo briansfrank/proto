@@ -1,0 +1,22 @@
+//
+// Copyright (c) 2023, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   20 Jan 2023  Brian Frank  Creation
+//
+
+// DataSet is any collection of dicts
+DataSet: Dict<of:Dict>
+
+// TODO
+Type: Obj
+
+// Find all items in a dataset which fit a given type
+FindAllType: Func {
+  set:  DataSet     // Data set input
+  fits: Type        // Type to find within data set
+  return: DataSet   // Filtered data set
+}
+
+

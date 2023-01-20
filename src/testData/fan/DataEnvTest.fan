@@ -23,7 +23,7 @@ class DataEnvTest : Test
 // Sys Lib
 //////////////////////////////////////////////////////////////////////////
 
-  Void testSys()
+  Void testSysLib()
   {
     // lib basics
     sys := verifyLibBasics("sys", typeof.pod.version)
@@ -48,10 +48,28 @@ class DataEnvTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Lint Lib
+//////////////////////////////////////////////////////////////////////////
+
+  Void testLintLib()
+  {
+    // lib basics
+    lint := verifyLibBasics("sys.lint", typeof.pod.version)
+
+    // function
+    findAllType := verifyLibFunc(lint, "FindAllType")
+
+    // TODO: simple test
+echo("--> call $findAllType")
+    r := findAllType.call(env.emptyDict)
+echo("<-- $r")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Ph Lib
 //////////////////////////////////////////////////////////////////////////
 
-  Void testPh()
+  Void testPhLib()
   {
     // lib basics
     ph := verifyLibBasics("ph", Version("3.9.13"))
@@ -200,6 +218,18 @@ class DataEnvTest : Test
     verifyEq(type.toStr, type.qname)
     verifySame(type.meta.type, env.type("sys.Dict"))
     return type
+  }
+
+  DataFunc verifyLibFunc(DataLib lib, Str name)
+  {
+    func := (DataFunc)verifyLibType(lib, name, env.type("sys.Func"))
+    verifySame(env.func(func.qname), func)
+    verifySame(func.returns, func.slot("return"))
+    verifyEq(func.params.join(",") { it.name }, func.slots.findAll { it.name != "return" }.join(",") { it.name })
+    verifyEq(func.param("return", false), null)
+    verifyErr(UnknownParamErr#) { func.param("return") }
+    verifyErr(UnknownParamErr#) { func.param("foo") }
+    return func
   }
 
   DataSlot verifySlot(DataType parent, Str name, DataType type)

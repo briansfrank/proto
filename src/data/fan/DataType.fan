@@ -14,9 +14,6 @@ using util
 @Js
 const mixin DataType : DataDef
 {
-  ** Environment
-  abstract DataEnv env()
-
   ** Parent library for this type
   abstract DataLib lib()
 
