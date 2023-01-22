@@ -35,6 +35,7 @@ const class MDataUtil
     return s.toStr
   }
 
+  /* TODO
   static DataObj? dictGetData(DataDict dict, Str name, Bool checked)
   {
     val := dict.get(name, null)
@@ -48,4 +49,5 @@ const class MDataUtil
     env := dict.type.env
     dict.each |v, n| { f(env.obj(v), n) }
   }
+  */
 }

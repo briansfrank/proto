@@ -110,40 +110,37 @@ class DataEnvTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Scalars
+// TypeOf
 //////////////////////////////////////////////////////////////////////////
 
-  Void testScalars()
+  Void testTypeOf()
   {
-    verifyScalar("hi", "sys.Str")
-    verifyScalar(true, "sys.Bool")
-    verifyScalar(`foo`, "sys.Uri")
-    verifyScalar(123, "sys.Int")
-    verifyScalar(123f, "sys.Float")
-    verifyScalar(123sec,"sys.Duration")
-    verifyScalar(Date.today, "sys.Date")
-    verifyScalar(Time.now, "sys.Time")
-    verifyScalar(DateTime.now, "sys.DateTime")
+    verifyTypeOf(null, "sys.None")
+    verifyTypeOf("hi", "sys.Str")
+    verifyTypeOf(true, "sys.Bool")
+    verifyTypeOf(`foo`, "sys.Uri")
+    verifyTypeOf(123, "sys.Int")
+    verifyTypeOf(123f, "sys.Float")
+    verifyTypeOf(123sec,"sys.Duration")
+    verifyTypeOf(Date.today, "sys.Date")
+    verifyTypeOf(Time.now, "sys.Time")
+    verifyTypeOf(DateTime.now, "sys.DateTime")
 
-    verifyScalar(Marker.val,  "sys.Marker")
-    verifyScalar(Number(123), "sys.Number")
-    verifyScalar(Ref.gen,     "sys.Ref")
+    verifyTypeOf(Marker.val,  "sys.Marker")
+    verifyTypeOf(Number(123), "sys.Number")
+    verifyTypeOf(Ref.gen,     "sys.Ref")
 
-    // any other type is mapped as string
-    me := env.obj(this)
-    verifyEq(me.type.qname, "sys.Str")
-    verifyEq(me, env.obj(this.toStr))
+    verifyEq(env.typeOf(Buf(), false), null)
+    verifyErr(UnknownTypeErr#) { env.typeOf(this) }
+    verifyErr(UnknownTypeErr#) { env.typeOf(this, true) }
   }
 
-  Void verifyScalar(Obj val, Str qname)
+  Void verifyTypeOf(Obj? val, Str qname)
   {
-    obj := env.obj(val)
-    // echo(">> $obj.type | $obj")
-    verifySame(obj.val, val)
-    verifyEq(obj.type.qname, qname)
-    verifySame(obj.type, env.type(qname))
-    verifyEq(obj, env.obj(val))
-    verifySame(env.obj(obj), obj)
+    t := env.typeOf(val)
+echo(">> $val | $t ?= $qname")
+    verifyEq(t.qname, qname)
+    verifySame(t, env.type(qname))
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -164,7 +161,6 @@ class DataEnvTest : Test
     verifyEq(d.type.qname, qname)
     verifySame(d.type, env.type(qname))
     if (map.isEmpty) verifySame(d, env.emptyDict)
-    verifySame(d.val, d)
 
     map.each |v, n|
     {
@@ -184,10 +180,6 @@ class DataEnvTest : Test
     verifyEq(d.missing("badOne"), true)
     verifyEq(d.get("badOne", null), null)
     verifyEq(d.get("badOne", "foo"), "foo")
-
-    verifySame(env.obj(d), d)
-    dobj := env.obj(map)
-    verifyEq(dobj is DataDict, true)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -203,7 +195,6 @@ class DataEnvTest : Test
     verifySame(env.lib(qname), lib)
     verifySame(lib.env, env)
     verifySame(lib.lib, lib)
-    verifySame(lib.val, lib)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
     verifySame(lib.meta.type, env.type("sys.Dict"))
@@ -220,7 +211,6 @@ class DataEnvTest : Test
     type := lib.libType(name)
     verifySame(type.env, env)
     verifySame(type.lib, lib)
-    verifySame(type.val, type)
     verifySame(lib.libType(name), type)
     verifyEq(lib.libTypes.containsSame(type), true)
     verifySame(type.base, base)
@@ -248,7 +238,6 @@ class DataEnvTest : Test
     verifySame(slot.env, env)
     verifySame(slot.lib, parent.lib)
     verifySame(slot.parent, parent)
-    verifySame(slot.val, slot)
     verifySame(parent.slot(name), slot)
     verifyEq(parent.slots.containsSame(slot), true)
     verifyEq(slot.qname, parent.qname + "." + name)

@@ -13,6 +13,7 @@ using pog
 **
 ** DataObj implementation for scalars
 **
+/*
 @Js
 internal final const class MDataScalar : DataObj
 {
@@ -36,4 +37,5 @@ internal final const class MDataScalar : DataObj
 
   override Str toStr() { val.toStr }
 }
+*/
 

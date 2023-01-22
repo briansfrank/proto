@@ -40,7 +40,7 @@ internal const class MDataFunc : MDataType, DataFunc
     return null
   }
 
-  override DataObj call(DataDict args)
+  override Obj? call(DataDict args)
   {
     method.call(args)
   }

@@ -27,31 +27,32 @@ internal const class MDataEnv : DataEnv
 
   const Str:DataDict emptyMap := [:]
 
-  override DataObj obj(Obj val)
+  override DataType? typeOf(Obj? val, Bool checked := true)
   {
     // TODO hard code mapping to get us started with this API
-    if (val is DataObj)  return val
-    if (val is Str)      return MDataScalar(sys.str, val)
-    if (val is Bool)     return MDataScalar(sys.bool, val)
-    if (val is Int)      return MDataScalar(sys.int, val)
-    if (val is Float)    return MDataScalar(sys.float, val)
-    if (val is Duration) return MDataScalar(sys.duration, val)
-    if (val is Date)     return MDataScalar(sys.date, val)
-    if (val is Time)     return MDataScalar(sys.time, val)
-    if (val is DateTime) return MDataScalar(sys.dateTime, val)
-    if (val is Uri)      return MDataScalar(sys.uri, val)
-    if (val is Map)      return dict(val)
+    if (val == null) return sys.none
+    if (val is DataDict) return ((DataDict)val).type
+    if (val is Str)      return sys.str
+    if (val is Bool)     return sys.bool
+    if (val is Int)      return sys.int
+    if (val is Float)    return sys.float
+    if (val is Duration) return sys.duration
+    if (val is Date)     return sys.date
+    if (val is Time)     return sys.time
+    if (val is DateTime) return sys.dateTime
+    if (val is Uri)      return sys.uri
 
     // TODO
     qname := val.typeof.qname
     switch (qname)
     {
-      case "haystack::Marker": return MDataScalar(sys.marker, val)
-      case "haystack::Number": return MDataScalar(sys.number, val)
-      case "haystack::Ref":    return MDataScalar(sys.ref, val)
+      case "haystack::Marker": return sys.marker
+      case "haystack::Number": return sys.number
+      case "haystack::Ref":    return sys.ref
     }
 
-    return MDataScalar(sys.str, val.toStr)
+    if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")
+    return null
   }
 
   const override DataDict emptyDict
@@ -137,6 +138,7 @@ internal const class MSys
   {
     this.lib      = lib
     this.obj      = lib.libType("Obj")
+    this.none     = lib.libType("None")
     this.dict     = lib.libType("Dict")
     this.libType  = lib.libType("Lib")
     this.type     = lib.libType("Type")
@@ -158,6 +160,7 @@ internal const class MSys
 
   const DataLib lib
   const DataType obj
+  const DataType none
   const DataType dict
   const DataType libType
   const DataType type

@@ -54,11 +54,13 @@ class HaystackDataTest : HaystackTest
     a.each |v, n| { verifyEq(v, b[n]) }
     b.each |v, n| { verifyEq(v, a[n]) }
 
+    /* TODO
     a.eachData |x, n|
     {
       verifySame(a.getData(n).type, x.type)
       verifyEq(x.type.name, Kind.fromVal(b[n]).name)
     }
+    */
   }
 
   DataEnv env() { DataEnv.cur }

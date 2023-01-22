@@ -23,8 +23,6 @@ internal const abstract class MDataDef : DataDef
 
   abstract Str:DataDict map()
 
-  override final This val() { this }
-
   override final Bool isEmpty() { map.isEmpty }
 
   override final Bool has(Str name) { map.get(name, null) != null }
@@ -35,13 +33,9 @@ internal const abstract class MDataDef : DataDef
 
   override final Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
 
-  override final DataObj? getData(Str name, Bool checked := true) { MDataUtil.dictGetData(this, name, checked) }
-
   override final Void each(|Obj?,Str| f) { map.each(f) }
 
   override final Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
-
-  override final Void eachData(|DataObj,Str| f) { MDataUtil.dictEachData(this, f) }
 
   override final Str doc() { meta["doc"] as Str ?: "" }
 

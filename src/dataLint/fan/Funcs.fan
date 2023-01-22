@@ -14,7 +14,7 @@ using data
 @Js
 const class Funcs
 {
-  static DataObj findAllFits(DataDict args)
+  static Obj findAllFits(DataDict args)
   {
     set := argSet(args, "set")
     type := argType(args, "type")

@@ -70,8 +70,6 @@ internal const class MDataSet : DataSet
 
   const Obj:DataDict map
 
-  override This val() { this }
-
   override Bool has(Str name) { map[name] != null }
 
   override Bool missing(Str name) { map[name] == null }
@@ -83,13 +81,9 @@ internal const class MDataSet : DataSet
 
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
 
-  override DataObj? getData(Str name, Bool checked := true) { MDataUtil.dictGetData(this, name, checked) }
-
   override Void each(|Obj?,Str| f) { map.each(f) }
 
   override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
-
-  override Void eachData(|DataObj,Str| f) { MDataUtil.dictEachData(this, f) }
 
   override Int size()
   {
