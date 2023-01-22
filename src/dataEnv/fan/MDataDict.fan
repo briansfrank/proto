@@ -66,7 +66,7 @@ internal const class MProtoDict : DataDict
   static DataDict fromMeta(MDataEnv env, Proto p)
   {
     acc := Str:Obj?[:]
-    p.each |kid|
+    p.eachOwn |kid|
     {
       if (kid.isMeta && kid.hasVal)
         acc[kid.name[1..-1]] = kid.val
