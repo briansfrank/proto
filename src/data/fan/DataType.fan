@@ -14,17 +14,11 @@ using util
 @Js
 const mixin DataType : DataDef
 {
-  ** Parent library for this type
-  abstract DataLib lib()
-
   ** Base type this type inherits from or null if this is 'Obj' itself
   abstract DataType? base()
 
   ** Simple name of this type within its library
   abstract Str name()
-
-  ** Qualified name of the type which is the library qname plus type name.
-  abstract Str qname()
 
   ** List all the slots both inherited and declared
   abstract DataSlot[] slots()

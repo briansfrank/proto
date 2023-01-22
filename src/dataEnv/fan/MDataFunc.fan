@@ -24,6 +24,7 @@ internal const class MDataFunc : MDataType, DataFunc
     params = slots.findAll |s| { s.name != "return" }
   }
 
+  override MDataEnv env() { libRef.env }
   override MDataLib lib() { libRef }
   override const DataSlot returns
   const override DataSlot[] params

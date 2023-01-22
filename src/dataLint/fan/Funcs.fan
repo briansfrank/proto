@@ -14,7 +14,7 @@ using data
 @Js
 const class Funcs
 {
-  static DataObj findAllType(DataDict args)
+  static DataObj findAllFits(DataDict args)
   {
     echo("---- TODO findAllType $args")
     return args

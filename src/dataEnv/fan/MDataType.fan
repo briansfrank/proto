@@ -14,7 +14,7 @@ using pog
 ** DataType implementation
 **
 @Js
-internal const class MDataType : DataType
+internal const class MDataType : MDataDef, DataType
 {
   static MDataType[] fromPog(MDataLib lib, Proto pog)
   {
@@ -74,34 +74,32 @@ internal const class MDataType : DataType
 
   new make(MDataLib lib, Proto p, MDataType? base)
   {
-    this.libRef   = lib
-    this.name     = p.name
-    this.qname    = lib.qname + "." + name
-    this.loc      = p.loc
-    this.base     = base
-    this.meta    =  MProtoDict.fromMeta(lib.env, p)
-    this.slots    = MDataSlot.fromPog(this, p)
-    this.slotsMap = Str:MDataSlot[:].addList(slots) { it.name }
+    this.libRef = lib
+    this.name   = p.name
+    this.qname  = lib.qname + "." + name
+    this.loc    = p.loc
+    this.base   = base
+    this.meta   =  MProtoDict.fromMeta(lib.env, p)
+    this.slots  = MDataSlot.fromPog(this, p)
+    this.map    = Str:MDataSlot[:].addList(slots) { it.name }
   }
 
+  override MDataEnv env() { libRef.env }
   override MDataLib lib() { libRef }
+  override DataType type() { libRef.env.sys.type }
+
   const MDataLib libRef
   const override FileLoc loc
   const override Str name
   const override Str qname
   const override DataDict meta
-  override const DataType? base
+  const override DataType? base
   const override DataSlot[] slots
-  const Str:DataSlot slotsMap
-
-  override DataEnv env() { lib.env }
-
-  override Str doc() { meta["doc"] as Str ?: "" }
-  override Str toStr() { qname }
+  const override Str:DataSlot map
 
   override DataSlot? slot(Str name, Bool checked := true)
   {
-    slot := slotsMap[name]
+    slot := map[name]
     if (slot != null) return slot
     if (checked) throw UnknownSlotErr("${qname}.${name}")
     return null

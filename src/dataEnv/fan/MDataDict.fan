@@ -20,7 +20,7 @@ internal const class MEmptyDict : DataDict
 {
   new make(DataType type) { this.type = type }
   const override DataType type
-  override DataDict val() { this }
+  override This val() { this }
   override Bool has(Str name) { false }
   override Bool missing(Str name) { true }
   override Bool isEmpty() { true }
@@ -42,7 +42,7 @@ internal const class MMapDict : DataDict
 {
   new make(DataType type, Str:Obj map) { this.type = type; this.map = map }
   const override DataType type
-  override DataDict val() { this }
+  override This val() { this }
   override Bool has(Str name) { map[name] != null }
   override Bool missing(Str name) { map[name] == null }
   override Bool isEmpty() { map.isEmpty }
@@ -90,7 +90,7 @@ internal const class MProtoDict : DataDict
   new make(MDataEnv env, Str:Obj map) { this.env = env; this.map = map }
   const MDataEnv env
   override DataType type() { env.sys.dict }
-  override DataDict val() { this }
+  override This val() { this }
   override Bool has(Str name) { map[name] != null }
   override Bool missing(Str name) { map[name] == null }
   override Bool isEmpty() { map.isEmpty }

@@ -33,7 +33,7 @@ internal const class MDataEvent : DataDict, DataEvent
 
   override DataType type() { ((MDataEnv)DataEnv.cur).sys.dict }
 
-  override DataDict val() { this }
+  override This val() { this }
 
   override Bool has(Str name) { get(name, null) != null }
 

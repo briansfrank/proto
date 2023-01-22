@@ -40,11 +40,20 @@ class DataEnvTest : Test
     uri    := verifyLibType(sys, "Uri",    scalar)
     dict   := verifyLibType(sys, "Dict",   obj)
     lib    := verifyLibType(sys, "Lib",    dict)
+    type   := verifyLibType(sys, "Type",   dict)
+    slot   := verifyLibType(sys, "Slot",   dict)
     org    := verifyLibType(sys, "LibOrg", dict)
 
     // slots
-    verifySlot(org, "dis", str)
-    verifySlot(org, "uri", uri)
+    orgDis := verifySlot(org, "dis", str)
+    orgUri := verifySlot(org, "uri", uri)
+
+    // verify reflection types
+    verifySame(sys.type, lib)
+    verifySame(obj.type, type)
+    verifySame(orgUri.type, slot)
+    verifySame(sys.get("Str"), str)
+    verifySame(org.get("uri"), orgUri)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,10 +66,7 @@ class DataEnvTest : Test
     lint := verifyLibBasics("sys.lint", typeof.pod.version)
 
     // function
-    findAllType := verifyLibFunc(lint, "FindAllType")
-
-    // TODO: simple test
-    r := findAllType.call(env.emptyDict)
+    findAllType := verifyLibFunc(lint, "FindAllFits")
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,7 +93,7 @@ class DataEnvTest : Test
     // sys
     sys := env.lib("sys")
     verifySame(env.lib("sys"), sys)
-    verifySame(env.type("sys.Dict"), sys.type("Dict"))
+    verifySame(env.type("sys.Dict"), sys.libType("Dict"))
 
     // bad libs
     verifyEq(env.lib("bad.one", false), null)
@@ -195,22 +201,28 @@ class DataEnvTest : Test
     lib := env.lib(qname)
 
     verifySame(env.lib(qname), lib)
+    verifySame(lib.env, env)
+    verifySame(lib.lib, lib)
+    verifySame(lib.val, lib)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
     verifySame(lib.meta.type, env.type("sys.Dict"))
 
-    verifyEq(lib.type("Bad", false), null)
-    verifyErr(UnknownTypeErr#) { lib.type("Bad") }
-    verifyErr(UnknownTypeErr#) { lib.type("Bad", true) }
+    verifyEq(lib.libType("Bad", false), null)
+    verifyErr(UnknownTypeErr#) { lib.libType("Bad") }
+    verifyErr(UnknownTypeErr#) { lib.libType("Bad", true) }
 
     return lib
   }
 
   DataType verifyLibType(DataLib lib, Str name, DataType? base)
   {
-    type := lib.type(name)
-    verifySame(lib.type(name), type)
-    verifyEq(lib.types.containsSame(type), true)
+    type := lib.libType(name)
+    verifySame(type.env, env)
+    verifySame(type.lib, lib)
+    verifySame(type.val, type)
+    verifySame(lib.libType(name), type)
+    verifyEq(lib.libTypes.containsSame(type), true)
     verifySame(type.base, base)
     verifyEq(type.qname, lib.qname + "." + name)
     verifyEq(type.toStr, type.qname)
@@ -233,11 +245,15 @@ class DataEnvTest : Test
   DataSlot verifySlot(DataType parent, Str name, DataType type)
   {
     slot := parent.slot(name)
+    verifySame(slot.env, env)
+    verifySame(slot.lib, parent.lib)
+    verifySame(slot.parent, parent)
+    verifySame(slot.val, slot)
     verifySame(parent.slot(name), slot)
     verifyEq(parent.slots.containsSame(slot), true)
     verifyEq(slot.qname, parent.qname + "." + name)
     verifyEq(slot.toStr, slot.qname)
-    verifySame(slot.type, type)
+    verifySame(slot.slotType, type)
     verifySame(slot.meta.type, env.type("sys.Dict"))
     return slot
   }
@@ -245,11 +261,11 @@ class DataEnvTest : Test
   Void dumpLib(DataLib lib)
   {
     echo("--- dump $lib.qname ---")
-    lib.types.each |t|
+    lib.libTypes.each |t|
     {
       hasSlots := !t.slots.isEmpty
       echo("$t.name: $t.base <$t.meta>" + (hasSlots ? " {" : ""))
-      t.slots.each |s| { echo("  $s.name: <$s.meta> $s.type") }
+      t.slots.each |s| { echo("  $s.name: <$s.meta> $s.slotType") }
       if (hasSlots) echo("}")
     }
   }

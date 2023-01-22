@@ -15,7 +15,7 @@ using util
 const mixin DataDict : DataObj
 {
   ** Return this
-  override abstract DataDict val()
+  override abstract This val()
 
   ** Does this dict contains the given slot name
   abstract Bool has(Str name)

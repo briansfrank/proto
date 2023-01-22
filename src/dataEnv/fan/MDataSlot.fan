@@ -14,7 +14,7 @@ using pog
 ** DataSlot implementation
 **
 @Js
-internal const class MDataSlot : DataSlot
+internal const class MDataSlot : MDataDef, DataSlot
 {
   static MDataSlot[] fromPog(MDataType parent, Proto pog)
   {
@@ -36,16 +36,17 @@ internal const class MDataSlot : DataSlot
     this.typeName = proto.isa.qname.toStr
   }
 
+  override MDataEnv env() { parent.libRef.env }
+  override MDataLib lib() { parent.libRef }
+  override DataType type() { parent.libRef.env.sys.slot }
+
   const override MDataType parent
   const override FileLoc loc
   const override Str name
   const override Str qname
   override const DataDict meta
+  override Str:DataDict map() { env.emptyMap }
 
-  override DataEnv env() { parent.env }
-  override Str doc() { meta["doc"] as Str ?: "" }
-  override Str toStr() { qname }
-
-  override MDataType type() { parent.env.type(typeName) }
+  override MDataType slotType() { parent.env.type(typeName) }
   private const Str typeName
 }

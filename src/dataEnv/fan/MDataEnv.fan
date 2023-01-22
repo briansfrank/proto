@@ -25,6 +25,8 @@ internal const class MDataEnv : DataEnv
 
   const MSys sys
 
+  const Str:DataDict emptyMap := [:]
+
   override DataObj obj(Obj val)
   {
     // TODO hard code mapping to get us started with this API
@@ -110,7 +112,7 @@ catch (pog::UnknownLibErr e)
     dot := qname.indexr(".") ?: throw ArgErr("Invalid qname: qname")
     libName := qname[0..<dot]
     typeName := qname[dot+1..-1]
-    return lib(libName, checked)?.type(typeName, checked)
+    return lib(libName, checked)?.libType(typeName, checked)
   }
 
   override DataFunc? func(Str qname, Bool checked := true)
@@ -134,28 +136,32 @@ internal const class MSys
   new make(MDataLib lib)
   {
     this.lib      = lib
-    this.obj      = lib.type("Obj")
-    this.dict     = lib.type("Dict")
-    this.libType  = lib.type("Lib")
-    this.marker   = lib.type("Marker")
-    this.bool     = lib.type("Bool")
-    this.str      = lib.type("Str")
-    this.uri      = lib.type("Uri")
-    this.number   = lib.type("Number")
-    this.int      = lib.type("Int")
-    this.float    = lib.type("Float")
-    this.duration = lib.type("Duration")
-    this.date     = lib.type("Date")
-    this.time     = lib.type("Time")
-    this.dateTime = lib.type("DateTime")
-    this.ref      = lib.type("Ref")
-    this.func     = lib.type("Func")
+    this.obj      = lib.libType("Obj")
+    this.dict     = lib.libType("Dict")
+    this.libType  = lib.libType("Lib")
+    this.type     = lib.libType("Type")
+    this.slot     = lib.libType("Slot")
+    this.marker   = lib.libType("Marker")
+    this.bool     = lib.libType("Bool")
+    this.str      = lib.libType("Str")
+    this.uri      = lib.libType("Uri")
+    this.number   = lib.libType("Number")
+    this.int      = lib.libType("Int")
+    this.float    = lib.libType("Float")
+    this.duration = lib.libType("Duration")
+    this.date     = lib.libType("Date")
+    this.time     = lib.libType("Time")
+    this.dateTime = lib.libType("DateTime")
+    this.ref      = lib.libType("Ref")
+    this.func     = lib.libType("Func")
   }
 
   const DataLib lib
   const DataType obj
   const DataType dict
   const DataType libType
+  const DataType type
+  const DataType slot
   const DataType marker
   const DataType bool
   const DataType str

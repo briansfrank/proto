@@ -8,11 +8,8 @@
 
 // Root type for all objects
 Obj: <
-  // Sealed objects cannot be extened outside of their own lib
-  sealed
-
-  // Documentation for object
-  doc: Str "Root type for all objects"
+  sealed  // Sealed types cannot be extended outside of their own lib
+  doc: Str "Root type for all objects"  // Documentation for type
 >
 
 // None is the bottom type with no values
@@ -93,23 +90,25 @@ Dict: Obj <
 // for lists are always "_0", "_1", "_2", etc.
 List: Dict
 
+// DataSet is a collection of dicts
+DataSet: Dict <
+  of:Dict   // Item type for data set records
+>
+
 // Maybe is the option type.  It contains some value or None.
 Maybe: Obj <
-  sealed
   of: Obj   // Optional value
 >
 
 // Or type is a choice between one of multiple types.
 // It is a union of the set of types.
 Or: Obj <
-  sealed
   of: List   // List of choices
 >
 
 // And type is a combination of multiple types.
 // It is an intersection of the set of types.
 And: Obj <
-  sealed
   of: List   // List of types to combine
 >
 
@@ -123,7 +122,7 @@ Query: Dict <
 // Function specification.  Each slot is a named parameter
 // and 'return' specifies the result type.
 Func: Dict {
-  return: Obj
+  return: Obj    // Function return type
 }
 
 

@@ -14,15 +14,13 @@ using util
 @Js
 const mixin DataLib : DataDef
 {
-  ** Qualified name of the library
-  abstract Str qname()
 
   ** Version of the library
   abstract Version version()
 
   ** List all the types contained by this library
-  abstract DataType[] types()
+  abstract DataType[] libTypes()
 
   ** Lookup a type contained by this libary
-  abstract DataType? type(Str name, Bool checked := true)
+  abstract DataType? libType(Str name, Bool checked := true)
 }

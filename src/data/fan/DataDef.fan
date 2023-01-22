@@ -12,10 +12,16 @@ using util
 ** Base type for static library definitions
 **
 @Js
-const mixin DataDef
+const mixin DataDef : DataDict
 {
   ** Environment
   abstract DataEnv env()
+
+  ** Library module which contains this definition
+  abstract DataLib lib()
+
+  ** Qualified name which uniquely identifies this definition
+  abstract Str qname()
 
   ** Source code location for this definition
   abstract FileLoc loc()
@@ -25,4 +31,7 @@ const mixin DataDef
 
   ** Meta data for this definition
   abstract DataDict meta()
+
+  ** Always return qname for string representation
+  abstract override Str toStr()
 }

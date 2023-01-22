@@ -14,7 +14,7 @@ using pog
 ** DataLib implementation
 **
 @Js
-internal const class MDataLib : DataLib
+internal const class MDataLib : MDataDef, DataLib
 {
   new make(MDataEnv env, Str qname)
   {
@@ -28,24 +28,24 @@ internal const class MDataLib : DataLib
     this.version  = pog.version
     this.meta     = MProtoDict.fromMeta(env, pog)
 
-    this.types = MDataType.fromPog(this, pog)
-    this.typesMap = Str:DataType[:].addList(types) { it.name }
+    this.libTypes = MDataType.fromPog(this, pog)
+    this.map = Str:DataType[:].addList(libTypes) { it.name }
   }
 
   const override MDataEnv env
+  override MDataLib lib() { this }
+  override DataType type() { env.sys.libType }
+
   const override FileLoc loc
   const override Str qname
   const override DataDict meta
   const override Version version
-  const override DataType[] types := [,]
-  const Str:DataType typesMap
+  const override DataType[] libTypes := [,]
+  const override Str:DataType map
 
-  override Str doc() { meta["doc"] as Str ?: "" }
-  override Str toStr() { qname }
-
-  override DataType? type(Str name, Bool checked := true)
+  override DataType? libType(Str name, Bool checked := true)
   {
-    lib := typesMap[name]
+    lib := map[name]
     if (lib != null) return lib
     if (checked) throw UnknownTypeErr("${qname}.${name}")
     return null

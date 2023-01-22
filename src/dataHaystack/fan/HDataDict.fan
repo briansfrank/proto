@@ -26,7 +26,7 @@ internal const class HDataDict : DataDict, Dict
 
   const Dict dict
 
-  override DataDict val() { this }
+  override This val() { this }
 
   override Bool isEmpty() { dict.isEmpty }
 
