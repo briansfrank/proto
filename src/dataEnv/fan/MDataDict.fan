@@ -10,13 +10,25 @@ using util
 using data
 using pog
 
+**************************************************************************
+** MAbstractDict
+**************************************************************************
+
+@Js
+internal const abstract class MAbstractDict : DataDict
+{
+  override Bool has(Str name) { get(name, null) != null }
+  override Bool missing(Str name) { get(name, null) == null }
+  override Void seqEach(|Obj?| f) { each(f) }
+  override Obj? seqEachWhile(|Obj?->Obj?| f) { eachWhile(f) }
+}
 
 **************************************************************************
 ** MEmptyDict
 **************************************************************************
 
 @Js
-internal const class MEmptyDict : DataDict
+internal const class MEmptyDict : MAbstractDict
 {
   new make(DataType type) { this.type = type }
   const override DataType type
@@ -35,12 +47,10 @@ internal const class MEmptyDict : DataDict
 **************************************************************************
 
 @Js
-internal const class MMapDict : DataDict
+internal const class MMapDict : MAbstractDict
 {
-  new make(DataType type, Str:Obj map) { this.type = type; this.map = map }
+  new make(DataType type, Str:Obj? map) { this.type = type; this.map = map }
   const override DataType type
-  override Bool has(Str name) { map[name] != null }
-  override Bool missing(Str name) { map[name] == null }
   override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
@@ -55,7 +65,7 @@ internal const class MMapDict : DataDict
 **************************************************************************
 
 @Js
-internal const class MProtoDict : DataDict
+internal const class MProtoDict : MAbstractDict
 {
   static DataDict fromMeta(MDataEnv env, Proto p)
   {

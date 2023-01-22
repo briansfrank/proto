@@ -19,7 +19,7 @@ internal const class MDataSet : DataSet
   static MDataSet factory(MDataEnv env, Obj recs)
   {
     if (recs is DataSet) return recs
-    type := env.type("sys.DataSet")
+    type := env.type("sys.DictSeq")
     if (recs is Map) return make(type, recs)
     if (recs is List) return make(type, listToMap(recs))
     if (recs is Proto) return makePog(type, recs)
@@ -80,6 +80,10 @@ internal const class MDataSet : DataSet
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
 
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
+
+  override Void seqEach(|Obj?| f) { map.each(f) }
+
+  override Obj? seqEachWhile(|Obj?->Obj?| f) { map.eachWhile(f) }
 
   override Void each(|Obj?,Str| f) { map.each(f) }
 

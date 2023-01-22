@@ -12,19 +12,13 @@ using util
 ** Collection of name/value slots.
 **
 @Js
-const mixin DataDict
+const mixin DataDict : DataSeq
 {
-  ** Data type for this dict
-  abstract DataType type()
-
   ** Does this dict contains the given slot name
   abstract Bool has(Str name)
 
   ** Does this dict not contain the given slot name
   abstract Bool missing(Str name)
-
-  ** Return true if this dict contains no name/value pairs
-  abstract Bool isEmpty()
 
   ** Get the data object value for the given name or 'def' is not mapped.
   @Operator abstract Obj? get(Str name, Obj? def := null)

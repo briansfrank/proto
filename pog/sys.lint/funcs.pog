@@ -8,9 +8,9 @@
 
 // Find all items in a dataset which fit a given type
 FindAllFits: Func {
-  set:  DataSet     // Data set input
+  set:  DictSeq     // Data set input
   fits: Type        // Type to find within data set
-  return: DataSet   // Filtered data set
+  return: DictSeq   // Filtered data set
 }
 
 

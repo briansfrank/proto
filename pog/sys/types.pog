@@ -80,20 +80,19 @@ DateTime: Scalar <
   pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
 > "2000-01-01T00:00:00Z UTC"
 
-// Hashmap of name/value tag pairs.
-// Dict is the base for all collection types.
-Dict: Obj <
-  of: Obj    // Item type for dict values
+// Sequence is base type for all collections.
+Seq: Obj <
+  of: Obj    // Type for collection items
 >
 
-// Ordered list of zero or more values.  The dict keys
-// for lists are always "_0", "_1", "_2", etc.
-List: Dict
+// Associative array of name/value pairs.
+Dict: Seq
 
-// DataSet is a collection of dicts
-DataSet: Dict <
-  of:Dict   // Item type for data set records
->
+// Ordered list of zero or more values.
+List: Seq
+
+// Sequence of zero or more dict items
+DictSeq: Seq <of:Dict>
 
 // Maybe is the option type.  It contains some value or None.
 Maybe: Obj <
