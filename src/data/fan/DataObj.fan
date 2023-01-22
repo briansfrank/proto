@@ -21,4 +21,5 @@ const mixin DataObj
   ** parsed instance such as Str, Date, Time.  For all collection
   ** DataDict types this method return self.
   abstract Obj val()
+
 }

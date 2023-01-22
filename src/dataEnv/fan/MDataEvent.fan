@@ -13,6 +13,7 @@ using pog
 **
 ** DataEvent implementation
 **
+/* TODO
 @Js
 internal const class MDataEvent : DataDict, DataEvent
 {
@@ -102,6 +103,6 @@ internal const class MDataEventSet : MDataSet, DataEventSet
 
   const override DataSet subjectSet
   const override DataEvent[] events
-  override MDataEnv env() { envRef }
 }
+*/
 

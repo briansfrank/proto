@@ -14,7 +14,7 @@ using util
 ** is used for this key if available, otherwise a synthetic key is generated.
 **
 @Js
-const mixin DataSet
+const mixin DataSet : DataDict
 {
   ** Environment
   abstract DataEnv env()
@@ -23,10 +23,10 @@ const mixin DataSet
   abstract Int size()
 
   ** Lookup a record by its id.
-  abstract DataDict? get(Obj id, Bool checked := true)
+  abstract DataDict? getById(Obj id, Bool checked := true)
 
   ** Iterate the records in the data set
-  abstract Void each(|DataDict rec, Obj id| f)
+  abstract Void eachById(|DataDict rec, Obj id| f)
 
   ** Transform set into a map keyed by id
   abstract Obj:DataDict toMap()
@@ -42,9 +42,6 @@ const mixin DataSet
 
   ** Return a new data set filtered by each rec that fits given type
   abstract DataSet findAllFits(DataType type)
-
-  ** Validate the records using their nominally declared types
-  abstract DataEventSet validate()
 
   ** Debug dump
   @NoDoc abstract Void dump(OutStream out := Env.cur.out)

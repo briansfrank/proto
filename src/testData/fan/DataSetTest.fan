@@ -8,6 +8,7 @@
 
 using util
 using data
+using haystack
 
 **
 ** DataSetTest
@@ -75,10 +76,20 @@ class DataSetTest : Test
 
   Void testFindAllFits()
   {
-    // lib basics
     f := env.func("sys.lint.FindAllFits")
-    // TODO: simple test
-    r := f.call(env.emptyDict)
+    m := Marker.val
+    set := env.set([
+      env.dict(["dis":"A", "point":m]),
+      env.dict(["dis":"B", "equip":m]),
+      env.dict(["dis":"C", "equip":m]),
+      env.dict(["dis":"D", "point":m]),
+      ])
+    equip := env.type("ph.Equip")
+set.dump
+echo("----> findAllFits")
+    DataSet r := f.call(env.dict(["set":set, "type":equip]))
+    verifyEq(r.size, 2)
+r.dump
   }
 
 //////////////////////////////////////////////////////////////////////////

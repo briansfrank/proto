@@ -18,20 +18,22 @@ internal const class MDataSet : DataSet
 {
   static MDataSet factory(MDataEnv env, Obj recs)
   {
-    if (recs is Map) return make(env, recs)
-    if (recs is List) return make(env, listToMap(recs))
-    if (recs is Proto) return makePog(env, recs)
+    if (recs is DataSet) return recs
+    type := env.type("sys.DataSet")
+    if (recs is Map) return make(type, recs)
+    if (recs is List) return make(type, listToMap(recs))
+    if (recs is Proto) return makePog(type, recs)
     throw ArgErr("Invalid set recs: $recs.typeof")
   }
 
-  static MDataSet makePog(MDataEnv env, Proto pog)
+  static MDataSet makePog(MDataType type, Proto pog)
   {
     map := Str:DataDict[:]
     pog.eachOwn |kid|
     {
-      map[kid.name] = MProtoDict.fromOwn(env, kid)
+      map[kid.name] = MProtoDict.fromOwn(type.env, kid)
     }
-    return make(env, map)
+    return make(type, map)
   }
 
   static Obj:DataDict listToMap(DataDict[] recs)
@@ -56,23 +58,45 @@ internal const class MDataSet : DataSet
     return map
   }
 
-  new make(MDataEnv env, Obj:DataDict map)
+  new make(MDataType type, Obj:DataDict map)
   {
-    this.envRef = env
+    this.type = type
     this.map = map
   }
 
-  override MDataEnv env() { envRef }
-  const MDataEnv envRef
+  override DataEnv env() { type.env }
+
+  const override DataType type
 
   const Obj:DataDict map
+
+  override This val() { this }
+
+  override Bool has(Str name) { map[name] != null }
+
+  override Bool missing(Str name) { map[name] == null }
+
+  override Bool isEmpty() { map.isEmpty }
+
+// TODO
+  override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
+
+  override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
+
+  override DataObj? getData(Str name, Bool checked := true) { MDataUtil.dictGetData(this, name, checked) }
+
+  override Void each(|Obj?,Str| f) { map.each(f) }
+
+  override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+
+  override Void eachData(|DataObj,Str| f) { MDataUtil.dictEachData(this, f) }
 
   override Int size()
   {
     map.size
   }
 
-  override DataDict? get(Obj id, Bool checked := true)
+  override DataDict? getById(Obj id, Bool checked := true)
   {
     rec := map[id]
     if (rec != null) return rec
@@ -80,7 +104,7 @@ internal const class MDataSet : DataSet
     return null
   }
 
-  override Void each(|DataDict rec, Obj id| f)
+  override Void eachById(|DataDict rec, Obj id| f)
   {
     map.each(f)
   }
@@ -102,17 +126,28 @@ internal const class MDataSet : DataSet
 
   override DataSet findAll(|DataDict rec, Obj id->Bool| f)
   {
-    MDataSet(env, map.findAll(f))
+    MDataSet(type, map.findAll(f))
   }
 
   override DataSet findAllFits(DataType type)
   {
-    findAll |rec| { rec.type.fits(type) }
+    findAll |rec| { fits(rec, type) }
   }
 
-  override DataEventSet validate()
+  private Bool fits(DataDict rec, DataType type)
   {
-    MDataEventSet(this, MDataEvent[,])
+    // nominal typing
+    if (rec.type.fits(type)) return true
+
+    // TODO: just stub out very simple structural typing
+    return type.slots.all |slot|
+    {
+      if (slot.slotType.qname == "sys.Maybe") return true
+      if (slot.name == "points") return true
+      val := rec.get(slot.name, null)
+      if (val == null) return false
+      return true
+    }
   }
 
   override Void dump(OutStream out := Env.cur.out)

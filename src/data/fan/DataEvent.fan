@@ -11,6 +11,7 @@ using util
 **
 ** Event item for info and errors within data sets.
 **
+/* TODO
 @Js
 const mixin DataEvent : DataDict
 {
@@ -61,3 +62,5 @@ enum class DataEventLevel
   warn,
   err
 }
+
+*/
