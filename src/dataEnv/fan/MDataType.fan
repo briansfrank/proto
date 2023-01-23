@@ -105,11 +105,11 @@ internal const class MDataType : MDataDef, DataType
     return null
   }
 
-  override Bool fits(DataType that)
+  override Bool inherits(DataType that)
   {
     if (this === that) return true
     if (base == null) return false
-    return base.fits(that)
+    return base.inherits(that)
   }
 
 }

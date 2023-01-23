@@ -36,6 +36,9 @@ const abstract class DataEnv
   ** Data type for Fantom object
   abstract DataType? typeOf(Obj? val, Bool checked := true)
 
+  ** Return if objects fits given type either nominally or structurally
+  abstract Bool fits(Obj? val, DataType type)
+
   ** Empty dict
   abstract DataDict emptyDict()
 

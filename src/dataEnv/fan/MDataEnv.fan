@@ -55,6 +55,11 @@ internal const class MDataEnv : DataEnv
     return null
   }
 
+  override Bool fits(Obj? val, DataType type)
+  {
+    MFitter(this).fits(val, type)
+  }
+
   const override DataDict emptyDict
 
   override DataDict dict(Str:Obj map, DataType? type := null)

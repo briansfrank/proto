@@ -26,9 +26,8 @@ const mixin DataType : DataDef
   ** Lookup a slot by name
   abstract DataSlot? slot(Str name, Bool checked := true)
 
-  ** Return if this type fits the given type.  If true, then
-  ** this type is assignable to the specified type (although the
-  ** converse is not necessarily true).
-  abstract Bool fits(DataType that)
+  ** Return if this type fits that from a nominal type perspective.  This
+  ** will return true if this type or one its supertypes is the same as that.
+  abstract Bool inherits(DataType that)
 
 }

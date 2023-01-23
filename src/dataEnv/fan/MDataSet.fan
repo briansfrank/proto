@@ -135,7 +135,7 @@ internal const class MDataSet : DataSet
   private Bool fits(DataDict rec, DataType type)
   {
     // nominal typing
-    if (rec.type.fits(type)) return true
+    if (rec.type.inherits(type)) return true
 
     // TODO: just stub out very simple structural typing
     return type.slots.all |slot|
