@@ -25,7 +25,7 @@ internal const class MDataEnv : DataEnv
 
   const MSys sys
 
-  const Str:DataDict emptyMap := [:]
+  const Str:DataDict emptyDictMap := [:]
 
   override DataType? typeOf(Obj? val, Bool checked := true)
   {
@@ -62,19 +62,13 @@ internal const class MDataEnv : DataEnv
 
   const override DataDict emptyDict
 
-  override DataDict dict(Str:Obj map, DataType? type := null)
+  override DataDict dict(Obj? val)
   {
-    if (type == null) type = sys.dict
-    if (map.isEmpty) return type === sys.dict ? emptyDict : MEmptyDict(type)
-    return MMapDict(type, map)
-  }
-
-  override DataDict dictSet(DataDict? dict, Str name, Obj val)
-  {
-    map := Str:Obj[:]
-    if (dict != null) dict.each |v, n| { map[n] = v }
-    map[name] = val
-    return this.dict(map, dict?.type)
+    if (val == null) return emptyDict
+    if (val is DataDict) return val
+    map := val as Str:Obj? ?: throw ArgErr("Unsupported dict arg: $val.typeof")
+    if (map.isEmpty) return emptyDict
+    return MMapDict(sys.dict, map)
   }
 
   override DataSeq seq(Obj? val)
@@ -107,7 +101,7 @@ internal const class MDataEnv : DataEnv
   override DataSet readFile(File file, DataDict? opts := null)
   {
     type := file.mimeType ?: throw ArgErr("Cannot determine mime type from file ext: $file.name")
-    opts = dictSet(opts, "loc", FileLoc(file))
+    opts = dict(opts).x.set("loc", FileLoc(file)).collect
     reader := DataReader.factory(this, type, opts)
     return reader.readSet(file.in)
   }

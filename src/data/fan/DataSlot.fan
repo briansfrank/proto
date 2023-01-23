@@ -10,6 +10,7 @@ using util
 
 **
 ** Statically typed field within a data type
+** Use `DataType.slot` to lookup slots within a type.
 **
 @Js
 const mixin DataSlot : DataDef

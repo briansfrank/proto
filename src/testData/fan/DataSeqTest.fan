@@ -88,6 +88,7 @@ class DataSeqTest : Test
   {
     // basics
     verifyDict(env.emptyDict, [:])
+    verifyDict(env.dict(null), [:])
     verifyDict(env.dict(["a":"Alpha"]), ["a":"Alpha"])
     verifyDict(env.dict(["a":"Alpha", "b":"Beta"]), ["a":"Alpha", "b":"Beta"])
 
@@ -106,12 +107,31 @@ class DataSeqTest : Test
     verifyDictPairs(
       d.x.findAll(|Int x->Bool| { x.isOdd }).map(|Int x->Int| { x+100 }).collect,
       ["a":101, "c":103])
+
+    // add
+    verifyDictPairs(d.x.add("e", 5).collect, ["a":1, "b":2, "c":3, "d":4, "e":5])
+    verifyErr(ArgErr#) { d.x.add("a", 5).collect }
+
+    // set
+    verifyDictPairs(d.x.set("e", 5).collect, ["a":1, "b":2, "c":3, "d":4, "e":5])
+    verifyDictPairs(d.x.set("a", 5).collect, ["a":5, "b":2, "c":3, "d":4])
+
+    // rename
+    verifySame(d.x.rename("e", "x").collect, d)
+    verifyDictPairs(d.x.rename("e", "x").collect, ["a":1, "b":2, "c":3, "d":4])
+    verifyDictPairs(d.x.rename("a", "x").collect, ["x":1, "b":2, "c":3, "d":4])
+
+    // remove
+    verifySame(d.x.remove("e").collect, d)
+    verifyDictPairs(d.x.remove("e").collect, ["a":1, "b":2, "c":3, "d":4])
+    verifyDictPairs(d.x.remove("c").collect, ["a":1, "b":2, "d":4])
   }
 
   Void verifyDict(DataDict d, Str:Obj map)
   {
     // type
     verifySame(d.type, env.type("sys.Dict"))
+    verifyEq(d === env.emptyDict, d.isEmpty)
 
     // isEmpty, get, each, trap
     verifyDictPairs(d, map)

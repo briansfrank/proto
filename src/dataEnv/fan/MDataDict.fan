@@ -135,6 +135,37 @@ class MDataDictTransform : DataDictTransform
     return source.type.env.dict(acc)
   }
 
+  override This add(Str name, Obj val)
+  {
+    init
+    acc.add(name, val)
+    return this
+  }
+
+  override This set(Str name, Obj val)
+  {
+    init
+    acc.set(name, val)
+    return this
+  }
+
+  override This rename(Str oldName, Str newName)
+  {
+    if (acc == null && source.missing(oldName)) return this
+    init
+    old := acc.remove(oldName)
+    if (old != null) acc[newName] = old
+    return this
+  }
+
+  override This remove(Str name)
+  {
+    if (acc == null && source.missing(name)) return this
+    init
+    acc.remove(name)
+    return this
+  }
+
   This init()
   {
     if (acc != null) return this

@@ -9,9 +9,9 @@
 using util
 
 **
-** Sequence is base type for all collections.  All sequences may
-** be iterated, but do not guarantee an iteration order.  Use `DataEnv.seq`
-** to create a sequence instance from arbitrary Fantom data.
+** Sequence is base type for all collections.  All sequences
+** maybe iterated, but do not guarantee an iteration order.
+** Use `DataEnv.seq` to create instances.
 **
 @Js
 const mixin DataSeq

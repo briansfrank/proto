@@ -10,6 +10,7 @@ using util
 
 **
 ** Collection of name/value slots.
+** Use `DataEnv.dict` to create instances.
 **
 @Js
 const mixin DataDict : DataSeq
@@ -47,6 +48,18 @@ const mixin DataDict : DataSeq
 @Js
 mixin DataDictTransform : DataSeqTransform
 {
+  ** Add name to dict.  If name already exists, raise an exception.
+  abstract This add(Str name, Obj val)
+
+  ** Add or overwrite name to given value.
+  abstract This set(Str name, Obj val)
+
+  ** Rename the given name or ignore if oldName not mapped.
+  abstract This rename(Str oldName, Str newName)
+
+  ** Remove name if it is mapped by dict, ignore if name not mapped.
+  abstract This remove(Str name)
+
   ** Collect the transformation into a new sequence of same type as the source
   abstract override DataDict collect()
 }

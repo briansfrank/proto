@@ -10,6 +10,7 @@ using util
 
 **
 ** Type definition for data objects.
+** Use `DataEnv.type` and `DataEnv.typeOf` to lookup types.
 **
 @Js
 const mixin DataType : DataDef

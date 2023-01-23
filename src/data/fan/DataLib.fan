@@ -10,6 +10,7 @@ using util
 
 **
 ** Versioned library module of type definitions
+** Use `DataEnv.lib` to load libraries.
 **
 @Js
 const mixin DataLib : DataDef

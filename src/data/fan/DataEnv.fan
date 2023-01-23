@@ -39,18 +39,19 @@ const abstract class DataEnv
   ** Return if objects fits given type either nominally or structurally
   abstract Bool fits(Obj? val, DataType type)
 
-  ** Empty dict
+  ** Empty dict typed as 'sys.Dict'
   abstract DataDict emptyDict()
 
-  ** Create DataDict from a map of raw data values
-  abstract DataDict dict(Str:Obj map, DataType? type := null)
-
-  ** Set name/value pair in given dict,.
-  abstract DataDict dictSet(DataDict? dict, Str name, Obj val)
+  ** Create DataDict from given value:
+  **   - If null, return empty dict
+  **   - If DataDict, return it
+  **   - If Fantom map, wrap as DataDict as generic 'sys.Dict'
+  **   - Raise exception for any other value type
+  abstract DataDict dict(Obj? val)
 
   ** Create a sequence object from given value:
   **   - If null, return the empty sequence
-  **   - If DataSeq return it
+  **   - If DataSeq, return it
   **   - If Fantom map with string keys, wrap it as DataDict
   **   - If Fantom map without string keys, wrap list of value as DataSeq
   **   - If Fantom list, wrap it as DataSeq

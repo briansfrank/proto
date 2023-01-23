@@ -45,7 +45,7 @@ internal const class MDataSlot : MDataDef, DataSlot
   const override Str name
   const override Str qname
   override const DataDict meta
-  override Str:DataDict map() { env.emptyMap }
+  override Str:DataDict map() { env.emptyDictMap }
 
   override MDataType slotType() { parent.env.type(typeName) }
   private const Str typeName
