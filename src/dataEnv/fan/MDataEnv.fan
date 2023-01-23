@@ -77,6 +77,20 @@ internal const class MDataEnv : DataEnv
     return this.dict(map, dict?.type)
   }
 
+  override DataSeq seq(Obj? val)
+  {
+    if (val == null) return emptyDict
+    if (val is DataSeq) return val
+    if (val is List) return MDataList(sys.list, val)
+    if (val is Map)
+    {
+      keyType := val.typeof.params["K"]
+      if (keyType == Str#) return dict(val)
+      return MDataList(sys.list, ((Map)val).vals)
+    }
+    throw Err("TODO")
+  }
+
   override DataSet set(Obj recs)
   {
     MDataSet.factory(this, recs)
@@ -145,6 +159,7 @@ internal const class MSys
     this.obj      = lib.libType("Obj")
     this.none     = lib.libType("None")
     this.dict     = lib.libType("Dict")
+    this.list     = lib.libType("List")
     this.libType  = lib.libType("Lib")
     this.type     = lib.libType("Type")
     this.slot     = lib.libType("Slot")
@@ -167,6 +182,7 @@ internal const class MSys
   const DataType obj
   const DataType none
   const DataType dict
+  const DataType list
   const DataType libType
   const DataType type
   const DataType slot

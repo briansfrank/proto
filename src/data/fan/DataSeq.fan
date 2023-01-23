@@ -9,7 +9,9 @@
 using util
 
 **
-** Sequence is base type for all collections
+** Sequence is base type for all collections.  All sequences may
+** be iterated, but do not guarantee an iteration order.  Use `DataEnv.seq`
+** to create a sequence instance from arbitrary Fantom data.
 **
 @Js
 const mixin DataSeq
@@ -20,10 +22,10 @@ const mixin DataSeq
   ** Return true is collection is empty
   abstract Bool isEmpty()
 
-  ** Iterate the sequency items
+  ** Iterate the sequency items.  Order is not guaranteed.
   abstract Void seqEach(|Obj?| f)
 
-  ** Iterate the sequency items until function returns non-null
+  ** Iterate the sequency items until function returns non-null.
   abstract Obj? seqEachWhile(|Obj?->Obj?| f)
 
   ** Begin streaming transformation of this sequence

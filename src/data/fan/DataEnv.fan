@@ -48,6 +48,15 @@ const abstract class DataEnv
   ** Set name/value pair in given dict,.
   abstract DataDict dictSet(DataDict? dict, Str name, Obj val)
 
+  ** Create a sequence object from given value:
+  **   - If null, return the empty sequence
+  **   - If DataSeq return it
+  **   - If Fantom map with string keys, wrap it as DataDict
+  **   - If Fantom map without string keys, wrap list of value as DataSeq
+  **   - If Fantom list, wrap it as DataSeq
+  **   - Anything else create sequence of one item from value
+  abstract DataSeq seq(Obj? val)
+
   ** Create DataSet from a list or map of data dict records
   abstract DataSet set(Obj recs)
 

@@ -106,4 +106,44 @@ internal const class MProtoDict : MAbstractDict
   const Str:Obj? map
 }
 
+**************************************************************************
+** MDataDictTransform
+**************************************************************************
+
+@Js
+class MDataDictTransform : DataDictTransform
+{
+  new make(DataDict source) { this.source = source }
+
+  override This map(|Obj?->Obj?| f)
+  {
+    init
+    acc = acc.map(f)
+    return this
+  }
+
+  override This findAll(|Obj?->Bool| f)
+  {
+    init
+    acc = acc.findAll(f)
+    return this
+  }
+
+  override DataDict collect()
+  {
+    if (acc == null) return source
+    return source.type.env.dict(acc)
+  }
+
+  This init()
+  {
+    if (acc != null) return this
+    acc = Str:Obj?[:]
+    source.each |v, n| { acc[n] = v }
+    return this
+  }
+
+  private const DataDict source
+  private [Str:Obj]? acc
+}
 
