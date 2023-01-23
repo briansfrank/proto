@@ -29,6 +29,8 @@ internal const abstract class MDataDef : DataDef
 
   override final Obj? seqEachWhile(|Obj?->Obj?| f) { map.eachWhile(f) }
 
+  override final DataDictTransform x() { MDataDictTransform(this) }
+
   override final Bool has(Str name) { map.get(name, null) != null }
 
   override final Bool missing(Str name) { map.get(name, null) == null }

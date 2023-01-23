@@ -33,4 +33,21 @@ const mixin DataDict : DataSeq
   ** Iterate the data object values until callback returns non-null
   abstract Obj? eachWhile(|Obj?,Str->Obj?| f)
 
+  ** Begin streaming transformation of this sequence
+  abstract override DataDictTransform x()
 }
+
+**************************************************************************
+** DataDictTransform
+**************************************************************************
+
+**
+** Streaming transformation of a sequence
+**
+@Js
+mixin DataDictTransform : DataSeqTransform
+{
+  ** Collect the transformation into a new sequence of same type as the source
+  abstract override DataDict collect()
+}
+

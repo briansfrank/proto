@@ -85,6 +85,8 @@ internal const class MDataSet : DataSet
 
   override Obj? seqEachWhile(|Obj?->Obj?| f) { map.eachWhile(f) }
 
+  override DataDictTransform x() { MDataDictTransform(this) }
+
   override Void each(|Obj?,Str| f) { map.each(f) }
 
   override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }

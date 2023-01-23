@@ -21,6 +21,7 @@ internal const abstract class MAbstractDict : DataDict
   override Bool missing(Str name) { get(name, null) == null }
   override Void seqEach(|Obj?| f) { each(f) }
   override Obj? seqEachWhile(|Obj?->Obj?| f) { eachWhile(f) }
+  override DataDictTransform x() { MDataDictTransform(this) }
 }
 
 **************************************************************************

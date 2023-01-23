@@ -40,6 +40,8 @@ internal const class HDataDict : DataDict, Dict
 
   override Obj? seqEachWhile(|Obj?->Obj?| f) { dict.eachWhile(f) }
 
+  override DataDictTransform x() { MDataDictTransform(this) }
+
   override Void each(|Obj?,Str| f) { dict.each(f) }
 
   override Obj? eachWhile(|Obj?,Str->Obj?| f) { dict.eachWhile(f) }
