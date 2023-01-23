@@ -84,11 +84,13 @@ internal const class MDataEnv : DataEnv
     if (val is List) return MDataList(sys.list, val)
     if (val is Map)
     {
+      map := (Map)val
+      if (map.isEmpty) return emptyDict
       keyType := val.typeof.params["K"]
       if (keyType == Str#) return dict(val)
       return MDataList(sys.list, ((Map)val).vals)
     }
-    throw Err("TODO")
+    return MDataList(sys.list, Obj?[val])
   }
 
   override DataSet set(Obj recs)

@@ -23,10 +23,23 @@ class DataSeqTest : Test
 
   Void testFactory()
   {
+    // null is empty seq
     verifySame(env.seq(null), env.emptyDict)
-    verifySame(env.seq([,]).type, env.type("sys.List"))
-    verifySame(env.seq([1, 2, 3]).type, env.type("sys.List"))
-    verifyEq(env.seq([1, 2, 3]).typeof.qname, "dataEnv::MDataList")
+    verifySame(env.seq(Str:Obj?[:]), env.emptyDict)
+    verifySame(env.seq([:]), env.emptyDict)
+
+    // lists
+    verifyList(env.seq([,]), [,])
+    verifyList(env.seq([1, 2, 3]), [1, 2, 3])
+
+    // maps w/ string keys are dicts
+    verifyDict(env.seq(["a":1, "b":2]), ["a":1, "b":2])
+
+    // maps w/ non-string keys are dicts
+    verifyList(env.seq([1:"a"]), ["a"])
+
+    // anything else is single sequence
+    verifyList(env.seq("foo"), ["foo"])
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,6 +56,10 @@ class DataSeqTest : Test
 
   Void verifyList(DataSeq seq, Obj?[] items)
   {
+    // type
+    verifySame(seq.type, env.type("sys.List"))
+    verifyEq(seq.typeof.qname, "dataEnv::MDataList")
+
     // isEmpty, seqEach, seqEachWhile
     verifySeq(seq, items)
 
@@ -93,6 +110,9 @@ class DataSeqTest : Test
 
   Void verifyDict(DataDict d, Str:Obj map)
   {
+    // type
+    verifySame(d.type, env.type("sys.Dict"))
+
     // isEmpty, get, each, trap
     verifyDictPairs(d, map)
 
@@ -141,10 +161,12 @@ class DataSeqTest : Test
 
     // identity x.map
     dup := seq.x.map |x| { x }.collect
+    verifySame(dup.type, seq.type)
     verifySeqItems(dup, items)
 
     // identity x.findAll
     dup = seq.x.findAll |x| { true }.collect
+    verifySame(dup.type, seq.type)
     verifySeqItems(dup, items)
   }
 
