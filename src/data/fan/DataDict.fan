@@ -34,8 +34,8 @@ const mixin DataDict : DataSeq
   ** Iterate the data object values until callback returns non-null
   abstract Obj? eachWhile(|Obj?,Str->Obj?| f)
 
-  ** Begin streaming transformation of this sequence
-  abstract override DataDictTransform x()
+  ** Start iteration or transformation of this dict
+  abstract override DataDictX x()
 }
 
 **************************************************************************
@@ -43,11 +43,19 @@ const mixin DataDict : DataSeq
 **************************************************************************
 
 **
-** Streaming transformation of a sequence
+** Streaming iteration or transformation of a dict
 **
 @Js
-mixin DataDictTransform : DataSeqTransform
+mixin DataDictX : DataSeqX
 {
+  /*
+  ** Iterate the name/value pairs
+  abstract Void each(|Obj,Str| f)
+
+  ** Iterate the name/value pairs  until callback returns non-null
+  abstract Obj? eachWhile(|Obj,Str->Obj?| f)
+  */
+
   ** Add name to dict.  If name already exists, raise an exception.
   abstract This add(Str name, Obj val)
 

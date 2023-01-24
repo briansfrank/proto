@@ -28,15 +28,11 @@ internal const class MDataSet : DataSet
 
   override Bool isEmpty() { list.isEmpty }
 
-  override Void seqEach(|Obj?| f) { list.each(f) }
-
-  override Obj? seqEachWhile(|Obj?->Obj?| f) { list.eachWhile(f) }
-
   override Int size() { list.size }
 
   const DataDict[] list
 
-  override DataSetTransform x() { MDataSetTransform(this) }
+  override DataSetX x() { MDataSetX(this) }
 
   override Void dump(OutStream out := Env.cur.out)
   {
@@ -46,13 +42,17 @@ internal const class MDataSet : DataSet
 }
 
 **************************************************************************
-** MDataSetTransform
+** MDataSetX
 **************************************************************************
 
 @Js
-internal class MDataSetTransform : DataSetTransform
+internal class MDataSetX: DataSetX
 {
   new make(MDataSet source) { this.source = source }
+
+  override Void seqEach(|Obj?| f) { source.list.each(f) }
+
+  override Obj? seqEachWhile(|Obj?->Obj?| f) { source.list.eachWhile(f) }
 
   override This seqMap(|Obj?->Obj?| f) { map(f) }
 

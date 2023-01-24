@@ -20,8 +20,8 @@ const mixin DataSet : DataSeq
   ** Number of items in the data set
   abstract Int size()
 
-  ** Begin streaming transformation of this data set
-  abstract override DataSetTransform x()
+  ** Start iteration or transformation of this data set
+  abstract override DataSetX x()
 
   ** Debug dump
   @NoDoc abstract Void dump(OutStream out := Env.cur.out)
@@ -31,8 +31,11 @@ const mixin DataSet : DataSeq
 ** DataSetTransform
 **************************************************************************
 
+**
+** Streaming iteration or transformation of a data set
+**
 @Js
-mixin DataSetTransform : DataSeqTransform
+mixin DataSetX : DataSeqX
 {
   ** Transform set into list of records
   abstract DataDict[] toList()

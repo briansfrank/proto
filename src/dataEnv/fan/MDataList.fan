@@ -24,11 +24,7 @@ const class MDataList : DataSeq
 
   override Bool isEmpty() { list.isEmpty }
 
-  override Void seqEach(|Obj?| f) { list.each(f) }
-
-  override Obj? seqEachWhile(|Obj?->Obj?| f) { list.eachWhile(f) }
-
-  override DataSeqTransform x() { MDataListTransform(this) }
+  override DataSeqX x() { MDataListX(this) }
 
   override Str toStr() { list.toStr }
 
@@ -37,13 +33,26 @@ const class MDataList : DataSeq
 
 
 **************************************************************************
-** MDataListTransform
+** MDataListX
 **************************************************************************
 
 @Js
-class MDataListTransform : DataSeqTransform
+class MDataListX : DataSeqX
 {
-  new make(MDataList source) { this.source = source }
+  new make(MDataList source)
+  {
+    this.source = source
+  }
+
+  override Void seqEach(|Obj?| f)
+  {
+    source.list.each(f)
+  }
+
+  override Obj? seqEachWhile(|Obj?->Obj?| f)
+  {
+    source.list.eachWhile(f)
+  }
 
   override This seqMap(|Obj?->Obj?| f)
   {

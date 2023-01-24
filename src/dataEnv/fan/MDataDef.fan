@@ -25,11 +25,7 @@ internal const abstract class MDataDef : DataDef
 
   override final Bool isEmpty() { map.isEmpty }
 
-  override final Void seqEach(|Obj?| f) { map.each(f) }
-
-  override final Obj? seqEachWhile(|Obj?->Obj?| f) { map.eachWhile(f) }
-
-  override final DataDictTransform x() { MDataDictTransform(this) }
+  override final DataDictX x() { MDataDictX(this) }
 
   override final Bool has(Str name) { map.get(name, null) != null }
 

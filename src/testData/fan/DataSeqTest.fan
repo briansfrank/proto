@@ -197,14 +197,14 @@ class DataSeqTest : Test
 
     // seqEach
     i := 0
-    seq.seqEach |v|
+    seq.x.seqEach |v|
     {
       verifyEq(v, items[i++])
     }
 
     // seqEachWhile
     i = 0
-    seq.seqEachWhile |v|
+    seq.x.seqEachWhile |v|
     {
       verifyEq(v, items[i++])
       return null

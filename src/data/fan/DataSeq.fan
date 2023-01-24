@@ -22,15 +22,8 @@ const mixin DataSeq
   ** Return true is collection is empty
   abstract Bool isEmpty()
 
-  ** Iterate the sequency items.  Order is not guaranteed.
-  abstract Void seqEach(|Obj?| f)
-
-  ** Iterate the sequency items until function returns non-null.
-  abstract Obj? seqEachWhile(|Obj?->Obj?| f)
-
-  ** Begin streaming transformation of this sequence
-  abstract DataSeqTransform x()
-
+  ** Start iteration or transformation of this sequence
+  abstract DataSeqX x()
 }
 
 **************************************************************************
@@ -38,11 +31,17 @@ const mixin DataSeq
 **************************************************************************
 
 **
-** Streaming transformation of a sequence
+** Streaming iteration or transformation of a sequence
 **
 @Js
-mixin DataSeqTransform
+mixin DataSeqX
 {
+  ** Iterate the sequency items.  Order is not guaranteed.
+  abstract Void seqEach(|Obj?| f)
+
+  ** Iterate the sequency items until function returns non-null.
+  abstract Obj? seqEachWhile(|Obj?->Obj?| f)
+
   ** Map the items from the sequence
   abstract This seqMap(|Obj?->Obj?| f)
 

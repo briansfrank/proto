@@ -19,9 +19,7 @@ internal const abstract class MAbstractDict : DataDict
 {
   override Bool has(Str name) { get(name, null) != null }
   override Bool missing(Str name) { get(name, null) == null }
-  override Void seqEach(|Obj?| f) { each(f) }
-  override Obj? seqEachWhile(|Obj?->Obj?| f) { eachWhile(f) }
-  override DataDictTransform x() { MDataDictTransform(this) }
+  override DataDictX x() { MDataDictX(this) }
 }
 
 **************************************************************************
@@ -107,13 +105,26 @@ internal const class MProtoDict : MAbstractDict
 }
 
 **************************************************************************
-** MDataDictTransform
+** MDataDictX
 **************************************************************************
 
 @Js
-class MDataDictTransform : DataDictTransform
+class MDataDictX : DataDictX
 {
-  new make(DataDict source) { this.source = source }
+  new make(DataDict source)
+  {
+    this.source = source
+  }
+
+  override Void seqEach(|Obj?| f)
+  {
+    source.each(f)
+  }
+
+  override Obj? seqEachWhile(|Obj?->Obj?| f)
+  {
+    source.eachWhile(f)
+  }
 
   override This seqMap(|Obj?->Obj?| f)
   {

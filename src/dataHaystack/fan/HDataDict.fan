@@ -36,11 +36,7 @@ internal const class HDataDict : DataDict, Dict
 
   override Obj? trap(Str n, Obj?[]? a := null) { dict.trap(n, a) }
 
-  override Void seqEach(|Obj?| f) { dict.each(f) }
-
-  override Obj? seqEachWhile(|Obj?->Obj?| f) { dict.eachWhile(f) }
-
-  override DataDictTransform x() { MDataDictTransform(this) }
+  override DataDictX x() { MDataDictX(this) }
 
   override Void each(|Obj?,Str| f) { dict.each(f) }
 
