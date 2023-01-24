@@ -23,6 +23,7 @@ class Build : BuildGroup
       `data/build.fan`,
       `dataEnv/build.fan`,
       `haystackx/build.fan`,
+      `axonx/build.fan`,
       `dataLint/build.fan`,
       `dataHaystack/build.fan`,
       `pogEnv/build.fan`,

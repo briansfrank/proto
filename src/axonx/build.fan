@@ -1,24 +1,23 @@
 #! /usr/bin/env fan
 //
-// Copyright (c) 2008, SkyFoundry LLC
+// Copyright (c) 2015, SkyFoundry LLC
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   12 Dec 08  Brian Frank  Creation
-//    2 Oct 12  Brian Frank  Rename folio -> haystack
+//   24 Apr 2015  Brian Frank  Break out from proj
 //
 
 using build
 
 **
-** Build: haystack
+** Build: axon
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "haystackx"
-    summary = "Haystack model and client API"
+    podName = "axonx"
+    summary = "Axon scripting engine"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -30,11 +29,19 @@ class Build : BuildPod
                ]
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
-               "util @{fan.depend}",
-               "inet @{fan.depend}",
-               "web @{fan.depend}",
-               "data @{pog.depend}"]
-    srcDirs = [`fan/`]
-    resDirs = [`res/`, `locale/`]
+               "haystackx @{pog.depend}"]
+    srcDirs = [`fan/`,
+               `fan/ast/`,
+               `fan/comp/`,
+               `fan/lib/`,
+               `fan/parser/`,
+               `fan/stream/`,
+               ]
+    resDirs = [`lib/`]
+    index = [
+      "ph.lib": "axon",
+      "def.compDefLoader": "axon::FuncDefLoader"
+    ]
   }
+
 }
