@@ -4,7 +4,10 @@
 //
 // History:
 //   22 Dec 2009  Brian Frank  Creation
+//   24 Jan 2023  Brian Frank  Integrate DataDict APIs
 //
+
+using data
 
 **
 ** Dict is a map of name/value pairs.  It is used to model grid rows, grid
@@ -17,28 +20,38 @@
 ** Also see `Etc.emptyDict`, `Etc.makeDict`.
 **
 @Js
-const mixin Dict
+const mixin Dict : DataDict
 {
+  **
+  ** Return generic 'sys.Dict' type
+  **
+  override DataType type() { DataEnv.cur.emptyDict.type }
+
+  **
+  ** Start iteration or transformation of this dict
+  **
+  override DataDictX x() { DictX(this) }
+
   **
   ** Return if the there are no name/value pairs
   **
-  abstract Bool isEmpty()
+  abstract override Bool isEmpty()
 
   **
   ** Get the value for the given name or 'def' if name not mapped
   **
   @Operator
-  abstract Obj? get(Str name, Obj? def := null)
+  abstract override Obj? get(Str name, Obj? def := null)
 
   **
   ** Return true if the given name is mapped to a non-null value.
   **
-  abstract Bool has(Str name)
+  abstract override Bool has(Str name)
 
   **
   ** Return true if the given name is not mapped to a non-null value.
   **
-  abstract Bool missing(Str name)
+  abstract override Bool missing(Str name)
 
   **
   ** Iterate through the name/value pairs
@@ -90,4 +103,19 @@ const mixin Dict
   ** Return string for debugging only
   override Str toStr() { Etc.dictToStr(this) }
 }
+
+**************************************************************************
+** DictX (no not handle Dicts with null values)
+**************************************************************************
+
+@NoDoc @Js
+class DictX : AbstractDataDictX
+{
+  new make(Dict source) : super(source) {}
+
+  override Void each(|Obj,Str| f) { ((Dict)source).each(f) }
+
+  override Obj? eachWhile(|Obj,Str->Obj?| f) { ((Dict)source).eachWhile(f) }
+}
+
 

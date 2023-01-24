@@ -21,8 +21,7 @@ internal abstract class HaystackDataReader : DataReader
   override DataSet onReadSet(InStream in)
   {
     grid := readGrid(in)
-    type := env.type("sys.Dict") // TODO
-    rows := grid.mapToList |row->DataDict| { throw Err("TODO") }
+    rows := grid.mapToList |row->DataDict| { row }
     return env.set(rows)
   }
 

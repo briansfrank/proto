@@ -47,11 +47,11 @@ internal const class MapDict : Dict
 }
 
 **************************************************************************
-** DictX
+** DictN
 **************************************************************************
 
 @Js
-internal abstract const class DictX : Dict
+internal abstract const class DictN : Dict
 {
   override final Bool isEmpty() { false }
   override final Bool has(Str name) { get(name, null) != null }
@@ -69,7 +69,7 @@ internal abstract const class DictX : Dict
 **************************************************************************
 
 @Js
-internal const class Dict1 : DictX
+internal const class Dict1 : DictN
 {
   new make(Str:Obj? map)
   {
@@ -115,7 +115,7 @@ internal const class Dict1 : DictX
 **************************************************************************
 
 @Js
-internal const class Dict2 : DictX
+internal const class Dict2 : DictN
 {
   new make(Str:Obj? map)
   {
@@ -168,7 +168,7 @@ internal const class Dict2 : DictX
 **************************************************************************
 
 @Js
-internal const class Dict3 : DictX
+internal const class Dict3 : DictN
 {
   new make(Str:Obj? map)
   {
@@ -228,7 +228,7 @@ internal const class Dict3 : DictX
 **************************************************************************
 
 @Js
-internal const class Dict4 : DictX
+internal const class Dict4 : DictN
 {
   new make(Str:Obj? map)
   {
@@ -295,7 +295,7 @@ internal const class Dict4 : DictX
 **************************************************************************
 
 @Js
-internal const class Dict5 : DictX
+internal const class Dict5 : DictN
 {
   new make(Str:Obj? map)
   {
@@ -369,7 +369,7 @@ internal const class Dict5 : DictX
 **************************************************************************
 
 @Js
-internal const class Dict6 : DictX
+internal const class Dict6 : DictN
 {
   new make(Str:Obj? map)
   {
