@@ -68,9 +68,12 @@ internal class PogReader : DataReader
 
   override DataSet onReadSet(InStream in)
   {
+    throw Err("TODO")
+    /*
     arg := PogEnv.cur.data(in, ["data"], loc)
     proto := PogEnv.cur.transduce("compile", ["it":arg]).getProto
     return MDataSet.factory(env, proto)
+    */
   }
 
 }

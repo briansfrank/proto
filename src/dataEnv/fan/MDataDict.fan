@@ -115,14 +115,14 @@ class MDataDictTransform : DataDictTransform
 {
   new make(DataDict source) { this.source = source }
 
-  override This map(|Obj?->Obj?| f)
+  override This seqMap(|Obj?->Obj?| f)
   {
     init
     acc = acc.map(f)
     return this
   }
 
-  override This findAll(|Obj?->Bool| f)
+  override This seqFindAll(|Obj?->Bool| f)
   {
     init
     acc = acc.findAll(f)

@@ -18,7 +18,8 @@ const class Funcs
   {
     set := argSet(args, "set")
     type := argType(args, "type")
-    return set.findAllFits(type)
+    env := set.env
+    return set.x.findAll |r| { env.fits(r, type) }
   }
 
   static DataSet argSet(DataDict args, Str name)

@@ -41,7 +41,7 @@ class HaystackDataTest : HaystackTest
     set := env.read(data.in, MimeType(mime))
     verifyEq(set.size, grid.size)
     i := 0
-    set.each |rec|
+    set.seqEach |rec|
     {
       verifyDataDict(rec, grid[i++])
     }

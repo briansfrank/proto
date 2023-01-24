@@ -21,11 +21,16 @@ internal const class MDataEnv : DataEnv
   {
     this.sys = MSys(lib("sys"))
     this.emptyDict = MEmptyDict(sys.dict)
+    this.emptySet  = MDataSet(sys.dataset, DataDict#.emptyList)
   }
 
   const MSys sys
 
   const Str:DataDict emptyDictMap := [:]
+
+  const override DataDict emptyDict
+
+  const override DataSet emptySet
 
   override DataType? typeOf(Obj? val, Bool checked := true)
   {
@@ -60,8 +65,6 @@ internal const class MDataEnv : DataEnv
     MFitter(this).fits(val, type)
   }
 
-  const override DataDict emptyDict
-
   override DataDict dict(Obj? val)
   {
     if (val == null) return emptyDict
@@ -87,9 +90,17 @@ internal const class MDataEnv : DataEnv
     return MDataList(sys.list, Obj?[val])
   }
 
-  override DataSet set(Obj recs)
+  override DataSet set(Obj? val)
   {
-    MDataSet.factory(this, recs)
+    if (val == null) return emptySet
+    if (val is DataSet) return val
+    if (val is List)
+    {
+      list := (List)val
+      if (list.isEmpty) return emptySet
+      return MDataSet(sys.dataset, list)
+    }
+    throw ArgErr("Unsupported set arg: $val.typeof")
   }
 
   override DataSet read(InStream in, MimeType type, DataDict? opts := null)
@@ -156,6 +167,7 @@ internal const class MSys
     this.none     = lib.libType("None")
     this.dict     = lib.libType("Dict")
     this.list     = lib.libType("List")
+    this.dataset  = lib.libType("DataSet")
     this.libType  = lib.libType("Lib")
     this.type     = lib.libType("Type")
     this.slot     = lib.libType("Slot")
@@ -179,6 +191,7 @@ internal const class MSys
   const DataType none
   const DataType dict
   const DataType list
+  const DataType dataset
   const DataType libType
   const DataType type
   const DataType slot

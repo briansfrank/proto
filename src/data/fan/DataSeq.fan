@@ -44,10 +44,10 @@ const mixin DataSeq
 mixin DataSeqTransform
 {
   ** Map the items from the sequence
-  abstract This map(|Obj?->Obj?| f)
+  abstract This seqMap(|Obj?->Obj?| f)
 
   ** Filter the items from the sequence
-  abstract This findAll(|Obj?->Bool| f)
+  abstract This seqFindAll(|Obj?->Bool| f)
 
   ** Collect the transformation into a new sequence of same type as the source
   abstract DataSeq collect()

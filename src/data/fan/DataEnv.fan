@@ -39,6 +39,15 @@ const abstract class DataEnv
   ** Return if objects fits given type either nominally or structurally
   abstract Bool fits(Obj? val, DataType type)
 
+  ** Create a sequence object from given value:
+  **   - If null, return the empty sequence
+  **   - If DataSeq, return it
+  **   - If Fantom map with string keys, wrap it as DataDict
+  **   - If Fantom map without string keys, wrap list of value as DataSeq
+  **   - If Fantom list, wrap it as DataSeq
+  **   - Anything else create sequence of one item from value
+  abstract DataSeq seq(Obj? val)
+
   ** Empty dict typed as 'sys.Dict'
   abstract DataDict emptyDict()
 
@@ -49,17 +58,15 @@ const abstract class DataEnv
   **   - Raise exception for any other value type
   abstract DataDict dict(Obj? val)
 
-  ** Create a sequence object from given value:
-  **   - If null, return the empty sequence
-  **   - If DataSeq, return it
-  **   - If Fantom map with string keys, wrap it as DataDict
-  **   - If Fantom map without string keys, wrap list of value as DataSeq
-  **   - If Fantom list, wrap it as DataSeq
-  **   - Anything else create sequence of one item from value
-  abstract DataSeq seq(Obj? val)
+  ** Empty data set
+  abstract DataSet emptySet()
 
-  ** Create DataSet from a list or map of data dict records
-  abstract DataSet set(Obj recs)
+  ** Create data set from given value:
+  **   - If null, return the empty data set
+  **   - If DataSet, return it
+  **   - If Fantom list, wrap it as DataSet
+  **   - Raise exception for any other value type
+  abstract DataSet set(Obj? val)
 
   ** Read a data into memory from input stream based on given
   ** format type. The stream is guaranteed to be closed.

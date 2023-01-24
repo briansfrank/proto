@@ -66,17 +66,17 @@ class DataSeqTest : Test
     // map
     s := env.seq([1, 2, 3, 4])
     verifySeqItems(
-      s.x.map |Int x->Int| { x* 2 }.collect,
+      s.x.seqMap |Int x->Int| { x* 2 }.collect,
       [2, 4, 6, 8])
 
     // findAll
     verifySeqItems(
-      s.x.findAll |Int x->Bool| { x.isEven }.collect,
+      s.x.seqFindAll |Int x->Bool| { x.isEven }.collect,
       [2, 4])
 
     // map, findAll
     verifySeqItems(
-      s.x.findAll |Int x->Bool| { x.isEven }.map |Int x->Int| { x+100 }.collect,
+      s.x.seqFindAll |Int x->Bool| { x.isEven }.seqMap |Int x->Int| { x+100 }.collect,
       [102, 104])
   }
 
@@ -95,17 +95,17 @@ class DataSeqTest : Test
     // map
     d := env.dict(["a":1, "b":2, "c":3, "d":4])
     verifyDictPairs(
-      d.x.map(|Int x->Int| { x*2 }).collect,
+      d.x.seqMap(|Int x->Int| { x*2 }).collect,
       ["a":2, "b":4, "c":6, "d":8])
 
     // findAll
     verifyDictPairs(
-      d.x.findAll(|Int x->Bool| { x.isOdd }).collect,
+      d.x.seqFindAll(|Int x->Bool| { x.isOdd }).collect,
       ["a":1, "c":3])
 
     // findAll, map
     verifyDictPairs(
-      d.x.findAll(|Int x->Bool| { x.isOdd }).map(|Int x->Int| { x+100 }).collect,
+      d.x.seqFindAll(|Int x->Bool| { x.isOdd }).seqMap(|Int x->Int| { x+100 }).collect,
       ["a":101, "c":103])
 
     // add
@@ -137,12 +137,12 @@ class DataSeqTest : Test
     verifyDictPairs(d, map)
 
     // identity x.map
-    dup := d.x.map |x| { x }.collect
+    dup := d.x.seqMap |x| { x }.collect
     verifyEq(d === dup, d.isEmpty)
     verifyDictPairs(dup, map)
 
     // identity x.findAll
-    dup = d.x.findAll |x| { true }.collect
+    dup = d.x.seqFindAll |x| { true }.collect
     verifyEq(d === dup, d.isEmpty)
     verifyDictPairs(dup, map)
   }
@@ -180,12 +180,12 @@ class DataSeqTest : Test
     verifySame(seq.x.collect, seq)
 
     // identity x.map
-    dup := seq.x.map |x| { x }.collect
+    dup := seq.x.seqMap |x| { x }.collect
     verifySame(dup.type, seq.type)
     verifySeqItems(dup, items)
 
     // identity x.findAll
-    dup = seq.x.findAll |x| { true }.collect
+    dup = seq.x.seqFindAll |x| { true }.collect
     verifySame(dup.type, seq.type)
     verifySeqItems(dup, items)
   }

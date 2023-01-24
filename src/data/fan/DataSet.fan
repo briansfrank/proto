@@ -9,40 +9,47 @@
 using util
 
 **
-** Logical set of DataDict records.  Each record in a data set is keyed
-** by a primary id which is unique within this data set.  The 'id' slot
-** is used for this key if available, otherwise a synthetic key is generated.
+** Logical set of DataDict records.
 **
 @Js
-const mixin DataSet : DataDict
+const mixin DataSet : DataSeq
 {
   ** Environment
   abstract DataEnv env()
 
-  ** Number of records in the data
+  ** Number of items in the data set
   abstract Int size()
 
-  ** Lookup a record by its id.
-  abstract DataDict? getById(Obj id, Bool checked := true)
-
-  ** Iterate the records in the data set
-  abstract Void eachById(|DataDict rec, Obj id| f)
-
-  ** Transform set into a map keyed by id
-  abstract Obj:DataDict toMap()
-
-  ** Transform set into list of records
-  abstract DataDict[] toList()
-
-  ** Find the first record that matches given predicate function
-  abstract DataDict? find(|DataDict rec, Obj id->Bool| f)
-
-  ** Find the all records that match given predicate function
-  abstract DataSet findAll(|DataDict rec, Obj id->Bool| f)
-
-  ** Return a new data set filtered by each rec that fits given type
-  abstract DataSet findAllFits(DataType type)
+  ** Begin streaming transformation of this data set
+  abstract override DataSetTransform x()
 
   ** Debug dump
   @NoDoc abstract Void dump(OutStream out := Env.cur.out)
+}
+
+**************************************************************************
+** DataSetTransform
+**************************************************************************
+
+@Js
+mixin DataSetTransform : DataSeqTransform
+{
+  ** Transform set into list of records
+  abstract DataDict[] toList()
+
+  ** Iterate the dict records
+  abstract Void each(|DataDict rec| f)
+
+  ** Iterate the dict records until callback returns non-null
+  abstract Obj? eachWhile(|DataDict rec->Obj?| f)
+
+  ** Map the records by the given transformation function.
+  ** If the function returns null, then the record is excluded.
+  abstract This map(|DataDict rec->DataDict?| f)
+
+  ** Find the all records that match given predicate function
+  abstract This findAll(|DataDict rec->Bool| f)
+
+  ** Collect into new data set
+  abstract override DataSet collect()
 }
