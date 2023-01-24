@@ -24,7 +24,7 @@ const mixin DataSet : DataSeq
   abstract override DataSetX x()
 
   ** Debug dump
-  @NoDoc abstract Void dump(OutStream out := Env.cur.out)
+  @NoDoc abstract Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
 }
 
 **************************************************************************

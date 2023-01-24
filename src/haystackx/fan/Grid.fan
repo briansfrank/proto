@@ -4,7 +4,10 @@
 //
 // History:
 //   22 Dec 2009  Brian Frank  Creation
+//   24 Jan 2023  Brian Frank  Integrate DataDict APIs
 //
+
+using data
 
 **
 ** Two dimensional tabular data structure composed of Cols and Rows.
@@ -12,7 +15,7 @@
 ** See [docHaystack]`docHaystack::Kinds#grid`.
 **
 @Js
-const mixin Grid
+const mixin Grid : DataSet
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -68,7 +71,7 @@ const mixin Grid
   **
   ** Convenience for `size` equal to zero.
   **
-  Bool isEmpty() { size == 0 }
+  override Bool isEmpty() { size == 0 }
 
   **
   ** Return if this is an error grid - meta has "err" tag.
@@ -106,7 +109,7 @@ const mixin Grid
   ** Get the number of rows in the grid.  Throw UnsupportedErr
   ** if the grid doesn't support a size.
   **
-  abstract Int size()
+  abstract override Int size()
 
   **
   ** Get the first row or return null if grid is empty.
@@ -898,7 +901,7 @@ const mixin Grid
   ** Options:
   **   - noClip: true to not clip the columns
   **
-  @NoDoc Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
+  @NoDoc override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     dumpMeta(out, "Grid:", meta)
     cols.each |col| { dumpMeta(out, "$col.name \"$col.dis\":", col.meta) }
@@ -947,5 +950,38 @@ const mixin Grid
     s := r.dis(c.name)
     return s
   }
+}
+
+**************************************************************************
+** GridX
+**************************************************************************
+
+@Js @NoDoc
+internal class GridX : DataSetX
+{
+  new make(Grid source) { this.source = source; this.acc = source }
+
+  override Void seqEach(|Obj?| f) { source.each(f) }
+
+  override Obj? seqEachWhile(|Obj?->Obj?| f) { source.eachWhile(f) }
+
+  override This seqMap(|Obj?->Obj?| f) { map(f) }
+
+  override This seqFindAll(|Obj?->Bool| f) { findAll(f) }
+
+  override DataDict[] toList() { source.toRows }
+
+  override Void each(|DataDict rec| f) { source.each(f) }
+
+  override Obj? eachWhile(|DataDict rec->Obj?| f) { source.eachWhile(f) }
+
+  override This map(|DataDict rec->DataDict?| f) { acc = acc.map(f); return this }
+
+  override This findAll(|DataDict rec->Bool| f)  { acc = acc.findAll(f); return this }
+
+  override Grid collect() { acc }
+
+  const Grid source
+  private Grid acc
 }
 

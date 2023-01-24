@@ -140,7 +140,7 @@ class DataEnvTest : Test
   Void verifyTypeOf(Obj? val, Str qname)
   {
     t := env.typeOf(val)
-echo(">> $val | $t ?= $qname")
+    // echo(">> $val | $t ?= $qname")
     verifyEq(t.qname, qname)
     verifySame(t, env.type(qname))
   }

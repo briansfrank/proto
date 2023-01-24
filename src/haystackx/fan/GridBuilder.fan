@@ -4,9 +4,11 @@
 //
 // History:
 //   14 Mar 2014  Brian Frank  Creation
+//   24 Jan 2023  Brian Frank  Integrate DataDict APIs
 //
 
 using concurrent
+using data
 
 **
 ** GridBuilder is used to build up an immutable `Grid`.  To use first
@@ -377,6 +379,10 @@ internal const class GbGrid : Grid
     this.colsByName = colsByName
     this.rows = rows
   }
+
+  override DataEnv env() { type.env }
+  override DataType type() { DataEnv.cur.type("ph.Grid") }
+  override DataSetX x() { GridX(this) }
 
   const override Dict meta
   const override Col[] cols
