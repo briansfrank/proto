@@ -159,7 +159,7 @@ class DataSeqTest : Test
     }
 
     // each, trap
-    d.each |v, n|
+    d.x.each |v, n|
     {
       verifyEq(v, map[n])
       verifySame(d.trap(n), v)

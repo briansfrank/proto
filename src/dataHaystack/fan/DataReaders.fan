@@ -22,7 +22,7 @@ internal abstract class HaystackDataReader : DataReader
   {
     grid := readGrid(in)
     type := env.type("sys.Dict") // TODO
-    rows := grid.mapToList |row->HDataDict| { HDataDict(type, row) }
+    rows := grid.mapToList |row->DataDict| { throw Err("TODO") }
     return env.set(rows)
   }
 

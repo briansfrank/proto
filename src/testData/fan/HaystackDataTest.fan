@@ -51,7 +51,7 @@ class HaystackDataTest : HaystackTest
   {
     verifyEq(a.type.qname, "sys.Dict")
 
-    a.each |v, n| { verifyEq(v, b[n]) }
+    a.x.each |v, n| { verifyEq(v, b[n]) }
     b.each |v, n| { verifyEq(v, a[n]) }
 
     /* TODO

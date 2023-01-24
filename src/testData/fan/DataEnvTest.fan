@@ -174,9 +174,9 @@ echo(">> $val | $t ?= $qname")
 
     keys := map.keys
     if (keys.isEmpty)
-      verifyEq(d.eachWhile |v,n| { "break" }, null)
+      verifyEq(d.x.eachWhile |v,n| { "break" }, null)
     else
-      verifyEq(d.eachWhile |v,n| { n == keys[0] ? "foo" : null }, "foo")
+      verifyEq(d.x.eachWhile |v,n| { n == keys[0] ? "foo" : null }, "foo")
 
     verifyEq(d.has("badOne"), false)
     verifyEq(d.missing("badOne"), true)

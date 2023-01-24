@@ -20,6 +20,8 @@ internal const abstract class MAbstractDict : DataDict
   override Bool has(Str name) { get(name, null) != null }
   override Bool missing(Str name) { get(name, null) == null }
   override DataDictX x() { MDataDictX(this) }
+  abstract Void each(|Obj,Str| f)
+  abstract Obj? eachWhile(|Obj,Str->Obj?| f)
 }
 
 **************************************************************************
@@ -36,8 +38,8 @@ internal const class MEmptyDict : MAbstractDict
   override Bool isEmpty() { true }
   override Obj? get(Str name, Obj? def := null) { def }
   override Obj? trap(Str n, Obj?[]? a := null) { throw UnknownSlotErr(n) }
-  override Void each(|Obj?, Str| f) {}
-  override Obj? eachWhile(|Obj?, Str->Obj?| f) { null }
+  override Void each(|Obj, Str| f) {}
+  override Obj? eachWhile(|Obj, Str->Obj?| f) { null }
   override Str toStr() { "{}" }
 }
 
@@ -53,8 +55,8 @@ internal const class MMapDict : MAbstractDict
   override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
-  override Void each(|Obj?,Str| f) { map.each(f) }
-  override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+  override Void each(|Obj,Str| f) { map.each(f) }
+  override Obj? eachWhile(|Obj,Str->Obj?| f) { map.eachWhile(f) }
   override Str toStr() { MDataUtil.dictToStr(this) }
   const Str:Obj? map
 }
@@ -98,8 +100,8 @@ internal const class MProtoDict : MAbstractDict
   override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
-  override Void each(|Obj?,Str| f) { map.each(f) }
-  override Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+  override Void each(|Obj,Str| f) { map.each(f) }
+  override Obj? eachWhile(|Obj,Str->Obj?| f) { map.eachWhile(f) }
   override Str toStr() { MDataUtil.dictToStr(this) }
   const Str:Obj? map
 }
@@ -109,83 +111,12 @@ internal const class MProtoDict : MAbstractDict
 **************************************************************************
 
 @Js
-class MDataDictX : DataDictX
+internal class MDataDictX : AbstractDataDictX
 {
-  new make(DataDict source)
-  {
-    this.source = source
-  }
+  new make(MAbstractDict source) : super(source) {}
 
-  override Void seqEach(|Obj?| f)
-  {
-    source.each(f)
-  }
+  override Void each(|Obj,Str| f) { ((MAbstractDict)source).each(f) }
 
-  override Obj? seqEachWhile(|Obj?->Obj?| f)
-  {
-    source.eachWhile(f)
-  }
-
-  override This seqMap(|Obj?->Obj?| f)
-  {
-    init
-    acc = acc.map(f)
-    return this
-  }
-
-  override This seqFindAll(|Obj?->Bool| f)
-  {
-    init
-    acc = acc.findAll(f)
-    return this
-  }
-
-  override DataDict collect()
-  {
-    if (acc == null) return source
-    return source.type.env.dict(acc)
-  }
-
-  override This add(Str name, Obj val)
-  {
-    init
-    acc.add(name, val)
-    return this
-  }
-
-  override This set(Str name, Obj val)
-  {
-    init
-    acc.set(name, val)
-    return this
-  }
-
-  override This rename(Str oldName, Str newName)
-  {
-    if (acc == null && source.missing(oldName)) return this
-    init
-    old := acc.remove(oldName)
-    if (old != null) acc[newName] = old
-    return this
-  }
-
-  override This remove(Str name)
-  {
-    if (acc == null && source.missing(name)) return this
-    init
-    acc.remove(name)
-    return this
-  }
-
-  This init()
-  {
-    if (acc != null) return this
-    acc = Str:Obj?[:]
-    source.each |v, n| { acc[n] = v }
-    return this
-  }
-
-  private const DataDict source
-  private [Str:Obj]? acc
+  override Obj? eachWhile(|Obj,Str->Obj?| f) { ((MAbstractDict)source).eachWhile(f) }
 }
 

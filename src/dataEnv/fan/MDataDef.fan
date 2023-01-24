@@ -15,7 +15,7 @@ using pog
 ** MDataDef base class
 **
 @Js
-internal const abstract class MDataDef : DataDef
+internal const abstract class MDataDef : MAbstractDict, DataDef
 {
   abstract override MDataEnv env()
 
@@ -35,9 +35,9 @@ internal const abstract class MDataDef : DataDef
 
   override final Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
 
-  override final Void each(|Obj?,Str| f) { map.each(f) }
+  override final Void each(|Obj,Str| f) { map.each(f) }
 
-  override final Obj? eachWhile(|Obj?,Str->Obj?| f) { map.eachWhile(f) }
+  override final Obj? eachWhile(|Obj,Str->Obj?| f) { map.eachWhile(f) }
 
   override final Str doc() { meta["doc"] as Str ?: "" }
 

@@ -24,7 +24,7 @@ const class MDataUtil
   static Str dictToStr(DataDict dict)
   {
     s := StrBuf()
-    dict.each |v, n|
+    dict.x.each |v, n|
     {
       s.join(n, ", ")
       if (v.toStr != "marker")
