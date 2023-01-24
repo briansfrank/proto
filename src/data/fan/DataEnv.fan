@@ -88,4 +88,7 @@ const abstract class DataEnv
   ** Get or load function type by the given qualified name
   abstract DataFunc? func(Str qname, Bool checked := true)
 
+  ** Debug dump of environment
+  @NoDoc abstract Void dump(OutStream out := Env.cur.out)
+
 }

@@ -150,6 +150,16 @@ catch (pog::UnknownLibErr e)
     return null
   }
 
+  override Void dump(OutStream out := Env.cur.out)
+  {
+    out.printLine("=== DataEnv ===")
+    out.printLine("Lib Path:")
+    PogEnv.cur.path.each |x| { out.printLine("  $x.osPath") }
+    max := installed.reduce(10) |acc, x| { x.size.max(acc) }
+    out.printLine("Installed Libs:")
+    installed.each |x| { out.printLine("  " + x.padr(max) + " [" + PogEnv.cur.libDir(x).osPath + "]") }
+  }
+
   private const ConcurrentMap libs := ConcurrentMap()
 }
 
