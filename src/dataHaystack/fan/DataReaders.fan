@@ -8,7 +8,7 @@
 
 using data
 using dataEnv
-using haystack
+using haystackx
 
 **
 ** HaystackDataReader for reading haystack grids to data sets

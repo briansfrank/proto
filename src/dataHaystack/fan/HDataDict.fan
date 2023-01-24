@@ -8,7 +8,7 @@
 
 using data
 using dataEnv
-using haystack
+using haystackx
 
 **
 ** HDataDict wraps haystack::Dict as a DataDict

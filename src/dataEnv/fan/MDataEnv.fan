@@ -51,9 +51,9 @@ internal const class MDataEnv : DataEnv
     qname := val.typeof.qname
     switch (qname)
     {
-      case "haystack::Marker": return sys.marker
-      case "haystack::Number": return sys.number
-      case "haystack::Ref":    return sys.ref
+      case "haystackx::Marker": return sys.marker
+      case "haystackx::Number": return sys.number
+      case "haystackx::Ref":    return sys.ref
     }
 
     if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")

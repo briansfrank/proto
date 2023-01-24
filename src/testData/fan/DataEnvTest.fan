@@ -8,9 +8,9 @@
 
 using util
 using data
-using haystack::Marker
-using haystack::Number
-using haystack::Ref
+using haystackx::Marker
+using haystackx::Number
+using haystackx::Ref
 
 **
 ** DataEnvTest

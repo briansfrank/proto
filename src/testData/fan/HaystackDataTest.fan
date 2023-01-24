@@ -8,7 +8,7 @@
 
 using util
 using data
-using haystack
+using haystackx
 
 **
 ** HaystackDataTest
