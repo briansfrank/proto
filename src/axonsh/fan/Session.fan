@@ -18,7 +18,7 @@ internal class Session
   new make(OutStream out)
   {
     this.out = out
-    this.cx  = Context()
+    this.cx  = Context(this)
   }
 
   Int runExpr(Str expr)
@@ -44,6 +44,10 @@ internal class Session
       {
         expr := prompt
         execute(expr)
+      }
+      catch (EvalErr e)
+      {
+        err(e.msg, e.cause)
       }
       catch (Err e)
       {
@@ -97,19 +101,13 @@ internal class Session
 
   private Void print(Obj? val)
   {
+    if (val === noEcho) return
     out.printLine(val)
   }
 
   private Void help()
   {
-    out.printLine
-    cx.funcs.keys.sort.each |n|
-    {
-      f := cx.funcs[n]
-      if (f.meta.has("nodoc")) return
-      out.printLine(n)
-    }
-    out.printLine
+    eval("help()")
   }
 
   private Void quit()
@@ -128,9 +126,11 @@ internal class Session
     return null
   }
 
-  private OutStream out
-  private Context cx
-  private Bool isDone := false
+  static const Str noEcho := "_no_echo_"
+
+  OutStream out
+  Context cx
+  Bool isDone := false
 
 }
 

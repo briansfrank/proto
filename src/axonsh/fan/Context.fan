@@ -14,12 +14,21 @@ using axonx
 **
 internal class Context : AxonContext
 {
-  new make()
+  new make(Session session)
+  {
+    this.session = session
+    this.funcs = loadFuncs
+  }
+
+  static Str:TopFn loadFuncs()
   {
     acc := Str:TopFn[:]
-    acc.addAll(FantomFn.reflectType(Type.find("axonx::CoreLib")))
-    funcs = acc
+    acc.addAll(FantomFn.reflectType(CoreLib#))
+    acc.addAll(FantomFn.reflectType(ShellFuncs#))
+    return acc
   }
+
+  Session session
 
   const Str:TopFn funcs
 
