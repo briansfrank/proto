@@ -21,6 +21,7 @@ class Build : BuildGroup
     [
       `pog/build.fan`,
       `data/build.fan`,
+      `xeto/build.fan`,
       `dataEnv/build.fan`,
       `haystackx/build.fan`,
       `axonx/build.fan`,
