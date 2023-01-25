@@ -58,6 +58,11 @@ internal class TestContext : AxonContext
 
   override Namespace ns() { test.ns }
 
+  override DataType? findType(Str name, Bool checked := true)
+  {
+    DataEnv.cur.lib("sys").libType(name, checked)
+  }
+
   override Fn? findTop(Str name, Bool checked := true)
   {
     if (name.contains("::")) name = name[name.indexr(":")+1..-1]

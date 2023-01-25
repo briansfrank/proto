@@ -21,6 +21,9 @@ class ShellFuncs
   }
 
   ** Print help summary or help on a specific command.
+  ** Examples:
+  **    help()        // print summary
+  **    help(using)   // print help for the using function
   @Axon static Obj? help(Obj? func := null)
   {
     session := cx.session
@@ -35,6 +38,8 @@ class ShellFuncs
       out.printLine("helpAll()          Print summary of all functions")
       out.printLine("print(val)         Pretty print value")
       out.printLine("scope()            Print variables in scope")
+      out.printLine("using()            Print data libraries in use")
+      out.printLine("using(qname)       Import given data library")
       out.printLine
       return noEcho
     }
@@ -106,6 +111,21 @@ class ShellFuncs
     {
       out.printLine("$n:".padr(nameMax+1) + " " + vars[n])
     }
+    out.printLine
+    return noEcho
+  }
+
+  ** Import data library into scope.
+  ** Examples:
+  **   using()                // list all libraries currently in scope
+  **   using("phx.points")    // import given library into scope
+  @Axon static Obj? _using(Str? qname := null)
+  {
+    if (qname != null) return cx.importDataLib(qname)
+
+    out := cx.session.out
+    out.printLine
+    cx.libs.keys.sort.each |x| { out.printLine(x) }
     out.printLine
     return noEcho
   }

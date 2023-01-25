@@ -49,7 +49,7 @@ abstract class AxonContext : HaystackContext
   abstract Namespace ns()
 
   ** Data types
-  virtual DataType findType(Str name, Bool checked := true) { DataEnv.cur.lib("sys").libType(name, checked) }
+  @NoDoc virtual DataType? findType(Str name, Bool checked := true) { throw UnsupportedErr() }
 
   ** Find top-level function by qname or name
   @NoDoc abstract Fn? findTop(Str name, Bool checked := true)
