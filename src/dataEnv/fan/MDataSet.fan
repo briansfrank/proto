@@ -34,6 +34,8 @@ internal const class MDataSet : DataSet
 
   override DataSetX x() { MDataSetX(this) }
 
+  override Str toStr() { "DataSet size=$size" }
+
   override Void dump(OutStream out := Env.cur.out, [Str:Obj]? opts := null)
   {
     out.printLine("--- DataSet [$size] ---")

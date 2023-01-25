@@ -6,6 +6,7 @@
 //   25 Jan 2023  Brian Frank  Creation
 //
 
+using data
 using axonx
 
 **
@@ -94,7 +95,8 @@ class ShellFuncs
   ** Pretty print the given value.
   @Axon static Obj? print(Obj? val := null)
   {
-    echo(val)
+    if (val is DataSet) ((DataSet)val).dump
+    else echo(val)
     return noEcho
   }
 
@@ -175,7 +177,7 @@ class ShellFuncs
     return t.replace("\n", " ").trim
   }
 
-  private static Str noEcho() {  Session.noEcho }
+  private static Str noEcho() { Session.noEcho }
 
   private static Context cx() { AxonContext.curAxon }
 }

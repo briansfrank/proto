@@ -65,6 +65,11 @@ internal const class MDataEnv : DataEnv
     MFitter(this).fits(val, type)
   }
 
+  override DataSet fitsExplain(Obj? val, DataType type)
+  {
+    MFitterExplain(this).explain(val, type)
+  }
+
   override DataDict dict(Obj? val)
   {
     if (val == null) return emptyDict
@@ -181,6 +186,7 @@ internal const class MSys
     this.libType  = lib.libType("Lib")
     this.type     = lib.libType("Type")
     this.slot     = lib.libType("Slot")
+    this.scalar   = lib.libType("Scalar")
     this.marker   = lib.libType("Marker")
     this.bool     = lib.libType("Bool")
     this.str      = lib.libType("Str")
@@ -194,6 +200,7 @@ internal const class MSys
     this.dateTime = lib.libType("DateTime")
     this.ref      = lib.libType("Ref")
     this.func     = lib.libType("Func")
+    this.maybe    = lib.libType("Maybe")
   }
 
   const DataLib lib
@@ -205,6 +212,7 @@ internal const class MSys
   const DataType libType
   const DataType type
   const DataType slot
+  const DataType scalar
   const DataType marker
   const DataType bool
   const DataType str
@@ -218,6 +226,7 @@ internal const class MSys
   const DataType dateTime
   const DataType ref
   const DataType func
+  const DataType maybe
 }
 
 

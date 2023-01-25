@@ -32,6 +32,7 @@ internal class Context : AxonContext
     acc.addAll(FantomFn.reflectType(CoreLib#))
     acc.addAll(FantomFn.reflectType(ShellFuncs#))
     acc.addAll(FantomFn.reflectType(IOFuncs#))
+    acc.addAll(FantomFn.reflectType(XFuncs#))
     return acc
   }
 
