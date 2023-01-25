@@ -31,6 +31,7 @@ internal class Context : AxonContext
     acc := Str:TopFn[:]
     acc.addAll(FantomFn.reflectType(CoreLib#))
     acc.addAll(FantomFn.reflectType(ShellFuncs#))
+    acc.addAll(FantomFn.reflectType(IOFuncs#))
     return acc
   }
 
@@ -88,6 +89,11 @@ internal class Context : AxonContext
       libs[qname] = lib = data.lib(qname)
     }
     return lib
+  }
+
+  File resolveFile(Uri uri)
+  {
+    File(uri, false)
   }
 
 }

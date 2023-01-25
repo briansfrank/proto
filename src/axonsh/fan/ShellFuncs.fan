@@ -83,7 +83,7 @@ class ShellFuncs
     names.each |n|
     {
       f := session.cx.funcs[n]
-      if (f.meta.has("nodoc")) return
+      if (isNoDoc(f)) return
       d := docSummary(funcDoc(f) ?: "")
       out.printLine(n.padr(nameMax) + " " + d)
     }
@@ -137,6 +137,13 @@ class ShellFuncs
   private static Int maxStr(Str[] strs)
   {
     strs.reduce(0) |acc,s| { s.size.max(acc) }
+  }
+
+  private static Bool isNoDoc(TopFn f)
+  {
+    if (f.meta.has("nodoc")) return true
+    if (f is FantomFn) return ((FantomFn)f).method.hasFacet(NoDoc#)
+    return false
   }
 
   private static Str? funcDoc(TopFn f)
