@@ -32,11 +32,12 @@ internal class Parser
 // Public
 //////////////////////////////////////////////////////////////////////////
 
-  Str:Obj parse(Str:Obj root)
+  XetoObj parse()
   {
     try
     {
-      parseObjs(ParsedObj(curToLoc) { it.map = root } , false)
+      root := XetoObj(curToLoc)
+      parseObjs(root, false)
       verify(Token.eof)
       return root
     }
@@ -54,7 +55,7 @@ internal class Parser
 // Parsing
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parseObjs(ParsedObj parent, Bool isMeta)
+  private Void parseObjs(XetoObj parent, Bool isMeta)
   {
     while (true)
     {
@@ -65,7 +66,7 @@ internal class Parser
     }
   }
 
-  private ParsedObj? parseObj()
+  private XetoObj? parseObj()
   {
     // leading comment
     doc := parseLeadingDoc
@@ -76,7 +77,7 @@ internal class Parser
     if (cur === Token.gt) return null
 
     // this token is start of our proto production
-    p := ParsedObj(curToLoc)
+    p := XetoObj(curToLoc)
     p.doc = doc
 
     // <markerOnly> | <named> | <unnamed>
@@ -89,7 +90,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
     {
       p.name = consumeName
-      p.map = isMarker
+      p.type = markerType
     }
     else
     {
@@ -102,7 +103,7 @@ internal class Parser
     return p
   }
 
-  private Void parseBody(ParsedObj p)
+  private Void parseBody(XetoObj p)
   {
     a := parseType(p)
     b := parseMeta(p)
@@ -110,21 +111,21 @@ internal class Parser
     if (!a && !b && !c) throw err("Expecting object body not $curToStr")
   }
 
-  private Bool parseMeta(ParsedObj p)
+  private Bool parseMeta(XetoObj p)
   {
     if (cur !== Token.lt) return false
     parseChildren(p, Token.lt, Token.gt, true)
     return true
   }
 
-  private Bool parseChildrenOrVal(ParsedObj p)
+  private Bool parseChildrenOrVal(XetoObj p)
   {
     if (cur === Token.lbrace) return parseChildren(p, Token.lbrace, Token.rbrace, false)
     if (cur.isVal) return parseVal(p)
     return false
   }
 
-  private Bool parseChildren(ParsedObj p, Token open, Token close, Bool isMeta)
+  private Bool parseChildren(XetoObj p, Token open, Token close, Bool isMeta)
   {
     loc := curToLoc
     consume(open)
@@ -139,30 +140,36 @@ internal class Parser
     return true
   }
 
-  private Bool parseVal(ParsedObj p)
+  private Bool parseVal(XetoObj p)
   {
-    p.map.add("_val", curVal)
+    p.val = curVal
     consume
     return true
   }
 
-  private Bool parseType(ParsedObj p)
+  private Bool parseType(XetoObj p)
   {
+    /*
     if (cur === Token.str && peek === Token.pipe)
       return parseTypeOr(p, null, consumeVal)
+    */
 
     if (cur !== Token.id) return false
 
+    loc := curToLoc
     qname := consumeQName
+    /*
     if (cur === Token.amp)      return parseTypeAnd(p, qname)
     if (cur === Token.pipe)     return parseTypeOr(p, qname, null)
     if (cur === Token.question) return parseTypeMaybe(p, qname)
+    */
 
-    p.map["_is"] = qname
+    p.type = XetoType(loc, qname)
     return true
   }
 
-  private Bool parseTypeAnd(ParsedObj p, Str qname)
+  /*
+  private Bool parseTypeAnd(XetoObj p, Str qname)
   {
     of := newMap
     addToOf(of, qname, null)
@@ -177,7 +184,7 @@ internal class Parser
     return true
   }
 
-  private Bool parseTypeOr(ParsedObj p, Str? qname, Str? val)
+  private Bool parseTypeOr(XetoObj p, Str? qname, Str? val)
   {
     of := newMap
     addToOf(of, qname, val)
@@ -195,12 +202,18 @@ internal class Parser
     return true
   }
 
-  private Bool parseTypeMaybe(ParsedObj p, Str qname)
+  private Bool parseTypeMaybe(XetoObj p, Str qname)
   {
     consume(Token.question)
     p.map["_is"] = "sys.Maybe"
     p.map["_of"] = ["_is":qname]
     return true
+  }
+  */
+
+  private XetoType markerType()
+  {
+    XetoType(FileLoc.unknown, "sys.Marker")
   }
 
   private Str parseTypeSimple(Str errMsg)
@@ -240,58 +253,10 @@ internal class Parser
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private Void addToParent(ParsedObj parent, ParsedObj child, Bool isMeta)
+  private Void addToParent(XetoObj parent, XetoObj child, Bool isMeta)
   {
-    addDoc(child)
-    addLoc(child)
-    name := child.name
-    if (name == null)
-    {
-      name = autoName(parent)
-    }
-    else
-    {
-      if (isMeta)
-      {
-        if (name == "is") throw err("Proto name 'is' is reserved", child.loc)
-        if (name == "val") throw err("Proto name 'val' is reserved", child.loc)
-        name = "_" + name
-      }
-      if (parent.map[name] != null) throw err("Duplicate names '$name'", child.loc)
-    }
-    parent.map.add(name, child.map)
-  }
-
-  private Void addDoc(ParsedObj p)
-  {
-    if (p.doc == null) return
-    if (p.map.isRO) p.map = p.map.dup
-    p.map["_doc"] = ["_is":"sys.Str", "_val":p.doc]
-  }
-
-  private Void addLoc(ParsedObj p)
-  {
-    if (fileLoc === FileLoc.unknown) return
-    if (p.map.isRO) p.map = p.map.dup
-    p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc]
-  }
-
-  private Str autoName(ParsedObj parent)
-  {
-    map := parent.map
-    for (i := 0; i<1_000_000; ++i)
-    {
-      name := "_" + i.toStr
-      if (map[name] == null) return name
-    }
-    throw err("Too many children", parent.loc)
-  }
-
-  static Str:Obj newMap()
-  {
-    map := Str:Obj[:]
-    map.ordered = true
-    return map
+    err  := parent.add(child, isMeta)
+    if (err != null) throw this.err(err, child.loc)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -329,7 +294,7 @@ internal class Parser
     return doc
   }
 
-  private Void parseTrailingDoc(ParsedObj p)
+  private Void parseTrailingDoc(XetoObj p)
   {
     if (cur === Token.comment)
     {
@@ -416,8 +381,6 @@ internal class Parser
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  static const Str:Obj isMarker := ["_is":"sys.Marker"]
-
   Bool includeLoc
 
   private FileLoc fileLoc
@@ -434,21 +397,3 @@ internal class Parser
   private Int peekCol    // next token col number
 }
 
-**************************************************************************
-** ParsedObj
-**************************************************************************
-
-@Js
-internal class ParsedObj
-{
-  new make(FileLoc loc)
-  {
-    this.loc = loc
-    this.map = Parser.newMap
-  }
-
-  const FileLoc loc
-  Str? doc
-  Str? name
-  Str:Obj map
-}
