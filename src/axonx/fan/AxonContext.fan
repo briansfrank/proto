@@ -8,6 +8,7 @@
 //
 
 using concurrent
+using data
 using haystackx
 
 **
@@ -46,6 +47,9 @@ abstract class AxonContext : HaystackContext
 
   ** Definition namespace
   abstract Namespace ns()
+
+  ** Data types
+  virtual DataType findType(Str name, Bool checked := true) { DataEnv.cur.lib("sys").libType(name, checked) }
 
   ** Find top-level function by qname or name
   @NoDoc abstract Fn? findTop(Str name, Bool checked := true)

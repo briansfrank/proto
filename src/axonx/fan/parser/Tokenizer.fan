@@ -90,8 +90,8 @@ class Tokenizer
     id := s.toStr
     val = id
 
-    if (!id[0].isLower)
-      throw err("Identifiers must start with lower case letter: $id")
+    // upper case identifiers are type names
+    if (id[0].isUpper) return Token.typename
 
     // check keywords
     keyword := Token.keywords[id]

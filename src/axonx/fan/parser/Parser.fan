@@ -79,6 +79,7 @@ class Parser
       if (peek === Token.colon) return def
       if (peek === Token.fnEq) return lambda1
     }
+    if (cur === Token.typename)      return type
     if (cur === Token.doKeyword)     return doBlock
     if (cur === Token.ifKeyword)     return ifExpr
     if (cur === Token.lbracket)      return termExpr(list)
@@ -706,6 +707,22 @@ class Parser
     if (cur !== Token.colon) return FnParam(name)
     consume
     return FnParam(name, expr)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Type
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Type
+  **   <type> := <typename>
+  **
+  private Expr type()
+  {
+    loc := curLoc
+    name := curVal
+    consume(Token.typename)
+    return TypeExpr(loc, name)
   }
 
 //////////////////////////////////////////////////////////////////////////
