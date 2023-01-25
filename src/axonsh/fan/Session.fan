@@ -60,18 +60,30 @@ internal class Session
   private Str prompt()
   {
     // prompt for one or more lines
-    return Env.cur.prompt("axon> ").trim
+    expr := Env.cur.prompt("axon> ").trim
 
-    // get additional lines from stdin
-    /*
-    x := StrBuf()
-    while (true)
+    // if it looks like expression is incomplete, then
+    // prompt for additional lines until empty
+    if (isMultiLine(expr))
     {
-      another := Env.cur.prompt(".... ")
-      if (another.trim.isEmpty) break
-      x.add(another).add("\n")
+      x := StrBuf().add(expr).add("\n")
+      while (true)
+      {
+        next := Env.cur.prompt("..... ")
+        if (next.trim.isEmpty) break
+        x.add(next).add("\n")
+      }
+      expr = x.toStr
     }
-    */
+
+    return expr
+  }
+
+  private Bool isMultiLine(Str expr)
+  {
+    if (expr.endsWith("do")) return true
+    if (expr.endsWith("{")) return true
+    return false
   }
 
   private Void execute(Str expr)
