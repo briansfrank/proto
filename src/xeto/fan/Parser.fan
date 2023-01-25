@@ -36,7 +36,7 @@ internal class Parser
   {
     try
     {
-      parseProtos(ParsedProto(curToLoc) { it.map = root } , false)
+      parseObjs(ParsedObj(curToLoc) { it.map = root } , false)
       verify(Token.eof)
       return root
     }
@@ -54,18 +54,18 @@ internal class Parser
 // Parsing
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parseProtos(ParsedProto parent, Bool isMeta)
+  private Void parseObjs(ParsedObj parent, Bool isMeta)
   {
     while (true)
     {
-      child := parseProto
+      child := parseObj
       if (child == null) break
-      parseEndOfProto
+      parseEndOfObj
       addToParent(parent, child, isMeta)
     }
   }
 
-  private ParsedProto? parseProto()
+  private ParsedObj? parseObj()
   {
     // leading comment
     doc := parseLeadingDoc
@@ -76,7 +76,7 @@ internal class Parser
     if (cur === Token.gt) return null
 
     // this token is start of our proto production
-    p := ParsedProto(curToLoc)
+    p := ParsedObj(curToLoc)
     p.doc = doc
 
     // <markerOnly> | <named> | <unnamed>
@@ -102,35 +102,35 @@ internal class Parser
     return p
   }
 
-  private Void parseBody(ParsedProto p)
+  private Void parseBody(ParsedObj p)
   {
-    a := parseIs(p)
+    a := parseType(p)
     b := parseMeta(p)
     c := parseChildrenOrVal(p)
-    if (!a && !b && !c) throw err("Expecting proto body not $curToStr")
+    if (!a && !b && !c) throw err("Expecting object body not $curToStr")
   }
 
-  private Bool parseMeta(ParsedProto p)
+  private Bool parseMeta(ParsedObj p)
   {
     if (cur !== Token.lt) return false
     parseChildren(p, Token.lt, Token.gt, true)
     return true
   }
 
-  private Bool parseChildrenOrVal(ParsedProto p)
+  private Bool parseChildrenOrVal(ParsedObj p)
   {
     if (cur === Token.lbrace) return parseChildren(p, Token.lbrace, Token.rbrace, false)
     if (cur.isVal) return parseVal(p)
     return false
   }
 
-  private Bool parseChildren(ParsedProto p, Token open, Token close, Bool isMeta)
+  private Bool parseChildren(ParsedObj p, Token open, Token close, Bool isMeta)
   {
     loc := curToLoc
     consume(open)
     skipNewlines
-    parseProtos(p, isMeta)
-    parseProtos(p, isMeta)
+    parseObjs(p, isMeta)
+    parseObjs(p, isMeta)
     if (cur !== close)
     {
       throw err("Unmatched closing '$close.symbol'", loc)
@@ -139,30 +139,30 @@ internal class Parser
     return true
   }
 
-  private Bool parseVal(ParsedProto p)
+  private Bool parseVal(ParsedObj p)
   {
     p.map.add("_val", curVal)
     consume
     return true
   }
 
-  private Bool parseIs(ParsedProto p)
+  private Bool parseType(ParsedObj p)
   {
     if (cur === Token.str && peek === Token.pipe)
-      return parseIsOr(p, null, consumeVal)
+      return parseTypeOr(p, null, consumeVal)
 
     if (cur !== Token.id) return false
 
     qname := consumeQName
-    if (cur === Token.amp)      return parseIsAnd(p, qname)
-    if (cur === Token.pipe)     return parseIsOr(p, qname, null)
-    if (cur === Token.question) return parseIsMaybe(p, qname)
+    if (cur === Token.amp)      return parseTypeAnd(p, qname)
+    if (cur === Token.pipe)     return parseTypeOr(p, qname, null)
+    if (cur === Token.question) return parseTypeMaybe(p, qname)
 
     p.map["_is"] = qname
     return true
   }
 
-  private Bool parseIsAnd(ParsedProto p, Str qname)
+  private Bool parseTypeAnd(ParsedObj p, Str qname)
   {
     of := newMap
     addToOf(of, qname, null)
@@ -170,14 +170,14 @@ internal class Parser
     {
       consume
       skipNewlines
-      addToOf(of, parseIsSimple("Expecting next proto name after '&' and symbol"), null)
+      addToOf(of, parseTypeSimple("Expecting next type name after '&' and symbol"), null)
     }
     p.map["_is"] = "sys.And"
     p.map["_of"] = of
     return true
   }
 
-  private Bool parseIsOr(ParsedProto p, Str? qname, Str? val)
+  private Bool parseTypeOr(ParsedObj p, Str? qname, Str? val)
   {
     of := newMap
     addToOf(of, qname, val)
@@ -188,14 +188,14 @@ internal class Parser
       if (cur.isVal)
         addToOf(of, null, consumeVal)
       else
-        addToOf(of, parseIsSimple("Expecting next proto name after '|' or symbol"), null)
+        addToOf(of, parseTypeSimple("Expecting next type name after '|' or symbol"), null)
     }
     p.map["_is"] = "sys.Or"
     p.map["_of"] = of
     return true
   }
 
-  private Bool parseIsMaybe(ParsedProto p, Str qname)
+  private Bool parseTypeMaybe(ParsedObj p, Str qname)
   {
     consume(Token.question)
     p.map["_is"] = "sys.Maybe"
@@ -203,7 +203,7 @@ internal class Parser
     return true
   }
 
-  private Str parseIsSimple(Str errMsg)
+  private Str parseTypeSimple(Str errMsg)
   {
     if (cur !== Token.id) throw err(errMsg)
     return consumeQName
@@ -214,7 +214,7 @@ internal class Parser
     of["_"+of.size] = Str:Obj[:].addNotNull("_is", qname).addNotNull("_val", val)
   }
 
-  private Void parseEndOfProto()
+  private Void parseEndOfObj()
   {
     if (cur === Token.comma)
     {
@@ -240,7 +240,7 @@ internal class Parser
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private Void addToParent(ParsedProto parent, ParsedProto child, Bool isMeta)
+  private Void addToParent(ParsedObj parent, ParsedObj child, Bool isMeta)
   {
     addDoc(child)
     addLoc(child)
@@ -262,21 +262,21 @@ internal class Parser
     parent.map.add(name, child.map)
   }
 
-  private Void addDoc(ParsedProto p)
+  private Void addDoc(ParsedObj p)
   {
     if (p.doc == null) return
     if (p.map.isRO) p.map = p.map.dup
     p.map["_doc"] = ["_is":"sys.Str", "_val":p.doc]
   }
 
-  private Void addLoc(ParsedProto p)
+  private Void addLoc(ParsedObj p)
   {
     if (fileLoc === FileLoc.unknown) return
     if (p.map.isRO) p.map = p.map.dup
     p.map["_loc"] = ["_is":"sys.Str", "_val":p.loc]
   }
 
-  private Str autoName(ParsedProto parent)
+  private Str autoName(ParsedObj parent)
   {
     map := parent.map
     for (i := 0; i<1_000_000; ++i)
@@ -329,7 +329,7 @@ internal class Parser
     return doc
   }
 
-  private Void parseTrailingDoc(ParsedProto p)
+  private Void parseTrailingDoc(ParsedObj p)
   {
     if (cur === Token.comment)
     {
@@ -435,11 +435,11 @@ internal class Parser
 }
 
 **************************************************************************
-** ParsedProto
+** ParsedObj
 **************************************************************************
 
 @Js
-internal class ParsedProto
+internal class ParsedObj
 {
   new make(FileLoc loc)
   {

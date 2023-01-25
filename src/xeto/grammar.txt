@@ -10,24 +10,24 @@
 Productions [#productions]
 **************************
 
-  <protos>           :=  [<proto> <endOfProto>]*
-  <endOfProto>       :=  ( [","] <nl> ) | ","
-  <proto>            :=  [<leadingDoc>] ( <markerOnly> | <named> | <unnamed> ) [<trailingDoc>]
+  <objs>             :=  [<obj> <endOfObj>]*
+  <endOfObj>         :=  ( [","] <nl> ) | ","
+  <obj>              :=  [<leadingDoc>] ( <markerOnly> | <named> | <unnamed> ) [<trailingDoc>]
   <markerOnly>       :=  <markerName>
   <named>            :=  <name> ":" <body>
   <unnamed>          :=  <body>
-  <body>             :=  [<is>] [<meta>] [<childrenOrVal>]  // must have at least one of these productions
+  <body>             :=  [<type>] [<meta>] [<childrenOrVal>]  // must have at least one of these productions
   <childrenOrVal>    :=  <children> | <val>
-  <meta>             :=  "<" <protos> ">"
-  <children>         :=  "{" <protos> "}"
+  <meta>             :=  "<" <objs> ">"
+  <children>         :=  "{" <objs> "}"
   <val>              :=  double quoted string literal
 
-  <is>               :=  <isAnd> | <isOr> | <isMaybe> | <isSimple>
-  <isAnd>            :=  <isSimple> ("&" <isSimple>)+
-  <isOr>             :=  <isOrPart> ("|" <isOrPart>)+
-  <isOrPart>         :=  <isSimple> | <val>
-  <isMaybe>          :=  <isSimple> "?"
-  <isSimple>         :=  <qname>
+  <type>             :=  <typeAnd> | <typeOr> | <typeMaybe> | <typeSimple>
+  <typeAnd>          :=  <typeSimple> ("&" <typeSimple>)+
+  <typeOr>           :=  <typeOrPart> ("|" <typeOrPart>)+
+  <typeOrPart>       :=  <typeSimple> | <val>
+  <typeMaybe>        :=  <typeSimple> "?"
+  <typeSimple>       :=  <qname>
 
   <leadingDoc>       := (<lineComment>)*
   <trailingDoc>      := <lineComment>
