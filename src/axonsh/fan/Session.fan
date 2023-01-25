@@ -95,6 +95,9 @@ internal class Session
 
   private Void eval(Str expr)
   {
+    if (expr.contains(";") || expr.contains("\n"))
+      expr = "do\n$expr\nend"
+
     val := cx.eval(expr)
     print(val)
   }

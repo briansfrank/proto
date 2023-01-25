@@ -11,17 +11,17 @@ using axonx
 **
 ** Axon shell specific functions
 **
-internal class ShellFuncs
+class ShellFuncs
 {
-  @Axon
-  static Obj? quit()
+  ** Exit the shell.
+  @Axon static Obj? quit()
   {
     cx.session.isDone = true
     return noEcho
   }
 
-  @Axon
-  static Obj? help(Obj? func := null)
+  ** Print help summary or help on a specific command.
+  @Axon static Obj? help(Obj? func := null)
   {
     session := cx.session
     out := session.out
@@ -32,6 +32,9 @@ internal class ShellFuncs
       out.printLine("?, help            Print this help summary")
       out.printLine("quit, exit, bye    Exit the shell")
       out.printLine("help(func)         Help on a specific function")
+      out.printLine("helpAll()          Print summary of all functions")
+      out.printLine("print(val)         Pretty print value")
+      out.printLine("scope()            Print variables in scope")
       out.printLine
       return noEcho
     }
@@ -63,6 +66,59 @@ internal class ShellFuncs
     return noEcho
   }
 
+  ** Print help summary of every function
+  @Axon static Obj? helpAll()
+  {
+    session := cx.session
+    out := session.out
+    names := session.cx.funcs.keys.sort
+    nameMax := maxStr(names)
+
+    out.printLine
+    names.each |n|
+    {
+      f := session.cx.funcs[n]
+      if (f.meta.has("nodoc")) return
+      d := docSummary(funcDoc(f) ?: "")
+      out.printLine(n.padr(nameMax) + " " + d)
+    }
+    out.printLine
+    return noEcho
+  }
+
+  ** Pretty print the given value.
+  @Axon static Obj? print(Obj? val := null)
+  {
+    echo(val)
+    return noEcho
+  }
+
+  ** Print the variables in scope
+  @Axon static Obj? scope()
+  {
+    out := cx.session.out
+    vars := cx.varsInScope
+    names := vars.keys.sort
+    nameMax := maxStr(names)
+
+    out.printLine
+    vars.keys.sort.each |n|
+    {
+      out.printLine("$n:".padr(nameMax+1) + " " + vars[n])
+    }
+    out.printLine
+    return noEcho
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  private static Int maxStr(Str[] strs)
+  {
+    strs.reduce(0) |acc,s| { s.size.max(acc) }
+  }
+
   private static Str? funcDoc(TopFn f)
   {
     doc := f.meta["doc"] as Str
@@ -71,14 +127,28 @@ internal class ShellFuncs
     return null
   }
 
-  @Axon
-  static Obj? print(Obj? val := null)
+  private static Str? docSummary(Str t)
   {
-    echo(val)
-    return noEcho
+    // this code is copied from defc::CFandoc - should be moved into haystack
+    if (t.isEmpty) return ""
+
+    semicolon := t.index(";")
+    if (semicolon != null) t = t[0..<semicolon]
+
+    colon := t.index(":")
+    while (colon != null && colon + 1 < t.size && !t[colon+1].isSpace)
+      colon = t.index(":", colon+1)
+    if (colon != null) t = t[0..<colon]
+
+    period := t.index(".")
+    while (period != null && period + 1 < t.size && !t[period+1].isSpace)
+      period = t.index(".", period+1)
+    if (period != null) t = t[0..<period]
+
+    return t.replace("\n", " ").trim
   }
 
-  static Str noEcho() {  Session.noEcho }
+  private static Str noEcho() {  Session.noEcho }
 
-  static Context cx() { AxonContext.curAxon }
+  private static Context cx() { AxonContext.curAxon }
 }
