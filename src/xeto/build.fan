@@ -30,6 +30,6 @@ class Build : BuildPod
                "util @{fan.depend}",
                "data @{pog.depend}",
                ]
-    srcDirs = [`fan/`]
+    srcDirs = [`fan/`, `fan/parser/`, `fan/steps/`]
   }
 }

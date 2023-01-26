@@ -1,0 +1,126 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   4 Mar 2022  Brian Frank  Creation
+//  26 Jan 2023  Brian Frank  Repurpose ProtoCompiler
+//
+
+using util
+using data
+
+**
+** Xeto compiler
+**
+class XetoCompiler
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Inputs
+//////////////////////////////////////////////////////////////////////////
+
+  ** Install environment
+  const DataEnv env := DataEnv.cur
+
+  ** Logging
+  XetoLog log := XetoLog.makeOutStream
+
+//////////////////////////////////////////////////////////////////////////
+// Pipelines
+//////////////////////////////////////////////////////////////////////////
+
+  ** Compile source directory to library
+  DataLib compileLib()
+  {
+    run(frontend)
+    throw Err("TODO")
+  }
+
+  ** List of front end steps to compile to the Graph
+  private Step[] frontend()
+  {
+    return [
+      Parse(),
+    ]
+  }
+
+  ** Run the pipeline with the given steps
+  internal This run(Step[] steps)
+  {
+    try
+    {
+      t1 := Duration.now
+      steps.each |step|
+      {
+        step.compiler = this
+        step.run
+      }
+      t2 := Duration.now
+      duration = t2 - t1
+      info("ok [$duration.toLocale]")
+      return this
+    }
+    catch (XetoCompilerErr e)
+    {
+      throw e
+    }
+    catch (Err e)
+    {
+      throw err("Internal compiler error", FileLoc.unknown, e)
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  ** Log info message
+  Void info(Str msg)
+  {
+    log.info(msg)
+  }
+
+  ** Log warning message
+  Void warn(Str msg, FileLoc loc, Err? cause := null)
+  {
+    log.warn(msg, loc, cause)
+  }
+
+  ** Log err message
+  XetoCompilerErr err(Str msg, FileLoc loc, Err? cause := null)
+  {
+    err := XetoCompilerErr(msg, loc, cause)
+    errs.add(err)
+    log.err(msg, loc, cause)
+    return err
+  }
+
+  ** Log err message with two locations of duplicate identifiers
+  XetoCompilerErr err2(Str msg, FileLoc loc1, FileLoc loc2, Err? cause := null)
+  {
+    err := XetoCompilerErr(msg, loc1, cause)
+    errs.add(err)
+    log.err("$msg [$loc2]", loc1, cause)
+    return err
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  XetoCompilerErr[] errs := [,]          // err
+  internal Duration? duration            // run
+}
+
+**************************************************************************
+** XetoCompilerErr
+**************************************************************************
+
+@Js
+const class XetoCompilerErr : FileLocErr
+{
+  new make(Str msg, FileLoc loc, Err? cause := null) : super(msg, loc, cause) {}
+}
+
+
