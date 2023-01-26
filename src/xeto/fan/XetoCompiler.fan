@@ -116,6 +116,7 @@ class XetoCompiler
   internal Duration? duration         // run
   internal Bool isLib                 // compileLib
   internal XetoObj? ast               // Parse
+  internal XetoObj? pragma            // Parse
   internal DataLib? lib               // Assmble
 }
 

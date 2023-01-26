@@ -30,6 +30,8 @@ abstract internal class Step
 
   XetoObj ast() { compiler.ast }
 
+  XetoObj? pragma() { compiler.pragma }
+
   Void info(Str msg) { compiler.info(msg) }
 
   XetoCompilerErr err(Str msg, FileLoc loc, Err? err := null) { compiler.err(msg, loc, err) }

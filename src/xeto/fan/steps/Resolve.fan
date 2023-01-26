@@ -18,7 +18,6 @@ internal class Resolve : Step
 {
   override Void run()
   {
-echo("---> $compiler.qname $isLib")
     resolveDepends
     resolve(ast)
     bombIfErr
@@ -26,9 +25,34 @@ echo("---> $compiler.qname $isLib")
 
   private Void resolveDepends()
   {
-    // TODO decode dependencies from pragma
-    pragma := ast.slots.get("pragma")?.meta?.get("depends")
-    if (pragma == null) return
+    // sys has no dependencies
+    if (isSys) return
+
+    // import dependencies from pragma
+    astDepends := pragma?.meta?.get("depends") ?: XetoObj(FileLoc.unknown)
+    astDepends.slots.each |astDepend|
+    {
+      // get library name from depend formattd as "{lib:<qname>}"
+      loc := astDepend.loc
+      libName := astDepend.slots["lib"]?.val as Str
+      if (libName == null) return err("Depend missing lib name", loc)
+
+      // resolve the library from environment
+      lib := env.lib(libName, false)
+      if (lib == null) return err("Depend lib '$libName' not installed", loc)
+
+      // register the library into our depends map
+      if (depends[libName] != null) return err("Duplicate depend '$libName'", loc)
+      depends[libName] = lib
+    }
+
+    // if not specified, assume just sys
+    if (depends.isEmpty)
+    {
+      if (isLib) err("Must specify 'sys' in depends", pragma?.loc ?: ast.loc)
+      depends["sys"] = env.lib("sys")
+      return
+    }
   }
 
   private Void resolve(XetoObj obj)
@@ -43,7 +67,9 @@ echo("---> $compiler.qname $isLib")
     if (type.isResolved) return
 
     name := type.name
-    if (name.contains(".")) throw err("QNAME: $name", type.loc)
+
+    // resolve qualified name
+    if (name.contains(".")) return resolveQualifiedType(type)
 
     // match to name within this AST which trumps depends
     type.inside = ast.slots[name]
@@ -61,6 +87,30 @@ echo("---> $compiler.qname $isLib")
       err("Ambiguous type: $name $matches", type.loc)
     else
       type.outside = matches.first
+  }
+
+  private Void resolveQualifiedType(XetoType type)
+  {
+    // find lib name index
+    qname := type.name
+    typei := -1
+    for (i := 2; i<qname.size; ++i)
+    {
+      if (qname[i-1] == '.' && qname[i].isUpper) { typei = i; break; }
+    }
+    if (typei < 0) return err("Invalid type qname '$qname'", type.loc)
+
+    // parse lib name / type name
+    libName := qname[0..typei-2]
+    typeName := qname[typei+1..-1]
+
+    // resolve qualified type lib
+    lib := depends[libName]
+    if (lib == null) return err("Type lib '$libName' is not included in depends", type.loc)
+
+    // resolve type in lib
+    type.outside = lib.libType(typeName, false)
+    if (type.outside == null) return err("Unresolved type '$qname' in lib", type.loc)
   }
 
   private Str:DataLib depends := [:]

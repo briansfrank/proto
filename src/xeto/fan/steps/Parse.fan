@@ -29,16 +29,19 @@ internal class Parse : Step
       {
         if (f.ext == "pog") parseFile(root, f)
       }
-      pragma := root.slots.remove("pragma")
-      if (pragma != null) root.meta = pragma.meta
     }
     else
     {
       parseFile(root, input)
     }
 
+    pragma := root.slots.remove("pragma")
+    if (isLib && pragma != null) root.meta = pragma.meta
+
     bombIfErr
+
     compiler.ast = root
+    compiler.pragma = pragma
   }
 
   private Void parseFile(XetoObj root, File file)
