@@ -13,6 +13,7 @@ using data
 **
 ** Xeto compiler
 **
+@Js
 class XetoCompiler
 {
 
@@ -29,6 +30,9 @@ class XetoCompiler
   ** Input file or directory
   File? input
 
+  ** Qualified name of library to compile
+  Str? qname
+
 //////////////////////////////////////////////////////////////////////////
 // Pipelines
 //////////////////////////////////////////////////////////////////////////
@@ -36,16 +40,11 @@ class XetoCompiler
   ** Compile input directory to library
   DataLib compileLib()
   {
-    run(frontend)
-    throw Err("TODO")
-  }
-
-  ** List of front end steps to compile to the Graph
-  private Step[] frontend()
-  {
-    return [
+    run([
       Parse(),
-    ]
+      //Assemble()
+    ])
+    return lib
   }
 
   ** Run the pipeline with the given steps
@@ -112,8 +111,10 @@ class XetoCompiler
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  XetoCompilerErr[] errs := [,]          // err
-  internal Duration? duration            // run
+  XetoCompilerErr[] errs := [,]       // err
+  internal Duration? duration         // run
+  internal XetoObj? ast               // Parse
+  internal DataLib? lib               // Assmble
 }
 
 **************************************************************************

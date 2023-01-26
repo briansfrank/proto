@@ -11,12 +11,49 @@ using util
 **
 ** Parse all source files into AST nodes
 **
+@Js
 internal class Parse : Step
 {
   override Void run()
   {
-   echo("#### parse!")
+    // get input dir/file
+    input := compiler.input
+    if (input == null) throw err("Compiler input not configured", FileLoc.inputs)
+    if (!input.exists) throw err("Input file not found: $input", FileLoc.inputs)
+
+    // parse into root object
+    root := XetoObj(FileLoc(input))
+    if (input.isDir)
+    {
+      input.list.each |f|
+      {
+        if (f.ext == "pog") parseFile(root, f)
+      }
+    }
+    else
+    {
+      parseFile(root, input)
+    }
+
     bombIfErr
+    compiler.ast = root
+  }
+
+  private Void parseFile(XetoObj root, File file)
+  {
+    loc := FileLoc(file)
+    try
+    {
+      Parser(loc, file.in).parse(root)
+    }
+    catch (FileLocErr e)
+    {
+      err(e.msg, e.loc)
+    }
+    catch (Err e)
+    {
+      err(e.toStr, loc, e)
+    }
   }
 
 }

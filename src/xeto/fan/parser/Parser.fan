@@ -32,11 +32,11 @@ internal class Parser
 // Public
 //////////////////////////////////////////////////////////////////////////
 
-  XetoObj parse()
+  XetoObj parse(XetoObj? root := null)
   {
     try
     {
-      root := XetoObj(curToLoc)
+      if (root == null) root = XetoObj(curToLoc)
       parseObjs(root, false)
       verify(Token.eof)
       return root
@@ -76,7 +76,7 @@ internal class Parser
     if (cur === Token.rbrace) return null
     if (cur === Token.gt) return null
 
-    // this token is start of our proto production
+    // this token is start of our object production
     p := XetoObj(curToLoc)
     p.doc = doc
 
@@ -105,7 +105,9 @@ internal class Parser
 
   private Void parseBody(XetoObj p)
   {
-    a := parseType(p)
+    p.type = parseType(p)
+
+    a := p.type != null
     b := parseMeta(p)
     c := parseChildrenOrVal(p)
     if (!a && !b && !c) throw err("Expecting object body not $curToStr")
@@ -147,25 +149,24 @@ internal class Parser
     return true
   }
 
-  private Bool parseType(XetoObj p)
+  private XetoType? parseType(XetoObj p)
   {
     /*
     if (cur === Token.str && peek === Token.pipe)
       return parseTypeOr(p, null, consumeVal)
     */
 
-    if (cur !== Token.id) return false
+    if (cur !== Token.id) return null
 
     loc := curToLoc
     qname := consumeQName
     /*
     if (cur === Token.amp)      return parseTypeAnd(p, qname)
     if (cur === Token.pipe)     return parseTypeOr(p, qname, null)
-    if (cur === Token.question) return parseTypeMaybe(p, qname)
     */
+    if (cur === Token.question) return parseTypeMaybe(loc, qname)
 
-    p.type = XetoType(loc, qname)
-    return true
+    return XetoType.makeSimple(loc, qname)
   }
 
   /*
@@ -202,24 +203,24 @@ internal class Parser
     return true
   }
 
-  private Bool parseTypeMaybe(XetoObj p, Str qname)
+ */
+
+  private XetoType parseTypeMaybe(FileLoc loc, Str qname)
   {
     consume(Token.question)
-    p.map["_is"] = "sys.Maybe"
-    p.map["_of"] = ["_is":qname]
-    return true
-  }
-  */
-
-  private XetoType markerType()
-  {
-    XetoType(FileLoc.unknown, "sys.Marker")
+    return XetoType.makeMaybe(loc, qname)
   }
 
+/*
   private Str parseTypeSimple(Str errMsg)
   {
     if (cur !== Token.id) throw err(errMsg)
     return consumeQName
+  }
+*/
+  private once XetoType markerType()
+  {
+    XetoType.makeSimple(FileLoc.synthetic, "sys.Marker")
   }
 
   private Void addToOf(Str:Obj of, Str? qname, Str? val)
@@ -246,7 +247,7 @@ internal class Parser
     if (cur === Token.gt) return
     if (cur === Token.eof) return
 
-    throw err("Expecting end of proto: comma or newline, not $curToStr")
+    throw err("Expecting end of object: comma or newline, not $curToStr")
   }
 
 //////////////////////////////////////////////////////////////////////////

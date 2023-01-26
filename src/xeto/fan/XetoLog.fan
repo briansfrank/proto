@@ -11,6 +11,7 @@ using util
 **
 ** Logger is used to report compiler info, warnings, and errors
 **
+@Js
 abstract class XetoLog
 {
   **
@@ -46,6 +47,7 @@ abstract class XetoLog
 ** XetoOutStreamLog
 **************************************************************************
 
+@Js
 internal class XetoOutStreamLog : XetoLog
 {
   new make(OutStream out) { this.out = out }
@@ -65,6 +67,7 @@ internal class XetoOutStreamLog : XetoLog
 ** XetoWrapperLog
 **************************************************************************
 
+@Js
 internal class XetoWrapperLog : XetoLog
 {
   new make(Log wrap) { this.wrap = wrap }

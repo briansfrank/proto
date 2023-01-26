@@ -27,7 +27,7 @@ class Main
 
     c := XetoCompiler()
     {
-      it.input = File.os(input)
+      it.input = File.os(input).normalize
     }
 
     try

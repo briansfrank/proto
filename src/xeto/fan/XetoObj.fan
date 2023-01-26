@@ -105,14 +105,22 @@ class XetoObj
 @Js
 class XetoType
 {
-  new make(FileLoc loc, Str name)
+  new makeSimple(FileLoc loc, Str name)
   {
     this.loc = loc
     this.name = name
   }
 
+  new makeMaybe(FileLoc loc, Str name)
+  {
+    this.loc   = loc
+    this.name  = name
+    this.maybe = true
+  }
+
   const FileLoc loc
   const Str name
+  const Bool maybe
 
   override Str toStr() { name }
 }
