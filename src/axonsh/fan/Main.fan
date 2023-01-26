@@ -60,7 +60,6 @@ class Main
     out.printLine("fan.version:   " + Pod.find("sys").version)
     out.printLine("fan.home:      " + Env.cur.homeDir.osPath)
     out.printLine
-    out.flush
     return 0
   }
 

@@ -26,11 +26,14 @@ class XetoCompiler
   ** Logging
   XetoLog log := XetoLog.makeOutStream
 
+  ** Input file or directory
+  File? input
+
 //////////////////////////////////////////////////////////////////////////
 // Pipelines
 //////////////////////////////////////////////////////////////////////////
 
-  ** Compile source directory to library
+  ** Compile input directory to library
   DataLib compileLib()
   {
     run(frontend)
