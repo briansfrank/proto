@@ -22,6 +22,14 @@ abstract internal class Step
 
   DataEnv env() { compiler.env }
 
+  Bool isLib() { compiler.isLib }
+
+  Str qname() { compiler.qname }
+
+  Bool isSys() { compiler.qname == "sys" }
+
+  XetoObj ast() { compiler.ast }
+
   Void info(Str msg) { compiler.info(msg) }
 
   XetoCompilerErr err(Str msg, FileLoc loc, Err? err := null) { compiler.err(msg, loc, err) }

@@ -7,6 +7,7 @@
 //
 
 using util
+using data
 
 **
 ** Xeto parsed object
@@ -26,6 +27,12 @@ class XetoObj
   Str:XetoObj meta := emptyMap
   Str:XetoObj slots := emptyMap
   Str? val
+
+  Void each(|XetoObj| f)
+  {
+    meta.each(f)
+    slots.each(f)
+  }
 
   Str? add(XetoObj child, Bool isMeta)
   {
@@ -121,6 +128,11 @@ class XetoType
   const FileLoc loc
   const Str name
   const Bool maybe
+
+  Bool isResolved() { inside != null || outside != null }
+
+  DataType? outside    // if resolved to external dependency
+  XetoObj? inside      // if resolved to internal AST node
 
   override Str toStr() { name }
 }

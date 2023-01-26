@@ -41,7 +41,9 @@ class XetoCompiler
   DataLib compileLib()
   {
     run([
+      InitLib(),
       Parse(),
+      Resolve(),
       //Assemble()
     ])
     return lib
@@ -113,6 +115,7 @@ class XetoCompiler
 
   XetoCompilerErr[] errs := [,]       // err
   internal Duration? duration         // run
+  internal Bool isLib                 // compileLib
   internal XetoObj? ast               // Parse
   internal DataLib? lib               // Assmble
 }

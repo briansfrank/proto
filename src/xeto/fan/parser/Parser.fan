@@ -220,7 +220,8 @@ internal class Parser
 */
   private once XetoType markerType()
   {
-    XetoType.makeSimple(FileLoc.synthetic, "sys.Marker")
+// TODO
+    XetoType.makeSimple(FileLoc.synthetic, "Marker")
   }
 
   private Void addToOf(Str:Obj of, Str? qname, Str? val)
