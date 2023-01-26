@@ -1,0 +1,36 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Jul 2022  Brian Frank  Creation
+//
+
+// Qualified name
+QName: Scalar
+
+// Library module meta data
+Lib: Dict <
+  version: Version           // Current version of the library
+  of: Type                   // Libraries are collections of types
+  depends: List <of:Depend>  // Library dependency
+  org: LibOrg                // Organization meta data for the library
+>
+
+// Type definition as a collection of slots
+Type: Dict <of:Slot>
+
+// Slot definition
+Slot: Dict
+
+// Library dependency
+Depend: Dict {
+  lib: QName   // Library qualified dotted name
+}
+
+// Organization meta data
+LibOrg: Dict {
+  dis: Str     // Display name for the organization
+  uri: Uri     // URI for organization website
+}
+

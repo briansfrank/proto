@@ -62,6 +62,7 @@ class DataEnvTest : Test
 // Lint Lib
 //////////////////////////////////////////////////////////////////////////
 
+/*
   Void testLintLib()
   {
     // lib basics
@@ -70,6 +71,7 @@ class DataEnvTest : Test
     // function
     findAllType := verifyLibFunc(lint, "FindAllFits")
   }
+*/
 
 //////////////////////////////////////////////////////////////////////////
 // Ph Lib

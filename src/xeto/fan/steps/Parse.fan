@@ -27,7 +27,7 @@ internal class Parse : Step
     {
       input.list.each |f|
       {
-        if (f.ext == "pog") parseFile(root, f)
+        if (f.ext == "xeto") parseFile(root, f)
       }
     }
     else
@@ -35,7 +35,8 @@ internal class Parse : Step
       parseFile(root, input)
     }
 
-    pragma := root.slots.remove("pragma")
+    pragma := root.slots["pragma"]
+    if (pragma != null) root.slots.remove("pragma")
     if (isLib && pragma != null) root.meta = pragma.meta
 
     bombIfErr

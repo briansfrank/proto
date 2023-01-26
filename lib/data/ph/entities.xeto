@@ -1,0 +1,22 @@
+// just stub for now
+
+Entity: Dict {
+}
+
+Site: Entity {
+  site
+}
+
+Equip: Entity {
+  equip
+}
+
+Point: Entity {
+  point
+}
+
+Meter: Equip {
+  meter
+}
+
+

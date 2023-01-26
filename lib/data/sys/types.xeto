@@ -1,0 +1,130 @@
+//
+// Copyright (c) 2022, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   2 May 2022  Brian Frank  Creation
+//
+
+// Root type for all objects
+Obj: <
+  sealed  // Sealed types cannot be extended outside of their own lib
+  doc: Str "Root type for all objects"  // Documentation for type
+>
+
+// None is the bottom type with no values
+None: Obj <sealed>
+
+// Scalar is an atomic value kind
+Scalar: Obj <
+  pattern: Str?  // Regex pattern that string encoding must match
+> ""
+
+// Marker labels a dict with typing information
+Marker: Scalar <sealed> "marker"
+
+// Closed enumerated choice
+Enum: Scalar
+
+// Boolean value either true or false
+Bool: Enum {
+  true    // Boolean true value
+  false   // Boolean false value
+}
+
+// Integer or floating point numbers annotated with an optional unit
+Number: Scalar <
+  minVal: Number?   // Inclusive minimum value
+  maxVal: Number?   // Inclusive maximum value
+> "0"
+
+// Unitless integer number
+Int: Number
+
+// Unitless floating point number
+Float: Number
+
+// Number with a unit of time
+Duration: Number
+
+// Unicode string of characters
+Str: Scalar ""
+
+// Reference to another object.  The value must be either a
+// dotted qualified name or an id value prefixed with "@".
+Ref: Scalar <
+  of: Obj   // Item type for referent
+  pattern: "[a-zA-Z\\d\\._~]*"
+>
+
+// Version string formatted as decimal digits separated by a dot
+Version: Scalar <
+  pattern: "\\d+(\\.\\d+)*"
+> "0"
+
+// Universal resource identifier
+Uri: Scalar
+
+// ISO 8601 date as year, month, day: '2011-06-07'
+Date: Scalar <
+  pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"
+> "2000-01-01"
+
+// ISO 8601 time as hour, minute, seconds: '09:51:27.354'
+Time: Scalar <
+  pattern: "\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"
+> "00:00:00"
+
+// ISO 8601 timestamp followed by timezone identifier
+DateTime: Scalar <
+  pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
+> "2000-01-01T00:00:00Z UTC"
+
+// Sequence is base type for all collections.
+Seq: Obj <
+  of: Obj    // Type for collection items
+>
+
+// Associative array of name/value pairs.
+Dict: Seq
+
+// Ordered list of zero or more values.
+List: Seq
+
+// Data set is a collection of dicts.
+DataSet: Seq <of:Dict>
+
+// Maybe is the option type.  It contains some value or None.
+Maybe: Obj <
+  of: Obj   // Optional value
+>
+
+// Or type is a choice between one of multiple types.
+// It is a union of the set of types.
+Or: Obj <
+  of: List   // List of choices
+>
+
+// And type is a combination of multiple types.
+// It is an intersection of the set of types.
+And: Obj <
+  of: List   // List of types to combine
+>
+
+// Query defines a named data set
+Query: Dict <
+  of: Dict         // Type for query items
+  via: Str         // Named path to traverse to execute query
+  inverse: Query   // Inverse query to run against parent
+>
+
+// Function specification.  Each slot is a named parameter
+// and 'return' specifies the result type.
+Func: Dict {
+  return: Obj    // Function return type
+}
+
+
+
+
+

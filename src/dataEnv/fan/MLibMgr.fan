@@ -20,7 +20,7 @@ internal const class MLibMgr
   new make(MDataEnv env)
   {
     this.env = env
-    this.path = Env.cur.path.map |dir->File| { dir.plus(`pog/`) }
+    this.path = Env.cur.path.map |dir->File| { dir.plus(`lib/data/`) }
     this.entries = initEntries(this.path)
     this.installed = entries.keys.sort
   }
@@ -40,7 +40,7 @@ internal const class MLibMgr
 
   private static Void doInitInstalled(Str:MLibEntry acc, File dir)
   {
-    hasLib := dir.plus(`lib.pog`).exists
+    hasLib := dir.plus(`lib.xeto`).exists
     if (!hasLib) return
 
     qname := dir.name
