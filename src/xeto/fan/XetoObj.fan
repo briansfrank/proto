@@ -119,16 +119,26 @@ class XetoType
     this.name = name
   }
 
-  new makeMaybe(FileLoc loc, Str name)
+  new makeMaybe(XetoType of)
   {
-    this.loc   = loc
-    this.name  = name
-    this.maybe = true
+    this.loc   = of.loc
+    this.name  = of.name
+  }
+
+  new makeAnd(XetoType[] of)
+  {
+    this.loc   = of.first.loc
+    this.name  = "And"
+  }
+
+  new makeOr(XetoType[] of)
+  {
+    this.loc   = of.first.loc
+    this.name  = "Or"
   }
 
   const FileLoc loc
   const Str name
-  const Bool maybe
 
   Bool isResolved() { inside != null || outside != null }
 

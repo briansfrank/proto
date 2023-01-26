@@ -105,7 +105,7 @@ internal class Parser
 
   private Void parseBody(XetoObj p)
   {
-    p.type = parseType(p)
+    p.type = parseType
 
     a := p.type != null
     b := parseMeta(p)
@@ -149,75 +149,61 @@ internal class Parser
     return true
   }
 
-  private XetoType? parseType(XetoObj p)
+  private XetoType? parseType()
   {
-    /*
     if (cur === Token.str && peek === Token.pipe)
-      return parseTypeOr(p, null, consumeVal)
-    */
+      throw Err("TODO or value") //return parseTypeOr(null, consumeVal)
 
     if (cur !== Token.id) return null
 
-    loc := curToLoc
-    qname := consumeQName
-    /*
-    if (cur === Token.amp)      return parseTypeAnd(p, qname)
-    if (cur === Token.pipe)     return parseTypeOr(p, qname, null)
-    */
-    if (cur === Token.question) return parseTypeMaybe(loc, qname)
-
-    return XetoType.makeSimple(loc, qname)
+    type := parseTypeSimple("Expecting type name")
+    if (cur === Token.amp)      return parseTypeAnd(type)
+    if (cur === Token.pipe)     return parseTypeOr(type, null)
+    if (cur === Token.question) return parseTypeMaybe(type)
+    return type
   }
 
-  /*
-  private Bool parseTypeAnd(XetoObj p, Str qname)
+  private XetoType parseTypeAnd(XetoType first)
   {
-    of := newMap
-    addToOf(of, qname, null)
+    of := XetoType[,].add(first)
     while (cur === Token.amp)
     {
       consume
       skipNewlines
-      addToOf(of, parseTypeSimple("Expecting next type name after '&' and symbol"), null)
+      of.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
     }
-    p.map["_is"] = "sys.And"
-    p.map["_of"] = of
-    return true
+    return XetoType.makeAnd(of)
   }
 
-  private Bool parseTypeOr(XetoObj p, Str? qname, Str? val)
+  private XetoType parseTypeOr(XetoType? first, Str? val)
   {
-    of := newMap
-    addToOf(of, qname, val)
+    of := XetoType[,].add(first)
     while (cur === Token.pipe)
     {
       consume
       skipNewlines
       if (cur.isVal)
-        addToOf(of, null, consumeVal)
+        throw Err("TODO or value") //addToOf(of, null, consumeVal)
       else
-        addToOf(of, parseTypeSimple("Expecting next type name after '|' or symbol"), null)
+        of.add(parseTypeSimple("Expecting next type name after '|' or symbol"))
     }
-    p.map["_is"] = "sys.Or"
-    p.map["_of"] = of
-    return true
+    return XetoType.makeOr(of)
   }
 
- */
-
-  private XetoType parseTypeMaybe(FileLoc loc, Str qname)
+  private XetoType parseTypeMaybe(XetoType type)
   {
     consume(Token.question)
-    return XetoType.makeMaybe(loc, qname)
+    return XetoType.makeMaybe(type)
   }
 
-/*
-  private Str parseTypeSimple(Str errMsg)
+  private XetoType parseTypeSimple(Str errMsg)
   {
     if (cur !== Token.id) throw err(errMsg)
-    return consumeQName
+    loc := curToLoc
+    qname := consumeQName
+    return XetoType.makeSimple(loc, qname)
   }
-*/
+
   private once XetoType markerType()
   {
 // TODO
