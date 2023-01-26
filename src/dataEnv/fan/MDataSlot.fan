@@ -8,7 +8,7 @@
 
 using util
 using data
-using pog
+using xeto
 
 **
 ** DataSlot implementation
@@ -16,24 +16,34 @@ using pog
 @Js
 internal const class MDataSlot : MDataDef, DataSlot
 {
-  static MDataSlot[] fromPog(MDataType parent, Proto pog)
+  static const Str:MDataSlot emptyMap := [:]
+
+  static Str:MDataSlot toMap(MDataSlot[] list)
   {
+    if (list.isEmpty) return emptyMap
+    return Str:MDataSlot[:].addList(list) { it.name }
+  }
+
+  static MDataSlot[] reify(MDataType parent, XetoObj astParent)
+  {
+    if (astParent.slots.isEmpty) return MDataSlot#.emptyList
+
     acc := MDataSlot[,]
-    pog.each |kid|
+    astParent.slots.each |astSlot|
     {
-      if (kid.isField) acc.add(make(parent, kid))
+      acc.add(make(parent, astSlot))
     }
     return acc
   }
 
-  new make(MDataType parent, Proto proto)
+  new make(MDataType parent, XetoObj astSlot)
   {
     this.parent   = parent
-    this.name     = proto.name
-    this.loc      = proto.loc
+    this.name     = astSlot.name
+    this.loc      = astSlot.loc
     this.qname    = StrBuf(parent.qname.size + 1 + name.size).add(parent.qname).addChar('.').add(name).toStr
-    this.meta     = MProtoDict.fromMeta(parent.env, proto)
-    this.typeName = proto.isa.qname.toStr
+    this.meta     = parent.env.astMeta(astSlot.meta)
+    this.slotType = astSlot.type.reified  // this will need to change to be lazy
   }
 
   override MDataEnv env() { parent.libRef.env }
@@ -44,9 +54,8 @@ internal const class MDataSlot : MDataDef, DataSlot
   const override FileLoc loc
   const override Str name
   const override Str qname
+  const override MDataType slotType
   override const DataDict meta
   override Str:DataDict map() { env.emptyDictMap }
 
-  override MDataType slotType() { parent.env.type(typeName) }
-  private const Str typeName
 }

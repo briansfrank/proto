@@ -8,7 +8,6 @@
 
 using util
 using data
-using pog
 
 **
 ** DataReader is base class to read different formats into memory as a DataSet

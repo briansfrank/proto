@@ -8,7 +8,6 @@
 
 using util
 using data
-using pog
 
 **
 ** DataSet implementation

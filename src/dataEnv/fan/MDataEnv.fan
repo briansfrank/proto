@@ -9,7 +9,7 @@
 using concurrent
 using util
 using data
-using pog
+using xeto
 
 **
 ** DataEnv implementation
@@ -19,10 +19,13 @@ internal const class MDataEnv : DataEnv
 {
   new make()
   {
+    this.libMgr = MLibMgr(this)
     this.sys = MSys(lib("sys"))
     this.emptyDict = MEmptyDict(sys.dict)
     this.emptySet  = MDataSet(sys.dataset, DataDict#.emptyList)
   }
+
+  const MLibMgr libMgr
 
   const MSys sys
 
@@ -79,6 +82,21 @@ internal const class MDataEnv : DataEnv
     return MMapDict(sys.dict, map)
   }
 
+  internal DataDict astMeta(Str:XetoObj ast)
+  {
+    if (ast.isEmpty && (Obj?)emptyDict != null) return emptyDict
+    acc := Str:Obj[:]
+    ast.each |v, n|
+    {
+      // TODO
+      if (v.val != null)
+        acc[n] = v.val
+      // TODO
+      //else echo("TODO: map AST meta: $n: $v")
+    }
+    return MMapDict(null, acc)
+  }
+
   override DataSeq seq(Obj? val)
   {
     if (val == null) return emptyDict
@@ -122,22 +140,9 @@ internal const class MDataEnv : DataEnv
     return reader.readSet(file.in)
   }
 
-  override Str[] installed() { PogEnv.cur.installed }
+  override Str[] installed() { libMgr.installed }
 
-  override DataLib? lib(Str qname, Bool checked := true)
-  {
-try
-{
-    lib := libs.get(qname)
-    if (lib == null) lib = libs.getOrAdd(qname, MDataLib(this, qname))
-    return lib
-}
-catch (pog::UnknownLibErr e)
-{
-  if (checked) throw data::UnknownLibErr(qname)
-  return null
-}
-  }
+  override DataLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
   override DataType? type(Str qname, Bool checked := true)
   {
@@ -159,10 +164,10 @@ catch (pog::UnknownLibErr e)
   {
     out.printLine("=== DataEnv ===")
     out.printLine("Lib Path:")
-    PogEnv.cur.path.each |x| { out.printLine("  $x.osPath") }
+    libMgr.path.each |x| { out.printLine("  $x.osPath") }
     max := installed.reduce(10) |acc, x| { x.size.max(acc) }
     out.printLine("Installed Libs:")
-    installed.each |x| { out.printLine("  " + x.padr(max) + " [" + PogEnv.cur.libDir(x).osPath + "]") }
+    libMgr.installed.each |x| { out.printLine("  " + x.padr(max) + " [" + libMgr.libDir(x, true).osPath + "]") }
   }
 
   private const ConcurrentMap libs := ConcurrentMap()

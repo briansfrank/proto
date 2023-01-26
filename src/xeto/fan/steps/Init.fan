@@ -7,6 +7,7 @@
 //
 
 using util
+using data
 
 **
 ** Initialize lib compile
@@ -16,6 +17,9 @@ internal class InitLib : Step
 {
   override Void run()
   {
+    // init environment if not configured
+    if (compiler.env == null) compiler.env = DataEnv.cur
+
     // set the flag for compiling lib
     compiler.isLib = true
 

@@ -8,7 +8,6 @@
 
 using util
 using data
-using pog
 
 **************************************************************************
 ** MAbstractDict
@@ -50,53 +49,9 @@ internal const class MEmptyDict : MAbstractDict
 @Js
 internal const class MMapDict : MAbstractDict
 {
-  new make(DataType type, Str:Obj? map) { this.type = type; this.map = map }
-  const override DataType type
-  override Bool isEmpty() { map.isEmpty }
-  override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
-  override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }
-  override Void each(|Obj,Str| f) { map.each(f) }
-  override Obj? eachWhile(|Obj,Str->Obj?| f) { map.eachWhile(f) }
-  override Str toStr() { MDataUtil.dictToStr(this) }
-  const Str:Obj? map
-}
-
-**************************************************************************
-** MProtoDict (TODO)
-**************************************************************************
-
-@Js
-internal const class MProtoDict : MAbstractDict
-{
-  static DataDict fromMeta(MDataEnv env, Proto p)
-  {
-    acc := Str:Obj?[:]
-    p.eachOwn |kid|
-    {
-      if (kid.isMeta && kid.hasVal)
-        acc[kid.name[1..-1]] = kid.val
-    }
-    return make(env, acc)
-  }
-
-  static DataDict fromOwn(MDataEnv env, Proto p)
-  {
-    acc := Str:Obj?[:]
-    p.eachOwn |kid|
-    {
-      if (kid.hasVal)
-        acc[kid.name] = kid.val
-      else
-        acc[kid.name] = fromOwn(env, kid)
-    }
-    return make(env, acc)
-  }
-
-  new make(MDataEnv env, Str:Obj map) { this.env = env; this.map = map }
-  const MDataEnv env
-  override DataType type() { env.sys.dict }
-  override Bool has(Str name) { map[name] != null }
-  override Bool missing(Str name) { map[name] == null }
+  new make(DataType? type, Str:Obj? map) { this.typeRef = type; this.map = map }
+  override DataType type() { typeRef ?: DataEnv.cur.type("sys.Dict") } // TODO
+  const DataType? typeRef
   override Bool isEmpty() { map.isEmpty }
   override Obj? get(Str name, Obj? def := null) { map.get(name, def) }
   override Obj? trap(Str n, Obj?[]? a := null) { MDataUtil.dictTrap(this, n) }

@@ -33,7 +33,7 @@ class Main
     try
     {
       lib := c.compileLib()
-      if (hasArg(args, "-print", "-p")) echo(lib)
+      if (hasArg(args, "-print", "-p")) lib.dump
       return 0
     }
     catch (XetoCompilerErr e)

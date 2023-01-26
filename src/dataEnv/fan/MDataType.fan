@@ -8,7 +8,7 @@
 
 using util
 using data
-using pog
+using xeto
 
 **
 ** DataType implementation
@@ -16,72 +16,60 @@ using pog
 @Js
 internal const class MDataType : MDataDef, DataType
 {
-  static MDataType[] fromPog(MDataLib lib, Proto pog)
+  static MDataType[] reify(MDataLib lib, XetoObj astLib)
   {
-    // build map of proto types
-    protos := Str:Proto[:] { ordered = true }
-    pog.eachOwn |kid| { if (kid.isType) protos[kid.name] = kid }
-
-    // recursively map to MDataTypes
-    types := Str:MDataType[:]
+    acc := MDataType[,]
+    acc.capacity = astLib.slots.size
     stack := Str[,]
-    protos.each |p, n| { doFromPog(lib, protos, types, n, stack) }
-
-    // flatten back to ordered list
-    acc := DataType[,]
-    acc.capacity = types.size
-    protos.each |p, n| { acc.add(types.getChecked(n)) }
+    astLib.slots.each |astType| { acc.add(doReify(lib, astLib, astType, stack)) }
     return acc
   }
 
-  private static MDataType doFromPog(MDataLib lib, Str:Proto protos, Str:MDataType types, Str name, Str[] stack)
+  private static MDataType doReify(MDataLib lib, XetoObj astLib, XetoObj astType, Str[] stack)
   {
-    // skip if already mapped
-    type := types[name]
-    if (type != null) return type
+    // skip if already reified
+    if (astType.reified != null) return astType.reified
 
     // push name onto stack to catch cyclic inheritance
-    if (stack.contains(name)) throw Err("Cyclic inheritance: $stack")
+    name := astType.name
+    if (stack.contains(name)) throw Err("Cyclic type inheritance: $stack")
     stack.push(name)
 
-    // get proto and resolve its base
-    // TODO just sys right now
-    proto := protos[name]
+    // resolve base which is either inside AST or from outside depend
     DataType? base := null
-    if (proto.isa != null)
+    if (astType.type != null)
     {
-      if (proto.isa.qname.lib.toStr == lib.qname)
-        base = doFromPog(lib, protos, types, proto.isa.name, stack)
+      if (astType.type.inside != null)
+        base = doReify(lib, astLib, astType.type.inside, stack)
       else
-        base = lib.env.type(proto.isa.qname.toStr)
+        base = astType.type.outside
     }
 
-    type = init(lib, proto, base)
-    types[name] = type
+    astType.reified = init(lib, astType, base)
 
     stack.pop
-    return type
+    return astType.reified
   }
 
-  private static MDataType init(MDataLib lib, Proto proto, MDataType? base)
+  private static MDataType init(MDataLib lib, XetoObj ast, MDataType? base)
   {
     if (lib.qname != "sys")
     {
-      if (base === lib.env.sys.func) return MDataFunc(lib, proto, base)
+      if (base === lib.env.sys.func) return MDataFunc(lib, ast, base)
     }
-    return make(lib, proto, base)
+    return make(lib, ast, base)
   }
 
-  new make(MDataLib lib, Proto p, MDataType? base)
+  new make(MDataLib lib, XetoObj ast, MDataType? base)
   {
     this.libRef = lib
-    this.name   = p.name
+    this.name   = ast.name
     this.qname  = lib.qname + "." + name
-    this.loc    = p.loc
+    this.loc    = ast.loc
     this.base   = base
-    this.meta   =  MProtoDict.fromMeta(lib.env, p)
-    this.slots  = MDataSlot.fromPog(this, p)
-    this.map    = Str:MDataSlot[:].addList(slots) { it.name }
+    this.meta   = lib.env.astMeta(ast.meta)
+    this.slots  = MDataSlot.reify(this, ast)
+    this.map    = MDataSlot.toMap(this.slots)
   }
 
   override MDataEnv env() { libRef.env }

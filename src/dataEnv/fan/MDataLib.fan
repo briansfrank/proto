@@ -8,7 +8,7 @@
 
 using util
 using data
-using pog
+using xeto
 
 **
 ** DataLib implementation
@@ -16,20 +16,15 @@ using pog
 @Js
 internal const class MDataLib : MDataDef, DataLib
 {
-  new make(MDataEnv env, Str qname)
+  new make(MDataEnv env, Str qname, XetoObj ast)
   {
-    // TODO: load from existing pog engine
-    pog := PogEnv.cur.load(qname)
-    sys := qname == "sys" ? pog : PogEnv.cur.load("sys")
-
     this.env      = env
-    this.loc      = pog.loc
+    this.loc      = ast.loc
     this.qname    = qname
-    this.version  = pog.version
-    this.meta     = MProtoDict.fromMeta(env, pog)
-
-    this.libTypes = MDataType.fromPog(this, pog)
-    this.map = Str:DataType[:].addList(libTypes) { it.name }
+    this.meta     = env.astMeta(ast.meta)
+    this.version  = Version(this.meta["version"] as Str ?: "0")
+    this.libTypes = MDataType.reify(this, ast)
+    this.map      = Str:DataType[:].addList(libTypes) { it.name }
   }
 
   const override MDataEnv env

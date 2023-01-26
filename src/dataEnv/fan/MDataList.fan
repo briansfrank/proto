@@ -9,7 +9,6 @@
 using concurrent
 using util
 using data
-using pog
 
 @Js
 const class MDataList : DataSeq

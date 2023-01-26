@@ -8,7 +8,7 @@
 
 using util
 using data
-using pog
+using xeto
 
 **
 ** DataType implementation
@@ -17,8 +17,8 @@ using pog
 internal const class MDataFunc : MDataType, DataFunc
 {
 
-  new make(MDataLib lib, Proto p, MDataType base)
-    : super(lib, p, base)
+  new make(MDataLib lib, XetoObj ast, MDataType base)
+    : super(lib, ast, base)
   {
     returns = slot("return")
     params = slots.findAll |s| { s.name != "return" }

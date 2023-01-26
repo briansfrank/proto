@@ -22,7 +22,7 @@ class XetoCompiler
 //////////////////////////////////////////////////////////////////////////
 
   ** Install environment
-  const DataEnv env := DataEnv.cur
+  DataEnv? env
 
   ** Logging
   XetoLog log := XetoLog.makeOutStream
@@ -38,15 +38,14 @@ class XetoCompiler
 //////////////////////////////////////////////////////////////////////////
 
   ** Compile input directory to library
-  DataLib compileLib()
+  XetoObj compileLib()
   {
     run([
       InitLib(),
       Parse(),
       Resolve(),
-      //Assemble()
     ])
-    return lib
+    return ast
   }
 
   ** Run the pipeline with the given steps

@@ -21,12 +21,13 @@ class XetoObj
   }
 
   const FileLoc loc
-  Str? doc
-  Str? name
   XetoType? type
   Str:XetoObj meta := emptyMap
   Str:XetoObj slots := emptyMap
   Str? val
+  Str? doc
+  Str? name
+  Obj? reified
 
   Void each(|XetoObj| f)
   {
@@ -130,6 +131,8 @@ class XetoType
   const Bool maybe
 
   Bool isResolved() { inside != null || outside != null }
+
+  DataType reified() { outside ?: (inside.reified ?: throw Err("Not reified $toStr")) }
 
   DataType? outside    // if resolved to external dependency
   XetoObj? inside      // if resolved to internal AST node
