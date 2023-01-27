@@ -43,6 +43,8 @@ internal class Printer
   This print(Obj? v)
   {
     val(v)
+    if (!lastnl) nl
+    return this
   }
 
   ** Print inline value
@@ -237,13 +239,29 @@ internal class Printer
 // OutStream Utils
 //////////////////////////////////////////////////////////////////////////
 
-  This w(Obj str) { out.print(str); return this }
+  This w(Obj obj)
+  {
+    str := obj.toStr
+    lastnl = str.endsWith("\n")
+    out.print(str)
+    return this
+  }
 
-  This wc(Int char) { out.writeChar(char); return this }
+  This wc(Int char)
+  {
+    lastnl = false
+    out.writeChar(char)
+    return this
+  }
+
+  This nl()
+  {
+    lastnl = true
+    out.printLine
+    return this
+  }
 
   This sp() { wc(' ') }
-
-  This nl() { out.printLine; return this }
 
   This indent() { w(Str.spaces(indention*2)) }
 
@@ -280,6 +298,7 @@ internal class Printer
 
   private OutStream out        // output stream
   private Int indention        // current level of indentation
+  private Bool lastnl          // was last char a newline
   const Bool isStdout          // are we printing to stdout
   const DataDict opts          // options
   const Bool escUnicode        // escape unicode above 0x7f
