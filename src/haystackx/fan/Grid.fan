@@ -897,6 +897,30 @@ const mixin Grid : DataSet
   @NoDoc abstract Row[] toRows()
 
   **
+  ** Return column headers and cells as printable 2D grid of cells
+  **
+  @NoDoc Str[][] printCells()
+  {
+    table := Str[][,]
+    table.add(cols.map |c->Str| { c.dis })
+    each |row|
+    {
+      cells := Str[,]
+      cells.capacity = cols.size
+      cols.each |c|
+      {
+        val := row.val(c)
+        if (val is Str)
+          cells.add(val)
+        else
+          cells.add(row.dis(c.name))
+      }
+      table.add(cells)
+    }
+    return table
+  }
+
+  **
   ** Debug dump with some pretty print - no guarantee regarding format.
   ** Options:
   **   - noClip: true to not clip the columns

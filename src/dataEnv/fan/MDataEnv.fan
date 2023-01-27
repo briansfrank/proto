@@ -126,6 +126,11 @@ internal const class MDataEnv : DataEnv
     throw ArgErr("Unsupported set arg: $val.typeof")
   }
 
+  override Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
+  {
+    Printer(out, dict(opts)).print(val)
+  }
+
   override DataSet read(InStream in, MimeType type, DataDict? opts := null)
   {
     reader := DataReader.factory(this, type, opts ?: emptyDict)

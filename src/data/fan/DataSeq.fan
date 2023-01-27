@@ -36,6 +36,13 @@ const mixin DataSeq
 @Js
 mixin DataSeqX
 {
+  ** Pretty print sequence to the output stream.
+  ** Options may be anything accepted by `DataEnv.dict`.
+  Void print(OutStream out := Env.cur.out, Obj? opts := null) { DataEnv.cur.print(this, out, opts) }
+
+  ** Iterate items to an in-memory list
+  abstract Obj?[] toList()
+
   ** Iterate the sequency items.  Order is not guaranteed.
   abstract Void seqEach(|Obj?| f)
 

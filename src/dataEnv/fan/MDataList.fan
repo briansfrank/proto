@@ -43,6 +43,11 @@ class MDataListX : DataSeqX
     this.source = source
   }
 
+  override Obj?[] toList()
+  {
+    source.list
+  }
+
   override Void seqEach(|Obj?| f)
   {
     source.list.each(f)

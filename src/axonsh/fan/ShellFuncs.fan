@@ -93,10 +93,9 @@ class ShellFuncs
   }
 
   ** Pretty print the given value.
-  @Axon static Obj? print(Obj? val := null)
+  @Axon static Obj? print(Obj? val := null, Obj? opts := null)
   {
-    if (val is DataSet) ((DataSet)val).dump
-    else echo(val)
+    cx.data.print(val, cx.session.out, opts)
     return noEcho
   }
 

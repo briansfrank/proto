@@ -38,7 +38,7 @@ const mixin DataSet : DataSeq
 mixin DataSetX : DataSeqX
 {
   ** Transform set into list of records
-  abstract DataDict[] toList()
+  abstract override DataDict[] toList()
 
   ** Iterate the dict records
   abstract Void each(|DataDict rec| f)

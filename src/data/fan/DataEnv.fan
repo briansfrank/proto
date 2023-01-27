@@ -72,6 +72,9 @@ const abstract class DataEnv
   **   - Raise exception for any other value type
   abstract DataSet set(Obj? val)
 
+  ** Pretty print object to output stream.
+  abstract Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
+
   ** Read a data into memory from input stream based on given
   ** format type. The stream is guaranteed to be closed.
   abstract DataSet read(InStream in, MimeType type, DataDict? opts := null)

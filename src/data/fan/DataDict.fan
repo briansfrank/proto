@@ -76,6 +76,13 @@ abstract class AbstractDataDictX : DataDictX
     this.source = source
   }
 
+  override Obj?[] toList()
+  {
+    acc := Obj?[,]
+    each |v| { acc.add(v) }
+    return acc
+  }
+
   override Void seqEach(|Obj?| f)
   {
     each(f)
