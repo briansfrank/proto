@@ -24,9 +24,9 @@ class AxonTest : HaystackTest
 
   Void verifyTypeExpr(Str expr, DataType expect)
   {
-    echo("-- verifyType: $expr")
+    //echo("-- verifyType: $expr")
     actual := eval(expr)
-    echo("   $actual ?= $expect")
+    //echo("   $actual ?= $expect")
     verifyEq(actual, expect)
   }
 

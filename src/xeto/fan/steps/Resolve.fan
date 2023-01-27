@@ -102,7 +102,15 @@ internal class Resolve : Step
 
     // parse lib name / type name
     libName := qname[0..typei-2]
-    typeName := qname[typei+1..-1]
+    typeName := qname[typei..-1]
+
+    // if in my own lib
+    if (libName == compiler.qname)
+    {
+      type.inside = ast.slots[typeName]
+      if (type.inside == null) return err("Type '$qname' not found in lib", type.loc)
+      return
+    }
 
     // resolve qualified type lib
     lib := depends[libName]

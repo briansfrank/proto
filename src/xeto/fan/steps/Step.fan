@@ -28,6 +28,8 @@ abstract internal class Step
 
   Bool isSys() { compiler.qname == "sys" }
 
+  SysTypes sys() { compiler.sys }
+
   XetoObj ast() { compiler.ast }
 
   XetoObj? pragma() { compiler.pragma }

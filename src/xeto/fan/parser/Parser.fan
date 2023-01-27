@@ -19,8 +19,9 @@ internal class Parser
 // Constructor
 //////////////////////////////////////////////////////////////////////////
 
-  new make(FileLoc fileLoc, InStream in)
+  new make(SysTypes sys, FileLoc fileLoc, InStream in)
   {
+    this.sys = sys
     this.fileLoc = fileLoc
     this.tokenizer = Tokenizer(in) { it.keepComments = true }
     this.cur = this.peek = Token.eof
@@ -90,7 +91,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
     {
       p.name = consumeName
-      p.type = markerType
+      p.type = sys.marker
     }
     else
     {
@@ -246,20 +247,8 @@ internal class Parser
   {
     if (docStr == null) return
     if (p.meta["doc"] != null) return
-    doc := XetoObj(p.loc) { it.name = "doc"; it.type = strType; it.val = docStr }
+    doc := XetoObj(p.loc) { it.name = "doc"; it.type = sys.str; it.val = docStr }
     p.addMeta(doc)
-  }
-
-  private once XetoType markerType()
-  {
-// TODO
-    XetoType.makeSimple(FileLoc.synthetic, "Marker")
-  }
-
-  private once XetoType strType()
-  {
-// TODO
-    XetoType.makeSimple(FileLoc.synthetic, "Str")
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -384,8 +373,7 @@ internal class Parser
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  Bool includeLoc
-
+  private SysTypes sys
   private FileLoc fileLoc
   private Tokenizer tokenizer
 

@@ -50,7 +50,7 @@ internal class Parse : Step
     loc := FileLoc(file)
     try
     {
-      Parser(loc, file.in).parse(root)
+      Parser(sys, loc, file.in).parse(root)
     }
     catch (FileLocErr e)
     {

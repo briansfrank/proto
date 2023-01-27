@@ -34,9 +34,9 @@ internal class Infer : Step
     {
       // TODO: for now infer from value
       if (slot.val != null)
-        slot.type = XetoType(slot.loc, "Str")
+        slot.type = sys.str
       else
-        slot.type = XetoType(slot.loc, "Obj")
+        slot.type = sys.obj
     }
   }
 }
