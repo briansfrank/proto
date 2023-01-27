@@ -43,6 +43,7 @@ class XetoCompiler
     run([
       InitLib(),
       Parse(),
+      Infer(),
       Resolve(),
     ])
     return ast
