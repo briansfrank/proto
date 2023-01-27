@@ -57,7 +57,7 @@ class DataTypeTest : Test
     a := env.type(an)
     b := env.type(bn)
     m := a.typeof.method("isa${b.name}", false)
-    echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
+    //echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
     verifyEq(a.isa(b), expected)
     if (m != null) verifyEq(m.call(a), expected)
   }

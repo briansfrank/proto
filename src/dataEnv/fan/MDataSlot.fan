@@ -16,26 +16,6 @@ using xeto
 @Js
 internal const class MDataSlot : MDataDef, DataSlot
 {
-  static const Str:MDataSlot emptyMap := [:]
-
-  static Str:MDataSlot toMap(MDataSlot[] list)
-  {
-    if (list.isEmpty) return emptyMap
-    return Str:MDataSlot[:].addList(list) { it.name }
-  }
-
-  static MDataSlot[] reify(MDataType parent, XetoObj astParent)
-  {
-    if (astParent.slots.isEmpty) return MDataSlot#.emptyList
-
-    acc := MDataSlot[,]
-    astParent.slots.each |astSlot|
-    {
-      acc.add(make(parent, astSlot))
-    }
-    return acc
-  }
-
   new make(MDataType parent, XetoObj astSlot)
   {
     this.parent   = parent
@@ -43,7 +23,7 @@ internal const class MDataSlot : MDataDef, DataSlot
     this.loc      = astSlot.loc
     this.qname    = StrBuf(parent.qname.size + 1 + name.size).add(parent.qname).addChar('.').add(name).toStr
     this.meta     = parent.env.astMeta(astSlot.meta)
-    this.slotType = astSlot.type.reified  // this will need to change to be lazy
+    this.slotType = astSlot.type.reified
   }
 
   override MDataEnv env() { parent.libRef.env }
