@@ -39,7 +39,7 @@ internal const class MDataEnv : DataEnv
   {
     // TODO hard code mapping to get us started with this API
     if (val == null) return sys.none
-    if (val is DataDict) return ((DataDict)val).type
+    if (val is DataSeq)  return ((DataSeq)val).type
     if (val is Str)      return sys.str
     if (val is Bool)     return sys.bool
     if (val is Int)      return sys.int
@@ -49,6 +49,7 @@ internal const class MDataEnv : DataEnv
     if (val is Time)     return sys.time
     if (val is DateTime) return sys.dateTime
     if (val is Uri)      return sys.uri
+    if (val is List)     return sys.list
 
     // TODO
     qname := val.typeof.qname
