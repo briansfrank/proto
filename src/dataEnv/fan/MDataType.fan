@@ -93,11 +93,20 @@ internal const class MDataType : MDataDef, DataType
     return null
   }
 
-  override Bool inherits(DataType that)
+  override Bool isa(DataType that)
   {
     if (this === that) return true
     if (base == null) return false
-    return base.inherits(that)
+    return base.isa(that)
   }
+
+  override Bool isaScalar() { isa(env.sys.scalar) }
+  override Bool isaMarker() { isa(env.sys.marker) }
+  override Bool isaSeq()    { isa(env.sys.seq) }
+  override Bool isaDict()   { isa(env.sys.dict) }
+  override Bool isaList()   { isa(env.sys.list) }
+  override Bool isaMaybe()  { isa(env.sys.maybe) }
+  override Bool isaAnd()    { isa(env.sys.and) }
+  override Bool isaOr()     { isa(env.sys.or) }
 
 }

@@ -190,6 +190,7 @@ internal const class MSys
     this.lib      = lib
     this.obj      = lib.libType("Obj")
     this.none     = lib.libType("None")
+    this.seq      = lib.libType("Seq")
     this.dict     = lib.libType("Dict")
     this.list     = lib.libType("List")
     this.dataset  = lib.libType("DataSet")
@@ -211,12 +212,15 @@ internal const class MSys
     this.ref      = lib.libType("Ref")
     this.func     = lib.libType("Func")
     this.maybe    = lib.libType("Maybe")
+    this.and      = lib.libType("And")
+    this.or       = lib.libType("Or")
   }
 
   const DataLib lib
   const DataType obj
   const DataType none
   const DataType dict
+  const DataType seq
   const DataType list
   const DataType dataset
   const DataType libType
@@ -237,6 +241,8 @@ internal const class MSys
   const DataType ref
   const DataType func
   const DataType maybe
+  const DataType and
+  const DataType or
 }
 
 

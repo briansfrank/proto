@@ -27,10 +27,10 @@ internal class MFitter
     if (valType == null) return explainNoType(val)
 
     // check nominal typing
-    if (valType.inherits(type)) return true
+    if (valType.isa(type)) return true
 
     // check structurally typing
-    if (valType is DataDict && type.inherits(sys.dict))
+    if (valType is DataDict && type.isa(sys.dict))
       return fitsStruct(val, type)
 
     return explainNoFit(valType, type)
@@ -49,7 +49,7 @@ internal class MFitter
   private Bool fitsSlot(Obj? val, DataSlot slot)
   {
     t := slot.slotType
-    if (val == null && !t.inherits(sys.maybe))
+    if (val == null && !t.isa(sys.maybe))
       return explainMissingSlot(slot)
 
     // TODO: check value type without high level logging
@@ -88,7 +88,7 @@ internal class MFitterExplain : MFitter
 
   override Bool explainMissingSlot(DataSlot slot)
   {
-    if (slot.slotType.inherits(sys.marker))
+    if (slot.slotType.isa(sys.marker))
       return log("Missing required marker '$slot.name'")
     else
       return log("Missing required slot '$slot.name'")
