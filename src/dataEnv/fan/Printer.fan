@@ -59,6 +59,9 @@ internal class Printer
   ** Print data sequence
   This seq(DataSeq seq)
   {
+    if (seq is DataLib) return lib(seq)
+    if (seq is DataType) return type(seq)
+    if (seq is DataSlot) return slot(seq)
     if (seq is DataDict) return dict(seq)
     if (seq.typeof.name.endsWith("Grid")) return grid(seq)
     return list(seq.x.toList)
@@ -80,18 +83,22 @@ internal class Printer
   ** Print dict
   This dict(DataDict dict)
   {
-    bracket("{")
+    bracket("{").pairs(dict).bracket("}")
+  }
+
+  ** Print dict pairs without brackets
+  This pairs(DataDict dict, Str[]? skip := null)
+  {
     first := true
     dict.x.each |v, n|
     {
+      if (skip != null && skip.contains(n)) return
       if (first) first = false
       else w(", ")
       w(n)
       if (isMarker(v)) return
-      w(": ")
-      val(v)
+      colon.val(v)
     }
-    bracket("}")
     return this
   }
 
@@ -175,6 +182,83 @@ internal class Printer
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Data Type System
+//////////////////////////////////////////////////////////////////////////
+
+  ** Print data library and its types
+  This lib(DataLib lib)
+  {
+    doc(lib.doc)
+    w(lib.qname)
+    meta(lib.meta)
+    bracket(" {").nl
+    lib.libTypes.each |t, i|
+    {
+      indention++
+      nl.type(t)
+      indention--
+    }
+    bracket("}").nl
+    return this
+  }
+
+  ** Print data type and its slots
+  This type(DataType type)
+  {
+    doc(type.doc)
+    indent.w(type.name)
+    if (type.base != null) colon.typeref(type.base)
+    meta(type.meta)
+    if (!type.slots.isEmpty)
+    {
+      bracket(" {").nl
+      indention++
+      type.slots.each |s| { slot(s) }
+      indention--
+      indent.bracket("}")
+    }
+    //if (type.val != null) sp.quoted(type.val.toStr)
+    return nl
+  }
+
+  ** Print data slot
+  This slot(DataSlot slot)
+  {
+    indent.w(slot.name).meta(slot.meta).colon.typeref(slot.slotType).nl
+    return this
+  }
+
+  ** Meta data
+  This meta(DataDict dict)
+  {
+    show := dict.x.eachWhile |v, n|
+    {
+      if (n == "doc") return null
+      return "yes"
+    }
+    if (show == null) return this
+    return sp.bracket("<").pairs(dict, ["doc"]).bracket(">")
+  }
+
+  ** Type reference
+  This typeref(DataType t)
+  {
+    w(t.qname)
+  }
+
+  ** Print doc lines if showdoc option configured
+  private Void doc(Str? doc)
+  {
+    if (doc == null || doc.isEmpty) return
+    if (!showdoc) return
+
+    doc.splitLines.each |line, i|
+    {
+      indent.comment("// $line").nl
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Theme Utils
 //////////////////////////////////////////////////////////////////////////
 
@@ -227,6 +311,12 @@ internal class Printer
   This bracket(Str symbol)
   {
     color(theme.bracket).w(symbol).colorEnd(theme.bracket)
+  }
+
+  ** Colon and space (uses bracket color for now)
+  This colon()
+  {
+    bracket(":").sp
   }
 
   ** Print comment string in theme color

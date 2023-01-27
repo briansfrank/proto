@@ -204,12 +204,6 @@ internal class Parser
     return XetoType.makeSimple(loc, qname)
   }
 
-  private once XetoType markerType()
-  {
-// TODO
-    XetoType.makeSimple(FileLoc.synthetic, "Marker")
-  }
-
   private Void addToOf(Str:Obj of, Str? qname, Str? val)
   {
     of["_"+of.size] = Str:Obj[:].addNotNull("_is", qname).addNotNull("_val", val)
@@ -243,8 +237,29 @@ internal class Parser
 
   private Void addToParent(XetoObj parent, XetoObj child, Bool isMeta)
   {
+    addDoc(child, child.doc)
     err  := parent.add(child, isMeta)
     if (err != null) throw this.err(err, child.loc)
+  }
+
+  private Void addDoc(XetoObj p, Str? docStr)
+  {
+    if (docStr == null) return
+    if (p.meta["doc"] != null) return
+    doc := XetoObj(p.loc) { it.name = "doc"; it.type = strType; it.val = docStr }
+    p.addMeta(doc)
+  }
+
+  private once XetoType markerType()
+  {
+// TODO
+    XetoType.makeSimple(FileLoc.synthetic, "Marker")
+  }
+
+  private once XetoType strType()
+  {
+// TODO
+    XetoType.makeSimple(FileLoc.synthetic, "Str")
   }
 
 //////////////////////////////////////////////////////////////////////////
