@@ -107,17 +107,18 @@ internal class Session
 
   private Void eval(Str expr)
   {
+    // wrap list of expressions in do/end block
     if (expr.contains(";") || expr.contains("\n"))
       expr = "do\n$expr\nend"
 
+    // evaluate the expression
     val := cx.eval(expr)
-    print(val)
-  }
 
-  private Void print(Obj? val)
-  {
-    if (val === noEcho) return
-    out.printLine(val)
+    // print the value if no echo
+    if (val !== noEcho) out.printLine(val)
+
+    // save last value as "it"
+    if (val != null && val != noEcho) cx.defOrAssign("it", val, Loc.eval)
   }
 
   private Void help()
