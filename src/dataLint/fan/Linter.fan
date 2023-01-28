@@ -7,76 +7,42 @@
 //
 
 using data
+using haystackx
 using axonx
 
 **
 ** Linter
 **
 @Js
-class Linter
+class Linter : Fitter
 {
-  new make(AxonContext cx)
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  new make(AxonContext cx) : super(cx)
   {
-    this.cx = cx
+    gb = GridBuilder()
+    gb.addCol("subject")
+    gb.addCol("msg")
   }
 
-  Bool fits(Obj? val, DataType type)
+//////////////////////////////////////////////////////////////////////////
+// Fits
+//////////////////////////////////////////////////////////////////////////
+
+  Grid lintFits(Obj? val, DataType type)
   {
-    // get type for value
-    valType := data.typeOf(val, false)
-    if (valType == null) return explainNoType(val)
-
-    // check nominal typing
-    if (valType.isa(type)) return true
-
-    // check structurally typing
-    if (valType is DataDict && type.isaDict)
-      return fitsStruct(val, type)
-
-    return explainNoFit(valType, type)
-  }
-
-  Bool fitsStruct(DataDict dict, DataType type)
-  {
-    match := true
-    type.slots.each |slot|
+    failFast = false
+    recs := Etc.toRecs(val)
+    recs.each |rec|
     {
-      match = fitsSlot(dict.get(slot.name, null), slot) && match
+      subject = rec["id"] as Ref
+      fits(rec, type)
     }
-    return match
+    return toGrid
   }
-
-  private Bool fitsSlot(Obj? val, DataSlot slot)
-  {
-    t := slot.slotType
-    if (val == null && !t.isaMaybe)
-      return explainMissingSlot(slot)
-
-    // TODO: check value type without high level logging
-
-    return true
-  }
-
-  virtual Bool explainNoType(Obj? val) { false }
-
-  virtual Bool explainNoFit(DataType valType, DataType type) { false }
-
-  virtual Bool explainMissingSlot(DataSlot slot) { false }
-
-  DataEnv data() { cx.data }
-
-  AxonContext cx
-}
-
-**************************************************************************
-** MFitterExplain
-**************************************************************************
-
-/*
-@Js
-internal class MFitterExplain : MFitter
-{
-  new make(DataEnv env) : super(env) {}
 
   override Bool explainNoType(Obj? val)
   {
@@ -90,24 +56,29 @@ internal class MFitterExplain : MFitter
 
   override Bool explainMissingSlot(DataSlot slot)
   {
-    if (slot.slotType.isa(sys.marker))
+    if (slot.slotType.isaMarker)
       return log("Missing required marker '$slot.name'")
     else
       return log("Missing required slot '$slot.name'")
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Logging
+//////////////////////////////////////////////////////////////////////////
+
   Bool log(Str msg)
   {
-    items.add(env.dict(["msg":msg]))
+    gb.addRow2(subject, msg)
     return false
   }
 
-  DataSet explain(Obj? val, DataType type)
-  {
-    fits(val, type)
-    return env.set(items)
-  }
+  Grid toGrid() { gb.toGrid }
 
-  DataDict[] items := DataDict[,]
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  private Ref? subject
+  private GridBuilder gb
 }
-*/
+

@@ -22,7 +22,7 @@ const class LintFuncs
   @Axon
   static Grid lintFits(Obj? data, DataType type)
   {
-    throw Err("TODO!")
+    Linter(AxonContext.curAxon).lintFits(data, type)
   }
 }
 
