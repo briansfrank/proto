@@ -74,7 +74,12 @@ internal class Context : AxonContext
 
   override Dict? deref(Ref id)
   {
-    throw Err("TODO")
+    db.readById(id, false)
+  }
+
+  override Dict? trapRef(Ref ref, Bool checked := true)
+  {
+    db.readById(ref, checked)
   }
 
   override FilterInference inference()
@@ -84,7 +89,7 @@ internal class Context : AxonContext
 
   override Dict toDict()
   {
-    throw Err("TODO")
+    Etc.makeDict(["shell":Marker.val])
   }
 
   DataLib importDataLib(Str qname)
