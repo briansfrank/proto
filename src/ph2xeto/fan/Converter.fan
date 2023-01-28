@@ -6,9 +6,7 @@
 //   24 Aug 2022  Brian Frank  Creation
 //
 
-using pog
 using haystack
-using haystack::Lib
 
 **
 ** Command line program main

@@ -24,8 +24,9 @@ class Build : BuildGroup
       `dataEnv/build.fan`,
       `haystackx/build.fan`,
       `axonx/build.fan`,
-      `axonsh/build.fan`,
       `dataLint/build.fan`,
+      `axonsh/build.fan`,
+      `ph2xeto/build.fan`,
       `testData/build.fan`,
     ]
   }

@@ -10,14 +10,14 @@
 using build
 
 **
-** Build: ph2pog
+** Build: ph2xeto
 **
 class Build : BuildPod
 {
   new make()
   {
-    podName = "ph2pog"
-    summary = "Project Haystack def to pog converter"
+    podName = "ph2xeto"
+    summary = "Project Haystack def to xeto converter"
     meta    = ["org.name":     "SkyFoundry",
                "org.uri":      "https://skyfoundry.com/",
                "proj.name":    "Haxall",
@@ -28,7 +28,6 @@ class Build : BuildPod
     depends = ["sys @{fan.depend}",
                "concurrent @{fan.depend}",
                "util @{fan.depend}",
-               "pog @{pog.depend}",
                "haystack @{hx.depend}",
                "def @{hx.depend}",
                "defc @{hx.depend}"]
