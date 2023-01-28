@@ -28,7 +28,7 @@ internal class ShellDb
   Grid readByIds(Ref[] ids, Bool checked)
   {
     recs := ids.map |id->Dict?| { readById(id, checked) }
-    return Etc.makeDictsGrid(null, recs)
+    return toGrid(recs)
   }
 
   Dict? read(Filter filter, Bool checked, Context cx)
@@ -51,7 +51,7 @@ internal class ShellDb
       return acc.size < limit ? null : "break"
     }
     if (opts.has("sort")) Etc.sortDictsByDis(acc)
-    return Etc.makeDictsGrid(null, acc)
+    return toGrid(acc)
   }
 
   Int readCount(Filter filter, Context cx)
@@ -62,7 +62,18 @@ internal class ShellDb
     return count
   }
 
-  Grid load(Obj arg, Context cx)
+  Grid toGrid(Dict[] recs)
+  {
+    // build grid with most important columns first to fit in terminal
+    cols := Etc.dictsNames(recs)
+    cols.moveTo("id", 0)
+    cols.moveTo("dis", 1)
+    gb := GridBuilder()
+    gb.addColNames(cols)
+    return gb.addDictRows(recs).toGrid
+  }
+
+  Void load(Obj arg, Context cx)
   {
     uri := arg as Uri ?: throw ArgErr("Load file must be Uri, not $arg.typeof")
     file := File(uri)
@@ -84,7 +95,6 @@ internal class ShellDb
     loaded = true
 
     echo("LOAD: loaded $byId.size recs")
-    return readAll(Filter.has("id"), Etc.emptyDict, cx)
   }
 
   Void checkLoaded()
@@ -203,8 +213,9 @@ class ShellDbFuncs : AbstractShellFuncs
   **   load(`folder/site.json`)
   **
   @Axon
-  static Grid load(Obj file)
+  static Obj load(Obj file)
   {
     cx.db.load(file, cx)
+    return noEcho
   }
 }

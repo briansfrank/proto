@@ -129,14 +129,15 @@ internal class Printer
       }
     }
 
-    // if total width exceeds terminal, first try to shrink down the biggest ones
+    // if total width exceeds terminal, first try to shrink down the biggest
+    // ones; but don't strink first 2 which typically contain id, dis
     while (true)
     {
       total := 0
       colWidths.each |w| { total += w + 2 }
       if (total <= width) break
       maxi := colWidths.size-1
-      colWidths.each |w, i| { if (w > colWidths[maxi]) maxi = i }
+      colWidths.eachRange(2..-1) |w, i| { if (w > colWidths[maxi]) maxi = i }
       if (colWidths[maxi] < 16) break
       colWidths[maxi] = colWidths[maxi] - 1
     }

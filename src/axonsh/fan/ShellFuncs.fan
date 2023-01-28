@@ -125,9 +125,15 @@ class ShellFuncs : AbstractShellFuncs
   **   using("phx.points")    // import given library into scope
   @Axon static Obj? _using(Str? qname := null)
   {
-    if (qname != null) return cx.importDataLib(qname)
-
     out := cx.session.out
+
+    if (qname != null)
+    {
+      cx.importDataLib(qname)
+      out.printLine("using $qname")
+      return noEcho
+    }
+
     out.printLine
     cx.libs.keys.sort.each |x| { out.printLine(x) }
     out.printLine
