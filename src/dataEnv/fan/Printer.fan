@@ -31,6 +31,7 @@ internal class Printer
     this.showdoc    = optBool("showdoc", true)
     this.indention  = optInt("indent", 0)
     this.width      = optInt("width", terminalWidth)
+    this.height     = optInt("height", terminalHeight)
     this.isStdout   = out === Env.cur.out
     this.theme      = isStdout ? PrinterTheme.configured : PrinterTheme.none
   }
@@ -150,9 +151,14 @@ internal class Printer
       lastCol = i
     }
 
+    // clip rows to fit height
+    numRows := cells.size
+    maxRows := numRows //height - 4
+
     // output
     cells.each |row, rowIndex|
     {
+      if (rowIndex >= maxRows) return
       isHeader := rowIndex == 0
       if (isHeader) color(theme.comment)
       row.each |cell, col|
@@ -177,6 +183,9 @@ internal class Printer
         colorEnd(theme.comment)
       }
     }
+
+    if (maxRows < numRows)
+      warn("${numRows - maxRows} more rows; use {showall} to see all rows")
 
     return this
   }
@@ -325,6 +334,12 @@ internal class Printer
     color(theme.comment).w(str).colorEnd(theme.comment)
   }
 
+  ** Print in warning theme color
+  This warn(Str str)
+  {
+    color(theme.warn).w(str).colorEnd(theme.warn)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // OutStream Utils
 //////////////////////////////////////////////////////////////////////////
@@ -371,8 +386,9 @@ internal class Printer
 
   Int optInt(Str name, Int def) { opt(name, def) as Int ?: def }
 
-  static Int terminalWidth()
+  Int terminalWidth()
   {
+    if (isStdout) return 100_000
     try
     {
       jline := Type.find("[java]jline::TerminalFactory", false)
@@ -380,6 +396,18 @@ internal class Printer
     }
     catch (Err e) { e.trace }
     return 80
+  }
+
+  Int terminalHeight()
+  {
+    if (isStdout) return 100_000
+    try
+    {
+      jline := Type.find("[java]jline::TerminalFactory", false)
+      if (jline != null) return jline.method("get").call->getHeight
+    }
+    catch (Err e) { e.trace }
+    return 50
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -394,6 +422,7 @@ internal class Printer
   const Bool escUnicode        // escape unicode above 0x7f
   const Bool showdoc           // print documentation
   const Int width              // terminal width
+  const Int height             // terminal height
   const PrinterTheme theme     // syntax color coding
 }
 
@@ -431,7 +460,7 @@ internal const class PrinterTheme
     try
     {
       // load from environment variable:
-      // export DATA_PRINT_THEME="bracket:red, str:cyan, comment:green"
+      // export DATA_PRINT_THEME="bracket:red, str:cyan, comment:green, warn:yellow"
       var := Env.cur.vars["DATA_PRINT_THEME"]
       if (var == null) return none
 
@@ -452,6 +481,7 @@ internal const class PrinterTheme
         it.bracket = map["bracket"]
         it.str     = map["str"]
         it.comment = map["comment"]
+        it.warn    = map["warn"]
       }
     }
     catch (Err e)
@@ -467,4 +497,5 @@ internal const class PrinterTheme
   const Str? bracket
   const Str? str
   const Str? comment
+  const Str? warn
 }
