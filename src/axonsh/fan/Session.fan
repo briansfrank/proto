@@ -14,7 +14,6 @@ using util
 **
 internal class Session
 {
-
   new make(OutStream out)
   {
     this.out = out
@@ -147,6 +146,6 @@ internal class Session
   OutStream out
   Context cx
   Bool isDone := false
-
+  ShellDb db := ShellDb()
 }
 

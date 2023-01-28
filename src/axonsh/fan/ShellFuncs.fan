@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, Brian Frank
+// Copyright (c) 2023, Brian Frank
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -12,7 +12,7 @@ using axonx
 **
 ** Axon shell specific functions
 **
-class ShellFuncs
+class ShellFuncs : AbstractShellFuncs
 {
   ** Exit the shell.
   @Axon static Obj? quit()
@@ -41,6 +41,9 @@ class ShellFuncs
       out.printLine("scope()            Print variables in scope")
       out.printLine("using()            Print data libraries in use")
       out.printLine("using(qname)       Import given data library")
+      out.printLine("load(file)         Load virtual database")
+      out.printLine("read(filter)       Read rec as dict from virtual database")
+      out.printLine("readAll(filter)    Read recs as grid from virtual database")
       out.printLine
       return noEcho
     }
@@ -182,7 +185,17 @@ class ShellFuncs
     return t.replace("\n", " ").trim
   }
 
-  private static Str noEcho() { Session.noEcho }
-
-  private static Context cx() { AxonContext.curAxon }
 }
+
+**************************************************************************
+** Absstract ShellFuncs
+**************************************************************************
+
+abstract class AbstractShellFuncs
+{
+  internal static Str noEcho() { Session.noEcho }
+
+  internal static Context cx() { AxonContext.curAxon }
+
+}
+

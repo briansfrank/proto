@@ -31,12 +31,17 @@ internal class Context : AxonContext
     acc := Str:TopFn[:]
     acc.addAll(FantomFn.reflectType(CoreLib#))
     acc.addAll(FantomFn.reflectType(ShellFuncs#))
+    acc.addAll(FantomFn.reflectType(ShellDbFuncs#))
     acc.addAll(FantomFn.reflectType(IOFuncs#))
     acc.addAll(FantomFn.reflectType(XFuncs#))
     return acc
   }
 
   Session session
+
+  OutStream out() { session.out }
+
+  ShellDb db() { session.db }
 
   const DataEnv data
 

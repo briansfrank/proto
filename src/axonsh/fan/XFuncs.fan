@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, Brian Frank
+// Copyright (c) 2023, Brian Frank
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -12,7 +12,7 @@ using axonx
 **
 ** Experimental functions to eventually push back into core
 **
-class XFuncs
+class XFuncs : AbstractShellFuncs
 {
   ** Return the data type of the given value.  Raise exception
   ** if value type is not mapped into the data type system.
@@ -65,5 +65,4 @@ class XFuncs
     cx.data.fitsExplain(val, type)
   }
 
-  private static Context cx() { AxonContext.curAxon }
 }

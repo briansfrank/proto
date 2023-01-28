@@ -403,6 +403,8 @@ internal const class GbGrid : Grid
   override Row? getSafe(Int index) { rows.getSafe(index) }
   override Row? first() { rows.first }
   override Row[] toRows() { rows }
+
+  override Str toStr() { "Grid [$cols.size x $size]" }
 }
 
 @Js
