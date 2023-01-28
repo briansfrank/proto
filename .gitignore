@@ -8,7 +8,7 @@ fan.props
 
 # pog
 /src/play.pog
-/pog/play/*
+/play/*
 
 # lib/
 /lib/fan/*.pod
