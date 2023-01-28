@@ -19,7 +19,6 @@ class Build : BuildGroup
   {
     childrenScripts =
     [
-      `pog/build.fan`,
       `data/build.fan`,
       `xeto/build.fan`,
       `dataEnv/build.fan`,
@@ -27,13 +26,6 @@ class Build : BuildGroup
       `axonx/build.fan`,
       `axonsh/build.fan`,
       `dataLint/build.fan`,
-      `dataHaystack/build.fan`,
-      `pogEnv/build.fan`,
-      `pogTransduce/build.fan`,
-      `pogCli/build.fan`,
-      `ph2pog/build.fan`,
-      `pogStub/build.fan`,
-      `testPog/build.fan`,
       `testData/build.fan`,
     ]
   }
@@ -45,7 +37,7 @@ class Build : BuildGroup
   @Target { help = "Delete entire lib/ directory" }
   Void superclean()
   {
-    Delete(this, Env.cur.workDir + `lib/`).run
+    Delete(this, Env.cur.workDir + `lib/fan/`).run
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -79,10 +79,10 @@ internal class ShellDb
     file := File(uri)
 
     echo("LOAD: loading '$file.osPath' ...")
-    set := cx.data.readFile(file)
+    grid := readFile(file)
 
     byId.clear
-    set.x.each |rec|
+    grid.each |rec|
     {
       id := rec["id"] as Ref
       if (id == null)
@@ -95,6 +95,18 @@ internal class ShellDb
     loaded = true
 
     echo("LOAD: loaded $byId.size recs")
+  }
+
+  private Grid readFile(File file)
+  {
+    switch (file.ext)
+    {
+      case "zinc": return ZincReader(file.in).readGrid
+      case "json": return JsonReader(file.in).readGrid
+      case "trio": return TrioReader(file.in).readGrid
+      case "csv":  return CsvReader(file.in).readGrid
+      default:     throw ArgErr("ERROR: unknown file type [$file.osPath]")
+    }
   }
 
   Void checkLoaded()

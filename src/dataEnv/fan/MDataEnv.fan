@@ -132,20 +132,6 @@ internal const class MDataEnv : DataEnv
     Printer(out, dict(opts)).print(val)
   }
 
-  override DataSet read(InStream in, MimeType type, DataDict? opts := null)
-  {
-    reader := DataReader.factory(this, type, opts ?: emptyDict)
-    return reader.readSet(in)
-  }
-
-  override DataSet readFile(File file, DataDict? opts := null)
-  {
-    type := file.mimeType ?: throw ArgErr("Cannot determine mime type from file ext: $file.name")
-    opts = dict(opts).x.set("loc", FileLoc(file)).collect
-    reader := DataReader.factory(this, type, opts)
-    return reader.readSet(file.in)
-  }
-
   override Str[] installed() { libMgr.installed }
 
   override DataLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }

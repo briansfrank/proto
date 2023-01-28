@@ -21,6 +21,7 @@ class HaystackDataTest : HaystackTest
 // Grid
 //////////////////////////////////////////////////////////////////////////
 
+/*
   Void testGrid()
   {
     gb := GridBuilder()
@@ -62,6 +63,7 @@ class HaystackDataTest : HaystackTest
     }
     */
   }
+*/
 
   DataEnv env() { DataEnv.cur }
 }
