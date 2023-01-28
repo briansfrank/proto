@@ -16,34 +16,42 @@ class Main
   Int main(Str[] args)
   {
     // short circuiting options
-    if (hasArg(args, "-help", "-?")) return printHelp
-    if (hasArg(args, "-version", "-v")) return printVersion
+    opts := args.findAll { it.startsWith("-") }
+    args = args.findAll { !it.startsWith("-") }
+    if (hasOpt(opts, "-help", "-?")) return printHelp
+    if (hasOpt(opts, "-version", "-v")) return printVersion
 
     // if no args, then enter interactive shell
     session := Session(out)
     if (args.isEmpty) return session.run
 
     // run arg as either file or expression
-    arg := args[0]
+    arg := args.first ?: ""
     if (arg.endsWith(".axon")) arg = File.os(arg).readAllStr
-    return session.runExpr(arg)
+    errnum := session.eval(arg)
+    if (hasOpt(opts, "-i"))
+      return session.run
+    else
+      return errnum
   }
 
-  Bool hasArg(Str[] args, Str name, Str? abbr := null)
+  Bool hasOpt(Str[] opts, Str name, Str? abbr := null)
   {
-    args.any { it == name || it == abbr }
+    opts.any { it == name || it == abbr }
   }
 
   Int printHelp()
   {
     out.printLine
     out.printLine("Usage:")
-    out.printLine("  axon               Start interactive shell")
-    out.printLine("  axon file          Execute axon script from file")
-    out.printLine("  axon 'expr'        Evaluate axon expression")
+    out.printLine("  axon              Start interactive shell")
+    out.printLine("  axon file         Execute axon script from file")
+    out.printLine("  axon 'expr'       Evaluate axon expression")
+    out.printLine("  axon 'expr' -i    Eval axon and then enter interactive shell")
     out.printLine("Options:")
-    out.printLine("  -help, -?          Print usage help")
-    out.printLine("  -version, -v       Print version info")
+    out.printLine("  -help, -?         Print usage help")
+    out.printLine("  -version, -v      Print version info")
+    out.printLine("  -i                Enter interactive shell after eval")
     out.printLine
     return 0
   }

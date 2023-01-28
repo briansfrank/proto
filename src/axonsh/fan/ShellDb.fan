@@ -62,7 +62,7 @@ internal class ShellDb
     return count
   }
 
-  Void load(Obj arg, Context cx)
+  Grid load(Obj arg, Context cx)
   {
     uri := arg as Uri ?: throw ArgErr("Load file must be Uri, not $arg.typeof")
     file := File(uri)
@@ -84,6 +84,7 @@ internal class ShellDb
     loaded = true
 
     echo("LOAD: loaded $byId.size recs")
+    return readAll(Filter.has("id"), Etc.emptyDict, cx)
   }
 
   Void checkLoaded()
@@ -202,9 +203,8 @@ class ShellDbFuncs : AbstractShellFuncs
   **   load(`folder/site.json`)
   **
   @Axon
-  static Obj load(Obj file)
+  static Grid load(Obj file)
   {
     cx.db.load(file, cx)
-    return noEcho
   }
 }

@@ -62,7 +62,7 @@ class XetoCompiler
       }
       t2 := Duration.now
       duration = t2 - t1
-      info("Compile data lib $qname.toCode [$duration.toLocale]")
+      //info("Compile data lib $qname.toCode [$duration.toLocale]")
       return this
     }
     catch (XetoCompilerErr e)

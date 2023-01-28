@@ -98,7 +98,7 @@ class ShellFuncs : AbstractShellFuncs
   ** Pretty print the given value.
   @Axon static Obj? print(Obj? val := null, Obj? opts := null)
   {
-    cx.data.print(val, cx.session.out, opts)
+    cx.session.print(val, opts)
     return noEcho
   }
 

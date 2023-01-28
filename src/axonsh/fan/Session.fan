@@ -20,20 +20,6 @@ internal class Session
     this.cx  = Context(this)
   }
 
-  Int runExpr(Str expr)
-  {
-    try
-    {
-      eval(expr)
-      return 0
-    }
-    catch (Err e)
-    {
-      err("Internal error", e)
-      return 0
-    }
-  }
-
   Int run()
   {
     out.printLine("Axon shell v${typeof.pod.version} ('?' for help, 'quit' to quit)")
@@ -54,6 +40,37 @@ internal class Session
       }
     }
     return 0
+  }
+
+  Int eval(Str expr)
+  {
+    // wrap list of expressions in do/end block
+    if (expr.contains(";") || expr.contains("\n"))
+      expr = "do\n$expr\nend"
+
+    // evaluate the expression
+    Obj? val
+    try
+    {
+      val = cx.eval(expr)
+    }
+    catch (EvalErr e)
+    {
+      err(e.msg, e.cause)
+      return 1
+    }
+
+    // print the value if no echo
+    if (val !== noEcho) print(val)
+
+    // save last value as "it"
+    if (val != null && val != noEcho) cx.defOrAssign("it", val, Loc.eval)
+    return 0
+  }
+
+  Void print(Obj? val, Obj? opts := null)
+  {
+    cx.data.print(val, out, opts)
   }
 
   private Str prompt()
@@ -102,22 +119,6 @@ internal class Session
 
     // evaluate as axon
     eval(expr)
-  }
-
-  private Void eval(Str expr)
-  {
-    // wrap list of expressions in do/end block
-    if (expr.contains(";") || expr.contains("\n"))
-      expr = "do\n$expr\nend"
-
-    // evaluate the expression
-    val := cx.eval(expr)
-
-    // print the value if no echo
-    if (val !== noEcho) out.printLine(val)
-
-    // save last value as "it"
-    if (val != null && val != noEcho) cx.defOrAssign("it", val, Loc.eval)
   }
 
   private Void help()
