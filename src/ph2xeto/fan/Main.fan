@@ -18,7 +18,7 @@ class Main : AbstractMain
   Bool version
 
   @Opt { help = "Output directory for ph lib" }
-  File phDir := `/work/proto/pog/ph/`.toFile
+  File phDir := `/work/proto/lib/data/ph/`.toFile
 
   override Int run()
   {
@@ -37,15 +37,13 @@ class Main : AbstractMain
   private Int printVersion(OutStream out)
   {
     out.printLine
-    out.printLine("Proto Compiler")
+    out.printLine("Project Haystack 2 Xeto")
     out.printLine
-    out.printLine("protoc.version:   " + typeof.pod.version)
+    out.printLine("ph2xeto.version:  " + typeof.pod.version)
     out.printLine("java.version:     " + Env.cur.vars["java.version"])
     out.printLine("java.vm.name:     " + Env.cur.vars["java.vm.name"])
     out.printLine("java.home:        " + Env.cur.vars["java.home"])
     out.printLine("fan.version:      " + Pod.find("sys").version)
-    out.printLine("fan.platform:     " + Env.cur.platform)
-    out.printLine("fan.homeDir:      " + Env.cur.homeDir.osPath)
     out.printLine("fan.workDir:      " + Env.cur.workDir.osPath)
     out.printLine
     out.flush

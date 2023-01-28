@@ -32,7 +32,6 @@ class Converter
   Void convert()
   {
     writeLib
-    writeTags
     writeEntites
   }
 
@@ -43,10 +42,10 @@ class Converter
   ** Write lib file
   private Void writeLib()
   {
-    write(`lib.pog`) |out|
+    write(`lib.xeto`) |out|
     {
       out.printLine(
-       """#<
+       """pragma: Lib <
             doc: "Project haystack core library"
             version: "$ph.version.toStr"
             depends: {
@@ -65,12 +64,13 @@ class Converter
 //////////////////////////////////////////////////////////////////////////
 
   ** Write tags file
+  /*
   private Void writeTags()
   {
     tags := ns.findDefs |def| { def.symbol.type.isTag }
     tags.sort |a, b| { a.name <=> b.name }
 
-    write(`tags.pog`) |out|
+    write(`tags.xeto`) |out|
     {
       out.printLine("// All standard tags defined by Project Haystack")
       out.printLine("Tag : {")
@@ -113,11 +113,13 @@ class Converter
     if (kind == Kind.span) return Kind.xstr.name
     return kind.name
   }
+  */
 
 //////////////////////////////////////////////////////////////////////////
 // Choices
 //////////////////////////////////////////////////////////////////////////
 
+  /*
   private Void writeChoice(OutStream out, Def choice)
   {
     writeDoc(out, choice)
@@ -142,6 +144,7 @@ class Converter
     out.printLine(">")
     out.printLine
   }
+  */
 
 //////////////////////////////////////////////////////////////////////////
 // Entities
@@ -155,7 +158,7 @@ class Converter
     entities.sort |a, b| { a.name <=> b.name }
     entities.moveTo(entityDef, 0)
 
-    write(`entities.pog`) |out|
+    write(`entities.xeto`) |out|
     {
       entities.each |def|
       {
@@ -164,7 +167,7 @@ class Converter
         type := toEntityType(def)
         out.printLine("$name: $type {")
         writeEntityUsage(out, def)
-        writeEntityTags(out, def)
+        //writeEntityTags(out, def)
         writeEntityChildren(out, def)
         out.printLine("}")
         out.printLine
@@ -227,6 +230,7 @@ class Converter
     }
   }
 
+/*
   private Void writeEntityTags(OutStream out, Def entity)
   {
     tags := Def[,]
@@ -246,12 +250,13 @@ class Converter
       out.printLine("  $tag: " + Str.spaces(maxNameSize-tag.toStr.size) + "ph.Tag.$tag?")
     }
   }
+*/
 
   private Void writeEntityChildren(OutStream out, Def entity)
   {
-    // for right now, add points for equip
-    if (entity.name == "equip")
-      out.printLine("  points: Dict<of:Point>")
+    // insert queries
+    if (entity.name == "equip")  out.printLine("  points: Query<of:Point, inverse:\"Point.equips\">")
+    if (entity.name == "point")  out.printLine("  equips: Query<of:Equip, via:\"equipRef+\">")
   }
 
   private Bool isInherited(Def entity, Def tag)
