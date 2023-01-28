@@ -12,7 +12,7 @@ using axonx
 **
 ** Axon shell specific functions
 **
-class ShellFuncs : AbstractShellFuncs
+const class ShellFuncs : AbstractShellFuncs
 {
   ** Exit the shell.
   @Axon static Obj? quit()
@@ -197,7 +197,7 @@ class ShellFuncs : AbstractShellFuncs
 ** Absstract ShellFuncs
 **************************************************************************
 
-abstract class AbstractShellFuncs
+abstract const class AbstractShellFuncs
 {
   internal static Str noEcho() { Session.noEcho }
 

@@ -7,6 +7,7 @@
 //
 
 using data
+using dataLint
 using haystackx
 using haystackx::UnknownFuncErr
 using axonx
@@ -34,6 +35,7 @@ internal class Context : AxonContext
     acc.addAll(FantomFn.reflectType(ShellDbFuncs#))
     acc.addAll(FantomFn.reflectType(IOFuncs#))
     acc.addAll(FantomFn.reflectType(XFuncs#))
+    acc.addAll(FantomFn.reflectType(LintFuncs#))
     return acc
   }
 
@@ -43,7 +45,7 @@ internal class Context : AxonContext
 
   ShellDb db() { session.db }
 
-  const DataEnv data
+  const override DataEnv data
 
   const Str:TopFn funcs
 

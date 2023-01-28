@@ -122,7 +122,7 @@ internal class ShellDb
 ** ShellDbFuncs
 **************************************************************************
 
-class ShellDbFuncs : AbstractShellFuncs
+const class ShellDbFuncs : AbstractShellFuncs
 {
   **
   ** Read from virtual database the first record which matches filter.

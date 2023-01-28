@@ -7,12 +7,13 @@
 //
 
 using data
+using dataLint
 using axonx
 
 **
 ** Experimental functions to eventually push back into core
 **
-class XFuncs : AbstractShellFuncs
+const class XFuncs : AbstractShellFuncs
 {
   ** Return the data type of the given value.  Raise exception
   ** if value type is not mapped into the data type system.
@@ -55,14 +56,6 @@ class XFuncs : AbstractShellFuncs
   **    fits(123, Str)      >>  false
   @Axon static Bool fits(Obj? val, DataType type)
   {
-    cx.data.fits(val, type)
+    Linter(cx).fits(val, type)
   }
-
-  ** Explain why value does not fit given type.
-  ** If it does fit return the empty data set.
-  @Axon static DataSet fitsExplain(Obj? val, DataType type)
-  {
-    cx.data.fitsExplain(val, type)
-  }
-
 }

@@ -36,13 +36,6 @@ const abstract class DataEnv
   ** Data type for Fantom object
   abstract DataType? typeOf(Obj? val, Bool checked := true)
 
-  ** Return if objects fits given type either nominally or structurally
-  abstract Bool fits(Obj? val, DataType type)
-
-  ** Explain why value does not fit given type.
-  ** If it does fit return the empty data set.
-  abstract DataSet fitsExplain(Obj? val, DataType type)
-
   ** Create a sequence object from given value:
   **   - If null, return the empty sequence
   **   - If DataSeq, return it

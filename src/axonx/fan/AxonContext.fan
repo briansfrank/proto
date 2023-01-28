@@ -48,6 +48,9 @@ abstract class AxonContext : HaystackContext
   ** Definition namespace
   abstract Namespace ns()
 
+  ** Data environment for the context
+  abstract DataEnv data()
+
   ** Data types
   @NoDoc virtual DataType? findType(Str name, Bool checked := true) { throw UnsupportedErr() }
 

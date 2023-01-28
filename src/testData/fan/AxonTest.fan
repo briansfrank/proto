@@ -58,6 +58,8 @@ internal class TestContext : AxonContext
 
   override Namespace ns() { test.ns }
 
+  override DataEnv data() { test.env }
+
   override DataType? findType(Str name, Bool checked := true)
   {
     DataEnv.cur.lib("sys").libType(name, checked)

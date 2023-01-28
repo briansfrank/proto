@@ -7,30 +7,30 @@
 //
 
 using data
+using axonx
 
 **
-** MFitter implements DataEnv.fits
+** Linter
 **
 @Js
-internal class MFitter
+class Linter
 {
-  new make(DataEnv env)
+  new make(AxonContext cx)
   {
-    this.env = env
-    this.sys = this.env.sys
+    this.cx = cx
   }
 
   Bool fits(Obj? val, DataType type)
   {
     // get type for value
-    valType := env.typeOf(val, false)
+    valType := data.typeOf(val, false)
     if (valType == null) return explainNoType(val)
 
     // check nominal typing
     if (valType.isa(type)) return true
 
     // check structurally typing
-    if (valType is DataDict && type.isa(sys.dict))
+    if (valType is DataDict && type.isaDict)
       return fitsStruct(val, type)
 
     return explainNoFit(valType, type)
@@ -49,7 +49,7 @@ internal class MFitter
   private Bool fitsSlot(Obj? val, DataSlot slot)
   {
     t := slot.slotType
-    if (val == null && !t.isa(sys.maybe))
+    if (val == null && !t.isaMaybe)
       return explainMissingSlot(slot)
 
     // TODO: check value type without high level logging
@@ -63,14 +63,16 @@ internal class MFitter
 
   virtual Bool explainMissingSlot(DataSlot slot) { false }
 
-  const MDataEnv env
-  const MSys sys
+  DataEnv data() { cx.data }
+
+  AxonContext cx
 }
 
 **************************************************************************
 ** MFitterExplain
 **************************************************************************
 
+/*
 @Js
 internal class MFitterExplain : MFitter
 {
@@ -108,4 +110,4 @@ internal class MFitterExplain : MFitter
 
   DataDict[] items := DataDict[,]
 }
-
+*/

@@ -64,16 +64,6 @@ internal const class MDataEnv : DataEnv
     return null
   }
 
-  override Bool fits(Obj? val, DataType type)
-  {
-    MFitter(this).fits(val, type)
-  }
-
-  override DataSet fitsExplain(Obj? val, DataType type)
-  {
-    MFitterExplain(this).explain(val, type)
-  }
-
   override DataDict dict(Obj? val)
   {
     if (val == null) return emptyDict
