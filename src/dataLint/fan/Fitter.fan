@@ -49,8 +49,12 @@ class Fitter
   private Bool fitsSlot(Obj? val, DataSlot slot)
   {
     t := slot.slotType
+
+    if (t.isaQuery) return true
+
     if (val == null && !t.isaMaybe)
       return explainMissingSlot(slot)
+
 
     // TODO: check value type without high level logging
 

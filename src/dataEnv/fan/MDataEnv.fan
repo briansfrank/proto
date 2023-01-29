@@ -191,6 +191,7 @@ internal const class MSys
     this.maybe    = lib.libType("Maybe")
     this.and      = lib.libType("And")
     this.or       = lib.libType("Or")
+    this.query    = lib.libType("Query")
   }
 
   const DataLib lib
@@ -220,6 +221,7 @@ internal const class MSys
   const DataType maybe
   const DataType and
   const DataType or
+  const DataType query
 }
 
 

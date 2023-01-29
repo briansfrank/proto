@@ -129,6 +129,7 @@ internal const class MDataType : MDataDef, DataType
   override Bool isaMaybe()  { isa(env.sys.maybe) }
   override Bool isaAnd()    { isa(env.sys.and) }
   override Bool isaOr()     { isa(env.sys.or) }
+  override Bool isaQuery()  { isa(env.sys.query) }
 
 }
 

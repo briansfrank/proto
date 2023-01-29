@@ -59,4 +59,7 @@ const mixin DataType : DataDef
   ** Return if this type inherits from 'sys.Or'
   @NoDoc abstract Bool isaOr()
 
+  ** Return if this type inherits from 'sys.Query'
+  @NoDoc abstract Bool isaQuery()
+
 }
