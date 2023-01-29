@@ -13,7 +13,7 @@ using axonx
 **
 ** Experimental functions to eventually push back into core
 **
-const class XFuncs : AbstractShellFuncs
+const class XFuncs
 {
   ** Return the data type of the given value.  Raise exception
   ** if value type is not mapped into the data type system.
@@ -24,7 +24,8 @@ const class XFuncs : AbstractShellFuncs
   **    typeof({})    >>  sys.Dict
   @Axon static DataType? _typeof(Obj? val, Bool checked := true)
   {
-    cx.data.typeOf(val, checked)
+    cx := AxonContext.curAxon
+    return cx.data.typeOf(val, checked)
   }
 
   ** Return if value is an instance of the given type.  This
@@ -44,6 +45,7 @@ const class XFuncs : AbstractShellFuncs
   @Axon static Bool isa(Obj? val, DataType type)
   {
     if (val is DataType) return ((DataType)(val)).isa(type)
+    cx := AxonContext.curAxon
     return cx.data.typeOf(val).isa(type)
   }
 
@@ -56,6 +58,7 @@ const class XFuncs : AbstractShellFuncs
   **    fits(123, Str)      >>  false
   @Axon static Bool fits(Obj? val, DataType type)
   {
-    Linter(cx).fits(val, type)
+    cx := AxonContext.curAxon
+    return Linter(cx).fits(val, type)
   }
 }
