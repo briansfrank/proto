@@ -16,6 +16,10 @@ using data
 class DataTypeTest : Test
 {
 
+//////////////////////////////////////////////////////////////////////////
+// Is-A
+//////////////////////////////////////////////////////////////////////////
+
   Void testIsa()
   {
     verifyIsa("sys.Obj", "sys.Obj", true)
@@ -61,6 +65,40 @@ class DataTypeTest : Test
     verifyEq(a.isa(b), expected)
     if (m != null) verifyEq(m.call(a), expected)
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Reflection
+//////////////////////////////////////////////////////////////////////////
+
+  Void testReflection()
+  {
+    ph := env.lib("ph")
+
+    equipSlots       := ["equip:Marker", "points:Query"]
+    meterSlots       := equipSlots.dup.add("meter:Marker")
+    elecMeterSlots   := meterSlots.dup.add("elec:Marker")
+    acElecMeterSlots := elecMeterSlots.dup.add("ac:Marker")
+
+    verifySlots(ph->Equip,       equipSlots)
+    verifySlots(ph->Meter,       meterSlots)
+    verifySlots(ph->ElecMeter,   elecMeterSlots)
+    verifySlots(ph->AcElecMeter, acElecMeterSlots)
+  }
+
+  Void verifySlots(DataType t, Str[] expected)
+  {
+    slots := t.slots
+echo("--> $t $slots")
+    slots.each |s, i|
+    {
+      verifyEq("$s.name:$s.slotType.name", expected[i])
+    }
+    verifyEq(slots.size, expected.size)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
 
   DataEnv env() { DataEnv.cur }
 

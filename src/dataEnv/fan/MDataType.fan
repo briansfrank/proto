@@ -75,12 +75,11 @@ internal const class MDataType : MDataDef, DataType
     this.loc      = ast.loc
     this.base     = base
     this.meta     = lib.env.astMeta(ast.meta)
-    this.slotsRef = AtomicRef(MDataTypeSlots.empty)
   }
 
   internal Void reifySlots(XetoObj ast)
   {
-    slotsRef.val = MDataTypeSlots.reify(this, ast)
+    declaredSlotsRef.val = MDataTypeSlots.reify(this, ast)
   }
 
   override MDataEnv env() { libRef.env }
@@ -93,21 +92,27 @@ internal const class MDataType : MDataDef, DataType
   const override Str qname
   const override DataDict meta
   const override DataType? base
-  private const AtomicRef slotsRef
+  private const AtomicRef declaredSlotsRef := AtomicRef()
 
-  override Str:DataSlot map() { typeSlots.map }
+  override Str:DataSlot map() { effectiveSlots.map }
 
-  override DataSlot[] slots() { typeSlots.list }
+  override DataSlot[] slots() { effectiveSlots.list }
 
   override DataSlot? slot(Str name, Bool checked := true)
   {
-    slot := typeSlots.map[name]
+    slot := effectiveSlots.map[name]
     if (slot != null) return slot
     if (checked) throw UnknownSlotErr("${qname}.${name}")
     return null
   }
 
-  MDataTypeSlots typeSlots() { slotsRef.val }
+  MDataTypeSlots effectiveSlots()
+  {
+    x := effectiveSlotsRef.val as MDataTypeSlots
+    if (x == null) effectiveSlotsRef.val = x = MDataTypeSlots.inherit(this, declaredSlotsRef.val)
+    return x
+  }
+  private const AtomicRef effectiveSlotsRef := AtomicRef()
 
   override Bool isa(DataType that)
   {
@@ -136,6 +141,7 @@ internal const class MDataTypeSlots
 {
   const static MDataTypeSlots empty := MDataTypeSlots(MDataSlot[,], Str:MDataSlot[:])
 
+  ** Reify the declared slots
   static MDataTypeSlots reify(MDataType parent, XetoObj astParent)
   {
     astSlots := astParent.slots
@@ -152,6 +158,37 @@ internal const class MDataTypeSlots
     return make(list, map)
   }
 
+  ** Lazily build inherited slot map
+  static MDataTypeSlots inherit(MDataType parent, MDataTypeSlots declared)
+  {
+    // no base (Obj), then return declared
+    if (parent.base == null) return declared
+    inherited := ((MDataType)parent.base).effectiveSlots
+
+    // if inherited is empty, return declared
+    if (inherited.isEmpty) return declared
+
+    // TODO: when to report collision errors
+    list := inherited.list.dup
+    map := inherited.map.dup
+    declared.list.each |slot|
+    {
+      name := slot.name
+      if (map[name] == null)
+      {
+        list.add(slot)
+        map.add(name, slot)
+      }
+      else
+      {
+        i := list.findIndex |x| { x.name == name } // TODO: quick replace in same order
+        list[i] = slot
+        map[name] = slot
+      }
+    }
+    return make(list, map)
+  }
+
   private new make(MDataSlot[] list, Str:MDataSlot map)
   {
     this.list = list
@@ -160,5 +197,7 @@ internal const class MDataTypeSlots
 
   const MDataSlot[] list
   const Str:MDataSlot map
+  Int size() { list.size }
+  Bool isEmpty() { list.isEmpty }
 }
 
