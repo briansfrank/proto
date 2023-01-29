@@ -128,10 +128,18 @@ internal const class MDataEnv : DataEnv
 
   override DataType? type(Str qname, Bool checked := true)
   {
-    dot := qname.indexr(".") ?: throw ArgErr("Invalid qname: qname")
+    dot := qname.indexr(".") ?: throw ArgErr("Invalid qname: $qname")
     libName := qname[0..<dot]
     typeName := qname[dot+1..-1]
     return lib(libName, checked)?.libType(typeName, checked)
+  }
+
+  override DataSlot? slot(Str qname, Bool checked := true)
+  {
+    dot := qname.indexr(".") ?: throw ArgErr("Invalid qname: $qname")
+    typeName := qname[0..<dot]
+    slotName := qname[dot+1..-1]
+    return type(typeName)?.slot(slotName, checked)
   }
 
   override DataFunc? func(Str qname, Bool checked := true)

@@ -74,6 +74,11 @@ internal class Context : AxonContext
     return null
   }
 
+  override Dict[] readAll(Filter filter)
+  {
+    db.readAllList(filter, Etc.emptyDict, this)
+  }
+
   override Dict? deref(Ref id)
   {
     db.readById(id, false)

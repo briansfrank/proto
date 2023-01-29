@@ -1,4 +1,4 @@
-// Auto-generated 28-Jan-2023
+// Auto-generated 29-Jan-2023
 
 // Top-level dicts with a unique identifier.
 // See `docHaystack::Ontology#entities` chapter.
@@ -218,7 +218,7 @@ Elevator: VerticalTransport {
 // See `docHaystack::Equips` chapter.
 Equip: Entity {
   equip
-  points: Query<of:Point, inverse:"Point.equips">
+  points: Query<of:Point, inverse:"ph.Point.equips">
 }
 
 // Moving staircase used to move people between floors.
@@ -276,7 +276,7 @@ FlowMeter: Meter {
   flow
 }
 
-// System to change direction of substance flow 
+// System to change direction of substance flow
 FlowInverter: Equip {
   flowInverter
 }
@@ -308,11 +308,11 @@ HeatingCoil: Coil {
 // the 'hisRead' operation to return a trend log of timestamp/value pairs.
 // 
 // There are typically two mechanisms for historization:
-//   - the local system performs the historization by logging the
-//     point's `curVal` to local storage
-//   - in overlay systems a downstream device performs the historization
-//     and the local system synchronizes the history data in batch on
-//     a periodic basis
+// - the local system performs the historization by logging the
+// point's `curVal` to local storage
+// - in overlay systems a downstream device performs the historization
+// and the local system synchronizes the history data in batch on
+// a periodic basis
 // 
 // Also see `docHaystack::Points#his` chapter.
 HisPoint: Point {
@@ -679,9 +679,9 @@ Wire: Conduit {
 // relinquish default which effectively acts as level 17.
 // 
 // The following levels have special behavior:
-//  - **Level 1**: highest priority reserved for emergency overrides
-//  - **Level 8**: manual override with ability to set timer to expire back to auto
-//  - **Default**: implicitly acts as level 17 for relinquish default
+// - **Level 1**: highest priority reserved for emergency overrides
+// - **Level 8**: manual override with ability to set timer to expire back to auto
+// - **Default**: implicitly acts as level 17 for relinquish default
 // 
 // The priority array provides for contention resolution when many different
 // control applications may be vying for control of a given point. Low level

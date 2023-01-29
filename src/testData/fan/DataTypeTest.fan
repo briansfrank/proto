@@ -88,7 +88,6 @@ class DataTypeTest : Test
   Void verifySlots(DataType t, Str[] expected)
   {
     slots := t.slots
-echo("--> $t $slots")
     slots.each |s, i|
     {
       verifyEq("$s.name:$s.slotType.name", expected[i])

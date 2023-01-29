@@ -71,13 +71,58 @@ class AxonTest : HaystackTest
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Query
+//////////////////////////////////////////////////////////////////////////
+
+  Void testQuery()
+  {
+    ahu       := rec(["id":Ref("ahu"), "dis":"AHU", "ahu":m, "equip":m])
+      mode    := rec(["id":Ref("mode"), "dis":"Mode", "hvacMode":m, "point":m, "equipRef":ahu.id])
+      dduct   := rec(["id":Ref("dduct"), "dis":"Discharge Duct", "duct":m, "equip":m, "equipRef":ahu.id])
+        dtemp := rec(["id":Ref("dtemp"), "dis":"Discharge Temp", "temp":m, "point":m, "equipRef":dduct.id])
+        dflow := rec(["id":Ref("dflow"), "dis":"Discharge Flow", "flow":m, "point":m, "equipRef":dduct.id])
+        dfan  := rec(["id":Ref("dfan"), "dis":"Discharge Fan", "fan":m, "equip":m, "equipRef":dduct.id])
+         drun := rec(["id":Ref("drun"), "dis":"Discharge Fan Run", "fan":m, "run":m, "point":m, "equipRef":dfan.id])
+
+    // Point.equips
+    verifyQuery(mode,  "Point->equips", [ahu])
+    verifyQuery(dtemp, "Point->equips", [ahu, dduct])
+    verifyQuery(drun,  "Point->equips", [ahu, dduct, dfan])
+
+    // Equip.points
+    verifyQuery(dfan,  "Equip->points", [drun])
+    verifyQuery(dduct, "Equip->points", [dtemp, dflow, drun])
+    verifyQuery(ahu, "  Equip->points", [mode, dtemp, dflow, drun])
+  }
+
+  Void verifyQuery(Dict rec, Str query, Dict[] expected)
+  {
+    expr := "query($rec.id.toCode, $query)"
+    //echo("-- $expr")
+    Grid actual := eval(expr)
+    x := actual.sortDis.mapToList { it.dis }.join(",")
+    y := Etc.sortDictsByDis(expected).join(",") { it.dis }
+    //echo("   $x ?= $y")
+    verifyEq(x, y)
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
+
+  Ref:Dict db := [:]
+
+  Dict rec(Str:Obj tags)
+  {
+    Dict dict := Etc.makeDict(tags)
+    db[dict.id] = dict
+    return dict
+  }
 
   Void verifyEval(Str expr, Obj? expect)
   {
     actual := eval(expr)
-    echo("-- $expr | $actual ?= $expect")
+    //echo("-- $expr | $actual ?= $expect")
     verifyEq(actual, expect)
   }
 
@@ -108,7 +153,9 @@ internal class TestContext : AxonContext
 
   Str:Fn funcs
 
-  override Dict? deref(Ref id) { null }
+  override Dict[] readAll(Filter f) { test.db.vals.findAll { f.matches(it, this) } }
+
+  override Dict? deref(Ref id) { test.db[id] }
 
   override FilterInference inference() { FilterInference.nil }
 

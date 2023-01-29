@@ -8,6 +8,7 @@
 
 using data
 using dataLint
+using haystackx
 using axonx
 
 **
@@ -61,4 +62,20 @@ const class XFuncs
     cx := AxonContext.curAxon
     return Linter(cx).fits(val, type)
   }
+
+  **
+  ** Evaluate a query slot. Subject must be an id ref or dict within the
+  ** current database.  Slot must evaluate to a 'sys.Query' data type slot.
+  ** Return grid with matching recs in the database.
+  **
+  ** Example:
+  **   read(ahu).query(Equip->points)
+  **
+  @Axon static Grid query(Obj subject, DataSlot slot)
+  {
+    cx := AxonContext.curAxon
+    recs := Query(cx).query(Etc.toRec(subject), slot)
+    return Etc.makeDictsGrid(null, recs)
+  }
+
 }

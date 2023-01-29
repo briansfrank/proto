@@ -255,7 +255,7 @@ class Converter
   private Void writeEntityChildren(OutStream out, Def entity)
   {
     // insert queries
-    if (entity.name == "equip")  out.printLine("  points: Query<of:Point, inverse:\"Point.equips\">")
+    if (entity.name == "equip")  out.printLine("  points: Query<of:Point, inverse:\"ph.Point.equips\">")
     if (entity.name == "point")  out.printLine("  equips: Query<of:Equip, via:\"equipRef+\">")
   }
 
@@ -291,7 +291,7 @@ class Converter
     doc := def["doc"] as Str ?: def.name
     doc.splitLines.each |line|
     {
-      out.print("// ").printLine(line)
+      out.print("// ").printLine(line.trim)
     }
   }
 

@@ -40,7 +40,7 @@ internal class ShellDb
     return null
   }
 
-  Grid readAll(Filter filter, Dict opts, Context cx)
+  Dict[] readAllList(Filter filter, Dict opts, Context cx)
   {
     checkLoaded
     acc := Dict[,]
@@ -51,7 +51,12 @@ internal class ShellDb
       return acc.size < limit ? null : "break"
     }
     if (opts.has("sort")) Etc.sortDictsByDis(acc)
-    return toGrid(acc)
+    return acc
+  }
+
+  Grid readAll(Filter filter, Dict opts, Context cx)
+  {
+    toGrid(readAllList(filter, opts, cx))
   }
 
   Int readCount(Filter filter, Context cx)
