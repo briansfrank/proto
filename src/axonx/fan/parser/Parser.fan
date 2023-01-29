@@ -79,7 +79,6 @@ class Parser
       if (peek === Token.colon) return def
       if (peek === Token.fnEq) return lambda1
     }
-    if (cur === Token.typename)      return type
     if (cur === Token.doKeyword)     return doBlock
     if (cur === Token.ifKeyword)     return ifExpr
     if (cur === Token.lbracket)      return termExpr(list)
@@ -494,13 +493,14 @@ class Parser
 
   **
   ** Term base expression:
-  **   <termBase> :=  <var> | <groupedExpr> | <literal>
+  **   <termBase> :=  <var> | <type> | <groupedExpr> | <literal>
   **
   private Expr termBase()
   {
-    if (cur === Token.lparen) return parenExpr
-    if (cur === Token.val)    return Literal(consumeVal)
-    if (cur === Token.id)     return var
+    if (cur === Token.lparen)   return parenExpr
+    if (cur === Token.val)      return Literal(consumeVal)
+    if (cur === Token.id)       return var
+    if (cur === Token.typename) return type
     if (cur === Token.trueKeyword)  { consume; return Literal.trueVal }
     if (cur === Token.falseKeyword) { consume; return Literal.falseVal }
     if (cur === Token.nullKeyword)  { consume; return Literal.nullVal }

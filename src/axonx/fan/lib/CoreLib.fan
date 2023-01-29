@@ -7,6 +7,7 @@
 //   01 Jan 2016  Brian Frank  Refactor for axon pod
 //
 
+using data
 using haystackx
 
 **
@@ -1103,7 +1104,7 @@ const class CoreLib
   ** See `docHaxall::AxonLang#getAndTrap`.
   @Axon static Obj? _trap(Obj? val, Str name)
   {
-    if (val is Dict)  return ((Dict)val).trap(name, null)
+    if (val is DataDict)  return ((DataDict)val).trap(name, null)
     if (val is Ref) return AxonContext.curAxon.trapRef(val).trap(name, null)
     throw argErr("trap", val)
   }
