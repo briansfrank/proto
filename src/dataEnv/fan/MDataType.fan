@@ -203,6 +203,7 @@ internal const class MDataTypeSlots
       else
       {
         i := list.findIndex |x| { x.name == name } // TODO: quick replace in same order
+        slot = MDataSlot.makeOverride(list[i], slot)
         list[i] = slot
         map[name] = slot
       }

@@ -29,6 +29,34 @@ internal const class MDataSlot : MDataDef, DataSlot
     this.constraints = astSlot.slots.map |x->DataType| { x.type.reified }
   }
 
+  new makeOverride(MDataSlot inherit, MDataSlot declared)
+  {
+    this.parent      = declared.parent
+    this.name        = declared.name
+    this.loc         = declared.loc
+    this.qname       = declared.qname
+    this.meta        = mergeMeta(parent.env, inherit.meta, declared.meta)
+    this.slotType    = declared.slotType
+    this.constraints = mergeConstraints(inherit.constraints, declared.constraints)
+  }
+
+  static DataDict mergeMeta(MDataEnv env, DataDict inherit, DataDict declared)
+  {
+    if (declared.isEmpty) return inherit
+    if (inherit.isEmpty) return declared
+    acc := Str:Obj[:]
+    inherit.x.each |v, n| { acc[n] = v }
+    declared.x.each |v, n| { acc[n] = v }
+    return env.dict(acc)
+  }
+
+  static Str:MDataType mergeConstraints(Str:MDataType inherit, Str:MDataType  declared)
+  {
+    if (declared.isEmpty) return inherit
+    if (inherit.isEmpty) return declared
+    throw Err("TODO")
+  }
+
   override MDataEnv env() { parent.libRef.env }
   override MDataLib lib() { parent.libRef }
   override DataType type() { parent.libRef.env.sys.slot }
