@@ -108,7 +108,11 @@ abstract const class Row : Dict
   **
   override Void each(|Obj? val, Str name| f)
   {
-    grid.cols.each |col| { f(val(col), col.name) }
+    grid.cols.each |col|
+    {
+      v := val(col)
+      if (v != null) f(v, col.name)
+    }
   }
 
   **
