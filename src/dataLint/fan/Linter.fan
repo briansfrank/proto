@@ -38,7 +38,8 @@ class Linter : Fitter
     recs := Etc.toRecs(val)
     recs.each |rec|
     {
-      subject = rec["id"] as Ref
+      subject = rec
+      subjectId = rec["id"] as Ref
       fits(rec, type)
     }
     return toGrid
@@ -62,13 +63,55 @@ class Linter : Fitter
       return log("Missing required slot '$slot.name'")
   }
 
+  override Bool explainMissingQueryConstraint(Str ofDis, DataType constraint)
+  {
+    log("Missing required $ofDis $constraint.name")
+  }
+
+  override Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, DataDict[] matches)
+  {
+    log("Ambiguous match for $ofDis $constraint.name: " + recsToDis(matches))
+  }
+
+  private Str recsToDis(DataDict[] recs)
+  {
+    s := StrBuf()
+    for (i := 0; i<recs.size; ++i)
+    {
+      rec := recs[i]
+      str := "@" + rec->id
+      dis := relDis(rec)
+      if (dis != null) str += " $dis.toCode"
+      s.join(str, ", ")
+      if (s.size > 50 && i+1<recs.size)
+        return s.add(", ${recs.size - i - 1} more ...").toStr
+    }
+    return s.toStr
+  }
+
+  private Str? relDis(DataDict d)
+  {
+    x := dis(d)
+    if (x == null) return null
+
+    p := dis(subject)
+    if (p == null) return x
+
+    return Etc.relDis(p, x)
+  }
+
+  private Str? dis(DataDict? d)
+  {
+    d?.get("dis", null)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Logging
 //////////////////////////////////////////////////////////////////////////
 
   Bool log(Str msg)
   {
-    gb.addRow2(subject, msg)
+    gb.addRow2(subjectId, msg)
     return false
   }
 
@@ -78,7 +121,8 @@ class Linter : Fitter
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  private Ref? subject
+  private Dict? subject
+  private Ref? subjectId
   private GridBuilder gb
 }
 

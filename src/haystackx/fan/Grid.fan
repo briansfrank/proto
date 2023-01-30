@@ -901,6 +901,12 @@ const mixin Grid : DataSet
   **
   @NoDoc Str[][] printCells()
   {
+    cols := this.cols.dup
+    id := cols.find { it.name == "id" }
+    dis := cols.find { it.name == "dis" }
+    cols.moveTo(id, 0)
+    cols.moveTo(dis, id == null ? 0 : 1)
+
     table := Str[][,]
     table.add(cols.map |c->Str| { c.dis })
     each |row|
@@ -912,6 +918,8 @@ const mixin Grid : DataSet
         val := row.val(c)
         if (val is Str)
           cells.add(val)
+        else if (val is Ref)
+          cells.add("@"+val)
         else
           cells.add(row.dis(c.name))
       }

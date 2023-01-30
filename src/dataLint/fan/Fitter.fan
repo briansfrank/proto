@@ -65,8 +65,39 @@ class Fitter
 
   private Bool fitsQuery(DataDict dict, DataType type, DataSlot slot)
   {
-    // echo("===> fit query $type $slot $type.slots")
+    // if no constraints then no additional checking required
+    constraints := slot.constraints
+    if (constraints.isEmpty) return true
+
+    // run the query to get matching extent
+    extent := Query(cx).query(dict, slot)
+
+    // TODO: we need to store of in meta to get of type
+    ofDis := slot.name
+    if (ofDis.endsWith("s")) ofDis = ofDis[0..-2]
+
+    // make sure each constraint has exactly one match
+    match := true
+    constraints.eachWhile |constraint, name|
+    {
+      match = fitQueryConstraint(dict, ofDis, extent, constraint)
+      if (failFast && !match) return "break"
+      return null
+    }
+
     return true
+  }
+
+  private Bool fitQueryConstraint(DataDict rec, Str ofDis, DataDict[] extent, DataType constraint)
+  {
+    matches := DataDict[,]
+    extent.each |x|
+    {
+      if (Fitter(cx).fits(x, constraint)) matches.add(x)
+    }
+    if (matches.size == 0) return explainMissingQueryConstraint(ofDis, constraint)
+    if (matches.size == 1) return true
+    return explainAmbiguousQueryConstraint(ofDis, constraint, matches)
   }
 
   virtual Bool explainNoType(Obj? val) { false }
@@ -74,6 +105,10 @@ class Fitter
   virtual Bool explainNoFit(DataType valType, DataType type) { false }
 
   virtual Bool explainMissingSlot(DataSlot slot) { false }
+
+  virtual Bool explainMissingQueryConstraint(Str ofDis, DataType constraint) { false }
+
+  virtual Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, DataDict[] matches) { false }
 
   DataEnv data() { cx.data }
 
