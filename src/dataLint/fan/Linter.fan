@@ -21,12 +21,7 @@ class Linter : Fitter
 // Constructor
 //////////////////////////////////////////////////////////////////////////
 
-  new make(AxonContext cx) : super(cx)
-  {
-    gb = GridBuilder()
-    gb.addCol("subject")
-    gb.addCol("msg")
-  }
+  new make(AxonContext cx) : super(cx) {}
 
 //////////////////////////////////////////////////////////////////////////
 // Fits
@@ -38,9 +33,19 @@ class Linter : Fitter
     recs := Etc.toRecs(val)
     recs.each |rec|
     {
+      startRow := rows.size
+
       subject = rec
       subjectId = rec["id"] as Ref
       fits(rec, type)
+
+      // insert summary about the rows we added for this rec
+      numAdded := rows.size - startRow
+      if (numAdded > 0)
+      {
+        countStr := numAdded == 1 ? "1 error" : "$numAdded errors"
+        rows.insert(startRow, [subjectId, countStr])
+      }
     }
     return toGrid
   }
@@ -111,11 +116,19 @@ class Linter : Fitter
 
   Bool log(Str msg)
   {
-    gb.addRow2(subjectId, msg)
+    rows.add([subjectId, msg])
     return false
   }
 
-  Grid toGrid() { gb.toGrid }
+  Grid toGrid()
+  {
+    gb := GridBuilder()
+    gb.addCol("subject")
+    gb.addCol("msg")
+    gb.capacity = rows.size
+    rows.each |row| { gb.addRow(row) }
+    return gb.toGrid
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
@@ -123,6 +136,6 @@ class Linter : Fitter
 
   private Dict? subject
   private Ref? subjectId
-  private GridBuilder gb
+  private Obj?[][] rows := [,]
 }
 
