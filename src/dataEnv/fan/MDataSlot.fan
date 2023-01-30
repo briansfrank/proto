@@ -50,11 +50,29 @@ internal const class MDataSlot : MDataDef, DataSlot
     return env.dict(acc)
   }
 
-  static Str:MDataType mergeConstraints(Str:MDataType inherit, Str:MDataType  declared)
+  static Str:MDataType mergeConstraints(Str:MDataType inherit, Str:MDataType declared)
   {
     if (declared.isEmpty) return inherit
     if (inherit.isEmpty) return declared
-    throw Err("TODO")
+
+    acc := inherit.dup
+
+    // TODO: this belongs in a utility
+    autoIndex := 0
+    acc.each |x, n|
+    {
+      if (!n.startsWith("_")) return
+      int := n[1..-1].toInt(10, false)
+      if (int != null) autoIndex = autoIndex.max(int)
+    }
+
+    declared.each |x, n|
+    {
+      if (n.startsWith("_")) n = "_" + (++autoIndex)
+      acc[n] = x
+    }
+
+    return acc
   }
 
   override MDataEnv env() { parent.libRef.env }
