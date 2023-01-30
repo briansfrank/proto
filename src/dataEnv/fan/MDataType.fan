@@ -44,30 +44,42 @@ internal const class MDataType : MDataDef, DataType
 
     // resolve base which is either inside AST or from outside depend
     DataType? base := null
+    of := MDataType#.emptyList
     if (astType.type != null)
     {
-      if (astType.type.inside != null)
-        base = doReify(lib, astLib, astType.type.inside, stack)
-      else
-        base = astType.type.outside
+      // resolve type as base
+      base = doReifyType(lib, astLib, astType.type, stack)
+
+      // resolve of
+      if (astType.type.of != null)
+        of = astType.type.of.map |astOf->MDataType| { doReifyType(lib, astLib, astOf, stack) }
     }
 
-    astType.reified = init(lib, astType, base)
+
+    astType.reified = init(lib, astType, base, of)
 
     stack.pop
     return astType.reified
   }
 
-  private static MDataType init(MDataLib lib, XetoObj ast, MDataType? base)
+  private static MDataType doReifyType(MDataLib lib,  XetoObj astLib, XetoType ast, Str[] stack)
+  {
+    if (ast.inside != null)
+      return doReify(lib, astLib, ast.inside, stack)
+    else
+      return ast.outside
+  }
+
+  private static MDataType init(MDataLib lib, XetoObj ast, MDataType? base, MDataType[] of)
   {
     if (lib.qname != "sys")
     {
       if (base === lib.env.sys.func) return MDataFunc(lib, ast, base)
     }
-    return make(lib, ast, base)
+    return make(lib, ast, base, of)
   }
 
-  new make(MDataLib lib, XetoObj ast, MDataType? base)
+  new make(MDataLib lib, XetoObj ast, MDataType? base, MDataType[] of)
   {
     this.libRef   = lib
     this.name     = ast.name
@@ -75,6 +87,7 @@ internal const class MDataType : MDataDef, DataType
     this.loc      = ast.loc
     this.base     = base
     this.meta     = lib.env.astMeta(ast.meta)
+    this.ofs      = of   // TODO: this eventually needs to go into meta
   }
 
   internal Void reifySlots(XetoObj ast)
@@ -93,6 +106,10 @@ internal const class MDataType : MDataDef, DataType
   const override DataDict meta
   const override DataType? base
   private const AtomicRef declaredSlotsRef := AtomicRef()
+
+  // TODO: just temp solution
+  override DataType of() { ofs.first ?: throw Err("No of meta") }
+  const override DataType[] ofs
 
   override Str:DataSlot map() { effectiveSlots.map }
 
@@ -166,6 +183,10 @@ internal const class MDataTypeSlots
     if (parent.base == null) return declared
     inherited := ((MDataType)parent.base).effectiveSlots
 
+    // handle specials
+    if (parent.isaAnd) return inheritAnd(inherited, parent.ofs, declared)
+    if (parent.isaOr) throw Err("Or types not supported yet $parent.qname")
+
     // if inherited is empty, return declared
     if (inherited.isEmpty) return declared
 
@@ -188,6 +209,32 @@ internal const class MDataTypeSlots
       }
     }
     return make(list, map)
+  }
+
+  ** Lazily build AND slot map
+  static MDataTypeSlots inheritAnd(MDataTypeSlots base, MDataType[] ofs, MDataTypeSlots declared)
+  {
+    // TODO: no error checking at all!
+    map := Str:MDataSlot[:]
+    map.ordered = true
+
+    // first add inheritance
+    base.list.each |s| { map.add(s.name, s) }
+
+    // then merge in each of the of types
+    ofs.each |of|
+    {
+      ofSlots := ((MDataType)of).effectiveSlots
+      ofSlots.list.each |s| { if (map[s.name] == null) map[s.name] = s }
+    }
+
+    // then add in declared
+    declared.list.each |s|
+    {
+      if (map[s.name] == null) map[s.name] = s
+    }
+
+    return make(map.vals, map)
   }
 
   private new make(MDataSlot[] list, Str:MDataSlot map)

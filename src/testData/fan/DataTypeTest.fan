@@ -73,6 +73,7 @@ class DataTypeTest : Test
   Void testReflection()
   {
     ph := env.lib("ph")
+    phx := env.lib("phx")
 
     equipSlots       := ["equip:Marker", "points:Query"]
     meterSlots       := equipSlots.dup.add("meter:Marker")
@@ -83,6 +84,17 @@ class DataTypeTest : Test
     verifySlots(ph->Meter,       meterSlots)
     verifySlots(ph->ElecMeter,   elecMeterSlots)
     verifySlots(ph->AcElecMeter, acElecMeterSlots)
+
+    ptSlots    := ["point:Marker", "equips:Query"]
+    numPtSlots := ptSlots.dup.addAll(["kind:Str", "unit:Str"])
+    afSlots    := numPtSlots.dup.addAll(["air:Marker", "flow:Marker"])
+    afsSlots   := afSlots.dup.add("sensor:Marker")
+    dafsSlots  := afsSlots.dup.add("discharge:Marker")
+    verifySlots(ph->Point, ptSlots)
+    verifySlots(phx->NumberPoint, numPtSlots)
+    verifySlots(phx->AirFlowPoint, afSlots)
+    verifySlots(phx->AirFlowSensor, afsSlots)
+    verifySlots(phx->DischargeAirFlowSensor, dafsSlots)
   }
 
   Void verifySlots(DataType t, Str[] expected)

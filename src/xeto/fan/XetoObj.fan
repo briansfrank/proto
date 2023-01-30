@@ -127,18 +127,22 @@ class XetoType
 
   new makeAnd(XetoType[] of)
   {
-    this.loc   = of.first.loc
-    this.name  = "And"
+    this.loc  = of.first.loc
+    this.name = "sys.And"
+    this.of   = of
   }
 
   new makeOr(XetoType[] of)
   {
-    this.loc   = of.first.loc
-    this.name  = "Or"
+    this.loc  = of.first.loc
+    this.name = "sys.Or"
+    this.of   = of
   }
 
   const FileLoc loc
   const Str name
+
+  XetoType[]? of
 
   Bool isResolved() { inside != null || outside != null }
 

@@ -18,7 +18,7 @@ internal const class MDataFunc : MDataType, DataFunc
 {
 
   new make(MDataLib lib, XetoObj ast, MDataType base)
-    : super(lib, ast, base)
+    : super(lib, ast, base, MDataType#.emptyList)
   {
     returns = slot("return")
     params = slots.findAll |s| { s.name != "return" }

@@ -57,7 +57,12 @@ internal class Resolve : Step
 
   private Void resolve(XetoObj obj)
   {
-    resolveType(obj.type)
+    if (obj.type != null)
+    {
+      resolveType(obj.type)
+      if (obj.type.of != null)
+        obj.type.of.each |of| { resolveType(of) }
+    }
     obj.each |kid| { resolve(kid) }
   }
 

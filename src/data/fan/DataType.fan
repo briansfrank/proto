@@ -27,6 +27,12 @@ const mixin DataType : DataDef
   ** Lookup a slot by name
   abstract DataSlot? slot(Str name, Bool checked := true)
 
+  ** TODO
+  @NoDoc abstract DataType of()
+
+  ** TODO
+  @NoDoc abstract DataType[] ofs()
+
 //////////////////////////////////////////////////////////////////////////
 // Is-A
 //////////////////////////////////////////////////////////////////////////
