@@ -134,6 +134,7 @@ internal class SysTypes
   XetoType str    := init("sys.Str")
   XetoType dict   := init("sys.Dict")
   XetoType list   := init("sys.List")
+  XetoType query  := init("sys.Query")
 
   private static XetoType init(Str qname) { XetoType(FileLoc.synthetic, qname) }
 }

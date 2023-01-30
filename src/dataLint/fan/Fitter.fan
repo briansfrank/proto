@@ -40,17 +40,19 @@ class Fitter
     for (i := 0; i<slots.size; ++i)
     {
       slot := slots[i]
-      match = fitsSlot(dict.get(slot.name, null), slot) && match
+      match = fitsSlot(dict, type, slot) && match
       if (failFast && !match) return false
     }
     return match
   }
 
-  private Bool fitsSlot(Obj? val, DataSlot slot)
+  private Bool fitsSlot(DataDict dict, DataType type, DataSlot slot)
   {
     t := slot.slotType
 
-    if (t.isaQuery) return true
+    if (t.isaQuery) return fitsQuery(dict, type, slot)
+
+    val := dict.get(slot.name, null)
 
     if (val == null && !t.isaMaybe)
       return explainMissingSlot(slot)
@@ -58,6 +60,12 @@ class Fitter
 
     // TODO: check value type without high level logging
 
+    return true
+  }
+
+  private Bool fitsQuery(DataDict dict, DataType type, DataSlot slot)
+  {
+    // echo("===> fit query $type $slot $type.slots")
     return true
   }
 

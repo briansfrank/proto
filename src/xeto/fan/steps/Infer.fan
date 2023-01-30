@@ -32,7 +32,14 @@ internal class Infer : Step
   {
     if (slot.type == null)
     {
-      // TODO: for now infer from value
+      // TODO: hardcode and for now
+
+      if (slot.name == "points")
+      {
+        slot.type = sys.query
+        return
+      }
+
       if (slot.val != null)
         slot.type = sys.str
       else
