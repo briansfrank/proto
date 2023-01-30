@@ -86,6 +86,7 @@ internal class ShellDb
     echo("LOAD: loading '$file.osPath' ...")
     grid := readFile(file)
 
+    // map grid into byId table
     byId.clear
     grid.each |rec|
     {
@@ -97,9 +98,22 @@ internal class ShellDb
       }
       byId.add(id, rec)
     }
+
+    // map ids to their dis
+    byId.each |rec|
+    {
+      rec.each |v, n| { if (v is Ref) mapRefDis(v) }
+    }
     loaded = true
 
     echo("LOAD: loaded $byId.size recs")
+  }
+
+  private Void mapRefDis(Ref ref)
+  {
+    rec := byId[ref]
+    if (rec == null) return
+    ref.disVal = rec["dis"]
   }
 
   private Grid readFile(File file)
