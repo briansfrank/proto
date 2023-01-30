@@ -21,6 +21,13 @@ const class ShellFuncs : AbstractShellFuncs
     return noEcho
   }
 
+  ** Set the show error trace flag.
+  @Axon static Obj? showTrace(Bool flag)
+  {
+    cx.session.showTrace = flag
+    return noEcho
+  }
+
   ** Print help summary or help on a specific command.
   ** Examples:
   **    help()        // print summary
@@ -38,6 +45,7 @@ const class ShellFuncs : AbstractShellFuncs
       out.printLine("help(func)         Help on a specific function")
       out.printLine("helpAll()          Print summary of all functions")
       out.printLine("print(val)         Pretty print value")
+      out.printLine("showTrace(flag)    Toggle the show err trace flag")
       out.printLine("scope()            Print variables in scope")
       out.printLine("using()            Print data libraries in use")
       out.printLine("using(qname)       Import given data library")

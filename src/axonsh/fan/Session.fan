@@ -8,6 +8,7 @@
 
 using axonx
 using util
+using dataEnv::Printer
 
 **
 ** Axon shell session
@@ -30,7 +31,7 @@ internal class Session
         expr := prompt
         execute(expr)
       }
-      catch (EvalErr e)
+      catch (AxonErr e)
       {
         err(e.msg, e.cause)
       }
@@ -133,13 +134,20 @@ internal class Session
 
   private Obj? err(Str msg, Err? err := null)
   {
-    if (err == null)
-      Env.cur.err.printLine("ERROR: $msg")
-    else if (err is FileLocErr)
-      Env.cur.err.printLine("ERROR: $msg [" +  ((FileLocErr)err).loc + "]\n$err.traceToStr")
-    else
-      Env.cur.err.printLine("ERROR: $msg\n$err.traceToStr")
+    str := errToStr(msg, err)
+    if (!str.endsWith("\n")) str += "\n"
+    Printer(out, cx.data.emptyDict).warn(str)
     return null
+  }
+
+  private Str errToStr(Str msg, Err? err)
+  {
+    str := "ERROR: $msg"
+    if (err == null) return str
+    if (err is FileLocErr) str += " [" + ((FileLocErr)err).loc + "]"
+    if (showTrace) str += "\n" + err.traceToStr
+    else if (!str.contains("\n")) str += "\n" + err.toStr
+    return str
   }
 
   static const Str noEcho := "_no_echo_"
@@ -147,6 +155,7 @@ internal class Session
   OutStream out
   Context cx
   Bool isDone := false
+  Bool showTrace := false
   ShellDb db := ShellDb()
 }
 

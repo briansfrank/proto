@@ -15,7 +15,7 @@ using xeto
 ** Pretty printer
 **
 @Js
-internal class Printer
+class Printer
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -432,7 +432,7 @@ internal class Printer
 **************************************************************************
 
 @Js
-internal const class PrinterTheme
+const class PrinterTheme
 {
   static const Str reset  := "\u001B[0m"
   static const Str black  := "\u001B[30m"
