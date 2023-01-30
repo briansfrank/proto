@@ -55,7 +55,6 @@ internal const class MDataType : MDataDef, DataType
         of = astType.type.of.map |astOf->MDataType| { doReifyType(lib, astLib, astOf, stack) }
     }
 
-
     astType.reified = init(lib, astType, base, of)
 
     stack.pop

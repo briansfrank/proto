@@ -12,6 +12,7 @@ fan.props
 
 # lib/
 /lib/fan/*.pod
+/lib/data/play/*
 /lib/tmp/
 
 

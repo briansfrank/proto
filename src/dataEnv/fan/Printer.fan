@@ -234,7 +234,18 @@ class Printer
   ** Print data slot
   This slot(DataSlot slot)
   {
-    indent.w(slot.name).meta(slot.meta).colon.typeref(slot.slotType).nl
+    indent.w(slot.name).meta(slot.meta).colon.typeref(slot.slotType)
+    if (slot.constraints.isEmpty) return nl
+    w(" {").nl
+    indention++
+    slot.constraints.each |t, n|
+    {
+      indent
+      if (!n.startsWith("_")) w(n).colon
+      typeref(t).nl
+    }
+    indention--
+    indent.bracket("}").nl
     return this
   }
 

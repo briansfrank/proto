@@ -24,4 +24,7 @@ const mixin DataSlot : DataDef
   ** Value type of the slot
   abstract DataType slotType()
 
+  ** TODO: for right now this is where we return the additional
+  ** nested types with a constrainted query
+  @NoDoc abstract Str:DataType constraints()
 }

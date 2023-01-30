@@ -24,6 +24,9 @@ internal const class MDataSlot : MDataDef, DataSlot
     this.qname    = StrBuf(parent.qname.size + 1 + name.size).add(parent.qname).addChar('.').add(name).toStr
     this.meta     = parent.env.astMeta(astSlot.meta)
     this.slotType = astSlot.type.reified
+
+    // TODO
+    this.constraints = astSlot.slots.map |x->DataType| { x.type.reified }
   }
 
   override MDataEnv env() { parent.libRef.env }
@@ -35,7 +38,8 @@ internal const class MDataSlot : MDataDef, DataSlot
   const override Str name
   const override Str qname
   const override MDataType slotType
-  override const DataDict meta
+  const override DataDict meta
+  const override Str:DataType constraints
   override Str:DataDict map() { env.emptyDictMap }
 
 }
