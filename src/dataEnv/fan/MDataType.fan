@@ -150,7 +150,13 @@ internal const class MDataType : MDataDef, DataType
     if (this.qname == that.qname) return true  // TODO: rework wrapped types from parameterize
     if (base == null) return false
 
-    if (this === env.sys.maybe)
+    if (that.qname == "sys.Maybe")
+    {
+      of := that.of
+      if (of != null && this.isa(of)) return true
+    }
+
+    if (this.qname == "sys.Maybe")
     {
       of := ofs.first
       if (of != null && of.isa(that)) return true
