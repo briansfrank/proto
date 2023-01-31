@@ -8,7 +8,7 @@
 
 pragma: Lib <
   doc: "System library of built-in prototypes"
-  version: "0.9.1"
+  version: "0.9.2"
   org: {
     dis: "Project Haystack"
     uri: "https://project-haystack.org/"

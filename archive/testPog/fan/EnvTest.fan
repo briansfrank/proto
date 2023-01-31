@@ -38,7 +38,7 @@ class EnvTest : Test
     verifySame(lib, env.load("sys"))
     verifyEq(lib.qname.toStr, "sys")
     verifySame(lib is Lib, true)
-    verifyEq(lib.version, Version("0.9.1"))
+    verifyEq(lib.version, Version("0.9.2"))
     verifyEq(lib->_org->dis.val, "Project Haystack")
 
     // core system types
