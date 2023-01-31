@@ -51,6 +51,7 @@ class Printer
   ** Print inline value
   This val(Obj? val)
   {
+    if (val == null) return w("null")
     if (val is DataSeq) return seq(val)
     if (val is Str) return quoted(val.toStr)
     if (val is List) return list(val)

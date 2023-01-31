@@ -57,7 +57,7 @@ class XetoObj
   Str? addSlot(XetoObj child)
   {
     if (slots.isEmpty) slots = newMap
-    if (slots[child.name] != null) return "Duplicate slot '$name'"
+    if (slots[child.name] != null) return "Duplicate slot '$child.name'"
     slots[child.name] = child
     return null
   }
