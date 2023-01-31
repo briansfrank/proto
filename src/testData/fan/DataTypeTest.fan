@@ -54,6 +54,10 @@ class DataTypeTest : Test
     verifyIsa("sys.Maybe", "sys.Maybe", true)
     verifyIsa("sys.And",   "sys.And",   true)
     verifyIsa("sys.Or",    "sys.Or",    true)
+
+    verifyIsa("phx.AirFlowSensor", "sys.And", true)
+    verifyIsa("phx.AirFlowSensor", "ph.Point", true)
+    verifyIsa("phx.AirFlowSensor", "phx.Sensor", true)
   }
 
   Void verifyIsa(Str an, Str bn, Bool expected)
@@ -61,7 +65,7 @@ class DataTypeTest : Test
     a := env.type(an)
     b := env.type(bn)
     m := a.typeof.method("isa${b.name}", false)
-    //echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
+    // echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
     verifyEq(a.isa(b), expected)
     if (m != null) verifyEq(m.call(a), expected)
   }

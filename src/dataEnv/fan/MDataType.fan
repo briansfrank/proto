@@ -84,7 +84,7 @@ internal const class MDataType : MDataDef, DataType
     this.name     = ast.name
     this.qname    = lib.qname + "." + name
     this.loc      = ast.loc
-    this.base     = base
+    this.baseRef  = base
     this.meta     = lib.env.astMeta(ast.meta)
     this.ofs      = of   // TODO: this eventually needs to go into meta
   }
@@ -103,7 +103,8 @@ internal const class MDataType : MDataDef, DataType
   const override Str name
   const override Str qname
   const override DataDict meta
-  const override DataType? base
+  override DataType? base() { baseRef }
+  const MDataType? baseRef
   private const AtomicRef declaredSlotsRef := AtomicRef()
 
   // TODO: just temp solution
@@ -130,11 +131,19 @@ internal const class MDataType : MDataDef, DataType
   }
   private const AtomicRef effectiveSlotsRef := AtomicRef()
 
-  override Bool isa(DataType that)
+  override Bool isa(DataType that) { doIsa(that, ofs) }
+
+  private Bool doIsa(DataType that, DataType[] ofs)
   {
     if (this === that) return true
     if (base == null) return false
-    return base.isa(that)
+
+    if (this === env.sys.and)
+    {
+      if (ofs.any |x| { x.isa(that) }) return true
+    }
+
+    return baseRef.doIsa(that, ofs)
   }
 
   override Bool isaScalar() { isa(env.sys.scalar) }
