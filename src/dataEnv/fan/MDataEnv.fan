@@ -82,10 +82,18 @@ internal const class MDataEnv : DataEnv
       // TODO
       if (v.val != null)
         acc[n] = v.val
+      else if (v.type?.name == "sys.Marker")
+        acc[n] = marker
       //else
-      // echo("TODO: map AST meta: $n: $v")
+      //  echo("TODO: map AST meta: $n: $v.type")
     }
     return MMapDict(null, acc)
+  }
+
+  internal once Obj marker()
+  {
+    // TODO
+    Slot.findField("haystackx::Marker.val").get(null)
   }
 
   override DataSeq seq(Obj? val)
