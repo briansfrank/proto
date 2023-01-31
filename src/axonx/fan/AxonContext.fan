@@ -51,6 +51,9 @@ abstract class AxonContext : HaystackContext
   ** Data environment for the context
   abstract DataEnv data()
 
+  ** Return data libs in scope
+  @NoDoc virtual DataLib[] dataLibs() { throw UnsupportedErr() }
+
   ** Data types
   @NoDoc virtual DataType? findType(Str name, Bool checked := true) { throw UnsupportedErr() }
 

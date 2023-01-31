@@ -56,6 +56,8 @@ internal class Context : AxonContext
     throw Err("TODO")
   }
 
+  override DataLib[] dataLibs() { libs.vals }
+
   override DataType? findType(Str name, Bool checked := true)
   {
     acc := DataType[,]

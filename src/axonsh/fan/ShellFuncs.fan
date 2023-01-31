@@ -139,11 +139,7 @@ const class ShellFuncs : AbstractShellFuncs
 
     if (qname == "*")
     {
-      cx.data.libsInstalled.each |x|
-      {
-        if (cx.data.isLibLoaded(x)) return
-        _using(x)
-      }
+      cx.data.libsInstalled.each |x| { _using(x) }
       return noEcho
     }
 
