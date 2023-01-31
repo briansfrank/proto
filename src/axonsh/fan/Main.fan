@@ -13,11 +13,11 @@ class Main
 {
   OutStream out := Env.cur.out
 
-  Int main(Str[] args)
+  Int main(Str[] mainArgs)
   {
     // short circuiting options
-    opts := args.findAll { it.startsWith("-") }
-    args = args.findAll { !it.startsWith("-") }
+    opts := mainArgs.findAll { it.startsWith("-") }
+    args := mainArgs.findAll { !it.startsWith("-") }
     if (hasOpt(opts, "-help", "-?")) return printHelp
     if (hasOpt(opts, "-version", "-v")) return printVersion
 
@@ -25,9 +25,22 @@ class Main
     session := Session(out)
     if (args.isEmpty) return session.run
 
-    // run arg as either file or expression
-    arg := args.first ?: ""
-    if (arg.endsWith(".axon")) arg = File.os(arg).readAllStr
+    // arg is either expression or axon file name
+    arg := args[0]
+
+    // setup shell args with everything after file name
+    session.setArgs(mainArgs[mainArgs.index(arg)+1..-1])
+
+    // if first arg is axon file, then run it as script
+    if (arg.endsWith(".axon"))
+    {
+      // read script in as expression
+      arg = File.os(arg).readAllStr
+
+      // strip shebang
+      if (arg.startsWith("#!")) arg = arg.splitLines[1..-1].join("\n")
+    }
+
     errnum := session.eval(arg)
     if (hasOpt(opts, "-i"))
       return session.run

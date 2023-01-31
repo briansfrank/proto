@@ -74,6 +74,11 @@ internal class Session
     cx.data.print(val, out, opts)
   }
 
+  Void setArgs(Str[] args)
+  {
+    cx.defOrAssign("args", args, Loc("main"))
+  }
+
   private Str prompt()
   {
     // prompt for one or more lines
