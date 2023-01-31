@@ -165,7 +165,9 @@ class Converter
         writeDoc(out, def)
         name := toEntityName(def)
         type := toEntityType(def)
-        out.printLine("$name: $type {")
+        out.print("$name: $type")
+        writeEntityMeta(out, def)
+        out.printLine(" {")
         writeEntityUsage(out, def)
         //writeEntityTags(out, def)
         writeEntityChildren(out, def)
@@ -195,22 +197,25 @@ class Converter
     return toEntityName(ns.def(supers.first.toStr))
   }
 
+  private Void writeEntityMeta(OutStream out, Def entity)
+  {
+    symbol := entity.symbol
+    name := symbol.name
+
+    // make space/equip/point abstract
+    special := name == "space" || name == "equip" || name == "point" || name.endsWith("-point")
+
+    if (!isAbstract(name) && !special) return
+
+    out.print(" <abstract>")
+  }
+
   private Void writeEntityUsage(OutStream out, Def entity)
   {
     symbol := entity.symbol
     name := symbol.name
 
-    // not sure how to best handle this, but for now just
-    // consider these tags as abstract
-    if (name == "airHandlingEquip" ||
-        name == "airQualityZonePoints" ||
-        name == "airTerminalUnit" ||
-        name == "conduit" ||
-        name == "coil" ||
-        name == "entity" ||
-        name == "radiantEquip" ||
-        name == "verticalTransport")
-      return
+    if (isAbstract(name)) return
 
     if (symbol.type.isTag)
     {
@@ -228,6 +233,20 @@ class Converter
         out.printLine("  $part")
       }
     }
+  }
+
+  private Bool isAbstract(Str name)
+  {
+    // not sure how to best handle this, but for now just
+    // consider these tags as abstract
+    name == "airHandlingEquip" ||
+    name == "airQualityZonePoints" ||
+    name == "airTerminalUnit" ||
+    name == "conduit" ||
+    name == "coil" ||
+    name == "entity" ||
+    name == "radiantEquip" ||
+    name == "verticalTransport"
   }
 
 /*

@@ -1,8 +1,8 @@
-// Auto-generated 29-Jan-2023
+// Auto-generated 31-Jan-2023
 
 // Top-level dicts with a unique identifier.
 // See `docHaystack::Ontology#entities` chapter.
-Entity: Dict {
+Entity: Dict <abstract> {
 }
 
 // AC Electricity meter.
@@ -30,19 +30,19 @@ Ahu: AirHandlingEquip {
 // HVAC equipment that conditions and delivers air via one or more fans.
 // Conditioning of air includes heating, cooling, humidification,
 // dehumidification, and ventilation. See `docHaystack::AHUs` chapter.
-AirHandlingEquip: Equip {
+AirHandlingEquip: Equip <abstract> {
 }
 
 // Entity with logical grouping of zone air quality points.
 // See `docHaystack::Zones#airQuality` chapter.
-AirQualityZonePoints: PointGroup {
+AirQualityZonePoints: PointGroup <abstract> {
 }
 
 // Equipment in air distribution systems which terminate at the space.
 // Terminal units receive air from `airHandlingEquip` which have the
 // primarily responsibility to condition air.  Terminal units are primarily
 // responsible for delivery of air to the space and tempering the temperature.
-AirTerminalUnit: Equip {
+AirTerminalUnit: Equip <abstract> {
 }
 
 // A collection of manufactured parts or subassemblies.
@@ -111,7 +111,7 @@ Circuit: Equip {
 
 // Heat exchanger used to heat or cool air.  Coils are sub-components
 // of HVAC equipment such as `airHandlingEquip`.
-Coil: HeatExchanger {
+Coil: HeatExchanger <abstract> {
 }
 
 // General purpose computer.
@@ -120,7 +120,7 @@ Computer: Device {
 }
 
 // Duct, pipe, or cable to convey a substance or phenomenon
-Conduit: Equip {
+Conduit: Equip <abstract> {
 }
 
 // Microprocessor based device used in a control system.  Controllers
@@ -158,7 +158,7 @@ Crac: Fcu {
 // data via a protocol such as BACnet or Modbus then the current value
 // is typically refreshed using polling or subscription over a network.
 // Also see `docHaystack::Points#cur` chapter.
-CurPoint: Point {
+CurPoint: Point <abstract> {
   cur
 }
 
@@ -216,7 +216,7 @@ Elevator: VerticalTransport {
 
 // Equipment asset.
 // See `docHaystack::Equips` chapter.
-Equip: Entity {
+Equip: Entity <abstract> {
   equip
   points: Query<of:Point, inverse:"ph.Point.equips">
 }
@@ -315,7 +315,7 @@ HeatingCoil: Coil {
 // a periodic basis
 // 
 // Also see `docHaystack::Points#his` chapter.
-HisPoint: Point {
+HisPoint: Point <abstract> {
   his
 }
 
@@ -446,7 +446,7 @@ Plant: Equip {
 
 // Data point such as a sensor or actuator.
 // See `docHaystack::Points` chapter.
-Point: Entity {
+Point: Entity <abstract> {
   point
   equips: Query<of:Equip, via:"equipRef+">
 }
@@ -472,7 +472,7 @@ Rack: Equip {
 }
 
 // HVAC equipment that conditions a space without forced air.
-RadiantEquip: Equip {
+RadiantEquip: Equip <abstract> {
 }
 
 // Heats a space using pipes or cables embedded beneath floor.
@@ -519,7 +519,7 @@ Site: Entity {
 
 // Space is a three-dimensional volume in the built environment.
 // See `docHaystack::Spaces` chapter.
-Space: Entity {
+Space: Entity <abstract> {
   space
 }
 
@@ -584,7 +584,7 @@ Vav: AirTerminalUnit {
 }
 
 // Equipment to move humans and materials
-VerticalTransport: Equip {
+VerticalTransport: Equip <abstract> {
 }
 
 // Cooling only VRF system can only cool; heating is not available.
@@ -649,7 +649,7 @@ VrfSystem: System {
 
 // Weather station observation point.
 // See `docHaystack::Weather#points` chapter.
-WeatherPoint: Point {
+WeatherPoint: Point <abstract> {
   weather
 }
 
@@ -698,7 +698,7 @@ Wire: Conduit {
 // allows the next highest level to take command of the output).
 // 
 // Also see `docHaystack::Points#writable` chapter.
-WritablePoint: Point {
+WritablePoint: Point <abstract> {
   writable
 }
 
