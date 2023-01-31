@@ -31,6 +31,43 @@ const class LintFuncs
   {
     Linter(AxonContext.curAxon).lintFits(recs, type)
   }
+
+  **
+  ** Find all types which fit that given recs.  In the case of inheritance
+  ** the most specific type is returned.  Types that are marked as 'abstract'
+  ** are not returned.
+  **
+  ** Example:
+  **    readAll(vav).lintFindAllFits
+  **
+  @Axon
+  static Grid lintFindAllFits(Obj? recs)
+  {
+    // collect all dict, non-abstract data types in scope
+    cx := AxonContext.curAxon
+    allTypes := Str:DataType[:]
+    cx.dataLibs.each |lib|
+    {
+      lib.libTypes.each |x|
+      {
+        if (!x.isaDict) return
+        if (x.meta.has("abstract")) return
+        if (x.lib.qname == "sys") return
+        allTypes[x.qname] = x
+      }
+    }
+
+    // walk thru each record add row
+    gb := GridBuilder().addCol("lintRef").addCol("num").addCol("types")
+    fitter := Fitter(cx)
+    Etc.toRecs(recs).each |rec|
+    {
+      matches := fitter.matchAll(rec, allTypes)
+      gb.addRow([rec.id, Number(matches.size), matches])
+    }
+    return gb.toGrid
+  }
+
 }
 
 

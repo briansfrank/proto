@@ -123,7 +123,7 @@ class Linter : Fitter
   Grid toGrid()
   {
     gb := GridBuilder()
-    gb.addCol("subject")
+    gb.addCol("lintRef")
     gb.addCol("msg")
     gb.capacity = rows.size
     rows.each |row| { gb.addRow(row) }
