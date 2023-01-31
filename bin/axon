@@ -1,4 +1,4 @@
 #!/bin/bash
 
 . "${0%/*}/fanlaunch"
-fanlaunch Fan pog "$@"
+fanlaunch Fan axonsh "$@"
