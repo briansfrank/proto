@@ -69,7 +69,10 @@ const abstract class DataEnv
   abstract Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
 
   ** List the library qnames installed by this environment
-  abstract Str[] installed()
+  abstract Str[] libsInstalled()
+
+  ** Return if given library is loaded into memory
+  abstract Bool isLibLoaded(Str qname)
 
   ** Get or load library by the given qualified name
   abstract DataLib? lib(Str qname, Bool checked := true)

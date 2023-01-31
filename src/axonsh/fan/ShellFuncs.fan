@@ -128,12 +128,24 @@ const class ShellFuncs : AbstractShellFuncs
   }
 
   ** Import data library into scope.
+  **
   ** Examples:
   **   using()                // list all libraries currently in scope
   **   using("phx.points")    // import given library into scope
+  **   using("*")             // import every library installed
   @Axon static Obj? _using(Str? qname := null)
   {
     out := cx.session.out
+
+    if (qname == "*")
+    {
+      cx.data.libsInstalled.each |x|
+      {
+        if (cx.data.isLibLoaded(x)) return
+        _using(x)
+      }
+      return noEcho
+    }
 
     if (qname != null)
     {

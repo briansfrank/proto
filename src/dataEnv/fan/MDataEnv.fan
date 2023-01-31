@@ -122,7 +122,9 @@ internal const class MDataEnv : DataEnv
     Printer(out, dict(opts)).print(val)
   }
 
-  override Str[] installed() { libMgr.installed }
+  override Str[] libsInstalled() { libMgr.installed }
+
+  override Bool isLibLoaded(Str qname) { libMgr.isLoaded(qname) }
 
   override DataLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
@@ -155,7 +157,7 @@ internal const class MDataEnv : DataEnv
     out.printLine("=== DataEnv ===")
     out.printLine("Lib Path:")
     libMgr.path.each |x| { out.printLine("  $x.osPath") }
-    max := installed.reduce(10) |acc, x| { x.size.max(acc) }
+    max := libsInstalled.reduce(10) |acc, x| { x.size.max(acc) }
     out.printLine("Installed Libs:")
     libMgr.installed.each |x| { out.printLine("  " + x.padr(max) + " [" + libMgr.libDir(x, true).osPath + "]") }
   }

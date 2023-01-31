@@ -59,6 +59,12 @@ internal const class MLibMgr
     entry(qname, checked)?.dir
   }
 
+  Bool isLoaded(Str qname)
+  {
+    e := entry(qname, false)
+    return e != null && e.libRef.val != null
+  }
+
   DataLib? load(Str qname, Bool checked := true)
   {
     // check for install
