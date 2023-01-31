@@ -58,6 +58,8 @@ class DataTypeTest : Test
     verifyIsa("phx.AirFlowSensor", "sys.And", true)
     verifyIsa("phx.AirFlowSensor", "ph.Point", true)
     verifyIsa("phx.AirFlowSensor", "phx.Sensor", true)
+    verifyIsa("phx.ZoneAirTempSensor", "ph.Point", true)
+    verifyIsa("phx.ZoneAirTempSensor", "sys.Dict", true)
   }
 
   Void verifyIsa(Str an, Str bn, Bool expected)

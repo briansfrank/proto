@@ -148,6 +148,8 @@ internal const class MDataType : MDataDef, DataType
       if (ofs.any |x| { x.isa(that) }) return true
     }
 
+    if (ofs.isEmpty) ofs = this.ofs
+
     return baseRef.doIsa(that, ofs)
   }
 
