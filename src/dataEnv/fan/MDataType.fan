@@ -138,7 +138,12 @@ internal const class MDataType : MDataDef, DataType
     if (this === that) return true
     if (base == null) return false
 
-    if (this === env.sys.and)
+    if (this === env.sys.maybe)
+    {
+      of := ofs.first
+      if (of != null && of.isa(that)) return true
+    }
+    else if (this === env.sys.and)
     {
       if (ofs.any |x| { x.isa(that) }) return true
     }

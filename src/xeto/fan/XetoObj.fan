@@ -122,7 +122,8 @@ class XetoType
   new makeMaybe(XetoType of)
   {
     this.loc   = of.loc
-    this.name  = of.name
+    this.name  = "sys.Maybe"
+    this.of    = [of]
   }
 
   new makeAnd(XetoType[] of)
