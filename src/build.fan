@@ -49,12 +49,14 @@ class Build : BuildGroup
   Void zip()
   {
     buildVersion := Version(config("buildVersion"))
-    moniker := "pog-$buildVersion"
+    moniker := "xeto-$buildVersion"
 
     // top level dirs to include
     env := (PathEnv)Env.cur
-    if (env.path.size != 2) throw Err("Env must be fantom, proto")
-    fanDir   := env.path[1]
+    if (env.path.size != 4) throw Err("Env must be fantom, ph, haxall, proto")
+    fanDir   := env.path[3]
+    phDir    := env.path[2]
+    hxDir    := env.path[1]
     protoDir := env.path[0]
     topDirs := [
       // bin
@@ -64,10 +66,7 @@ class Build : BuildGroup
       fanDir   + `lib/`,
       protoDir + `lib/`,
       // etc
-      fanDir + `etc/build/`,
       fanDir + `etc/sys/`,
-      // pog
-      protoDir + `pog/`,
     ]
 
     // create zip-include dir
@@ -98,13 +97,18 @@ class Build : BuildGroup
       // jar filter - strip swt jars
       if (f.ext == "jar")
       {
-        return f.name == "sys.jar"
+        return f.name == "sys.jar" || f.name == "jline.jar"
       }
 
       // pod filter
       if (f.ext == "pod")
       {
         if (!distPod(f.basename)) return false
+      }
+
+      if (f.parent.name == "data" && f.parent.parent.name == "lib")
+      {
+        if (!distDataLib(f.name)) return false
       }
 
       if (f.isDir) log.info("  Adding dir [$f.osPath]")
@@ -133,7 +137,7 @@ class Build : BuildGroup
   {
     if (name == "fan") return true
     if (name == "fanlaunch") return true
-    if (name == "protoc") return true
+    if (name == "axon") return true
     return false
   }
 
@@ -142,19 +146,31 @@ class Build : BuildGroup
     if (name.startsWith("test")) return false
     if (name.startsWith("doc")) return false
     if (name.startsWith("compiler")) return false
-    if (name.startsWith("web")) return false
     if (name.startsWith("dom")) return false
     if (name.startsWith("flux")) return false
     if (name.startsWith("graphics")) return false
     if (name == "build") return false
-    if (name == "fwt") return false
+    if (name == "fanr") return false
+    if (name == "fansh") return false
+    if (name == "build") return false
     if (name == "gfx") return false
     if (name == "email") return false
     if (name == "icons") return false
     if (name == "sql") return false
     if (name == "syntax") return false
     if (name == "wisp") return false
+    if (name == "webmod") return false
+    if (name == "webfwt") return false
     if (name == "xml") return false
+    if (name == "ph2xeto") return false
+    return true
+  }
+
+
+  Bool distDataLib(Str qname)
+  {
+    if (qname.startsWith("play")) return false
+    if (qname.startsWith("contrib")) return false
     return true
   }
 
