@@ -55,11 +55,11 @@ class DataTypeTest : Test
     verifyIsa("sys.And",   "sys.And",   true)
     verifyIsa("sys.Or",    "sys.Or",    true)
 
-    verifyIsa("phx.AirFlowSensor", "sys.And", true)
-    verifyIsa("phx.AirFlowSensor", "ph.Point", true)
-    verifyIsa("phx.AirFlowSensor", "phx.Sensor", true)
-    verifyIsa("phx.ZoneAirTempSensor", "ph.Point", true)
-    verifyIsa("phx.ZoneAirTempSensor", "sys.Dict", true)
+    verifyIsa("ph.points.AirFlowSensor", "sys.And", true)
+    verifyIsa("ph.points.AirFlowSensor", "ph.Point", true)
+    verifyIsa("ph.points.AirFlowSensor", "ph.points.Sensor", true)
+    verifyIsa("ph.points.ZoneAirTempSensor", "ph.Point", true)
+    verifyIsa("ph.points.ZoneAirTempSensor", "sys.Dict", true)
   }
 
   Void verifyIsa(Str an, Str bn, Bool expected)
@@ -79,7 +79,7 @@ class DataTypeTest : Test
   Void testReflection()
   {
     ph := env.lib("ph")
-    phx := env.lib("phx")
+    phx := env.lib("ph.points")
 
     equipSlots       := ["equip:Marker", "points:Query"]
     meterSlots       := equipSlots.dup.add("meter:Marker")

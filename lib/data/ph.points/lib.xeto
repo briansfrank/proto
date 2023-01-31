@@ -5,7 +5,7 @@
 //   6 Nov 2022  Brian Frank  Creation
 
 pragma: Lib <
-  doc: "Project haystack experimental library"
+  doc: "Project haystack experimental points library"
   version: "3.9.12"
   depends: {
     { lib: "sys" }

@@ -12,7 +12,7 @@ pragma: Lib <
   depends: {
     { lib: "sys" }
     { lib: "ph" }
-    { lib: "phx" }
+    { lib: "ph.points" }
   }
   org: {
     dis: "Project Haystack"
