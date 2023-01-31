@@ -78,6 +78,11 @@ class Linter : Fitter
     log("Ambiguous match for $ofDis $constraint.name: " + recsToDis(matches))
   }
 
+  override Bool explainInvalidSlotType(DataType valType, DataSlot slot)
+  {
+    log("Invalid value type for '$slot.name' - '$valType does not fit '$slot.slotType'")
+  }
+
   private Str recsToDis(DataDict[] recs)
   {
     s := StrBuf()

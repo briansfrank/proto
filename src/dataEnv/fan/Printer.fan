@@ -269,7 +269,7 @@ class Printer
   ** Type reference
   This typeref(DataType t)
   {
-    w(t.qname)
+    w(t)
   }
 
   ** Print doc lines if showdoc option configured

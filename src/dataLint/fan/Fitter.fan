@@ -64,11 +64,15 @@ class Fitter
 
     val := dict.get(slot.name, null)
 
-    if (val == null && !t.isaMaybe)
+    if (val == null)
+    {
+      if (t.isaMaybe) return true
       return explainMissingSlot(slot)
+    }
 
-
-    // TODO: check value type without high level logging
+    valFits := Fitter(cx).fits(val, t)
+    valType := data.typeOf(val, false) ?: data.type("sys.None")
+    if (!valFits) return explainInvalidSlotType(valType, slot)
 
     return true
   }
@@ -144,6 +148,8 @@ class Fitter
   virtual Bool explainNoFit(DataType valType, DataType type) { false }
 
   virtual Bool explainMissingSlot(DataSlot slot) { false }
+
+  virtual Bool explainInvalidSlotType(DataType valType, DataSlot slot) { false }
 
   virtual Bool explainMissingQueryConstraint(Str ofDis, DataType constraint) { false }
 

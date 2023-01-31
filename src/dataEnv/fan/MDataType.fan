@@ -108,7 +108,7 @@ internal const class MDataType : MDataDef, DataType
   private const AtomicRef declaredSlotsRef := AtomicRef()
 
   // TODO: just temp solution
-  override DataType of() { ofs.first ?: throw Err("No of meta") }
+  override DataType? of() { ofs.first }
   const override DataType[] ofs
 
   override Str:DataSlot map() { effectiveSlots.map }

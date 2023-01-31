@@ -28,7 +28,7 @@ const mixin DataType : DataDef
   abstract DataSlot? slot(Str name, Bool checked := true)
 
   ** TODO
-  @NoDoc abstract DataType of()
+  @NoDoc abstract DataType? of()
 
   ** TODO
   @NoDoc abstract DataType[] ofs()
