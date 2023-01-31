@@ -152,6 +152,6 @@ class XetoType
   DataType? outside    // if resolved to external dependency
   XetoObj? inside      // if resolved to internal AST node
 
-  override Str toStr() { name }
+  override Str toStr() { "$name $of" }
 }
 

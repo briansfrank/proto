@@ -25,6 +25,9 @@ internal const class MDataSlot : MDataDef, DataSlot
     this.meta     = parent.env.astMeta(astSlot.meta)
     this.slotType = astSlot.type.reified
 
+    // TODO: derive new synthetic type if we have of
+    if (astSlot.type.of != null) slotType = MDataType.parameterize(slotType, astSlot.type.of.map |x->DataType| { x.reified })
+
     // TODO
     this.constraints = astSlot.slots.map |x->DataType| { x.type.reified }
   }

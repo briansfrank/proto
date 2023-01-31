@@ -32,6 +32,7 @@ const mixin DataDef : DataDict
   ** Meta data for this definition
   abstract DataDict meta()
 
-  ** Always return qname for string representation
+  ** Return qname for string representation.  Some special types
+  ** like Maybe, And, and Or will return signature
   abstract override Str toStr()
 }

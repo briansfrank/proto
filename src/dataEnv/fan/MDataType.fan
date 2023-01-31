@@ -89,6 +89,17 @@ internal const class MDataType : MDataDef, DataType
     this.ofs      = of   // TODO: this eventually needs to go into meta
   }
 
+  new parameterize(MDataType base, MDataType[] of)
+  {
+    this.libRef   = base.lib
+    this.name     = base.name
+    this.qname    = base.qname
+    this.loc      = base.loc
+    this.baseRef  = base.baseRef
+    this.meta     = base.meta
+    this.ofs      = of
+  }
+
   internal Void reifySlots(XetoObj ast)
   {
     declaredSlotsRef.val = MDataTypeSlots.reify(this, ast)
@@ -136,6 +147,7 @@ internal const class MDataType : MDataDef, DataType
   private Bool doIsa(DataType that, DataType[] ofs)
   {
     if (this === that) return true
+    if (this.qname == that.qname) return true  // TODO: rework wrapped types from parameterize
     if (base == null) return false
 
     if (this === env.sys.maybe)
@@ -151,6 +163,15 @@ internal const class MDataType : MDataDef, DataType
     if (ofs.isEmpty) ofs = this.ofs
 
     return baseRef.doIsa(that, ofs)
+  }
+
+  override Str toStr()
+  {
+    if (!ofs.isEmpty)
+    {
+      if (isaMaybe) return of.toStr + "?"
+    }
+    return qname
   }
 
   override Bool isaScalar() { isa(env.sys.scalar) }

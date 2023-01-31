@@ -40,7 +40,7 @@ internal const abstract class MDataDef : MAbstractDict, DataDef
 
   override final Str doc() { meta["doc"] as Str ?: "" }
 
-  override final Str toStr() { qname }
+  override Str toStr() { qname }
 
 }
 
