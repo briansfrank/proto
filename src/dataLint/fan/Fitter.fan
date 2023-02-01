@@ -104,13 +104,23 @@ class Fitter
 
   private Bool fitQueryConstraint(DataDict rec, Str ofDis, DataDict[] extent, DataType constraint)
   {
+    isMaybe := constraint.isaMaybe
+    if (isMaybe) constraint = constraint.of ?: throw Err("Expecting maybe of: $constraint")
+
     matches := DataDict[,]
     extent.each |x|
     {
       if (Fitter(cx).fits(x, constraint)) matches.add(x)
     }
-    if (matches.size == 0) return explainMissingQueryConstraint(ofDis, constraint)
+
     if (matches.size == 1) return true
+
+    if (matches.size == 0)
+    {
+      if (isMaybe) return true
+      return explainMissingQueryConstraint(ofDis, constraint)
+    }
+
     return explainAmbiguousQueryConstraint(ofDis, constraint, matches)
   }
 

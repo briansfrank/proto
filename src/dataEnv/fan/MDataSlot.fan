@@ -29,7 +29,12 @@ internal const class MDataSlot : MDataDef, DataSlot
     if (astSlot.type.of != null) slotType = MDataType.parameterize(slotType, astSlot.type.of.map |x->DataType| { x.reified })
 
     // TODO
-    this.constraints = astSlot.slots.map |x->DataType| { x.type.reified }
+    this.constraints = astSlot.slots.map |x->DataType|
+    {
+      c := x.type.reified
+      if (x.type.of != null) c = MDataType.parameterize(c, x.type.of.map |y->DataType| { y.reified })
+      return c
+    }
   }
 
   new makeOverride(MDataSlot inherit, MDataSlot declared)
