@@ -75,8 +75,7 @@ const mixin Dict : DataSeq
   **
   ** Get the 'id' tag as a Ref or raise CastErr/UnknownNameErr
   **
-// TODO
-  virtual Obj id()
+  virtual Ref id()
   {
     get("id", null) ?: throw UnknownNameErr("id")
   }

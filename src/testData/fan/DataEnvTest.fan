@@ -9,7 +9,6 @@
 using util
 using data
 using haystackx::Number
-using haystackx::Ref
 
 **
 ** DataEnvTest

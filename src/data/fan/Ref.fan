@@ -72,8 +72,8 @@ final const class Ref
     StrBuf(20).add(time.toHex(8)).addChar('-').add(rand.toHex(8)).toStr
   }
 
-  ** Constructor
-  @NoDoc protected new makeImpl(Str id, Str? dis)
+  ** Constructor - only use this constructor if id has been checked!
+  @NoDoc new makeImpl(Str id, Str? dis)
   {
     this.idRef  = id
     this.segs   = RefSeg.parse(id)
@@ -411,14 +411,11 @@ const class RefSeg
 @NoDoc @Js
 const class RefSchemes
 {
-  static const Str proj    := "p"
-  static const Str host    := "h"
-  static const Str user    := "u"
-  static const Str rec     := "r"
-  static const Str node    := "n"
-  static const Str lic     := "lic"
-  static const Str replica := "replica"
-  static const Str subnet  := "subnet"
+  static const Str proj := "p"
+  static const Str host := "h"
+  static const Str user := "u"
+  static const Str rec  := "r"
+  static const Str node := "n"
 }
 
 

@@ -37,11 +37,14 @@ internal const class MDataEnv : DataEnv
 
   override DataType? typeOf(Obj? val, Bool checked := true)
   {
-    // TODO hard code mapping to get us started with this API
     if (val == null) return sys.none
+    if (val === Marker.val) return sys.marker
+
+    // TODO hard code mapping to get us started with this API
     if (val is DataSeq)  return ((DataSeq)val).type
     if (val is Str)      return sys.str
     if (val is Bool)     return sys.bool
+    if (val is Ref)      return sys.ref
     if (val is Int)      return sys.int
     if (val is Float)    return sys.float
     if (val is Duration) return sys.duration
@@ -55,9 +58,7 @@ internal const class MDataEnv : DataEnv
     qname := val.typeof.qname
     switch (qname)
     {
-      case "data::Marker": return sys.marker
       case "haystackx::Number": return sys.number
-      case "haystackx::Ref":    return sys.ref
     }
 
     if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")
