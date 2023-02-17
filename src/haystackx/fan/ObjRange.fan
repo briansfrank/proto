@@ -8,6 +8,8 @@
 //   04 Feb 2022  Brian Frank  Move from axon into haystack
 //
 
+using data
+
 **
 ** ObjRange models ".." range literal.
 **

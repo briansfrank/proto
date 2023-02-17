@@ -4,6 +4,7 @@
 //
 // History:
 //   15 Sep 2010  Brian Frank  Creation
+//   17 Feb 2023  Brian Frank  Move from haystack to data
 //
 
 **
@@ -50,7 +51,10 @@ const final class Number
     {
       c := s[0]
       if (c.isDigit || c == '-' || c == 'I' || c == 'N')
-        return ZincReader(s.in).readVal
+      {
+// TODO
+return Type.find("haystack::ZincReader").make([s.in])->readVal
+      }
     }
     catch (Err e)
     {
@@ -248,16 +252,6 @@ const final class Number
     s := isInt ? toInt.toStr : float.toStr
     if (unit != null && !isSpecial) s += unit.symbol
     return s
-  }
-
-  internal Str toJson()
-  {
-    s := StrBuf(32)
-    s.addChar('n').addChar(':')
-    if (isInt) s.add(toInt.toStr)
-    else s.add(float.toStr)
-    if (unit != null && !isSpecial) s.addChar(' ').add(unit.symbol)
-    return s.toStr
   }
 
   **

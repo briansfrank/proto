@@ -45,6 +45,7 @@ internal const class MDataEnv : DataEnv
     if (val is Str)      return sys.str
     if (val is Bool)     return sys.bool
     if (val is Ref)      return sys.ref
+    if (val is Number)   return sys.number
     if (val is Int)      return sys.int
     if (val is Float)    return sys.float
     if (val is Duration) return sys.duration
@@ -53,13 +54,6 @@ internal const class MDataEnv : DataEnv
     if (val is DateTime) return sys.dateTime
     if (val is Uri)      return sys.uri
     if (val is List)     return sys.list
-
-    // TODO
-    qname := val.typeof.qname
-    switch (qname)
-    {
-      case "haystackx::Number": return sys.number
-    }
 
     if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")
     return null

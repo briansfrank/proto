@@ -6,7 +6,7 @@
 //   3 Aug 2019  Brian Frank  Creation
 //
 
-using haystackx
+using data
 
 **
 ** SourceStream is base class streams which source data

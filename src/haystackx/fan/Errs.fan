@@ -82,15 +82,6 @@ using data
 }
 
 **
-** UnitErr indicates an operation between two incompatible units
-**
-@Js const class UnitErr : Err
-{
-  ** Construct with message and optional cause.
-  new make(Str? msg, Err? cause := null) : super(msg, cause) {}
-}
-
-**
 ** DependErr indicates a missing dependency
 **
 @Js const class DependErr : Err

@@ -412,7 +412,16 @@ internal const final class NumberKind : Kind
   new make() : super("Number", Number#) {}
   override Bool isNumber() { true }
   override Str valToDis(Obj val, Dict meta := Etc.emptyDict) { ((Number)val).toLocale(meta["format"]) }
-  override Str valToJson(Obj val) { ((Number)val).toJson }
+  override Str valToJson(Obj val)
+  {
+    n := (Number)val
+    s := StrBuf(32)
+    s.addChar('n').addChar(':')
+    if (n.isInt) s.add(n.toInt.toStr)
+    else s.add(n.toFloat.toStr)
+    if (n.unit != null && !n.isSpecial) s.addChar(' ').add(n.unit.symbol)
+    return s.toStr
+  }
   override Str valToAxon(Obj val)
   {
     f := ((Number)val).toFloat

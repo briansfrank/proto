@@ -15,6 +15,13 @@ const class UnknownNameErr : Err
 }
 
 @Js @NoDoc
+const class UnitErr : Err
+{
+  new make(Str? msg, Err? cause := null) : super(msg, cause) {}
+}
+
+
+@Js @NoDoc
 const class UnknownDataErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}

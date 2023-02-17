@@ -7,6 +7,8 @@
 //   02 Feb 2012  Brian Frank  Merge with DateRange for server side
 //
 
+using data
+
 **
 ** DateSpan models a span of time between two dates.
 **
