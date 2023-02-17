@@ -55,7 +55,7 @@ internal const class MDataEnv : DataEnv
     qname := val.typeof.qname
     switch (qname)
     {
-      case "haystackx::Marker": return sys.marker
+      case "data::Marker": return sys.marker
       case "haystackx::Number": return sys.number
       case "haystackx::Ref":    return sys.ref
     }
@@ -90,11 +90,7 @@ internal const class MDataEnv : DataEnv
     return MMapDict(null, acc)
   }
 
-  internal once Obj marker()
-  {
-    // TODO
-    Slot.findField("haystackx::Marker.val").get(null)
-  }
+  internal Obj marker() { Marker.val }
 
   override DataSeq seq(Obj? val)
   {

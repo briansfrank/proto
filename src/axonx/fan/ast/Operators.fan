@@ -6,6 +6,7 @@
 //   04 Aug 2009  Brian Frank  Creation
 //
 
+using data
 using haystackx
 
 **************************************************************************

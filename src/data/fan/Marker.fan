@@ -6,14 +6,12 @@
 //   7 Oct 2009  Brian Frank  Creation
 //
 
-using data
-
 **
 ** Marker is the singleton which indicates a marker tag with no value.
 **
 @Js
 @Serializable { simple = true }
-const final class Marker : DataMarker
+const final class Marker
 {
   ** Singleton value
   const static Marker val := Marker()

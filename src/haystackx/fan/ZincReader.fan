@@ -7,6 +7,8 @@
 //   28 Dec 2009  Brian Frank  DataReader => ZincReader
 //
 
+using data
+
 **
 ** Read Haystack data in [Zinc]`docHaystack::Zinc` format.
 **

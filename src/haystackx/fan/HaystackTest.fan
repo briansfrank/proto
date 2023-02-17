@@ -8,6 +8,7 @@
 //
 
 using concurrent
+using data
 
 **
 ** HaystackTest provides convenience methods for testing

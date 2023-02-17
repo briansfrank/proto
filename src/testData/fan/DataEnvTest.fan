@@ -8,7 +8,6 @@
 
 using util
 using data
-using haystackx::Marker
 using haystackx::Number
 using haystackx::Ref
 

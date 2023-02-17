@@ -7,6 +7,7 @@
 //
 
 using util
+using data
 
 **
 ** Write Haystack data in [JSON]`docHaystack::Json` format.

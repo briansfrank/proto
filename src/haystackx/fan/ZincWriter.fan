@@ -7,6 +7,8 @@
 //   28 Dec 2009  Brian Frank  DataWriter => ZincWriter
 //
 
+using data
+
 **
 ** Write Haystack data in [Zinc]`docHaystack::Zinc` format.
 **

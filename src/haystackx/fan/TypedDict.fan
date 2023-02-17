@@ -7,6 +7,7 @@
 //
 
 using concurrent
+using data
 
 **
 ** TypedDict wraps a dict that maps tags to statically typed fields.

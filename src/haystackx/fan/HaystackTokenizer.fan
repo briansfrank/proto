@@ -8,6 +8,8 @@
 //   13 Jan 2016  Brian Frank  Repurpose from Axon parser
 //
 
+using data
+
 **
 ** Stream based tokenizer for Haystack formats such as Zinc and Filters
 **

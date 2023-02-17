@@ -7,6 +7,7 @@
 //
 
 using concurrent
+using data
 
 **
 ** Etc is the utility methods for Haystack.

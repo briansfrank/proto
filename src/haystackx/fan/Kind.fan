@@ -10,6 +10,7 @@
 //
 
 using concurrent
+using data
 
 **
 ** Kind provides a type signature for a Haystack data value
