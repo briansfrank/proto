@@ -73,7 +73,7 @@ class Linter : Fitter
     log("Missing required $ofDis $constraint.name")
   }
 
-  override Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, DataDict[] matches)
+  override Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, Dict[] matches)
   {
     log("Ambiguous match for $ofDis $constraint.name: " + recsToDis(matches))
   }
@@ -83,7 +83,7 @@ class Linter : Fitter
     log("Invalid value type for '$slot.name' - '$valType' does not fit '$slot.slotType'")
   }
 
-  private Str recsToDis(DataDict[] recs)
+  private Str recsToDis(Dict[] recs)
   {
     s := StrBuf()
     for (i := 0; i<recs.size; ++i)
@@ -99,7 +99,7 @@ class Linter : Fitter
     return s.toStr
   }
 
-  private Str? relDis(DataDict d)
+  private Str? relDis(Dict d)
   {
     x := dis(d)
     if (x == null) return null
@@ -110,7 +110,7 @@ class Linter : Fitter
     return Etc.relDis(p, x)
   }
 
-  private Str? dis(DataDict? d)
+  private Str? dis(Dict? d)
   {
     d?.get("dis", null)
   }

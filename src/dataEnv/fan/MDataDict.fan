@@ -14,13 +14,10 @@ using data
 **************************************************************************
 
 @Js
-internal const abstract class MAbstractDict : DataDict
+internal const abstract class MAbstractDict : Dict
 {
   override Bool has(Str name) { get(name, null) != null }
   override Bool missing(Str name) { get(name, null) == null }
-  override DataDictX x() { MDataDictX(this) }
-  abstract Void each(|Obj,Str| f)
-  abstract Obj? eachWhile(|Obj,Str->Obj?| f)
 }
 
 **************************************************************************
@@ -59,19 +56,5 @@ internal const class MMapDict : MAbstractDict
   override Obj? eachWhile(|Obj,Str->Obj?| f) { map.eachWhile(f) }
   override Str toStr() { MDataUtil.dictToStr(this) }
   const Str:Obj? map
-}
-
-**************************************************************************
-** MDataDictX
-**************************************************************************
-
-@Js
-internal class MDataDictX : AbstractDataDictX
-{
-  new make(MAbstractDict source) : super(source) {}
-
-  override Void each(|Obj,Str| f) { ((MAbstractDict)source).each(f) }
-
-  override Obj? eachWhile(|Obj,Str->Obj?| f) { ((MAbstractDict)source).eachWhile(f) }
 }
 

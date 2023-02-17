@@ -97,7 +97,9 @@ class AxonTest : HaystackTest
 
   Void verifyQuery(Dict rec, Str query, Dict[] expected)
   {
-    expr := "query($rec.id.toCode, $query)"
+//    expr := "query($rec.id.toCode, $query)"
+// TODO
+expr := "query(${rec.id->toCode}, $query)"
     //echo("-- $expr")
     Grid actual := eval(expr)
     x := actual.sortDis.mapToList { it.dis }.join(",")

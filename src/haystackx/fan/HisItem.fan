@@ -8,6 +8,8 @@
 //    9 Mar 2009  Brian Frank  Refactor for 3.0
 //
 
+using data
+
 **
 ** HisItem is a timestamp/value pair.
 **
@@ -59,13 +61,18 @@ const final class HisItem : Dict
 
   override Bool missing(Str name) { !has(name) }
 
-  override Void each(|Obj?, Str| f)  { f(ts, "ts"); f(val, "val") }
+  override Void each(|Obj, Str| f)
+  {
+    f(ts, "ts")
+    if (val != null) f(val, "val")
+  }
 
-  override Obj? eachWhile(|Obj?, Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := f(ts, "ts");
-    if (r == null) return r
-    return f(val, "val")
+    if (r != null) return r
+    if (val != null) return f(val, "val")
+    return null
   }
 
 //////////////////////////////////////////////////////////////////////////

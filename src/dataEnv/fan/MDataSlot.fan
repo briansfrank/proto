@@ -48,13 +48,13 @@ internal const class MDataSlot : MDataDef, DataSlot
     this.constraints = mergeConstraints(inherit.constraints, declared.constraints)
   }
 
-  static DataDict mergeMeta(MDataEnv env, DataDict inherit, DataDict declared)
+  static Dict mergeMeta(MDataEnv env, Dict inherit, Dict declared)
   {
     if (declared.isEmpty) return inherit
     if (inherit.isEmpty) return declared
     acc := Str:Obj[:]
-    inherit.x.each |v, n| { acc[n] = v }
-    declared.x.each |v, n| { acc[n] = v }
+    inherit.each |v, n| { acc[n] = v }
+    declared.each |v, n| { acc[n] = v }
     return env.dict(acc)
   }
 
@@ -92,8 +92,8 @@ internal const class MDataSlot : MDataDef, DataSlot
   const override Str name
   const override Str qname
   const override MDataType slotType
-  const override DataDict meta
+  const override Dict meta
   const override Str:DataType constraints
-  override Str:DataDict map() { env.emptyDictMap }
+  override Str:Dict map() { env.emptyDictMap }
 
 }

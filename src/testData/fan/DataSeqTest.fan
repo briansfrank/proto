@@ -127,7 +127,7 @@ class DataSeqTest : Test
     verifyDictPairs(d.x.remove("c").collect, ["a":1, "b":2, "d":4])
   }
 
-  Void verifyDict(DataDict d, Str:Obj map)
+  Void verifyDict(Dict d, Str:Obj map)
   {
     // type
     verifySame(d.type, env.type("sys.Dict"))
@@ -147,7 +147,7 @@ class DataSeqTest : Test
     verifyDictPairs(dup, map)
   }
 
-  Void verifyDictPairs(DataDict d, Str:Obj map)
+  Void verifyDictPairs(Dict d, Str:Obj map)
   {
     // as sequence
     verifySeq(d, map.vals)
@@ -159,7 +159,7 @@ class DataSeqTest : Test
     }
 
     // each, trap
-    d.x.each |v, n|
+    d.each |v, n|
     {
       verifyEq(v, map[n])
       verifySame(d.trap(n), v)

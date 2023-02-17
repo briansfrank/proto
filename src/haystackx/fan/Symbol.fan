@@ -6,6 +6,8 @@
 //   9 Jan 2019  Brian Frank  Creation
 //
 
+using data
+
 **
 ** Symbol is a name to a def in the meta-model namespace
 **

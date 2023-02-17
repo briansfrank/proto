@@ -6,15 +6,7 @@
 //   29 Aug 2009  Brian Frank  Creation
 //
 
-**
-** UnknownNameErr is thrown when `Dict.trap` or `Grid.col` fails
-** to resolve a name.
-**
-@Js const class UnknownNameErr : Err
-{
-  ** Construct with message and optional cause.
-  new make(Str? msg, Err? cause := null) : super(msg, cause) {}
-}
+using data
 
 **
 ** Invalid lookup for definition
@@ -65,14 +57,6 @@
 ** Invalid lookup for tag definition
 **
 @Js @NoDoc const class UnknownTagErr : Err
-{
-  new make(Str msg, Err? cause := null) : super(msg, cause) {}
-}
-
-**
-** Invalid lookup for function
-**
-@Js @NoDoc const class UnknownFuncErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}
 }

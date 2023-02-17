@@ -14,17 +14,17 @@ using data
 @Js
 const class MDataUtil
 {
-  static Obj dictTrap(DataDict dict, Str name)
+  static Obj dictTrap(Dict dict, Str name)
   {
     val := dict.get(name, null)
     if (val != null) return val
     throw UnknownSlotErr(name)
   }
 
-  static Str dictToStr(DataDict dict)
+  static Str dictToStr(Dict dict)
   {
     s := StrBuf()
-    dict.x.each |v, n|
+    dict.each |v, n|
     {
       s.join(n, ", ")
       if (v.toStr != "marker")
@@ -36,7 +36,7 @@ const class MDataUtil
   }
 
   /* TODO
-  static DataObj? dictGetData(DataDict dict, Str name, Bool checked)
+  static DataObj? dictGetData(Dict dict, Str name, Bool checked)
   {
     val := dict.get(name, null)
     if (val != null) return dict.type.env.obj(val)
@@ -44,7 +44,7 @@ const class MDataUtil
     return null
   }
 
-  static Void dictEachData(DataDict dict, |DataObj, Str| f)
+  static Void dictEachData(Dict dict, |DataObj, Str| f)
   {
     env := dict.type.env
     dict.each |v, n| { f(env.obj(v), n) }

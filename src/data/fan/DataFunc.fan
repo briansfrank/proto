@@ -24,5 +24,5 @@ const mixin DataFunc : DataType
   abstract DataSlot? param(Str name, Bool checked := true)
 
   ** Call this function with the given arguments
-  abstract Obj? call(DataDict args)
+  abstract Obj? call(Dict args)
 }

@@ -6,6 +6,8 @@
 //   8 Oct 2018  Brian Frank  Creation
 //
 
+using data
+
 **
 ** Def models a definition dictionary
 **

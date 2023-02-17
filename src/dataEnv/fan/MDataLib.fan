@@ -33,7 +33,7 @@ internal const class MDataLib : MDataDef, DataLib
 
   const override FileLoc loc
   const override Str qname
-  const override DataDict meta
+  const override Dict meta
   const override Version version
   const override DataType[] libTypes := [,]
   const override Str:DataType map

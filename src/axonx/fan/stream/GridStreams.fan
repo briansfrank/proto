@@ -6,8 +6,8 @@
 //   3 Aug 2019  Brian Frank  Creation
 //
 
+using data
 using haystackx
-
 
 @Js
 internal class GridStream : SourceStream

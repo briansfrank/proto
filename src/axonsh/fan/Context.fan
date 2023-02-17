@@ -9,7 +9,6 @@
 using data
 using dataLint
 using haystackx
-using haystackx::UnknownFuncErr
 using axonx
 
 **

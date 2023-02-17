@@ -12,7 +12,7 @@ using util
 ** Base type for static library definitions
 **
 @Js
-const mixin DataDef : DataDict
+const mixin DataDef : Dict
 {
   ** Environment
   abstract DataEnv env()
@@ -30,7 +30,7 @@ const mixin DataDef : DataDict
   abstract Str doc()
 
   ** Meta data for this definition
-  abstract DataDict meta()
+  abstract Dict meta()
 
   ** Return qname for string representation.  Some special types
   ** like Maybe, And, and Or will return signature

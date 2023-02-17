@@ -6,6 +6,7 @@
 //   1 Jan 2016  Brian Frank  Creation
 //
 
+using data
 using haystackx
 using concurrent
 

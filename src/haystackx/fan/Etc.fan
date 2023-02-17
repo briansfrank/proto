@@ -40,25 +40,8 @@ const class Etc
   static Dict makeDict(Obj? val)
   {
     if (val == null) return emptyDict
-    if (val is Map)
-    {
-      Str:Obj? map := val
-      switch (map.size)
-      {
-        case 0:  return emptyDict
-        case 1:  return Dict1(map)
-        case 2:  return Dict2(map)
-        case 3:  return Dict3(map)
-        case 4:  return Dict4(map)
-        case 5:  return Dict5(map)
-        case 6:  return Dict6(map)
-        default: return MapDict(map)
-      }
-    }
-    if (val is Dict)
-    {
-      return val
-    }
+    if (val is Map)  return mapToDict(val)
+    if (val is Dict) return val
     if (val is List)
     {
       tags := Str:Obj[:]
@@ -68,12 +51,49 @@ const class Etc
     throw ArgErr("Cannot create dict from $val.typeof")
   }
 
+  private static Dict mapToDict(Str:Obj? map)
+  {
+    if (map.size > 6) return MapDict(map)
+
+    i := 0
+    Str? n0; Str? n1; Str? n2; Str? n3; Str? n4; Str? n5
+    Obj? v0; Obj? v1; Obj? v2; Obj? v3; Obj? v4; Obj? v5
+
+    map.each |v, n|
+    {
+      if (v == null) return
+      switch (i++)
+      {
+        case 0: n0 = n; v0 = v
+        case 1: n1 = n; v1 = v
+        case 2: n2 = n; v2 = v
+        case 3: n3 = n; v3 = v
+        case 4: n4 = n; v4 = v
+        case 5: n5 = n; v5 = v
+        default: throw Err()
+      }
+    }
+
+    switch (i)
+    {
+      case 0:  return emptyDict
+      case 1:  return Dict1(n0, v0)
+      case 2:  return Dict2(n0, v0, n1, v1)
+      case 3:  return Dict3(n0, v0, n1, v1, n2, v2)
+      case 4:  return Dict4(n0, v0, n1, v1, n2, v2, n3, v3)
+      case 5:  return Dict5(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4)
+      case 6:  return Dict6(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4, n5, v5)
+      default: throw Err()
+    }
+  }
+
   **
   ** Make a Dict with one name/value pair
   **
   static Dict makeDict1(Str n, Obj? v)
   {
-    Dict1.make1(n, v)
+    if (v == null) return emptyDict
+    return Dict1.make1(n, v)
   }
 
   **
@@ -81,7 +101,9 @@ const class Etc
   **
   static Dict makeDict2(Str n0, Obj? v0, Str n1, Obj? v1)
   {
-    Dict2.make2(n0, v0, n1, v1)
+    if (v0 == null) return makeDict1(n1, v1)
+    if (v1 == null) return makeDict1(n0, v0)
+    return Dict2.make2(n0, v0, n1, v1)
   }
 
   **
@@ -89,7 +111,10 @@ const class Etc
   **
   static Dict makeDict3(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2)
   {
-    Dict3.make3(n0, v0, n1, v1, n2, v2)
+    if (v0 == null) return makeDict2(n1, v1, n2, v2)
+    if (v1 == null) return makeDict2(n0, v0, n2, v2)
+    if (v2 == null) return makeDict2(n0, v0, n1, v1)
+    return Dict3.make3(n0, v0, n1, v1, n2, v2)
   }
 
   **
@@ -97,7 +122,11 @@ const class Etc
   **
   static Dict makeDict4(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3)
   {
-    Dict4.make4(n0, v0, n1, v1, n2, v2, n3, v3)
+    if (v0 == null) return makeDict3(n1, v1, n2, v2, n3, v3)
+    if (v1 == null) return makeDict3(n0, v0, n2, v2, n3, v3)
+    if (v2 == null) return makeDict3(n0, v0, n1, v1, n3, v3)
+    if (v3 == null) return makeDict3(n0, v0, n1, v1, n2, v2)
+    return Dict4.make4(n0, v0, n1, v1, n2, v2, n3, v3)
   }
 
   **
@@ -105,7 +134,12 @@ const class Etc
   **
   static Dict makeDict5(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3, Str n4, Obj? v4)
   {
-    Dict5.make5(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4)
+    if (v0 == null) return makeDict4(n1, v1, n2, v2, n3, v3, n4, v4)
+    if (v1 == null) return makeDict4(n0, v0, n2, v2, n3, v3, n4, v4)
+    if (v2 == null) return makeDict4(n0, v0, n1, v1, n3, v3, n4, v4)
+    if (v3 == null) return makeDict4(n0, v0, n1, v1, n2, v2, n4, v4)
+    if (v4 == null) return makeDict4(n0, v0, n1, v1, n2, v2, n3, v3)
+    return Dict5.make5(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4)
   }
 
   **
@@ -113,7 +147,13 @@ const class Etc
   **
   static Dict makeDict6(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3, Str n4, Obj? v4, Str n5, Obj? v5)
   {
-    Dict6.make6(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4, n5, v5)
+    if (v0 == null) return makeDict5(n1, v1, n2, v2, n3, v3, n4, v4, n5, v5)
+    if (v1 == null) return makeDict5(n0, v0, n2, v2, n3, v3, n4, v4, n5, v5)
+    if (v2 == null) return makeDict5(n0, v0, n1, v1, n3, v3, n4, v4, n5, v5)
+    if (v3 == null) return makeDict5(n0, v0, n1, v1, n2, v2, n4, v4, n5, v5)
+    if (v4 == null) return makeDict5(n0, v0, n1, v1, n2, v2, n3, v3, n5, v5)
+    if (v5 == null) return makeDict5(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4)
+    return Dict6.make6(n0, v0, n1, v1, n2, v2, n3, v3, n4, v4, n5, v5)
   }
 
   **
@@ -172,7 +212,7 @@ const class Etc
   static Obj[] dictVals(Dict d)
   {
     vals := Obj[,]
-    d.each |v, n| { if (v != null) vals.add(v) }
+    d.each |v, n| { vals.add(v) }
     return vals
   }
 
@@ -187,15 +227,69 @@ const class Etc
     return map
   }
 
-  **
-  ** Apply the given map function to each name/value pair
-  ** to construct a new Dict.
-  **
-  static Dict dictMap(Dict d, |Obj? v, Str n->Obj?| f)
+  ** Flag to have Axon iterate Dict null values.  Starting in 3.1.7 we
+  ** made semantic change to not iterate nulls, but this is backdoor
+  ** hook to keep old behavior for grid rows just in case.
+  @NoDoc static const Bool dictIterateNulls := false
+  static
   {
-    map := Str:Obj?[:]
-    d.each |v, n| { map[n] = f(v, n) }
-    return makeDict(map)
+    try
+    {
+      dictIterateNulls = Etc#.pod.config("dictIterateNulls") == "true"
+      if (dictIterateNulls)
+      {
+        echo("~~")
+        echo("~~ Haystack dict iterate null turned on!!!")
+        echo("~~")
+      }
+    }
+    catch (Err e) e.trace
+  }
+
+  **
+  ** Iterate dict name/value pairs
+  **
+  @NoDoc static Void dictEach(Dict d, |Obj? v, Str n| f)
+  {
+    if (dictIterateNulls)
+    {
+      if (d is Row) return rowEach(d, f, false)
+    }
+    d.each(f)
+  }
+
+  **
+  ** Iterate dict name/value pairs until f returns non-null
+  **
+  @NoDoc static Obj? dictEachWhile(Dict d, |Obj? v, Str n->Obj?| f)
+  {
+    if (dictIterateNulls)
+    {
+      if (d is Row) return rowEach(d, f, true)
+    }
+    return d.eachWhile(f)
+  }
+
+  ** Iterate all row cells including null
+  private static Obj? rowEach(Row r, |Obj? v, Str n->Obj?| f, Bool isWhile)
+  {
+    r.grid.cols.eachWhile |col|
+    {
+      x := f(r.val(col), col.name)
+      return isWhile ? x : null
+    }
+  }
+
+  **
+  ** Find value for which f returns true.  Return null
+  ** if f is false every pair.
+  **
+  @NoDoc static Obj? dictFind(Dict d, |Obj? v, Str n->Bool| f)
+  {
+    dictEachWhile(d) |v, n|
+    {
+      f(v, n) ? v : null
+    }
   }
 
   **
@@ -206,7 +300,18 @@ const class Etc
   static Dict dictFindAll(Dict d, |Obj? v, Str n->Bool| f)
   {
     map := Str:Obj?[:]
-    d.each |v, n| { if (f(v, n)) map[n] = v }
+    dictEach(d) |v, n| { if (f(v, n)) map[n] = v }
+    return makeDict(map)
+  }
+
+  **
+  ** Apply the given map function to each name/value pair
+  ** to construct a new Dict.
+  **
+  static Dict dictMap(Dict d, |Obj? v, Str n->Obj?| f)
+  {
+    map := Str:Obj?[:]
+    dictEach(d) |v, n| { map[n] = f(v, n) }
     return makeDict(map)
   }
 
@@ -217,7 +322,7 @@ const class Etc
   static Bool dictAny(Dict d, |Obj? v, Str n->Bool| f)
   {
     r := false
-    d.each |v, n| { if (!r) r = f(v, n) }
+    dictEach(d) |v, n| { if (!r) r = f(v, n) }
     return r
   }
 
@@ -228,7 +333,7 @@ const class Etc
   static Bool dictAll(Dict d, |Obj? v, Str n->Bool| f)
   {
     r := true
-    d.each |v, n| { if (r) r = f(v, n) }
+    dictEach(d) |v, n| { if (r) r = f(v, n) }
     return r
   }
 
@@ -372,7 +477,7 @@ const class Etc
   {
     x := a.eachWhile |v, n| { eq(b[n], v) ? null : "ne" }
     if (x != null) return false
-    x = b.eachWhile |v, n| { a.has(n) || v == null ? null : "ne" }
+    x = b.eachWhile |v, n| { a.has(n) ? null : "ne" }
     if (x != null) return false
     return true
   }
@@ -1491,7 +1596,7 @@ const class Etc
     if (now < d) return (d - Duration.now).toLocale
     ago := now - d
     if (ago < 3hr) return "$ago.toLocale ago"
-    ts := (DateTime.now - d).toLocale("hh:mm:ss DD-MMM-YYYY zzz")
+    ts := (DateTime.now - ago).toLocale("hh:mm:ss DD-MMM-YYYY zzz")
     return "$ago.toLocale ago [$ts]"
   }
 

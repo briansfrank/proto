@@ -4,7 +4,7 @@
 //
 // History:
 //   14 Mar 2014  Brian Frank  Creation
-//   24 Jan 2023  Brian Frank  Integrate DataDict APIs
+//   24 Jan 2023  Brian Frank  Integrate data APIs
 //
 
 using concurrent

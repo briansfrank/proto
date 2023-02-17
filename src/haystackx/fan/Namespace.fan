@@ -6,6 +6,8 @@
 //   29 Nov 2018  Brian Frank  Creation
 //
 
+using data
+
 **
 ** Namespace models a symbolic namespace of defs
 **

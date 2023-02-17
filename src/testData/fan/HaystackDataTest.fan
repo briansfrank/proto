@@ -44,11 +44,11 @@ class HaystackDataTest : HaystackTest
     i := 0
     set.x.seqEach |rec|
     {
-      verifyDataDict(rec, grid[i++])
+      verifyDict(rec, grid[i++])
     }
   }
 
-  Void verifyDataDict(DataDict a, Dict b)
+  Void verifyDict(Dict a, Dict b)
   {
     verifyEq(a.type.qname, "sys.Dict")
 

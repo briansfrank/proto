@@ -15,7 +15,7 @@ using data
 @Js
 internal const class MDataSet : DataSet
 {
-  new make(MDataType type, DataDict[] list)
+  new make(MDataType type, Dict[] list)
   {
     this.type = type
     this.list = list
@@ -29,7 +29,7 @@ internal const class MDataSet : DataSet
 
   override Int size() { list.size }
 
-  const DataDict[] list
+  const Dict[] list
 
   override DataSetX x() { MDataSetX(this) }
 
@@ -65,20 +65,20 @@ internal class MDataSetX: DataSetX
     return MDataSet(source.type, acc)
   }
 
-  override Void each(|DataDict| f) { source.list.each(f) }
+  override Void each(|Dict| f) { source.list.each(f) }
 
-  override Obj? eachWhile(|DataDict->Obj?| f) { source.list.eachWhile(f) }
+  override Obj? eachWhile(|Dict->Obj?| f) { source.list.eachWhile(f) }
 
-  override DataDict[] toList() { source.list }
+  override Dict[] toList() { source.list }
 
-  override This findAll(|DataDict rec->Bool| f)
+  override This findAll(|Dict rec->Bool| f)
   {
     init
     acc = acc.findAll(f)
     return this
   }
 
-  override This map(|DataDict rec->DataDict?| f)
+  override This map(|Dict rec->Dict?| f)
   {
     init
     acc = acc.map(f)
@@ -93,5 +93,5 @@ internal class MDataSetX: DataSetX
   }
 
   const MDataSet source
-  private DataDict[]? acc
+  private Dict[]? acc
 }

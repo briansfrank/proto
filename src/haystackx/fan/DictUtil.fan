@@ -6,6 +6,8 @@
 //   22 Dec 2009  Brian Frank  Creation
 //
 
+using data
+
 **************************************************************************
 ** EmptyDict
 **************************************************************************
@@ -18,8 +20,8 @@ internal const class EmptyDict : Dict
   override Obj? get(Str key, Obj? def := null) { def }
   override Bool has(Str name) { false }
   override Bool missing(Str name) { true }
-  override Void each(|Obj?, Str| f) {}
-  override Obj? eachWhile(|Obj?, Str->Obj?| f) { null }
+  override Void each(|Obj, Str| f) {}
+  override Obj? eachWhile(|Obj, Str->Obj?| f) { null }
   override Obj? trap(Str n, Obj?[]? a := null) { throw UnknownNameErr(n) }
 }
 
@@ -36,8 +38,20 @@ internal const class MapDict : Dict
   override Obj? get(Str n, Obj? def := null) { map.get(n, def) }
   override Bool has(Str n) { map[n] != null }
   override Bool missing(Str n) { map[n] == null }
-  override Void each(|Obj?, Str| f) { map.each(f) }
-  override Obj? eachWhile(|Obj?, Str->Obj?| f) { map.eachWhile(f) }
+  override Void each(|Obj, Str| f)
+  {
+    map.each |v, n|
+    {
+      if (v != null) f(v, n)
+    }
+  }
+  override Obj? eachWhile(|Obj, Str->Obj?| f)
+  {
+    map.eachWhile |v, n|
+    {
+      v == null ? null : f(v, n)
+    }
+  }
   override Obj? trap(Str n, Obj?[]? a := null)
   {
     v := map[n]
@@ -65,25 +79,13 @@ internal abstract const class DictN : Dict
 }
 
 **************************************************************************
-** Dict1
+** DictN
 **************************************************************************
 
 @Js
 internal const class Dict1 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-      }
-    }
-  }
-
-  new make1(Str n0, Obj? v0)
+  new make1(Str n0, Obj v0)
   {
     this.n0 = n0; this.v0 = v0
   }
@@ -94,20 +96,20 @@ internal const class Dict1 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
     return null
   }
 
-  const Str? n0
-  const Obj? v0
+  const Str n0
+  const Obj v0
 }
 
 **************************************************************************
@@ -117,20 +119,7 @@ internal const class Dict1 : DictN
 @Js
 internal const class Dict2 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-        case 1: n1 = n; v1 = v
-      }
-    }
-  }
-
-  new make2(Str n0, Obj? v0, Str n1, Obj? v1)
+  new make2(Str n0, Obj v0, Str n1, Obj v1)
   {
     this.n0 = n0; this.v0 = v0
     this.n1 = n1; this.v1 = v1
@@ -143,13 +132,13 @@ internal const class Dict2 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
     f(v1,n1)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
@@ -157,10 +146,10 @@ internal const class Dict2 : DictN
     return null
   }
 
-  const Str? n0
-  const Str? n1
-  const Obj? v0
-  const Obj? v1
+  const Str n0
+  const Str n1
+  const Obj v0
+  const Obj v1
 }
 
 **************************************************************************
@@ -170,21 +159,7 @@ internal const class Dict2 : DictN
 @Js
 internal const class Dict3 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-        case 1: n1 = n; v1 = v
-        case 2: n2 = n; v2 = v
-      }
-    }
-  }
-
-  new make3(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2)
+  new make3(Str n0, Obj v0, Str n1, Obj v1, Str n2, Obj v2)
   {
     this.n0 = n0; this.v0 = v0
     this.n1 = n1; this.v1 = v1
@@ -199,14 +174,14 @@ internal const class Dict3 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
     f(v1,n1)
     f(v2,n2)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
@@ -215,12 +190,12 @@ internal const class Dict3 : DictN
     return null
   }
 
-  const Str? n0
-  const Str? n1
-  const Str? n2
-  const Obj? v0
-  const Obj? v1
-  const Obj? v2
+  const Str n0
+  const Str n1
+  const Str n2
+  const Obj v0
+  const Obj v1
+  const Obj v2
 }
 
 **************************************************************************
@@ -230,22 +205,7 @@ internal const class Dict3 : DictN
 @Js
 internal const class Dict4 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-        case 1: n1 = n; v1 = v
-        case 2: n2 = n; v2 = v
-        case 3: n3 = n; v3 = v
-      }
-    }
-  }
-
-  new make4(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3)
+  new make4(Str n0, Obj v0, Str n1, Obj v1, Str n2, Obj v2, Str n3, Obj v3)
   {
     this.n0 = n0; this.v0 = v0
     this.n1 = n1; this.v1 = v1
@@ -262,7 +222,7 @@ internal const class Dict4 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
     f(v1,n1)
@@ -270,7 +230,7 @@ internal const class Dict4 : DictN
     f(v3,n3)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
@@ -280,14 +240,14 @@ internal const class Dict4 : DictN
     return null
   }
 
-  const Str? n0
-  const Str? n1
-  const Str? n2
-  const Str? n3
-  const Obj? v0
-  const Obj? v1
-  const Obj? v2
-  const Obj? v3
+  const Str n0
+  const Str n1
+  const Str n2
+  const Str n3
+  const Obj v0
+  const Obj v1
+  const Obj v2
+  const Obj v3
 }
 
 **************************************************************************
@@ -297,23 +257,7 @@ internal const class Dict4 : DictN
 @Js
 internal const class Dict5 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-        case 1: n1 = n; v1 = v
-        case 2: n2 = n; v2 = v
-        case 3: n3 = n; v3 = v
-        case 4: n4 = n; v4 = v
-      }
-    }
-  }
-
-  new make5(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3, Str n4, Obj? v4)
+  new make5(Str n0, Obj v0, Str n1, Obj v1, Str n2, Obj v2, Str n3, Obj v3, Str n4, Obj v4)
   {
     this.n0 = n0; this.v0 = v0
     this.n1 = n1; this.v1 = v1
@@ -332,7 +276,7 @@ internal const class Dict5 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
     f(v1,n1)
@@ -341,7 +285,7 @@ internal const class Dict5 : DictN
     f(v4,n4)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
@@ -352,16 +296,16 @@ internal const class Dict5 : DictN
     return null
   }
 
-  const Str? n0
-  const Str? n1
-  const Str? n2
-  const Str? n3
-  const Str? n4
-  const Obj? v0
-  const Obj? v1
-  const Obj? v2
-  const Obj? v3
-  const Obj? v4
+  const Str n0
+  const Str n1
+  const Str n2
+  const Str n3
+  const Str n4
+  const Obj v0
+  const Obj v1
+  const Obj v2
+  const Obj v3
+  const Obj v4
 }
 
 **************************************************************************
@@ -371,24 +315,7 @@ internal const class Dict5 : DictN
 @Js
 internal const class Dict6 : DictN
 {
-  new make(Str:Obj? map)
-  {
-    i := 0
-    map.each |v, n|
-    {
-      switch(i++)
-      {
-        case 0: n0 = n; v0 = v
-        case 1: n1 = n; v1 = v
-        case 2: n2 = n; v2 = v
-        case 3: n3 = n; v3 = v
-        case 4: n4 = n; v4 = v
-        case 5: n5 = n; v5 = v
-      }
-    }
-  }
-
-  new make6(Str n0, Obj? v0, Str n1, Obj? v1, Str n2, Obj? v2, Str n3, Obj? v3, Str n4, Obj? v4, Str n5, Obj? v5)
+  new make6(Str n0, Obj v0, Str n1, Obj v1, Str n2, Obj v2, Str n3, Obj v3, Str n4, Obj v4, Str n5, Obj v5)
   {
     this.n0 = n0; this.v0 = v0
     this.n1 = n1; this.v1 = v1
@@ -409,7 +336,7 @@ internal const class Dict6 : DictN
     return def
   }
 
-  override Void each(|Obj?,Str| f)
+  override Void each(|Obj,Str| f)
   {
     f(v0,n0)
     f(v1,n1)
@@ -419,7 +346,7 @@ internal const class Dict6 : DictN
     f(v5,n5)
   }
 
-  override Obj? eachWhile(|Obj?,Str->Obj?| f)
+  override Obj? eachWhile(|Obj,Str->Obj?| f)
   {
     r := null
     r = f(v0,n0); if (r != null) return r
@@ -431,18 +358,18 @@ internal const class Dict6 : DictN
     return null
   }
 
-  const Str? n0
-  const Str? n1
-  const Str? n2
-  const Str? n3
-  const Str? n4
-  const Str? n5
-  const Obj? v0
-  const Obj? v1
-  const Obj? v2
-  const Obj? v3
-  const Obj? v4
-  const Obj? v5
+  const Str n0
+  const Str n1
+  const Str n2
+  const Str n3
+  const Str n4
+  const Str n5
+  const Obj v0
+  const Obj v1
+  const Obj v2
+  const Obj v3
+  const Obj v4
+  const Obj v5
 }
 
 **************************************************************************
@@ -457,8 +384,8 @@ abstract const class WrapDict : Dict
   override Bool isEmpty() { wrapped.isEmpty }
   override Bool has(Str n) { wrapped.has(n) }
   override Bool missing(Str n) { wrapped.missing(n) }
-  override Void each(|Obj?, Str| f) { wrapped.each(f) }
-  override Obj? eachWhile(|Obj?, Str->Obj?| f) { wrapped.eachWhile(f) }
+  override Void each(|Obj, Str| f) { wrapped.each(f) }
+  override Obj? eachWhile(|Obj, Str->Obj?| f) { wrapped.eachWhile(f) }
   override Obj? trap(Str n, Obj?[]? a := null) { wrapped.trap(n, a) }
 }
 
@@ -478,7 +405,6 @@ const class DictHashKey
     valHash := 0
     dict.each |v, n|
     {
-      if (v == null) return
       if (v is Dict || v is Grid || v is List) return
 
       nh := n.hash; nameHash += nh

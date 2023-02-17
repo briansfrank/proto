@@ -4,7 +4,7 @@
 //
 // History:
 //   22 Dec 2009  Brian Frank  Creation
-//   24 Jan 2023  Brian Frank  Integrate DataDict APIs
+//   24 Jan 2023  Brian Frank  Integrate data APIs
 //
 
 using data
@@ -435,8 +435,8 @@ const mixin Grid : DataSet
       diff := diffs[i++]
       x := Str:Obj?[:]
       x.ordered = true
-      old.each |v, n| { if (v != null) x[n] = v }
-      diff.each |v, n| { if (v == Remove.val) x.remove(n); else if (v != null) x[n] = v }
+      old.each |v, n| { x[n] = v }
+      diff.each |v, n| { if (v == Remove.val) x.remove(n); else x[n] = v }
       return Etc.makeDict(x)
     }
   }
@@ -1011,15 +1011,15 @@ internal class GridX : DataSetX
 
   override This seqFindAll(|Obj?->Bool| f) { findAll(f) }
 
-  override DataDict[] toList() { source.toRows }
+  override Dict[] toList() { source.toRows }
 
-  override Void each(|DataDict rec| f) { source.each(f) }
+  override Void each(|Dict rec| f) { source.each(f) }
 
-  override Obj? eachWhile(|DataDict rec->Obj?| f) { source.eachWhile(f) }
+  override Obj? eachWhile(|Dict rec->Obj?| f) { source.eachWhile(f) }
 
-  override This map(|DataDict rec->DataDict?| f) { acc = acc.map(f); return this }
+  override This map(|Dict rec->Dict?| f) { acc = acc.map(f); return this }
 
-  override This findAll(|DataDict rec->Bool| f)  { acc = acc.findAll(f); return this }
+  override This findAll(|Dict rec->Bool| f)  { acc = acc.findAll(f); return this }
 
   override Grid collect() { acc }
 

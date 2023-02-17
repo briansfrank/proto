@@ -9,7 +9,7 @@
 using util
 
 **
-** Logical set of DataDict records.
+** Logical set of Dict records.
 **
 @Js
 const mixin DataSet : DataSeq
@@ -38,20 +38,20 @@ const mixin DataSet : DataSeq
 mixin DataSetX : DataSeqX
 {
   ** Transform set into list of records
-  abstract override DataDict[] toList()
+  abstract override Dict[] toList()
 
   ** Iterate the dict records
-  abstract Void each(|DataDict rec| f)
+  abstract Void each(|Dict rec| f)
 
   ** Iterate the dict records until callback returns non-null
-  abstract Obj? eachWhile(|DataDict rec->Obj?| f)
+  abstract Obj? eachWhile(|Dict rec->Obj?| f)
 
   ** Map the records by the given transformation function.
   ** If the function returns null, then the record is excluded.
-  abstract This map(|DataDict rec->DataDict?| f)
+  abstract This map(|Dict rec->Dict?| f)
 
   ** Find the all records that match given predicate function
-  abstract This findAll(|DataDict rec->Bool| f)
+  abstract This findAll(|Dict rec->Bool| f)
 
   ** Collect into new data set
   abstract override DataSet collect()

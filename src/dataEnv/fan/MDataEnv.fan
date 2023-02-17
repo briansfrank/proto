@@ -22,16 +22,16 @@ internal const class MDataEnv : DataEnv
     this.libMgr = MLibMgr(this)
     this.sys = MSys(lib("sys"))
     this.emptyDict = MEmptyDict(sys.dict)
-    this.emptySet  = MDataSet(sys.dataset, DataDict#.emptyList)
+    this.emptySet  = MDataSet(sys.dataset, Dict#.emptyList)
   }
 
   const MLibMgr libMgr
 
   const MSys sys
 
-  const Str:DataDict emptyDictMap := [:]
+  const Str:Dict emptyDictMap := [:]
 
-  const override DataDict emptyDict
+  const override Dict emptyDict
 
   const override DataSet emptySet
 
@@ -64,16 +64,16 @@ internal const class MDataEnv : DataEnv
     return null
   }
 
-  override DataDict dict(Obj? val)
+  override Dict dict(Obj? val)
   {
     if (val == null) return emptyDict
-    if (val is DataDict) return val
+    if (val is Dict) return val
     map := val as Str:Obj? ?: throw ArgErr("Unsupported dict arg: $val.typeof")
     if (map.isEmpty) return emptyDict
     return MMapDict(sys.dict, map)
   }
 
-  internal DataDict astMeta(Str:XetoObj ast)
+  internal Dict astMeta(Str:XetoObj ast)
   {
     if (ast.isEmpty && (Obj?)emptyDict != null) return emptyDict
     acc := Str:Obj[:]

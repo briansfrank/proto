@@ -20,11 +20,9 @@ internal const abstract class MDataDef : MAbstractDict, DataDef
 
   abstract override MDataLib lib()
 
-  abstract Str:DataDict map()
+  abstract Str:Dict map()
 
   override final Bool isEmpty() { map.isEmpty }
-
-  override final DataDictX x() { MDataDictX(this) }
 
   override final Bool has(Str name) { map.get(name, null) != null }
 

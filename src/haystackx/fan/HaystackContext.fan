@@ -6,6 +6,8 @@
 //   10 Aug 2020  Brian Frank  Creation
 //
 
+using data
+
 **
 ** HaystackContext defines an environment of defs and data
 **

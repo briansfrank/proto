@@ -6,8 +6,8 @@
 //   7 Aug 2019  Brian Frank  Creation
 //
 
+using data
 using haystackx
-
 
 **
 ** Collector is used to collect a stream into an in-memory List or Grid

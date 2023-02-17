@@ -24,12 +24,12 @@ class DataSetTest : Test
   Void testFactory()
   {
     // empty list
-    set := env.set(DataDict[,])
-    verifySetRecs(set, Str:DataDict[:])
+    set := env.set(Dict[,])
+    verifySetRecs(set, Str:Dict[:])
 
     // empty map
-    set = env.set(Str:DataDict[:])
-    verifySetRecs(set, Str:DataDict[:])
+    set = env.set(Str:Dict[:])
+    verifySetRecs(set, Str:Dict[:])
 
     // map with 1 item
     map := ["foo":env.dict(["dis":"A"])]
@@ -48,7 +48,7 @@ class DataSetTest : Test
     verifySetRecs(set, set.toMap)
   }
 
-  Void verifySetRecs(DataSet set, Obj:DataDict recs)
+  Void verifySetRecs(DataSet set, Obj:Dict recs)
   {
     verifyEq(set.size, recs.size)
     got := 0

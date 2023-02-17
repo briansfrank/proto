@@ -37,13 +37,13 @@ class Fitter
     if (valType.isa(type)) return true
 
     // check structurally typing
-    if (val is DataDict && type.isaDict)
+    if (val is Dict && type.isaDict)
       return fitsStruct(val, type)
 
     return explainNoFit(valType, type)
   }
 
-  Bool fitsStruct(DataDict dict, DataType type)
+  Bool fitsStruct(Dict dict, DataType type)
   {
     slots := type.slots
     match := true
@@ -56,7 +56,7 @@ class Fitter
     return match
   }
 
-  private Bool fitsSlot(DataDict dict, DataType type, DataSlot slot)
+  private Bool fitsSlot(Dict dict, DataType type, DataSlot slot)
   {
     t := slot.slotType
 
@@ -77,7 +77,7 @@ class Fitter
     return true
   }
 
-  private Bool fitsQuery(DataDict dict, DataType type, DataSlot slot)
+  private Bool fitsQuery(Dict dict, DataType type, DataSlot slot)
   {
     // if no constraints then no additional checking required
     constraints := slot.constraints
@@ -102,12 +102,12 @@ class Fitter
     return match
   }
 
-  private Bool fitQueryConstraint(DataDict rec, Str ofDis, DataDict[] extent, DataType constraint)
+  private Bool fitQueryConstraint(Dict rec, Str ofDis, Dict[] extent, DataType constraint)
   {
     isMaybe := constraint.isaMaybe
     if (isMaybe) constraint = constraint.of ?: throw Err("Expecting maybe of: $constraint")
 
-    matches := DataDict[,]
+    matches := Dict[,]
     extent.each |x|
     {
       if (Fitter(cx).fits(x, constraint)) matches.add(x)
@@ -163,7 +163,7 @@ class Fitter
 
   virtual Bool explainMissingQueryConstraint(Str ofDis, DataType constraint) { false }
 
-  virtual Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, DataDict[] matches) { false }
+  virtual Bool explainAmbiguousQueryConstraint(Str ofDis, DataType constraint, Dict[] matches) { false }
 
   DataEnv data() { cx.data }
 

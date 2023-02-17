@@ -9,6 +9,12 @@
 using util
 
 @Js @NoDoc
+const class UnknownNameErr : Err
+{
+  new make(Str? msg, Err? cause := null) : super(msg, cause) {}
+}
+
+@Js @NoDoc
 const class UnknownDataErr : Err
 {
   new make(Str msg, Err? cause := null) : super(msg, cause) {}

@@ -23,7 +23,7 @@ class Printer
 //////////////////////////////////////////////////////////////////////////
 
   ** Constructor
-  new make(OutStream out, DataDict opts)
+  new make(OutStream out, Dict opts)
   {
     this.out        = out
     this.opts       = opts
@@ -64,7 +64,7 @@ class Printer
     if (seq is DataLib) return lib(seq)
     if (seq is DataType) return type(seq)
     if (seq is DataSlot) return slot(seq)
-    if (seq is DataDict) return dict(seq)
+    if (seq is Dict) return dict(seq)
     if (seq.typeof.name.endsWith("Grid")) return grid(seq)
     return list(seq.x.toList)
   }
@@ -83,16 +83,16 @@ class Printer
   }
 
   ** Print dict
-  This dict(DataDict dict)
+  This dict(Dict dict)
   {
     bracket("{").pairs(dict).bracket("}")
   }
 
   ** Print dict pairs without brackets
-  This pairs(DataDict dict, Str[]? skip := null)
+  This pairs(Dict dict, Str[]? skip := null)
   {
     first := true
-    dict.x.each |v, n|
+    dict.each |v, n|
     {
       if (skip != null && skip.contains(n)) return
       if (first) first = false
@@ -255,9 +255,9 @@ class Printer
   }
 
   ** Meta data
-  This meta(DataDict dict)
+  This meta(Dict dict)
   {
-    show := dict.x.eachWhile |v, n|
+    show := dict.eachWhile |v, n|
     {
       if (n == "doc") return null
       return "yes"
@@ -435,7 +435,7 @@ class Printer
   private Int indention        // current level of indentation
   private Bool lastnl          // was last char a newline
   const Bool isStdout          // are we printing to stdout
-  const DataDict opts          // options
+  const Dict opts              // options
   const Bool escUnicode        // escape unicode above 0x7f
   const Bool showdoc           // print documentation
   const Int width              // terminal width

@@ -113,7 +113,7 @@ internal const class MDataType : MDataDef, DataType
   const override FileLoc loc
   const override Str name
   const override Str qname
-  const override DataDict meta
+  const override Dict meta
   override DataType? base() { baseRef }
   const MDataType? baseRef
   private const AtomicRef declaredSlotsRef := AtomicRef()

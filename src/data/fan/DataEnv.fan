@@ -39,21 +39,21 @@ const abstract class DataEnv
   ** Create a sequence object from given value:
   **   - If null, return the empty sequence
   **   - If DataSeq, return it
-  **   - If Fantom map with string keys, wrap it as DataDict
+  **   - If Fantom map with string keys, wrap it as Dict
   **   - If Fantom map without string keys, wrap list of value as DataSeq
   **   - If Fantom list, wrap it as DataSeq
   **   - Anything else create sequence of one item from value
   abstract DataSeq seq(Obj? val)
 
   ** Empty dict typed as 'sys.Dict'
-  abstract DataDict emptyDict()
+  abstract Dict emptyDict()
 
-  ** Create DataDict from given value:
+  ** Create Dict from given value:
   **   - If null, return empty dict
-  **   - If DataDict, return it
-  **   - If Fantom map, wrap as DataDict as generic 'sys.Dict'
+  **   - If Dict, return it
+  **   - If Fantom map, wrap as Dict as generic 'sys.Dict'
   **   - Raise exception for any other value type
-  abstract DataDict dict(Obj? val)
+  abstract Dict dict(Obj? val)
 
   ** Empty data set
   abstract DataSet emptySet()
