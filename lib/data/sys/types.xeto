@@ -27,10 +27,7 @@ Marker: Scalar <sealed> "marker"
 Enum: Scalar
 
 // Boolean value either true or false
-Bool: Enum {
-  true    // Boolean true value
-  false   // Boolean false value
-}
+Bool: Scalar "false"
 
 // Integer or floating point numbers annotated with an optional unit
 Number: Scalar <

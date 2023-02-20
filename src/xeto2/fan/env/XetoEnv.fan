@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2023, Brian Frank
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Jan 2023  Brian Frank  Creation
+//
+
+using concurrent
+using util
+using data2
+
+**
+** Xeto DataEnv implementation
+**
+@Js
+internal const class XetoEnv : DataEnv
+{
+  new make()
+  {
+    this.libMgr = XetoLibMgr(this)
+    this.emptyDict = MDict(Str:Obj[:])
+    this.sys = MSys(libMgr.load("sys"))
+  }
+
+  const XetoLibMgr libMgr
+
+  const MSys sys
+
+  const override Obj marker := "__marker__"
+
+  const override DataDict emptyDict
+
+  override DataDict dict(Obj? val)
+  {
+    if (val == null) return emptyDict
+    if (val is DataDict) return val
+    map := val as Str:Obj? ?: throw ArgErr("Unsupported dict arg: $val.typeof")
+    if (map.isEmpty) return emptyDict
+    return MDict(map)
+  }
+
+  override Str[] libsInstalled() { libMgr.installed }
+
+  override Bool isLibLoaded(Str qname) { libMgr.isLoaded(qname) }
+
+  override DataLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
+
+  override Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
+  {
+    Printer(this, out, dict(opts)).print(val)
+  }
+
+  override DataSpec? spec(Str qname, Bool checked := true)
+  {
+    throw Err("TODO")
+  }
+
+  override Void dump(OutStream out := Env.cur.out)
+  {
+    out.printLine("=== XetoEnv ===")
+    out.printLine("Lib Path:")
+    libMgr.path.each |x| { out.printLine("  $x.osPath") }
+    max := libsInstalled.reduce(10) |acc, x| { x.size.max(acc) }
+    out.printLine("Installed Libs:")
+    libMgr.installed.each |x| { out.printLine("  " + x.padr(max) + " [" + libMgr.libDir(x, true).osPath + "]") }
+  }
+
+  private const ConcurrentMap libs := ConcurrentMap()
+}
+

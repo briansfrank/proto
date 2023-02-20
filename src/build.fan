@@ -19,6 +19,7 @@ class Build : BuildGroup
   {
     childrenScripts =
     [
+      `data2/build.fan`,
       `data/build.fan`,
       `xeto/build.fan`,
       `dataEnv/build.fan`,
