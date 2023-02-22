@@ -13,25 +13,26 @@
 internal enum class Token
 {
 
-  id       ("identifier"),
-  str      ("Str", true),
-  dot      ("."),
-  colon    (":"),
-  comma    (","),
-  lt       ("<"),
-  gt       (">"),
-  lbrace   ("{"),
-  rbrace   ("}"),
-  lparen   ("("),
-  rparen   (")"),
-  lbracket ("["),
-  rbracket ("]"),
-  question ("?"),
-  amp      ("&"),
-  pipe     ("|"),
-  nl       ("newline"),
-  comment  ("comment"),
-  eof      ("eof");
+  id          ("identifier"),
+  str         ("Str", true),
+  dot         ("."),
+  colon       (":"),
+  doubleColon ("::"),
+  comma       (","),
+  lt          ("<"),
+  gt          (">"),
+  lbrace      ("{"),
+  rbrace      ("}"),
+  lparen      ("("),
+  rparen      (")"),
+  lbracket    ("["),
+  rbracket    ("]"),
+  question    ("?"),
+  amp         ("&"),
+  pipe        ("|"),
+  nl          ("newline"),
+  comment     ("comment"),
+  eof         ("eof");
 
   private new make(Str dis, Bool isVal := false)
   {

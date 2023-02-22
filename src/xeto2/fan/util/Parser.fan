@@ -357,13 +357,20 @@ if (cur === Token.question) consume
 
   private AName consumeQName()
   {
-    qname := consumeName
+    Str? lib := null
+    name := consumeName
     while (cur === Token.dot)
     {
       consume
-      qname += "." + consumeName
+      name += "." + consumeName
     }
-    return AName(qname)
+    if (cur === Token.doubleColon)
+    {
+      consume
+      lib = name
+      name = consumeName
+    }
+    return AName(lib, name)
   }
 
   private Str consumeName()

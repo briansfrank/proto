@@ -195,7 +195,9 @@ internal class Tokenizer
     switch (c)
     {
       case ',':  return Token.comma
-      case ':':  return Token.colon
+      case ':':
+        if (cur == ':') { consume; return Token.doubleColon }
+        return Token.colon
       case '[':  return Token.lbracket
       case ']':  return Token.rbracket
       case '{':  return Token.lbrace

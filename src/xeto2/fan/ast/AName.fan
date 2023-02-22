@@ -28,11 +28,11 @@ internal const class AName
     this.toStr = s
   }
 
-  new makeQualified(Str lib, Str name)
+  new makeQualified(Str? lib, Str name)
   {
     this.lib = lib
     this.name = name
-    this.toStr = StrBuf(lib.size+2+name.size).add(lib).add("::").add(name).toStr
+    this.toStr = lib == null ? name : StrBuf(lib.size+2+name.size).add(lib).add("::").add(name).toStr
   }
 
   const Str? lib
