@@ -28,7 +28,7 @@ internal const class MSpec : DataSpec
     this.val      = val
   }
 
-  XetoEnv env() { lib.envRef }
+  override XetoEnv env() { lib.envRef }
 
   override MLib lib() { libRef.val }
   private const AtomicRef libRef
@@ -56,12 +56,18 @@ internal const class MSpec : DataSpec
     if (kid != null) return kid
     if (!checked) return null
     sep := this is MLib ? "::" : "."
-    throw UnknownDataErr("$qname$sep$name")
+    throw UnknownSpecErr("$qname$sep$name")
   }
 
   override Str toStr() { qname }
 
-  override Bool isa(DataSpec that) { throw Err("TODO") }
+  override Bool isa(DataSpec that)
+  {
+    if (this === that) return true
+    base := this.base
+    if (base == null) return false
+    return base.isa(that)
+  }
 
   override Bool isaScalar() { isa(env.sys.scalar) }
   override Bool isaMarker() { isa(env.sys.marker) }

@@ -28,6 +28,7 @@ class Build : BuildGroup
       `dataLint/build.fan`,
       `axonsh/build.fan`,
       `ph2xeto/build.fan`,
+      `testData2/build.fan`,
       `testData/build.fan`,
     ]
   }

@@ -19,6 +19,9 @@ const mixin DataSpec
 // Identity
 //////////////////////////////////////////////////////////////////////////
 
+  ** Environment for library
+  abstract DataEnv env()
+
   ** Parent library for spec
   abstract DataLib lib()
 

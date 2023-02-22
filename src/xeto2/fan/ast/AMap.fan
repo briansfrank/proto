@@ -41,6 +41,11 @@ internal class AMap
     map[name] = child
   }
 
+  AObj? remove(Str name)
+  {
+    map.remove(name)
+  }
+
   private Str autoName()
   {
     for (i := 0; i<1_000_000; ++i)

@@ -21,7 +21,7 @@ internal const class MDict : DataDict
 
   override DataSpec spec()
   {
-    throw Err("TODO")
+    DataEnv.cur.dictSpec
   }
 
   override Bool isEmpty()
@@ -61,4 +61,16 @@ internal const class MDict : DataDict
     throw UnknownDataErr(name)
   }
 
+  override Str toStr()
+  {
+    s := StrBuf()
+    s.add("{")
+    each |v, n|
+    {
+      if (s.size > 1) s.add(", ")
+      s.add(n)
+      if (v !== DataEnv.cur.marker) s.add(":").add(v)
+    }
+    return s.add("}").toStr
+  }
 }

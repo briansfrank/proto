@@ -39,6 +39,9 @@ const abstract class DataEnv
   ** Empty dict singleton
   abstract DataDict emptyDict()
 
+  ** Return generic 'sys::Dict'
+  @NoDoc abstract DataSpec dictSpec()
+
   ** Create Dict from given value:
   **   - If null, return empty dict
   **   - If DataDict, return it

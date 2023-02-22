@@ -31,6 +31,8 @@ internal const class XetoEnv : DataEnv
 
   const override DataDict emptyDict
 
+  override DataSpec dictSpec() { sys.dict }
+
   override DataDict dict(Obj? val)
   {
     if (val == null) return emptyDict
@@ -53,7 +55,12 @@ internal const class XetoEnv : DataEnv
 
   override DataSpec? spec(Str qname, Bool checked := true)
   {
-    throw Err("TODO")
+    colon := qname.index(":")
+    if (colon == null) return lib(qname, checked)
+    if (qname[colon+1] != ':') throw ArgErr("Invalid qname: $qname")
+    libName := qname[0..<colon]
+    specName := qname[colon+2..-1] // TODO: path dots
+    return  lib(libName, checked)?.get(specName, checked)
   }
 
   override Void dump(OutStream out := Env.cur.out)

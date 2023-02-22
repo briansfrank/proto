@@ -36,17 +36,14 @@ internal class Parse : Step
       parseFile(root.slots, input)
     }
 
-/*
-    pragma := root.slots["pragma"]
-    if (pragma != null) root.slots.remove("pragma")
+    pragma := root.slots.remove("pragma")
     if (isLib && pragma != null) root.meta = pragma.meta
 
-*/
     bombIfErr
 
     root.isLib = true
     compiler.ast = root
-//    compiler.pragma = pragma
+    //compiler.pragma = pragma
   }
 
   private Void parseFile(AMap root, File file)

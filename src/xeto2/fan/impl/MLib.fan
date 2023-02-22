@@ -22,9 +22,15 @@ internal const class MLib : MSpec, DataLib
     this.envRef = env
   }
 
+  override XetoEnv env() { envRef }
+
   const XetoEnv envRef
 
-  override Version version() { throw Err("TODO") }
+  override Version version()
+  {
+    // TODO
+    return Version.fromStr(meta->version)
+  }
 
   override MSpec? base() { super.base }
 
