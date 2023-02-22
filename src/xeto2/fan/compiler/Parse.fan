@@ -43,7 +43,7 @@ internal class Parse : Step
 
     root.isLib = true
     compiler.ast = root
-    //compiler.pragma = pragma
+    compiler.pragma = pragma
   }
 
   private Void parseFile(AMap root, File file)

@@ -16,9 +16,10 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, DataDict meta, Str:MSpec declared, Obj? val)
+  new make(FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, DataDict meta, Str:MSpec declared, Obj? val)
   {
     this.loc      = loc
+    this.selfRef  = selfRef
     this.libRef   = libRef
     this.qname    = qname
     this.name     = name
@@ -32,6 +33,8 @@ internal const class MSpec : DataSpec
 
   override MLib lib() { libRef.val }
   private const AtomicRef libRef
+
+  const AtomicRef selfRef
 
   const override FileLoc loc
 

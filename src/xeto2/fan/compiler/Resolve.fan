@@ -29,13 +29,12 @@ internal class Resolve : Step
     if (isSys) return
 
     // import dependencies from pragma
-    /*
-    astDepends := pragma?.meta?.get("depends") ?: XetoObj(FileLoc.unknown)
+    astDepends := pragma?.meta?.get("depends") ?: AObj(FileLoc.unknown)
     astDepends.slots.each |astDepend|
     {
       // get library name from depend formattd as "{lib:<qname>}"
       loc := astDepend.loc
-      libName := astDepend.slots["lib"]?.val as Str
+      libName := astDepend.slots.get("lib")?.val as Str
       if (libName == null) return err("Depend missing lib name", loc)
 
       // resolve the library from environment
@@ -54,8 +53,6 @@ internal class Resolve : Step
       depends["sys"] = env.lib("sys")
       return
     }
-    */
-    throw Err("TODO")
   }
 
   private Void resolveObj(AObj obj)
@@ -79,31 +76,21 @@ internal class Resolve : Step
     name := ref.name
 
     // resolve qualified name
-//    if (name.contains(".")) return resolveQualifiedType(type)
+    //if (name.contains("::")) return resolveQualifiedType(type)
 
     // match to name within this AST which trumps depends
-    ref.resolvedRef = ast.slots.get(name)
-    //if (type.inside != null) return
-
-if (ref.isResolved) return
-err("Unresolved: $name", ref.loc)
-
+    ref.resolvedRef = ast.slots.get(name)?.asmRef
+    if (ref.isResolved) return
 
     // match to external dependencies
-    /*
-    matches := DataSpec[,]
-    depends.each |lib|
-    {
-      matches.addNotNull(lib.libType(name, false))
-    }
+    matches := MSpec[,]
+    depends.each |lib| {  matches.addNotNull(lib.get(name, false)) }
     if (matches.isEmpty)
-      err("Unresolved type: $name", type.loc)
+      err("Unresolved type: $name", ref.loc)
     else if (matches.size > 1)
-      err("Ambiguous type: $name $matches", type.loc)
+      err("Ambiguous type: $name $matches", ref.loc)
     else
-      type.outside = matches.first
-    */
-    throw err("TODO: $name", ref.loc)
+      ref.resolvedRef = matches.first.selfRef
   }
 
 /*
@@ -140,5 +127,5 @@ err("Unresolved: $name", ref.loc)
   }
 */
 
-  private Str:DataLib depends := [:]
+  private Str:MLib depends := [:]
 }

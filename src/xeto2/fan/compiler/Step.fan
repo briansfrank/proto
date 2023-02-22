@@ -33,9 +33,9 @@ abstract internal class Step
 /*
   SysTypes sys() { compiler.sys }
 
-
-  XetoObj? pragma() { compiler.pragma }
 */
+
+  AObj? pragma() { compiler.pragma }
 
   Void info(Str msg) { compiler.info(msg) }
 

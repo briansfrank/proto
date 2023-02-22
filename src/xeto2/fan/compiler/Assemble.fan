@@ -30,7 +30,7 @@ internal class Assemble : Step
 
     spec := obj.isLib ?
       MLib(env, loc, libRef, qname, name, baseRef, meta, declared) :
-      MSpec(loc, libRef, qname, name, baseRef, meta, declared, obj.val)
+      MSpec(loc, obj.asmRef, libRef, qname, name, baseRef, meta, declared, obj.val)
 
     obj.asmRef.val = spec
     return spec
@@ -39,7 +39,7 @@ internal class Assemble : Step
   private AtomicRef asmBase(AObj obj)
   {
     if (obj.type == null) return AtomicRef()  // sys::Obj
-    return obj.type.resolved.asmRef
+    return obj.type.resolved
   }
 
   private DataDict asmMeta(AObj obj)

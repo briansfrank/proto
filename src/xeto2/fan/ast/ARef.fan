@@ -6,6 +6,7 @@
 //   19 Feb 2023  Brian Frank  Creation
 //
 
+using concurrent
 using util
 
 **
@@ -27,8 +28,8 @@ internal class ARef
 
   Bool isResolved() { resolvedRef != null }
 
-  AObj resolved() { resolvedRef ?: throw Err("Unresolved: $name [$loc]") }
+  AtomicRef resolved() { resolvedRef ?: throw Err("Unresolved: $name [$loc]") }
 
-  AObj? resolvedRef
+  AtomicRef? resolvedRef
 
 }

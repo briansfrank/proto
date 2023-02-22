@@ -46,7 +46,7 @@ internal const class XetoEnv : DataEnv
 
   override Bool isLibLoaded(Str qname) { libMgr.isLoaded(qname) }
 
-  override DataLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
+  override MLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
   override Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
   {

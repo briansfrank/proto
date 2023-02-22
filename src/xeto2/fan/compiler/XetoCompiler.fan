@@ -120,6 +120,7 @@ internal class XetoCompiler
   internal Bool isLib                  // compileLib
   internal Bool isSys                  // Init
   internal AObj? ast                   // Parse
+  internal AObj? pragma                // Parse
   internal MLib? lib                   // Assemble
 }
 
