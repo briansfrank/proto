@@ -15,16 +15,16 @@ using util
 @Js
 internal class ARef
 {
-  new make(FileLoc loc, Str name)
+  new make(FileLoc loc, AName name)
   {
     this.loc = loc
     this.name = name
   }
 
-  override Str toStr() { name }
+  override Str toStr() { name.toStr }
 
   const FileLoc loc
-  const Str name       // relative or qualified
+  const AName name
 
   Bool isResolved() { resolvedRef != null }
 

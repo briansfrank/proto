@@ -53,7 +53,7 @@ internal const class MSpec : DataSpec
 
   override DataSpec[] list()  { declared.vals }
 
-  @Operator override DataSpec? get(Str name, Bool checked := true)
+  @Operator override MSpec? get(Str name, Bool checked := true)
   {
     kid := declared[name]
     if (kid != null) return kid

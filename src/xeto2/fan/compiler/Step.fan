@@ -28,12 +28,9 @@ abstract internal class Step
 
   Bool isSys() { compiler.isSys }
 
+  ASys sys() { compiler.sys }
+
   AObj ast() { compiler.ast }
-
-/*
-  SysTypes sys() { compiler.sys }
-
-*/
 
   AObj? pragma() { compiler.pragma }
 

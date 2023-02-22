@@ -115,7 +115,7 @@ internal class XetoCompiler
 //////////////////////////////////////////////////////////////////////////
 
   XetoCompilerErr[] errs := [,]        // err
-//  internal SysTypes sys := SysTypes()  // make
+  internal ASys sys := ASys()          // make
   internal Duration? duration          // run
   internal Bool isLib                  // compileLib
   internal Bool isSys                  // Init
@@ -123,25 +123,6 @@ internal class XetoCompiler
   internal AObj? pragma                // Parse
   internal MLib? lib                   // Assemble
 }
-
-**************************************************************************
-** SysTypes
-**************************************************************************
-
-/*
-@Js
-internal class SysTypes
-{
-  XetoType obj    := init("sys.Obj")
-  XetoType marker := init("sys.Marker")
-  XetoType str    := init("sys.Str")
-  XetoType dict   := init("sys.Dict")
-  XetoType list   := init("sys.List")
-  XetoType query  := init("sys.Query")
-
-  private static XetoType init(Str qname) { XetoType(FileLoc.synthetic, qname) }
-}
-*/
 
 **************************************************************************
 ** XetoCompilerErr

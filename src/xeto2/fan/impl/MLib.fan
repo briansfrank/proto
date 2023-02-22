@@ -34,5 +34,7 @@ internal const class MLib : MSpec, DataLib
 
   override MSpec? base() { super.base }
 
+  @Operator override MSpec? get(Str name, Bool checked := true) { super.get(name, checked) }
+
   override MLib lib() { this }
 }

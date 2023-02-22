@@ -92,6 +92,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
     {
       p.name = consumeName
+      p.type = compiler.sys.marker
       p.val = env.marker
     }
     else
@@ -276,7 +277,7 @@ if (cur === Token.question) consume
 
     docVal := AObj(loc)
     docVal.name = "doc"
-    docVal.type = ARef(loc, "Str") // TODO
+    docVal.type = compiler.sys.str
     docVal.val = docStr
 
     if (p.meta == null) p.meta = AMap(loc)
@@ -354,7 +355,7 @@ if (cur === Token.question) consume
     curVal != null ? "$cur $curVal.toStr.toCode" : cur.toStr
   }
 
-  private Str consumeQName()
+  private AName consumeQName()
   {
     qname := consumeName
     while (cur === Token.dot)
@@ -362,7 +363,7 @@ if (cur === Token.question) consume
       consume
       qname += "." + consumeName
     }
-    return qname
+    return AName(qname)
   }
 
   private Str consumeName()

@@ -70,62 +70,48 @@ internal class Resolve : Step
 
   private Void resolveRef(ARef? ref)
   {
+    // short circuit if null or already resolved
     if (ref == null) return
     if (ref.isResolved) return
 
-    name := ref.name
-
     // resolve qualified name
-    //if (name.contains("::")) return resolveQualifiedType(type)
+    n := ref.name
+    if (n.isQualified) return resolveQualified(ref)
 
     // match to name within this AST which trumps depends
-    ref.resolvedRef = ast.slots.get(name)?.asmRef
+    ref.resolvedRef = ast.slots.get(n.name)?.asmRef
     if (ref.isResolved) return
 
     // match to external dependencies
     matches := MSpec[,]
-    depends.each |lib| {  matches.addNotNull(lib.get(name, false)) }
+    depends.each |lib| { matches.addNotNull(lib.get(n.name, false)) }
     if (matches.isEmpty)
-      err("Unresolved type: $name", ref.loc)
+      err("Unresolved type: $n", ref.loc)
     else if (matches.size > 1)
-      err("Ambiguous type: $name $matches", ref.loc)
+      err("Ambiguous type: $n $matches", ref.loc)
     else
       ref.resolvedRef = matches.first.selfRef
   }
 
-/*
-  private Void resolveQualifiedType(XetoType type)
+  private Void resolveQualified(ARef ref)
   {
-    // find lib name index
-    qname := type.name
-    typei := -1
-    for (i := 2; i<qname.size; ++i)
-    {
-      if (qname[i-1] == '.' && qname[i].isUpper) { typei = i; break; }
-    }
-    if (typei < 0) return err("Invalid type qname '$qname'", type.loc)
-
-    // parse lib name / type name
-    libName := qname[0..typei-2]
-    typeName := qname[typei..-1]
-
     // if in my own lib
-    if (libName == compiler.qname)
+    n := ref.name
+    if (n.lib == compiler.qname)
     {
-      type.inside = ast.slots[typeName]
-      if (type.inside == null) return err("Type '$qname' not found in lib", type.loc)
+      ref.resolvedRef = ast.slots.get(n.name)?.asmRef
+      if (!ref.isResolved) return err("Spec '$n' not found in lib", ref.loc)
       return
     }
 
-    // resolve qualified type lib
-    lib := depends[libName]
-    if (lib == null) return err("Type lib '$libName' is not included in depends", type.loc)
+    // resolve from dependent lib
+    lib := depends[n.lib]
+    if (lib == null) return err("Spec lib '$n' is not included in depends", ref.loc)
 
-    // resolve type in lib
-    type.outside = lib.libType(typeName, false)
-    if (type.outside == null) return err("Unresolved type '$qname' in lib", type.loc)
+    // resolve in lib
+    ref.resolvedRef = lib.get(n.name, false)?.selfRef
+    if (!ref.isResolved) return err("Unresolved spec '$n' in lib", ref.loc)
   }
-*/
 
   private Str:MLib depends := [:]
 }
