@@ -20,6 +20,9 @@ internal class ASys
   ARef str    := init("Str")
   ARef dict   := init("Dict")
   ARef list   := init("List")
+  ARef and    := init("And")
+  ARef or     := init("Or")
+  ARef maybe  := init("Maybe")
 
   private static ARef init(Str name) { ARef(FileLoc.synthetic, AName("sys", name)) }
 

@@ -17,7 +17,13 @@ internal class Assemble : Step
 {
   override Void run()
   {
+    emptyMetaRef = AtomicRef(env.emptyDict)
+
+    // first pass creates slots
     compiler.lib = asmSpec(compiler.ast, compiler.qname, compiler.qname)
+
+    // second pass for meta
+    asmFinalize(compiler.ast)
   }
 
   private MSpec asmSpec(AObj obj, Str qname, Str name)
@@ -25,12 +31,12 @@ internal class Assemble : Step
     loc      := obj.loc
     libRef   := ast.asmRef
     baseRef  := asmBase(obj)
-    meta     := asmMeta(obj)
+    metaRef  := asmMetaRef(obj)
     declared := asmDeclared(obj, qname)
 
     spec := obj.isLib ?
-      MLib(env, loc, libRef, qname, name, baseRef, meta, declared) :
-      MSpec(loc, obj.asmRef, libRef, qname, name, baseRef, meta, declared, obj.val)
+      MLib(env, loc, libRef, qname, name, baseRef, metaRef, declared) :
+      MSpec(loc, obj.asmRef, libRef, qname, name, baseRef, metaRef, declared, obj.val)
 
     obj.asmRef.val = spec
     return spec
@@ -42,21 +48,11 @@ internal class Assemble : Step
     return obj.type.resolved
   }
 
-  private DataDict asmMeta(AObj obj)
+  private AtomicRef asmMetaRef(AObj obj)
   {
-    meta := obj.meta
-    if (meta == null || meta.isEmpty) return env.emptyDict
-    acc := Str:Obj[:]
-    meta.each |kid|
-    {
-      acc.addNotNull(kid.name, asmVal(kid))
-    }
-    return env.dict(acc)
-  }
-
-  private Obj? asmVal(AObj obj)
-  {
-    obj.val
+    if (obj.meta == null || obj.meta.isEmpty) return emptyMetaRef
+    obj.metaRef = AtomicRef()
+    return obj.metaRef
   }
 
   private Str:MSpec asmDeclared(AObj obj, Str qname)
@@ -73,6 +69,40 @@ internal class Assemble : Step
     return acc
   }
 
+  private Void asmFinalize(AObj obj)
+  {
+    asmMeta(obj)
+
+    if (obj.slots != null) obj.slots.each |kid| { asmFinalize(kid) }
+  }
+
+  private Void asmMeta(AObj obj)
+  {
+    // if metaRef null, then we used emptyDict ref
+    if (obj.metaRef == null) return
+
+    acc := Str:Obj[:]
+    obj.meta.each |kid|
+    {
+      if (kid.val == null) return // TODO
+      acc.add(kid.name, asmVal(kid.val))
+    }
+    obj.metaRef.val = env.dict(acc)
+  }
+
+  private Obj? asmVal(Obj val)
+  {
+    if (val is ARef) return ((ARef)val).resolved.val
+    if (val is List)
+    {
+      list := (List)val
+      if (list.of === ARef#) return list.map |x->DataSpec| { asmVal(x) }
+      return list
+    }
+    return val
+  }
+
   static const Str:MSpec noDeclared := [:]
 
+  AtomicRef? emptyMetaRef
 }

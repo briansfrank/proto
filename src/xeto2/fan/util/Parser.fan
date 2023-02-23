@@ -150,7 +150,7 @@ internal class Parser
   private Bool parseSpec(AObj p)
   {
     // type
-    p.type = parseType
+    p.type = parseType(p)
     if (p.type == null)
     {
       // allow <meta> without type only for sys::Obj
@@ -163,77 +163,57 @@ internal class Parser
     return true
   }
 
-  ARef? parseType()
+  ARef? parseType(AObj p)
   {
-    if (cur !== Token.id) return null
-
-    loc := curToLoc
-    qname := consumeQName
-if (cur === Token.question) consume
-    return ARef(loc, qname)
-  }
-
-/*
-  private CSpec? parseType()
-  {
-    if (cur === Token.str && peek === Token.pipe)
-      throw Err("TODO or value") //return parseTypeOr(null, consumeVal)
-
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)      return parseTypeAnd(type)
-    if (cur === Token.pipe)     return parseTypeOr(type, null)
-    if (cur === Token.question) return parseTypeMaybe(type)
+    if (cur === Token.amp)      return parseTypeAnd(p, type)
+    if (cur === Token.pipe)     return parseTypeOr(p, type)
+    if (cur === Token.question) return parseTypeMaybe(p, type)
     return type
   }
 
-  private CSpec parseTypeAnd(CSpec first)
+  private ARef parseTypeAnd(AObj p, ARef first)
   {
-    of := CSpec[,].add(first)
+    ofs := ARef[,].add(first)
     while (cur === Token.amp)
     {
       consume
       skipNewlines
-      of.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
+      ofs.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
     }
-    return XetoType.makeAnd(of)
+    p.addOfs(compiler, ofs)
+    return compiler.sys.and
   }
 
-  private CSpec parseTypeOr(CSpec? first, Str? val)
+  private ARef parseTypeOr(AObj p, ARef first)
   {
-    of := CSpec[,].add(first)
+    ofs := ARef[,].add(first)
     while (cur === Token.pipe)
     {
       consume
       skipNewlines
-      if (cur.isVal)
-        throw Err("TODO or value") //addToOf(of, null, consumeVal)
-      else
-        of.add(parseTypeSimple("Expecting next type name after '|' or symbol"))
+      ofs.add(parseTypeSimple("Expecting next type name after '|' or symbol"))
     }
-    return XetoType.makeOr(of)
+    p.addOfs(compiler, ofs)
+    return compiler.sys.or
   }
 
-  private CSpec parseTypeMaybe(CSpec type)
+  private ARef parseTypeMaybe(AObj p, ARef of)
   {
     consume(Token.question)
-    return XetoType.makeMaybe(type)
+    p.addOf(compiler, of)
+    return compiler.sys.maybe
   }
 
-  private CSpec parseTypeSimple(Str errMsg)
+  private ARef parseTypeSimple(Str errMsg)
   {
     if (cur !== Token.id) throw err(errMsg)
     loc := curToLoc
-    qname := consumeQName
-    return AType.makeSimple(loc, qname)
+    name := consumeQName
+    return ARef(loc, name)
   }
-
-  private Void addToOf(Str:Obj of, Str? qname, Str? val)
-  {
-    of["_"+of.size] = Str:Obj[:].addNotNull("_is", qname).addNotNull("_val", val)
-  }
-  */
 
   private Void parseEndOfObj()
   {

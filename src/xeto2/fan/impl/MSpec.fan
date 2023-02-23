@@ -16,7 +16,7 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, DataDict meta, Str:MSpec declared, Obj? val)
+  new make(FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
   {
     this.loc      = loc
     this.selfRef  = selfRef
@@ -24,7 +24,7 @@ internal const class MSpec : DataSpec
     this.qname    = qname
     this.name     = name
     this.baseRef  = baseRef
-    this.meta     = meta
+    this.metaRef  = metaRef
     this.declared = declared
     this.val      = val
   }
@@ -49,7 +49,8 @@ internal const class MSpec : DataSpec
 
   const override Obj? val
 
-  override const DataDict meta
+  override DataDict meta() { metaRef.val }
+  private const AtomicRef metaRef
 
   override DataSpec[] list()  { declared.vals }
 

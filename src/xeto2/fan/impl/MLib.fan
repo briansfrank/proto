@@ -16,8 +16,8 @@ using data2
 @Js
 internal const class MLib : MSpec, DataLib
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, DataDict meta, Str:MSpec declared)
-    : super(loc, libRef, libRef, qname, name, baseRef, meta, declared, null)
+  new make(XetoEnv env, FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared)
+    : super(loc, libRef, libRef, qname, name, baseRef, metaRef, declared, null)
   {
     this.envRef = env
   }

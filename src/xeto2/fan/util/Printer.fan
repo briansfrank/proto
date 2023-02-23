@@ -220,7 +220,7 @@ class Printer
       indention--
       indent.bracket("}")
     }
-    if (spec.val != null) sp.quoted(spec.val.toStr)
+    if (spec.val != null && !isMarker(spec.val)) sp.quoted(spec.val.toStr)
     return nl
   }
 

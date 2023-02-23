@@ -60,12 +60,19 @@ internal class Resolve : Step
     resolveRef(obj.type)
     resolveMap(obj.meta)
     resolveMap(obj.slots)
+    resolveVal(obj.val)
   }
 
   private Void resolveMap(AMap? map)
   {
     if (map == null) return
     map.each |kid| { resolveObj(kid) }
+  }
+
+  private Void resolveVal(Obj? val)
+  {
+    if (val is ARef) { resolveRef(val); return }
+    if (val is List) { ((List)val).each |x| { resolveVal(x) }; return }
   }
 
   private Void resolveRef(ARef? ref)
