@@ -16,8 +16,8 @@ using data2
 @Js
 internal const class MType : MSpec, DataType
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
-    : super(env, loc, selfRef, baseRef, metaRef, declared, val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef typeRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
+    : super(env, loc, selfRef, typeRef, metaRef, declared, val)
   {
     this.libRef = libRef
     this.qname  = qname
@@ -33,7 +33,7 @@ internal const class MType : MSpec, DataType
 
   const override Str name
 
-  override MSpec? base() { super.base }
+  override MType? type() { super.type }
 
   @Operator override MSpec? get(Str name, Bool checked := true) { super.get(name, checked) }
 

@@ -16,12 +16,12 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
   {
     this.envRef   = env
     this.loc      = loc
     this.selfRef  = selfRef
-    this.baseRef  = baseRef
+    this.typeRef  = typeRef
     this.metaRef  = metaRef
     this.declared = declared
     this.val      = val
@@ -34,8 +34,8 @@ internal const class MSpec : DataSpec
 
   const override FileLoc loc
 
-  override MSpec? base() { baseRef.val }
-  private const AtomicRef baseRef
+  override MType? type() { typeRef.val }
+  private const AtomicRef typeRef
 
   const Str:MSpec declared
 
@@ -55,14 +55,14 @@ internal const class MSpec : DataSpec
     throw UnknownSpecErr(toStr + sep + name)
   }
 
-  override Str toStr() { base?.toStr ?: "???" }
+  override Str toStr() { type?.toStr ?: "???" }
 
   override Bool isa(DataSpec that)
   {
     if (this === that) return true
-    base := this.base
-    if (base == null) return false
-    return base.isa(that)
+    type := this.type
+    if (type == null) return false
+    return type.isa(that)
   }
 
   override Bool isaScalar() { isa(env.sys.scalar) }

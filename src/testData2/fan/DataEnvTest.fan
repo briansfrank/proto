@@ -203,14 +203,14 @@ class DataEnvTest : Test
     return lib
   }
 
-  DataSpec verifyLibType(DataLib lib, Str name, DataSpec? base)
+  DataSpec verifyLibType(DataLib lib, Str name, DataType? base)
   {
     DataType type := lib.get(name)
     verifySame(type.env, env)
     verifySame(type.lib, lib)
     verifySame(lib.get(name), type)
     verifyEq(lib.list.containsSame(type), true)
-    verifySame(type.base, base)
+    verifySame(type.type, base)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
     verifySame(type.meta.spec, env.type("sys::Dict"))
@@ -226,7 +226,7 @@ class DataEnvTest : Test
     verifyEq(parent.list.containsSame(slot), true)
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
-    verifySame(slot.base, type)
+    verifySame(slot.type, type)
     verifySame(slot.meta.spec, env.type("sys::Dict"))
     return slot
   }
@@ -237,7 +237,7 @@ class DataEnvTest : Test
     lib.list.each |DataType t|
     {
       hasSlots := !t.list.isEmpty
-      echo("$t.name: $t.base <$t.meta>" + (hasSlots ? " {" : ""))
+      echo("$t.name: $t.type <$t.meta>" + (hasSlots ? " {" : ""))
       //t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
       if (hasSlots) echo("}")
     }

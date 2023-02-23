@@ -91,11 +91,11 @@ class DataSpecTest : Test
      foo := lib.get("Foo")
 
      bar := foo.get("bar")
-     verifySame(bar.base, maybe)
+     verifySame(bar.type, maybe)
      verifySame(bar.meta["of"], str)
 
      baz := foo.get("baz")
-     verifySame(baz.base, maybe)
+     verifySame(baz.type, maybe)
      verifySame(baz.meta["of"], foo)
    }
 

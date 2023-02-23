@@ -210,7 +210,7 @@ class Printer
   {
     doc(spec.meta["doc"])
     if (spec is DataType) indent.w( ((DataType)spec).name)
-    if (spec.base != null) colon.w(spec.base.toStr)
+    if (spec.type != null) colon.w(spec.type.qname)
     meta(spec.meta)
     if (!spec.list.isEmpty)
     {

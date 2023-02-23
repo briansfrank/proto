@@ -22,8 +22,8 @@ const mixin DataSpec
   ** Environment for spec
   abstract DataEnv env()
 
-  ** Base type this spec inherits from.  Return null if this is 'Obj' itself
-  abstract DataSpec? base()
+  ** Type this spec inherits from.  Return null if this is 'Obj' itself
+  abstract DataType? type()
 
   ** Meta data for this spec
   abstract DataDict meta()
