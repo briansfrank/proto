@@ -55,7 +55,7 @@ class Printer
     //if (val is DataSeq) return seq(val)
     if (val is Str) return quoted(val.toStr)
     if (val is List) return list(val)
-    if (val is DataSpec) return spec(val)
+    if (val is DataSpec) return spec(val, null)
     return w(val)
   }
 
@@ -206,20 +206,26 @@ class Printer
 //////////////////////////////////////////////////////////////////////////
 
   ** Print data type and its slots
-  This spec(DataSpec spec)
+  This spec(DataSpec spec, Str? name)
   {
+    if (name == null)
+    {
+      if (spec is DataLib) name = ((DataLib)spec).qname
+      else if (spec is DataType) name = ((DataType)spec).name
+    }
+
     doc(spec.meta["doc"])
-    if (spec is DataType) indent.w( ((DataType)spec).name)
-    if (spec.type != null) colon.w(spec.type.qname)
+    if (name != null) indent.w(name).colon
+    if (spec.type != null) w(spec.type.qname)
     meta(spec.meta)
-    if (!spec.list.isEmpty)
+    if (!spec.declared.isEmpty)
     {
       bracket(" {").nl
       indention++
-      spec.list.each |s|
+      spec.declared.each |s, n|
       {
         if (indention == 1) nl
-        this.spec(s)
+        this.spec(s, n)
       }
       indention--
       indent.bracket("}")

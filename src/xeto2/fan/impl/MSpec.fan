@@ -16,15 +16,15 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef metaRef, MSlots declared, Obj? val)
   {
-    this.envRef   = env
-    this.loc      = loc
-    this.selfRef  = selfRef
-    this.typeRef  = typeRef
-    this.metaRef  = metaRef
-    this.declared = declared
-    this.val      = val
+    this.envRef      = env
+    this.loc         = loc
+    this.selfRef     = selfRef
+    this.typeRef     = typeRef
+    this.metaRef     =  metaRef
+    this.declaredRef = declared
+    this.val         = val
   }
 
   override XetoEnv env() { envRef }
@@ -37,23 +37,13 @@ internal const class MSpec : DataSpec
   override MType? type() { typeRef.val }
   private const AtomicRef typeRef
 
-  const Str:MSpec declared
+  override MSlots declared() { declaredRef }
+  const MSlots declaredRef
 
   const override Obj? val
 
   override DataDict meta() { metaRef.val }
   private const AtomicRef metaRef
-
-  override DataSpec[] list()  { declared.vals }
-
-  @Operator override MSpec? get(Str name, Bool checked := true)
-  {
-    kid := declared[name]
-    if (kid != null) return kid
-    if (!checked) return null
-    sep := this is MLib ? "::" : "."  // TODO
-    throw UnknownSpecErr(toStr + sep + name)
-  }
 
   override Str toStr() { type?.toStr ?: "???" }
 

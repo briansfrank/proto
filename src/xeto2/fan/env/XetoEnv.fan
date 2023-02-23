@@ -77,7 +77,7 @@ internal const class XetoEnv : DataEnv
     colon := qname.index("::") ?: throw ArgErr("Invalid qname: $qname")
     libName := qname[0..<colon]
     typeName := qname[colon+2..-1]
-    return lib(libName, checked)?.get(typeName, checked)
+    return lib(libName, checked)?.declared?.get(typeName, checked)
   }
 
   override Void dump(OutStream out := Env.cur.out)

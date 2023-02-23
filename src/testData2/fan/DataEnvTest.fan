@@ -46,6 +46,8 @@ class DataEnvTest : Test
     // slots
     orgDis := verifySlot(org, "dis", str)
     orgUri := verifySlot(org, "uri", uri)
+
+    // env.print(sys)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,7 +89,7 @@ class DataEnvTest : Test
     // sys
     sys := env.lib("sys")
     verifySame(env.lib("sys"), sys)
-    verifySame(env.type("sys::Dict"), sys.get("Dict"))
+    verifySame(env.type("sys::Dict"), sys.declared.get("Dict"))
 
     // bad libs
     verifyEq(env.lib("bad.one", false), null)
@@ -196,20 +198,20 @@ class DataEnvTest : Test
     verifyEq(lib.version, version)
     verifySame(lib.meta.spec, env.type("sys::Dict"))
 
-    verifyEq(lib.get("Bad", false), null)
-    verifyErr(UnknownSpecErr#) { lib.get("Bad") }
-    verifyErr(UnknownSpecErr#) { lib.get("Bad", true) }
+    verifyEq(lib.declared.get("Bad", false), null)
+    verifyErr(UnknownSpecErr#) { lib.declared.get("Bad") }
+    verifyErr(UnknownSpecErr#) { lib.declared.get("Bad", true) }
 
     return lib
   }
 
   DataSpec verifyLibType(DataLib lib, Str name, DataType? base)
   {
-    DataType type := lib.get(name)
+    DataType type := lib.declared.get(name)
     verifySame(type.env, env)
     verifySame(type.lib, lib)
-    verifySame(lib.get(name), type)
-    verifyEq(lib.list.containsSame(type), true)
+    verifySame(lib.declared.get(name), type)
+//   verifyEq(lib.list.containsSame(type), true)
     verifySame(type.type, base)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
@@ -219,11 +221,11 @@ class DataEnvTest : Test
 
   DataSpec verifySlot(DataSpec parent, Str name, DataSpec type)
   {
-    slot := parent.get(name)
+    slot := parent.declared.get(name)
     verifyEq(slot.typeof.qname, "xeto2::MSpec") // not type
     verifySame(slot.env, env)
-    verifySame(parent.get(name), slot)
-    verifyEq(parent.list.containsSame(slot), true)
+    verifySame(parent.declared.get(name), slot)
+//    verifyEq(parent.list.containsSame(slot), true)
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
@@ -234,9 +236,9 @@ class DataEnvTest : Test
   Void dumpLib(DataLib lib)
   {
     echo("--- dump $lib.qname ---")
-    lib.list.each |DataType t|
+    lib.declared.each |DataType t|
     {
-      hasSlots := !t.list.isEmpty
+      hasSlots := !t.declared.isEmpty
       echo("$t.name: $t.type <$t.meta>" + (hasSlots ? " {" : ""))
       //t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
       if (hasSlots) echo("}")

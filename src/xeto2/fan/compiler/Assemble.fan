@@ -59,7 +59,7 @@ internal class Assemble : Step
     return obj.metaRef
   }
 
-  private Str:MSpec asmDeclared(AObj obj, Str qname)
+  private MSlots asmDeclared(AObj obj, Str qname)
   {
     slots := obj.slots
     if (slots == null || slots.isEmpty) return noDeclared
@@ -70,7 +70,7 @@ internal class Assemble : Step
       sep := obj.isLib ? "::" : "."
       acc.add(name, asmSpec(kid, qname + sep + name, name))
     }
-    return acc
+    return MSlots(acc)
   }
 
   private Void asmFinalize(AObj obj)
@@ -106,7 +106,7 @@ internal class Assemble : Step
     return val
   }
 
-  static const Str:MSpec noDeclared := [:]
+  static const MSlots noDeclared := MSlots(Str:MSpec[:])
 
   AtomicRef? emptyMetaRef
 }

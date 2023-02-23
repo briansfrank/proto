@@ -28,11 +28,11 @@ const mixin DataSpec
   ** Meta data for this spec
   abstract DataDict meta()
 
-  ** List all the effective children specs
-  abstract DataSpec[] list()
+  ** Get the declared children slots
+  abstract DataSlots declared()
 
-  ** Lookup a child by name
-  @Operator abstract DataSpec? get(Str name, Bool checked := true)
+  ** Get the effective children slots including inherited
+  //abstract DataSlots slots()
 
   ** Scalar value or null
   abstract Obj? val()

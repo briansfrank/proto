@@ -88,13 +88,13 @@ class DataSpecTest : Test
 
      str := env.type("sys::Str")
      maybe := env.type("sys::Maybe")
-     foo := lib.get("Foo")
+     foo := lib.declared.get("Foo")
 
-     bar := foo.get("bar")
+     bar := foo.declared.get("bar")
      verifySame(bar.type, maybe)
      verifySame(bar.meta["of"], str)
 
-     baz := foo.get("baz")
+     baz := foo.declared.get("baz")
      verifySame(baz.type, maybe)
      verifySame(baz.meta["of"], foo)
    }

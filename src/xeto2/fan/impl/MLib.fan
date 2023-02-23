@@ -16,7 +16,7 @@ using data2
 @Js
 internal const class MLib : MSpec, DataLib
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef typeRef, AtomicRef metaRef, Str:MSpec declared)
+  new make(XetoEnv env, FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef typeRef, AtomicRef metaRef, MSlots declared)
     : super(env, loc, libRef, typeRef, metaRef, declared, null)
   {
     this.qname = qname
@@ -34,7 +34,7 @@ internal const class MLib : MSpec, DataLib
 
   override MType? type() { super.type }
 
-  @Operator override MSpec? get(Str name, Bool checked := true) { super.get(name, checked) }
+  override MSlots declared() { super.declared }
 
   override Str toStr() { qname }
 
