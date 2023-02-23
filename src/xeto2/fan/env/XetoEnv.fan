@@ -53,6 +53,25 @@ internal const class XetoEnv : DataEnv
     Printer(this, out, dict(opts)).print(val)
   }
 
+  override DataLib compile(Str src)
+  {
+    qname := "temp" + compileCount.getAndIncrement
+
+    src = """pragma: Lib <
+                version: "0"
+                depends: { { lib: "sys" } }
+              >
+              """ + src
+
+    c := XetoCompiler
+    {
+      it.env = this
+      it.qname = qname
+      it.input = src.toBuf.toFile(`temp.xeto`)
+    }
+    return c.compileLib
+  }
+
   override DataSpec? spec(Str qname, Bool checked := true)
   {
     colon := qname.index(":")
@@ -74,5 +93,6 @@ internal const class XetoEnv : DataEnv
   }
 
   private const ConcurrentMap libs := ConcurrentMap()
+  private const AtomicInt compileCount := AtomicInt()
 }
 

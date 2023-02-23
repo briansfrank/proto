@@ -30,7 +30,7 @@ internal class Resolve : Step
 
     // import dependencies from pragma
     astDepends := pragma?.meta?.get("depends") ?: AObj(FileLoc.unknown)
-    astDepends.slots.each |astDepend|
+    astDepends.slots?.each |astDepend|
     {
       // get library name from depend formattd as "{lib:<qname>}"
       loc := astDepend.loc

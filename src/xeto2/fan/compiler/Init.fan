@@ -23,7 +23,7 @@ internal class InitLib : Step
     input := compiler.input
     if (input == null) throw err("Compiler input not configured", FileLoc.inputs)
     if (!input.exists) throw err("Input file not found: $input", FileLoc.inputs)
-    if (!input.isDir) throw err("Lib input must be directory: $input", FileLoc.inputs)
+    //if (!input.isDir) throw err("Lib input must be directory: $input", FileLoc.inputs)
 
     // default qname to directory
     if (compiler.qname == null)

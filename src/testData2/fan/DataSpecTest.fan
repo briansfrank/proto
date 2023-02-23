@@ -73,10 +73,37 @@ class DataSpecTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Maybe
+//////////////////////////////////////////////////////////////////////////
+
+  Void testMaybe()
+  {
+    lib := compile(
+      Str<|Foo: Dict {
+             bar: Str?
+             baz: Foo?
+           }|>)
+
+    //env.print(lib)
+
+     str := env.spec("sys::Str")
+     maybe := env.spec("sys::Maybe")
+     foo := lib.get("Foo")
+
+     bar := foo.get("bar")
+     verifySame(bar.base, maybe)
+     verifySame(bar.meta["of"], str)
+
+     baz := foo.get("baz")
+     verifySame(baz.base, maybe)
+     verifySame(baz.meta["of"], foo)
+   }
+
+//////////////////////////////////////////////////////////////////////////
 // Reflection
 //////////////////////////////////////////////////////////////////////////
 
-  /*
+/*
   Void testReflection()
   {
     ph := env.lib("ph")
@@ -120,6 +147,8 @@ class DataSpecTest : Test
 //////////////////////////////////////////////////////////////////////////
 
   DataEnv env() { DataEnv.cur }
+
+  DataLib compile(Str s) { env.compile(s) }
 
 }
 

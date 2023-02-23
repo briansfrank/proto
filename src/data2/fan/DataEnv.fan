@@ -58,6 +58,9 @@ const abstract class DataEnv
   ** Get or load library by the given qualified name
   abstract DataLib? lib(Str qname, Bool checked := true)
 
+  ** Compile Xeto source code into a temp library
+  abstract DataLib compile(Str src)
+
   ** Get or load type by the given qualified name
   abstract DataSpec? spec(Str qname, Bool checked := true)
 

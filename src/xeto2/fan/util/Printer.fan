@@ -102,7 +102,11 @@ class Printer
       else w(", ")
       w(n)
       if (isMarker(v)) return
-      colon.val(v)
+      colon
+      if (v is DataSpec)
+        w(v.toStr)
+      else
+        val(v)
     }
     return this
   }
