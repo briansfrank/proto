@@ -27,7 +27,7 @@ class DataEnvTest : Test
     verifySame(env.lib("sys"), sys)
     verifyEq(sys.qname, "sys")
     verifyEq(sys.version, typeof.pod.version)
-    verifySame(sys.meta.spec, env.spec("sys::Dict"))
+    verifySame(sys.meta.spec, env.type("sys::Dict"))
 
     // types
     obj    := verifyLibType(sys, "Obj",    null)
@@ -72,7 +72,7 @@ class DataEnvTest : Test
     // lib basics
     ph := verifyLibBasics("ph", Version("3.9.13"))
 
-    entity := verifyLibType(ph, "Entity", env.spec("sys::Dict"))
+    entity := verifyLibType(ph, "Entity", env.type("sys::Dict"))
     equip  := verifyLibType(ph, "Equip",  entity)
     meter  := verifyLibType(ph, "Meter",  equip)
 
@@ -87,20 +87,20 @@ class DataEnvTest : Test
     // sys
     sys := env.lib("sys")
     verifySame(env.lib("sys"), sys)
-    verifySame(env.spec("sys::Dict"), sys.get("Dict"))
+    verifySame(env.type("sys::Dict"), sys.get("Dict"))
 
     // bad libs
     verifyEq(env.lib("bad.one", false), null)
-    verifyEq(env.spec("bad.one.Foo", false), null)
+    verifyEq(env.type("bad.one::Foo", false), null)
     verifyErr(UnknownLibErr#) { env.lib("bad.one") }
     verifyErr(UnknownLibErr#) { env.lib("bad.one", true) }
-    verifyErr(UnknownLibErr#) { env.spec("bad.one.Foo") }
-    verifyErr(UnknownLibErr#) { env.spec("bad.one", true) }
+    verifyErr(UnknownLibErr#) { env.type("bad.one::Foo") }
+    verifyErr(UnknownLibErr#) { env.type("bad.one::Foo", true) }
 
     // good lib, bad type
-    verifyEq(env.spec("sys::Foo", false), null)
-    verifyErr(UnknownSpecErr#) { env.spec("sys::Foo") }
-    verifyErr(UnknownSpecErr#) { env.spec("sys::Foo", true) }
+    verifyEq(env.type("sys::Foo", false), null)
+    verifyErr(UnknownSpecErr#) { env.type("sys::Foo") }
+    verifyErr(UnknownSpecErr#) { env.type("sys::Foo", true) }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -154,8 +154,10 @@ class DataEnvTest : Test
   {
     d := env.dict(map)
 
-    verifyEq(d.spec.qname, qname)
-    verifySame(d.spec, env.spec(qname))
+    type := (DataType)d.spec
+
+    verifyEq(type.qname, qname)
+    verifySame(d.spec, env.type(qname))
     if (map.isEmpty) verifySame(d, env.emptyDict)
 
     map.each |v, n|
@@ -190,10 +192,9 @@ class DataEnvTest : Test
 
     verifySame(env.lib(qname), lib)
     verifySame(lib.env, env)
-    verifySame(lib.lib, lib)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
-    verifySame(lib.meta.spec, env.spec("sys::Dict"))
+    verifySame(lib.meta.spec, env.type("sys::Dict"))
 
     verifyEq(lib.get("Bad", false), null)
     verifyErr(UnknownSpecErr#) { lib.get("Bad") }
@@ -204,7 +205,7 @@ class DataEnvTest : Test
 
   DataSpec verifyLibType(DataLib lib, Str name, DataSpec? base)
   {
-    type := lib.get(name)
+    DataType type := lib.get(name)
     verifySame(type.env, env)
     verifySame(type.lib, lib)
     verifySame(lib.get(name), type)
@@ -212,32 +213,32 @@ class DataEnvTest : Test
     verifySame(type.base, base)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
-    verifySame(type.meta.spec, env.spec("sys::Dict"))
+    verifySame(type.meta.spec, env.type("sys::Dict"))
     return type
   }
 
   DataSpec verifySlot(DataSpec parent, Str name, DataSpec type)
   {
     slot := parent.get(name)
+    verifyEq(slot.typeof.qname, "xeto2::MSpec") // not type
     verifySame(slot.env, env)
-    verifySame(slot.lib, parent.lib)
     verifySame(parent.get(name), slot)
     verifyEq(parent.list.containsSame(slot), true)
-    verifyEq(slot.qname, parent.qname + "." + name)
-    verifyEq(slot.toStr, slot.qname)
+//    verifyEq(slot.qname, parent.qname + "." + name)
+//    verifyEq(slot.toStr, slot.qname)
     verifySame(slot.base, type)
-    verifySame(slot.meta.spec, env.spec("sys::Dict"))
+    verifySame(slot.meta.spec, env.type("sys::Dict"))
     return slot
   }
 
   Void dumpLib(DataLib lib)
   {
     echo("--- dump $lib.qname ---")
-    lib.list.each |t|
+    lib.list.each |DataType t|
     {
       hasSlots := !t.list.isEmpty
       echo("$t.name: $t.base <$t.meta>" + (hasSlots ? " {" : ""))
-      t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
+      //t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
       if (hasSlots) echo("}")
     }
   }

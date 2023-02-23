@@ -19,21 +19,11 @@ const mixin DataSpec
 // Identity
 //////////////////////////////////////////////////////////////////////////
 
-  ** Environment for library
+  ** Environment for spec
   abstract DataEnv env()
-
-  ** Parent library for spec
-  abstract DataLib lib()
 
   ** Base type this spec inherits from.  Return null if this is 'Obj' itself
   abstract DataSpec? base()
-
-  ** Full qualified name of this spec
-  abstract Str qname()
-
-  ** Simple name of the spec.
-  ** If this spec is the library itself then return qname.
-  abstract Str name()
 
   ** Meta data for this spec
   abstract DataDict meta()

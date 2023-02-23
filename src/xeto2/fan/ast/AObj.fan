@@ -25,6 +25,7 @@ internal class AObj
   Obj? val
   Str? doc
   Bool isLib
+  Bool isType
 
   const AtomicRef asmRef := AtomicRef()
 

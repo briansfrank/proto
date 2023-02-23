@@ -16,31 +16,23 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared, Obj? val)
   {
+    this.envRef   = env
     this.loc      = loc
     this.selfRef  = selfRef
-    this.libRef   = libRef
-    this.qname    = qname
-    this.name     = name
     this.baseRef  = baseRef
     this.metaRef  = metaRef
     this.declared = declared
     this.val      = val
   }
 
-  override XetoEnv env() { lib.envRef }
-
-  override MLib lib() { libRef.val }
-  private const AtomicRef libRef
+  override XetoEnv env() { envRef }
+  const XetoEnv envRef
 
   const AtomicRef selfRef
 
   const override FileLoc loc
-
-  const override Str qname
-
-  const override Str name
 
   override MSpec? base() { baseRef.val }
   private const AtomicRef baseRef
@@ -59,11 +51,11 @@ internal const class MSpec : DataSpec
     kid := declared[name]
     if (kid != null) return kid
     if (!checked) return null
-    sep := this is MLib ? "::" : "."
-    throw UnknownSpecErr("$qname$sep$name")
+    sep := this is MLib ? "::" : "."  // TODO
+    throw UnknownSpecErr(toStr + sep + name)
   }
 
-  override Str toStr() { qname }
+  override Str toStr() { base?.toStr ?: "???" }
 
   override Bool isa(DataSpec that)
   {

@@ -62,7 +62,7 @@ const abstract class DataEnv
   abstract DataLib compile(Str src)
 
   ** Get or load type by the given qualified name
-  abstract DataSpec? spec(Str qname, Bool checked := true)
+  abstract DataType? type(Str qname, Bool checked := true)
 
   ** Pretty print object to output stream.
   abstract Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)

@@ -41,7 +41,13 @@ internal class Parse : Step
 
     bombIfErr
 
+    // root is library, and its children are types
     root.isLib = true
+    root.slots.each |kid|
+    {
+      if (kid.name[0].isUpper) kid.isType = true
+    }
+
     compiler.ast = root
     compiler.pragma = pragma
   }

@@ -34,9 +34,13 @@ internal class Assemble : Step
     metaRef  := asmMetaRef(obj)
     declared := asmDeclared(obj, qname)
 
-    spec := obj.isLib ?
-      MLib(env, loc, libRef, qname, name, baseRef, metaRef, declared) :
-      MSpec(loc, obj.asmRef, libRef, qname, name, baseRef, metaRef, declared, obj.val)
+    MSpec? spec
+    if (obj.isLib)
+      spec = MLib(env, loc, libRef, qname, name, baseRef, metaRef, declared)
+    else if (obj.isType)
+      spec = MType(env, loc, obj.asmRef, libRef, qname, name, baseRef, metaRef, declared, obj.val)
+    else
+      spec = MSpec(env, loc, obj.asmRef, baseRef, metaRef, declared, obj.val)
 
     obj.asmRef.val = spec
     return spec

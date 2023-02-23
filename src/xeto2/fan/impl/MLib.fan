@@ -17,14 +17,14 @@ using data2
 internal const class MLib : MSpec, DataLib
 {
   new make(XetoEnv env, FileLoc loc, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, Str:MSpec declared)
-    : super(loc, libRef, libRef, qname, name, baseRef, metaRef, declared, null)
+    : super(env, loc, libRef, baseRef, metaRef, declared, null)
   {
-    this.envRef = env
+    this.qname = qname
   }
 
   override XetoEnv env() { envRef }
 
-  const XetoEnv envRef
+  override const Str qname
 
   override Version version()
   {
@@ -36,5 +36,6 @@ internal const class MLib : MSpec, DataLib
 
   @Operator override MSpec? get(Str name, Bool checked := true) { super.get(name, checked) }
 
-  override MLib lib() { this }
+  override Str toStr() { qname }
+
 }

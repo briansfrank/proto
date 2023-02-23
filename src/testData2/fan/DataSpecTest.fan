@@ -64,8 +64,8 @@ class DataSpecTest : Test
 
   Void verifyIsa(Str an, Str bn, Bool expected)
   {
-    a := env.spec(an)
-    b := env.spec(bn)
+    a := env.type(an)
+    b := env.type(bn)
     m := a.typeof.method("isa${b.name}", false)
     // echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
     verifyEq(a.isa(b), expected)
@@ -86,8 +86,8 @@ class DataSpecTest : Test
 
     //env.print(lib)
 
-     str := env.spec("sys::Str")
-     maybe := env.spec("sys::Maybe")
+     str := env.type("sys::Str")
+     maybe := env.type("sys::Maybe")
      foo := lib.get("Foo")
 
      bar := foo.get("bar")

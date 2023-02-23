@@ -209,8 +209,8 @@ class Printer
   This spec(DataSpec spec)
   {
     doc(spec.meta["doc"])
-    indent.w(spec.name)
-    if (spec.base != null) colon.w(spec.base.qname)
+    if (spec is DataType) indent.w( ((DataType)spec).name)
+    if (spec.base != null) colon.w(spec.base.toStr)
     meta(spec.meta)
     if (!spec.list.isEmpty)
     {

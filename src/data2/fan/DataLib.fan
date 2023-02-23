@@ -16,6 +16,9 @@ using util
 const mixin DataLib : DataSpec
 {
 
+  ** Full qualified name of this library
+  abstract Str qname()
+
   ** Version of the library
   abstract Version version()
 

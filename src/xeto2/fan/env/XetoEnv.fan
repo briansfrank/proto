@@ -72,14 +72,12 @@ internal const class XetoEnv : DataEnv
     return c.compileLib
   }
 
-  override DataSpec? spec(Str qname, Bool checked := true)
+  override MType? type(Str qname, Bool checked := true)
   {
-    colon := qname.index(":")
-    if (colon == null) return lib(qname, checked)
-    if (qname[colon+1] != ':') throw ArgErr("Invalid qname: $qname")
+    colon := qname.index("::") ?: throw ArgErr("Invalid qname: $qname")
     libName := qname[0..<colon]
-    specName := qname[colon+2..-1] // TODO: path dots
-    return  lib(libName, checked)?.get(specName, checked)
+    typeName := qname[colon+2..-1]
+    return lib(libName, checked)?.get(typeName, checked)
   }
 
   override Void dump(OutStream out := Env.cur.out)
