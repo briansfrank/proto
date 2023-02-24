@@ -42,9 +42,6 @@ internal const class MSpec : DataSpec
 
   const override Obj? val
 
-  override DataDict meta() { metaRef.val }
-  private const AtomicRef metaRef
-
   override Str toStr() { type?.toStr ?: "???" }
 
   override Bool isa(DataSpec that)
@@ -54,6 +51,19 @@ internal const class MSpec : DataSpec
     if (type == null) return false
     return type.isa(that)
   }
+
+  DataDict meta() { metaRef.val }
+  private const AtomicRef metaRef
+
+  override DataSpec spec() { env.sys.dict } // TODO?
+
+  override Bool isEmpty() { meta.isEmpty }
+  @Operator override Obj? get(Str name, Obj? def := null) { meta.get(name, def) }
+  override Bool has(Str name) { meta.has(name) }
+  override Bool missing(Str name) { meta.missing(name) }
+  override Void each(|Obj val, Str name| f) { meta.each(f) }
+  override Obj? eachWhile(|Obj val, Str name->Obj?| f) { meta.eachWhile(f) }
+  override Obj? trap(Str name, Obj?[]? args := null) { meta.trap(name, args) }
 
   override Bool isaScalar() { isa(env.sys.scalar) }
   override Bool isaMarker() { isa(env.sys.marker) }

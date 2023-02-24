@@ -214,10 +214,10 @@ class Printer
       else if (spec is DataType) name = ((DataType)spec).name
     }
 
-    doc(spec.meta["doc"])
+    doc(spec["doc"])
     if (name != null) indent.w(name).colon
     if (spec.type != null) w(spec.type.qname)
-    meta(spec.meta)
+    meta(spec)
     if (!spec.declared.isEmpty)
     {
       bracket(" {").nl

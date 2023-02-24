@@ -27,7 +27,6 @@ class DataEnvTest : Test
     verifySame(env.lib("sys"), sys)
     verifyEq(sys.qname, "sys")
     verifyEq(sys.version, typeof.pod.version)
-    verifySame(sys.meta.spec, env.type("sys::Dict"))
 
     // types
     obj    := verifyLibType(sys, "Obj",    null)
@@ -196,7 +195,7 @@ class DataEnvTest : Test
     verifySame(lib.env, env)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
-    verifySame(lib.meta.spec, env.type("sys::Dict"))
+    verifySame(lib.spec, env.type("sys::Dict"))  // TODO
 
     verifyEq(lib.declared.get("Bad", false), null)
     verifyErr(UnknownSpecErr#) { lib.declared.get("Bad") }
@@ -215,7 +214,7 @@ class DataEnvTest : Test
     verifySame(type.type, base)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
-    verifySame(type.meta.spec, env.type("sys::Dict"))
+    verifySame(type.spec, env.type("sys::Dict")) // TODO
     return type
   }
 
@@ -229,7 +228,7 @@ class DataEnvTest : Test
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
-    verifySame(slot.meta.spec, env.type("sys::Dict"))
+    verifySame(slot.spec, env.type("sys::Dict")) // TODO
     return slot
   }
 
@@ -239,7 +238,7 @@ class DataEnvTest : Test
     lib.declared.each |DataType t|
     {
       hasSlots := !t.declared.isEmpty
-      echo("$t.name: $t.type <$t.meta>" + (hasSlots ? " {" : ""))
+      echo("$t.name: $t.type <$t>" + (hasSlots ? " {" : ""))
       //t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
       if (hasSlots) echo("}")
     }

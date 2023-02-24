@@ -12,7 +12,7 @@ using util
 ** Data specification.
 **
 @Js
-const mixin DataSpec
+const mixin DataSpec : DataDict
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -24,9 +24,6 @@ const mixin DataSpec
 
   ** Type this spec inherits from.  Return null if this is 'Obj' itself
   abstract DataType? type()
-
-  ** Meta data for this spec
-  abstract DataDict meta()
 
   ** Get the declared children slots
   abstract DataSlots declared()
