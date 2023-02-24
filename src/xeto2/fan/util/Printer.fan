@@ -260,6 +260,55 @@ class Printer
   }
 
 //////////////////////////////////////////////////////////////////////////
+// JSON AST
+//////////////////////////////////////////////////////////////////////////
+
+  ** Print the AST tree for the given spec
+  This printJsonAst(DataSpec spec)
+  {
+    bracket("{").nl
+    indention++
+    if (spec.type != null) indent.quoted("type").colon.quoted(spec.type.qname).nl
+    spec.each |v, n| { indent.quoted(n).colon.json(v).nl }
+    if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl
+    slots := spec.declared
+    if (!slots.isEmpty)
+    {
+      indent.quoted("slots").colon.bracket("{").nl
+      indention++
+      slots.each |slot, name|
+      {
+        indent.quoted(name).colon
+        printJsonAst(slot)
+      }
+      indention--
+      indent.bracket("}").nl
+    }
+    indention--
+    indent.bracket("}").nl
+    return this
+  }
+
+  This json(Obj? val)
+  {
+    if (val == null) return w("null")
+    if (val is Bool) return w(val.toStr)
+    if (val is List) return jsonList(val)
+    return quoted(val.toStr)
+  }
+
+  This jsonList(Obj?[] list)
+  {
+    bracket("[")
+    list.each |x, i|
+    {
+      if (i > 0) w(", ")
+      json(x)
+    }
+    return bracket("]")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Theme Utils
 //////////////////////////////////////////////////////////////////////////
 

@@ -64,6 +64,7 @@ internal class Assemble : Step
     slots := obj.slots
     if (slots == null || slots.isEmpty) return noDeclared
     acc := Str:MSpec[:]
+    acc.ordered = true
     slots.each |kid|
     {
       name := kid.name
