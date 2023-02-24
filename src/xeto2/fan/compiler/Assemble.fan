@@ -24,6 +24,10 @@ internal class Assemble : Step
       compiler.data = asmData
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Data
+//////////////////////////////////////////////////////////////////////////
+
   private Obj? asmData()
   {
     // the actual data is in the root ast as "_0"
@@ -32,9 +36,12 @@ internal class Assemble : Step
     // if value is a scalar, return it
     if (ast.val != null) return asmVal(ast)
 
-    ast.dump
-    throw Err("TODO")
+    return asmDict(ast)
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Lib + Specs
+//////////////////////////////////////////////////////////////////////////
 
   private MLib asmLib()
   {
@@ -116,12 +123,20 @@ internal class Assemble : Step
     obj.metaRef.val = env.dict(acc)
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Values
+//////////////////////////////////////////////////////////////////////////
+
   private Obj? asmVal(AObj obj)
   {
-    val := obj.val
-    if (val == null) return null
+    if (obj.val != null) return asmScalar(obj)
+    return asmDict(obj)
+  }
 
+  private Obj? asmScalar(AObj obj)
+  {
     // AST ref is whatever it resolves to
+    val := obj.val
     if (val is ARef) return ((ARef)val).resolved.val
 
     // Recurse if value is a list
@@ -144,6 +159,18 @@ internal class Assemble : Step
     return val
   }
 
+  private DataDict asmDict(AObj obj)
+  {
+    if (obj.slots == null || obj.slots.isEmpty) return env.emptyDict
+
+    acc := Str:Obj[:]
+    acc.ordered = true
+    obj.slots.each |kid|
+    {
+       acc.addNotNull(kid.name, asmVal(kid))
+    }
+    return env.dict(acc)
+  }
 
   private Obj? asmFantom(XetoScalarType mapping, Obj val, FileLoc loc)
   {
@@ -171,6 +198,10 @@ internal class Assemble : Step
       return val
     }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
 
   once AtomicRef emptyMetaRef() { AtomicRef(env.emptyDict) }
 }
