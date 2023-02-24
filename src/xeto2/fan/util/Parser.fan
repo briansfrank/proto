@@ -89,7 +89,7 @@ internal class Parser
       consume(Token.colon)
       parseBody(p)
     }
-    else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot)
+    else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot && peek !== Token.doubleColon)
     {
       p.name = consumeName
       p.type = compiler.sys.marker

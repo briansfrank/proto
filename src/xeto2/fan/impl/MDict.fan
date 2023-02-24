@@ -14,14 +14,17 @@ using data2
 @Js
 internal const class MDict : DataDict
 {
-  new make(Str:Obj map) { this.map = map }
+  new make(Str:Obj map, DataSpec? spec)
+  {
+    this.map = map
+    this.specRef = spec
+  }
 
   const Str:Obj map
 
-  override DataSpec spec()
-  {
-    DataEnv.cur.dictSpec
-  }
+  const DataSpec? specRef
+
+  override DataSpec spec() { specRef ?: DataEnv.cur.dictSpec }
 
   override Bool isEmpty()
   {

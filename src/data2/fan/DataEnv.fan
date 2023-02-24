@@ -47,7 +47,7 @@ const abstract class DataEnv
   **   - If DataDict, return it
   **   - If Fantom Map, wrap as DataDict
   **   - Raise exception for any other value type
-  abstract DataDict dict(Obj? val)
+  abstract DataDict dict(Obj? val, DataSpec? spec := null)
 
   ** List the library qnames installed by this environment
   abstract Str[] libsInstalled()

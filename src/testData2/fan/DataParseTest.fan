@@ -51,18 +51,26 @@ class DataParseTest : Test
 
   Void testDicts()
   {
+    // spec-less
     verifyDict(Str<|{}|>, [:])
     verifyDict(Str<|Dict {}|>, [:])
     verifyDict(Str<|{foo}|>, ["foo":m])
     verifyDict(Str<|{foo, bar}|>, ["foo":m, "bar":m])
     verifyDict(Str<|{dis:"Hi", mark}|>, ["dis":"Hi", "mark":m])
+
+    // LibOrg
+    verifyDict(Str<|LibOrg {}|>, [:], "sys::LibOrg")
+    verifyDict(Str<|sys::LibOrg {}|>, [:], "sys::LibOrg")
+    verifyDict(Str<|LibOrg { dis:"Acme" }|>, ["dis":"Acme"], "sys::LibOrg")
+    verifyDict(Str<|LibOrg { dis:"Acme", uri:Uri "http://acme.com" }|>, ["dis":"Acme", "uri":`http://acme.com`], "sys::LibOrg")
   }
 
   Void verifyDict(Str src, Str:Obj expected, Str type := "sys::Dict")
   {
     DataDict actual := parse(src)
-    // echo("-- $actual")
-    if (expected.isEmpty)
+    // echo("-- $actual [$actual.spec]")
+    verifySame(actual.spec, env.type(type))
+    if (expected.isEmpty && type == "sys::Dict")
     {
       verifyEq(actual.isEmpty, true)
       verifySame(actual, env.emptyDict)

@@ -19,7 +19,7 @@ internal const class XetoEnv : DataEnv
   new make()
   {
     this.libMgr = XetoLibMgr(this)
-    this.emptyDict = MDict(Str:Obj[:])
+    this.emptyDict = MDict(Str:Obj[:], null)
     this.factory = XetoFactory()
     this.sys = MSys(libMgr.load("sys"))
   }
@@ -32,17 +32,20 @@ internal const class XetoEnv : DataEnv
 
   override Obj marker() { factory.marker }
 
-  const override DataDict emptyDict
+  const override MDict emptyDict
 
   override DataSpec dictSpec() { sys.dict }
 
-  override DataDict dict(Obj? val)
+  override DataDict dict(Obj? val, DataSpec? spec := null)
   {
     if (val == null) return emptyDict
     if (val is DataDict) return val
     map := val as Str:Obj? ?: throw ArgErr("Unsupported dict arg: $val.typeof")
-    if (map.isEmpty) return emptyDict
-    return MDict(map)
+    if (map.isEmpty)
+    {
+      if (spec == null || spec === dictSpec) return emptyDict
+    }
+    return MDict(map, spec)
   }
 
   override Str[] libsInstalled() { libMgr.installed }

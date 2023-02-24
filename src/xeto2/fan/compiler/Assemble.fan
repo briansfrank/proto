@@ -151,7 +151,7 @@ internal class Assemble : Step
     if (obj.type == null) return val
 
     // map to Fantom type if still a string
-    qname := ((MType)obj.type.resolved.val).qname
+    qname := obj.type.resolvedType.qname
     mapping := env.factory.fromXeto[qname]
     if (mapping != null) return asmFantom(mapping, val, obj.loc)
 
@@ -161,7 +161,10 @@ internal class Assemble : Step
 
   private DataDict asmDict(AObj obj)
   {
-    if (obj.slots == null || obj.slots.isEmpty) return env.emptyDict
+    if (obj.slots == null || obj.slots.isEmpty && obj.type == null) return env.emptyDict
+
+    spec := obj.type?.resolvedType
+    if (obj.meta != null) err("Data spec with meta not supported", obj.loc)
 
     acc := Str:Obj[:]
     acc.ordered = true
@@ -169,7 +172,8 @@ internal class Assemble : Step
     {
        acc.addNotNull(kid.name, asmVal(kid))
     }
-    return env.dict(acc)
+
+    return env.dict(acc, spec)
   }
 
   private Obj? asmFantom(XetoScalarType mapping, Obj val, FileLoc loc)

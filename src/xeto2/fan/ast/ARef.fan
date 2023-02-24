@@ -30,6 +30,8 @@ internal class ARef
 
   AtomicRef resolved() { resolvedRef ?: throw Err("Unresolved: $name [$loc]") }
 
+  MType resolvedType() { resolved.val }
+
   AtomicRef? resolvedRef
 
 }
