@@ -38,8 +38,8 @@ class DataEnvTest : Test
     dict   := verifyLibType(sys, "Dict",   seq)
     list   := verifyLibType(sys, "List",   seq)
     lib    := verifyLibType(sys, "Lib",    dict)
-    type   := verifyLibType(sys, "Type",   dict)
-    slot   := verifyLibType(sys, "Slot",   dict)
+    spec   := verifyLibType(sys, "Spec",   dict)
+    type   := verifyLibType(sys, "Type",   spec)
     org    := verifyLibType(sys, "LibOrg", dict)
 
     // slots
@@ -48,21 +48,6 @@ class DataEnvTest : Test
 
     // env.print(sys)
   }
-
-//////////////////////////////////////////////////////////////////////////
-// Lint Lib
-//////////////////////////////////////////////////////////////////////////
-
-/*
-  Void testLintLib()
-  {
-    // lib basics
-    lint := verifyLibBasics("sys::lint", typeof.pod.version)
-
-    // function
-    findAllType := verifyLibFunc(lint, "FindAllFits")
-  }
-*/
 
 //////////////////////////////////////////////////////////////////////////
 // Ph Lib
@@ -195,7 +180,8 @@ class DataEnvTest : Test
     verifySame(lib.env, env)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
-    verifySame(lib.spec, env.type("sys::Dict"))  // TODO
+    verifySame(lib.type, env.type("sys::Lib"))
+    verifySame(lib.spec, env.type("sys::Spec"))
 
     verifyEq(lib.declared.get("Bad", false), null)
     verifyErr(UnknownSpecErr#) { lib.declared.get("Bad") }
@@ -211,14 +197,15 @@ class DataEnvTest : Test
     verifySame(type.lib, lib)
     verifySame(lib.declared.get(name), type)
 //   verifyEq(lib.list.containsSame(type), true)
-    verifySame(type.type, base)
+    verifySame(type.type, type)
+    verifySame(type.base, base)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
-    verifySame(type.spec, env.type("sys::Dict")) // TODO
+    verifySame(type.spec, env.type("sys::Type"))
     return type
   }
 
-  DataSpec verifySlot(DataSpec parent, Str name, DataSpec type)
+  DataSpec verifySlot(DataSpec parent, Str name, DataType type)
   {
     slot := parent.declared.get(name)
     verifyEq(slot.typeof.qname, "xeto2::MSpec") // not type
@@ -228,7 +215,7 @@ class DataEnvTest : Test
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
-    verifySame(slot.spec, env.type("sys::Dict")) // TODO
+    verifySame(slot.spec, env.type("sys::Spec"))
     return slot
   }
 

@@ -17,12 +17,6 @@ Lib: Dict <
   org: LibOrg                // Organization meta data for the library
 >
 
-// Type definition as a collection of slots
-Type: Dict <of:Slot>
-
-// Slot definition
-Slot: Dict
-
 // Library dependency
 Depend: Dict {
   lib: QName   // Library qualified dotted name
@@ -33,4 +27,11 @@ LibOrg: Dict {
   dis: Str     // Display name for the organization
   uri: Uri     // URI for organization website
 }
+
+// Spec is a type and its associated meta data
+Spec: Dict
+
+// Type is a named spec in a library
+Type: Spec
+
 

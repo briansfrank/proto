@@ -25,8 +25,8 @@ internal const class MSys
     this.list     = x.get("List")
     this.dataset  = x.get("DataSet")
     this.lib      = x.get("Lib")
+    this.spec     = x.get("Spec")
     this.type     = x.get("Type")
-    this.slot     = x.get("Slot")
     this.scalar   = x.get("Scalar")
     this.marker   = x.get("Marker")
     this.bool     = x.get("Bool")
@@ -40,38 +40,36 @@ internal const class MSys
     this.time     = x.get("Time")
     this.dateTime = x.get("DateTime")
     this.ref      = x.get("Ref")
-    this.func     = x.get("Func")
     this.maybe    = x.get("Maybe")
     this.and      = x.get("And")
     this.or       = x.get("Or")
     this.query    = x.get("Query")
   }
 
-  const MSpec obj
-  const MSpec none
-  const MSpec dict
-  const MSpec seq
-  const MSpec list
-  const MSpec dataset
-  const MSpec lib
-  const MSpec type
-  const MSpec slot
-  const MSpec scalar
-  const MSpec marker
-  const MSpec bool
-  const MSpec str
-  const MSpec uri
-  const MSpec number
-  const MSpec int
-  const MSpec float
-  const MSpec duration
-  const MSpec date
-  const MSpec time
-  const MSpec dateTime
-  const MSpec ref
-  const MSpec func
-  const MSpec maybe
-  const MSpec and
-  const MSpec or
-  const MSpec query
+  const MType obj
+  const MType none
+  const MType dict
+  const MType seq
+  const MType list
+  const MType dataset
+  const MType lib
+  const MType spec
+  const MType type
+  const MType scalar
+  const MType marker
+  const MType bool
+  const MType str
+  const MType uri
+  const MType number
+  const MType int
+  const MType float
+  const MType duration
+  const MType date
+  const MType time
+  const MType dateTime
+  const MType ref
+  const MType maybe
+  const MType and
+  const MType or
+  const MType query
 }

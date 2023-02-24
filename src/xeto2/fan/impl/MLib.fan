@@ -32,7 +32,7 @@ internal const class MLib : MSpec, DataLib
     return Version.fromStr(meta->version)
   }
 
-  override MType? type() { super.type }
+  override MType type() { envRef.sys.lib }
 
   override MSlots declared() { super.declared }
 

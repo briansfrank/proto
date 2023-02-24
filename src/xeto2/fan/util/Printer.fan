@@ -216,7 +216,7 @@ class Printer
 
     doc(spec["doc"])
     if (name != null) indent.w(name).colon
-    if (spec.type != null) w(spec.type.qname)
+    w(spec.type.qname)
     meta(spec)
     if (!spec.declared.isEmpty)
     {
@@ -268,7 +268,11 @@ class Printer
   {
     bracket("{").nl
     indention++
-    if (spec.type != null) indent.quoted("type").colon.quoted(spec.type.qname).nl
+    type := spec.type
+    if (type === spec)
+    {
+      if (type.base != null) indent.quoted("type").colon.quoted(type.base.qname).nl
+    }
     spec.each |v, n| { indent.quoted(n).colon.json(v).nl }
     if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl
     slots := spec.declared
