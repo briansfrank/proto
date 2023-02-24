@@ -7,6 +7,7 @@
 //
 
 using concurrent
+using util
 using data2
 
 **
@@ -25,7 +26,14 @@ internal class Assemble : Step
 
   private Obj? asmData()
   {
-return "hi"
+    // the actual data is in the root ast as "_0"
+    ast := this.ast.slots.get("_0") ?: throw Err("asmData")
+
+    // if value is a scalar, return it
+    if (ast.val != null) return asmVal(ast)
+
+    ast.dump
+    throw Err("TODO")
   }
 
   private MLib asmLib()
@@ -103,21 +111,65 @@ return "hi"
     obj.meta.each |kid|
     {
       if (kid.val == null) return // TODO
-      acc.add(kid.name, asmVal(kid.val))
+      acc.add(kid.name, asmVal(kid))
     }
     obj.metaRef.val = env.dict(acc)
   }
 
-  private Obj? asmVal(Obj val)
+  private Obj? asmVal(AObj obj)
   {
+    val := obj.val
+    if (val == null) return null
+
+    // AST ref is whatever it resolves to
     if (val is ARef) return ((ARef)val).resolved.val
+
+    // Recurse if value is a list
     if (val is List)
     {
       list := (List)val
       if (list.of === ARef#) return list.map |x->DataSpec| { asmVal(x) }
       return list
     }
+
+    // TODO: every object should have type at some point
+    if (obj.type == null) return val
+
+    // map to Fantom type if still a string
+    qname := ((MType)obj.type.resolved.val).qname
+    mapping := env.factory.fromXeto[qname]
+    if (mapping != null) return asmFantom(mapping, val, obj.loc)
+
+    // fallback to string
     return val
+  }
+
+
+  private Obj? asmFantom(XetoScalarType mapping, Obj val, FileLoc loc)
+  {
+    // if already typed, then return it
+    if (val isnot Str) return val
+
+    // if string type
+    if (mapping.isStr) return val.toStr
+
+    // lookup fromStr method
+    fromStr := mapping.fantom.method("fromStr", false)
+    if (fromStr == null)
+    {
+      err("Fantom type '$mapping.fantom' missing fromStr", loc)
+      return val
+    }
+
+    try
+    {
+      return fromStr.call(val)
+    }
+    catch (Err e)
+    {
+      err("Invalid '$mapping.xeto' value: $val.toStr.toCode", loc)
+      return val
+    }
   }
 
   once AtomicRef emptyMetaRef() { AtomicRef(env.emptyDict) }

@@ -20,6 +20,7 @@ internal const class XetoEnv : DataEnv
   {
     this.libMgr = XetoLibMgr(this)
     this.emptyDict = MDict(Str:Obj[:])
+    this.factory = XetoFactory()
     this.sys = MSys(libMgr.load("sys"))
   }
 
@@ -27,7 +28,9 @@ internal const class XetoEnv : DataEnv
 
   const MSys sys
 
-  const override Obj marker := "__marker__"
+  const XetoFactory factory
+
+  override Obj marker() { factory.marker }
 
   const override DataDict emptyDict
 
