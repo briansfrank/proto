@@ -61,6 +61,9 @@ const abstract class DataEnv
   ** Compile Xeto source code into a temp library
   abstract DataLib compile(Str src)
 
+  ** Parse Xeto data file into in-memory dict/scalar tree
+  abstract Obj? parse(Str src)
+
   ** Get or load type by the given qualified name
   abstract DataType? type(Str qname, Bool checked := true)
 

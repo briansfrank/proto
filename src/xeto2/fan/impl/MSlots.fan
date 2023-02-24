@@ -14,6 +14,8 @@ using data2
 @Js
 internal const class MSlots : DataSlots
 {
+  static const MSlots empty := MSlots(Str:MSpec[:])
+
   new make(Str:MSpec map) { this.map = map }
 
   const Str:MSpec map

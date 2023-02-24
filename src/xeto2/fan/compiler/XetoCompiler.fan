@@ -43,11 +43,22 @@ internal class XetoCompiler
     run([
       InitLib(),
       Parse(),
-      //Infer(),
       Resolve(),
       Assemble(),
     ])
     return lib
+  }
+
+  ** Compile input to instance data
+  Obj? compileData()
+  {
+    run([
+      InitData(),
+      Parse(),
+      Resolve(),
+      Assemble(),
+    ])
+    return data
   }
 
   ** Run the pipeline with the given steps
@@ -63,7 +74,8 @@ internal class XetoCompiler
       }
       t2 := Duration.now
       duration = t2 - t1
-      info("Compile data lib $qname.toCode [$duration.toLocale]")
+      if (isLib) info("Compile lib $qname.toCode [$duration.toLocale]")
+      else info("Parse data [$duration.toLocale]")
       return this
     }
     catch (XetoCompilerErr e)
@@ -117,11 +129,12 @@ internal class XetoCompiler
   XetoCompilerErr[] errs := [,]        // err
   internal ASys sys := ASys()          // make
   internal Duration? duration          // run
-  internal Bool isLib                  // compileLib
+  internal Bool isLib                  // Init (false isData)
   internal Bool isSys                  // Init
   internal AObj? ast                   // Parse
   internal AObj? pragma                // Parse
   internal MLib? lib                   // Assemble
+  internal Obj? data                   // Assemble
 }
 
 **************************************************************************

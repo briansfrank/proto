@@ -24,6 +24,8 @@ abstract internal class Step
 
   Bool isLib() { compiler.isLib }
 
+  Bool isData() { !compiler.isLib }
+
   Str qname() { compiler.qname }
 
   Bool isSys() { compiler.isSys }

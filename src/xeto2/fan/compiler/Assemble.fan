@@ -17,13 +17,26 @@ internal class Assemble : Step
 {
   override Void run()
   {
-    emptyMetaRef = AtomicRef(env.emptyDict)
+    if (isLib)
+      compiler.lib = asmLib
+    else
+      compiler.data = asmData
+  }
 
+  private Obj? asmData()
+  {
+return "hi"
+  }
+
+  private MLib asmLib()
+  {
     // first pass creates slots
-    compiler.lib = asmSpec(compiler.ast, compiler.qname, compiler.qname)
+    lib := asmSpec(compiler.ast, compiler.qname, compiler.qname)
 
     // second pass for meta
     asmFinalize(compiler.ast)
+
+    return lib
   }
 
   private MSpec asmSpec(AObj obj, Str qname, Str name)
@@ -62,7 +75,7 @@ internal class Assemble : Step
   private MSlots asmDeclared(AObj obj, Str qname)
   {
     slots := obj.slots
-    if (slots == null || slots.isEmpty) return noDeclared
+    if (slots == null || slots.isEmpty) return MSlots.empty
     acc := Str:MSpec[:]
     acc.ordered = true
     slots.each |kid|
@@ -107,7 +120,5 @@ internal class Assemble : Step
     return val
   }
 
-  static const MSlots noDeclared := MSlots(Str:MSpec[:])
-
-  AtomicRef? emptyMetaRef
+  once AtomicRef emptyMetaRef() { AtomicRef(env.emptyDict) }
 }

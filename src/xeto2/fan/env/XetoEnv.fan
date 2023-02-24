@@ -72,6 +72,16 @@ internal const class XetoEnv : DataEnv
     return c.compileLib
   }
 
+  override Obj? parse(Str src)
+  {
+    c := XetoCompiler
+    {
+      it.env = this
+      it.input = src.toBuf.toFile(`parse.xeto`)
+    }
+    return c.compileData
+  }
+
   override MType? type(Str qname, Bool checked := true)
   {
     colon := qname.index("::") ?: throw ArgErr("Invalid qname: $qname")

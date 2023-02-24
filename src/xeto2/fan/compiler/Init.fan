@@ -9,28 +9,65 @@
 using util
 
 **
-** Initialize lib compile
+** Initialize base class
 **
 @Js
-internal class InitLib : Step
+internal abstract class Init : Step
 {
   override Void run()
   {
     // check environment
     if (compiler.env == null)  err("Compiler env not configured", FileLoc.inputs)
 
-    // check input is directory
+    // check input exists
     input := compiler.input
     if (input == null) throw err("Compiler input not configured", FileLoc.inputs)
     if (!input.exists) throw err("Input file not found: $input", FileLoc.inputs)
-    //if (!input.isDir) throw err("Lib input must be directory: $input", FileLoc.inputs)
+  }
+}
+
+**************************************************************************
+** InitLib
+**************************************************************************
+
+**
+** Initialize to compile lib
+**
+@Js
+internal class InitLib : Init
+{
+  override Void run()
+  {
+    // base class checks
+    super.run
 
     // default qname to directory
     if (compiler.qname == null)
-      compiler.qname = input.name
+      compiler.qname = compiler.input.name
 
     // set flags
     compiler.isLib = true
     compiler.isSys = compiler.qname == "sys"
+  }
+}
+
+**************************************************************************
+** InitData
+**************************************************************************
+
+**
+** Initialize to compile data
+**
+@Js
+internal class InitData : Init
+{
+  override Void run()
+  {
+    // base class checks
+    super.run
+
+    // set flags
+    compiler.isLib = false
+    compiler.isSys = false
   }
 }
