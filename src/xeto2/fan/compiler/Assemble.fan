@@ -143,7 +143,7 @@ internal class Assemble : Step
     if (val is List)
     {
       list := (List)val
-      if (list.of === ARef#) return list.map |x->DataSpec| { asmVal(x) }
+      if (list.of === ARef#) return list.map |ARef r->DataSpec| { r.resolved.val }
       return list
     }
 

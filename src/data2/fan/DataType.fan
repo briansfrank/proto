@@ -35,9 +35,6 @@ const mixin DataType : DataSpec
 // Is-A
 //////////////////////////////////////////////////////////////////////////
 
-  ** Return if this inherits from that from a nominal type perspective.
-  abstract Bool isa(DataType that)
-
   ** Return if this type inherits from 'sys.Scalar'
   @NoDoc abstract Bool isaScalar()
 

@@ -43,22 +43,22 @@ internal const class MType : MSpec, DataType
 
   override Str toStr() { qname }
 
-  override Bool isa(DataType that)
+  override Bool isaScalar() { inheritsFrom(env.sys.scalar) }
+  override Bool isaMarker() { inheritsFrom(env.sys.marker) }
+  override Bool isaSeq()    { inheritsFrom(env.sys.seq) }
+  override Bool isaDict()   { inheritsFrom(env.sys.dict) }
+  override Bool isaList()   { inheritsFrom(env.sys.list) }
+  override Bool isaMaybe()  { inheritsFrom(env.sys.maybe) }
+  override Bool isaAnd()    { inheritsFrom(env.sys.and) }
+  override Bool isaOr()     { inheritsFrom(env.sys.or) }
+  override Bool isaQuery()  { inheritsFrom(env.sys.query) }
+
+  Bool inheritsFrom(DataType that)
   {
     if (this === that) return true
     base := this.base
     if (base == null) return false
-    return base.isa(that)
+    return base.inheritsFrom(that)
   }
-
-  override Bool isaScalar() { isa(env.sys.scalar) }
-  override Bool isaMarker() { isa(env.sys.marker) }
-  override Bool isaSeq()    { isa(env.sys.seq) }
-  override Bool isaDict()   { isa(env.sys.dict) }
-  override Bool isaList()   { isa(env.sys.list) }
-  override Bool isaMaybe()  { isa(env.sys.maybe) }
-  override Bool isaAnd()    { isa(env.sys.and) }
-  override Bool isaOr()     { isa(env.sys.or) }
-  override Bool isaQuery()  { isa(env.sys.query) }
 
 }

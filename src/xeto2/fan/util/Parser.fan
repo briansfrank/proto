@@ -158,7 +158,8 @@ internal class Parser
     }
 
     // meta
-    if (cur === Token.lt)  p.meta = parseChildren(Token.lt, Token.gt)
+    if (cur === Token.lt)
+      p.setMeta(compiler, parseChildren(Token.lt, Token.gt))
 
     return true
   }

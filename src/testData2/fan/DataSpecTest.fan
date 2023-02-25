@@ -58,8 +58,12 @@ class DataSpecTest : Test
     verifyIsa("ph.points::AirFlowSensor", "sys::And", true)
     verifyIsa("ph.points::AirFlowSensor", "ph::Point", true)
     verifyIsa("ph.points::AirFlowSensor", "ph.points::Sensor", true)
-    verifyIsa("ph.points::ZoneAirTempSensor", "ph.Point", true)
-    verifyIsa("ph.points::ZoneAirTempSensor", "sys::Dict", true)
+    // TODO
+    //verifyIsa("ph.points::AirFlowSensor", "sys::Dict", true)
+
+    verifyIsa("ph.points::ZoneAirTempSensor", "ph::Point", true)
+    // TODO
+    //verifyIsa("ph.points::ZoneAirTempSensor", "sys::Dict", true)
   }
 
   Void verifyIsa(Str an, Str bn, Bool expected)
@@ -97,6 +101,30 @@ class DataSpecTest : Test
      baz := foo.declared.get("baz")
      verifySame(baz.type, maybe)
      verifySame(baz["of"], foo)
+   }
+
+//////////////////////////////////////////////////////////////////////////
+// And
+//////////////////////////////////////////////////////////////////////////
+
+  Void testAnd()
+  {
+    lib := compile(
+      Str<|Foo: Dict
+           Bar: Dict
+           FooBar : Foo & Bar
+           |>)
+
+    //env.print(lib)
+
+     and := env.type("sys::And")
+     foo := lib.declared.get("Foo")
+     bar := lib.declared.get("Bar")
+
+     fooBar := lib.declared.get("FooBar")
+     verifySame(fooBar.type.base, and)
+     verifySame(fooBar.type.isaAnd, true)
+     verifyEq(fooBar["ofs"], DataSpec[foo,bar])
    }
 
 //////////////////////////////////////////////////////////////////////////

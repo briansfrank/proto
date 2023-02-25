@@ -31,6 +31,18 @@ internal class AObj
 
   AtomicRef? metaRef
 
+  Void setMeta(XetoCompiler c, AMap m)
+  {
+    if (meta == null || meta.isEmpty)
+    {
+      meta = m
+    }
+    else
+    {
+      m.each |kid| { meta.add(c, kid) }
+    }
+  }
+
   Void addOf(XetoCompiler c, ARef of)
   {
     if (meta == null) meta = AMap(of.loc)

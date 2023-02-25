@@ -57,4 +57,51 @@ internal const class MSpec : DataSpec
   override Void each(|Obj val, Str name| f) { meta.each(f) }
   override Obj? eachWhile(|Obj val, Str name->Obj?| f) { meta.eachWhile(f) }
   override Obj? trap(Str name, Obj?[]? args := null) { meta.trap(name, args) }
+
+  override Bool isa(DataSpec that)
+  {
+    thisType := this.type
+    thatType := that.type
+
+    // check type tree
+    // TODO: need to check of covariance
+    if (thisType.inheritsFrom(thatType))
+      return true
+
+    /*
+    if (thatType.isaMaybe)
+    {
+      of := that["of"] as DataType
+      if (of != null) return that.isa(of)
+    }
+    */
+
+    if (thisType.isaMaybe)
+    {
+      of := this["of"] as DataType
+      if (of != null) return of.isa(that)
+    }
+
+    if (thisType.isaAnd)
+    {
+      ofs := getInherited("ofs") as DataType[]
+      if (ofs != null && ofs.any |x| { x.isa(that) }) return true
+    }
+
+    return false
+  }
+
+  // TODO: temp solution
+  private Obj? getInherited(Str name)
+  {
+    val := get(name)
+    if (val != null) return val
+    for (MType? t := type; t != null; t = t.base)
+    {
+      val = t.get(name)
+      if (val != null) return val
+    }
+    return null
+  }
+
 }

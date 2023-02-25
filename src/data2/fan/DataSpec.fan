@@ -30,6 +30,9 @@ const mixin DataSpec : DataDict
   ** Scalar value or null
   abstract Obj? val()
 
+  ** Return if this specs inherits from that from a nominal type perspective.
+  abstract Bool isa(DataSpec that)
+
   ** File location of definition or unknown
   @NoDoc abstract FileLoc loc()
 
