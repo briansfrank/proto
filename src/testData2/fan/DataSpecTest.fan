@@ -17,6 +17,36 @@ class DataSpecTest : Test
 {
 
 //////////////////////////////////////////////////////////////////////////
+// Meta
+//////////////////////////////////////////////////////////////////////////
+
+  Void testMeta()
+  {
+    lib := compile(
+      Str<|Foo: Dict <a:"A", b:"B">
+           Bar: Foo <b:"B2", c:"C">
+           Baz: Bar <c:"C2", d:"D">
+           |>)
+
+     // env.print(lib)
+
+     verifyMeta(lib.slotOwn("Foo"), Str:Obj["a":"A", "b":"B"],  Str:Obj["a":"A", "b":"B"])
+     verifyMeta(lib.slotOwn("Bar"), Str:Obj["b":"B2", "c":"C"],  Str:Obj["a":"A", "b":"B2", "c":"C"])
+  }
+
+  Void verifyMeta(DataSpec s, Str:Obj own, Str:Obj effective)
+  {
+    acc := Str:Obj[:]
+    s.own.each |v, n| { acc[n] = v }
+    verifyEq(acc, own)
+
+    acc = Str:Obj[:]
+    s.each |v, n| { acc[n] = v }
+    acc.remove("doc")
+    verifyEq(acc, effective)
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Is-A
 //////////////////////////////////////////////////////////////////////////
 

@@ -16,13 +16,13 @@ using data2
 @Js
 internal const class MSpec : DataSpec
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef metaRef, MSlots slotsOwn, Obj? val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef ownRef, MSlots slotsOwn, Obj? val)
   {
     this.envRef      = env
     this.loc         = loc
     this.selfRef     = selfRef
     this.typeRef     = typeRef
-    this.metaRef     =  metaRef
+    this.ownRef      = ownRef
     this.slotsOwnRef = slotsOwn
     this.val         = val
   }
@@ -46,10 +46,23 @@ internal const class MSpec : DataSpec
 
   override Str toStr() { type.qname }
 
-  DataDict meta() { metaRef.val }
-  private const AtomicRef metaRef
+  override DataDict own() { ownRef.val }
+  private const AtomicRef ownRef
 
   override DataSpec spec() { env.sys.spec }
+
+//////////////////////////////////////////////////////////////////////////
+// Effective Meta
+//////////////////////////////////////////////////////////////////////////
+
+  DataDict meta()
+  {
+    meta := metaRef.val
+    if (meta != null) return meta
+    metaRef.compareAndSet(null, XetoUtil.inheritMeta(this))
+    return metaRef.val
+  }
+  private const AtomicRef metaRef := AtomicRef()
 
   override Bool isEmpty() { meta.isEmpty }
   @Operator override Obj? get(Str name, Obj? def := null) { meta.get(name, def) }
@@ -58,6 +71,10 @@ internal const class MSpec : DataSpec
   override Void each(|Obj val, Str name| f) { meta.each(f) }
   override Obj? eachWhile(|Obj val, Str name->Obj?| f) { meta.eachWhile(f) }
   override Obj? trap(Str name, Obj?[]? args := null) { meta.trap(name, args) }
+
+//////////////////////////////////////////////////////////////////////////
+// Is-A
+//////////////////////////////////////////////////////////////////////////
 
   override Bool isa(DataSpec that)
   {
@@ -85,24 +102,11 @@ internal const class MSpec : DataSpec
 
     if (thisType.isaAnd)
     {
-      ofs := getInherited("ofs") as DataType[]
+      ofs := get("ofs", null) as DataType[]
       if (ofs != null && ofs.any |x| { x.isa(that) }) return true
     }
 
     return false
-  }
-
-  // TODO: temp solution
-  private Obj? getInherited(Str name)
-  {
-    val := get(name)
-    if (val != null) return val
-    for (MType? t := type; t != null; t = t.base)
-    {
-      val = t.get(name)
-      if (val != null) return val
-    }
-    return null
   }
 
 }

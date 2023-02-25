@@ -217,7 +217,7 @@ class Printer
     doc(spec["doc"])
     if (name != null) indent.w(name).colon
     w(spec.type.qname)
-    meta(spec)
+    meta(spec.own)
     if (!spec.slotsOwn.isEmpty)
     {
       bracket(" {").nl

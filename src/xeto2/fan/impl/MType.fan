@@ -16,8 +16,8 @@ using data2
 @Js
 internal const class MType : MSpec, DataType
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef metaRef, MSlots declared, Obj? val)
-    : super(env, loc, selfRef, baseRef, metaRef, declared, val)
+  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef ownRef, MSlots declared, Obj? val)
+    : super(env, loc, selfRef, baseRef, ownRef, declared, val)
   {
     this.libRef = libRef
     this.qname  = qname

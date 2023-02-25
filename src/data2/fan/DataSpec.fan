@@ -9,7 +9,9 @@
 using util
 
 **
-** Data specification.
+** Data specification.  DataSpec implements the DataDict mixin
+** which models the effective meta-data (including from inherited
+** types).  Use the `own` method to get only the declared meta-data.
 **
 @Js
 const mixin DataSpec : DataDict
@@ -20,6 +22,9 @@ const mixin DataSpec : DataDict
 
   ** Type of this spec.   If this spec is a DataType itself then return self.
   abstract DataType type()
+
+  ** Get my own declared meta-data
+  abstract DataDict own()
 
   ** Get the declared children slots
   abstract DataSlots slotsOwn()
