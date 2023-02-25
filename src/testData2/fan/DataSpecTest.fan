@@ -92,13 +92,13 @@ class DataSpecTest : Test
 
      str := env.type("sys::Str")
      maybe := env.type("sys::Maybe")
-     foo := lib.declared.get("Foo")
+     foo := lib.slotOwn("Foo")
 
-     bar := foo.declared.get("bar")
+     bar := foo.slotOwn("bar")
      verifySame(bar.type, maybe)
      verifySame(bar["of"], str)
 
-     baz := foo.declared.get("baz")
+     baz := foo.slotOwn("baz")
      verifySame(baz.type, maybe)
      verifySame(baz["of"], foo)
    }
@@ -118,10 +118,10 @@ class DataSpecTest : Test
     //env.print(lib)
 
      and := env.type("sys::And")
-     foo := lib.declared.get("Foo")
-     bar := lib.declared.get("Bar")
+     foo := lib.slotOwn("Foo")
+     bar := lib.slotOwn("Bar")
 
-     fooBar := lib.declared.get("FooBar")
+     fooBar := lib.slotOwn("FooBar")
      verifySame(fooBar.type.base, and)
      verifySame(fooBar.type.isaAnd, true)
      verifyEq(fooBar["ofs"], DataSpec[foo,bar])

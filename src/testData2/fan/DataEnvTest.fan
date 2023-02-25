@@ -73,7 +73,7 @@ class DataEnvTest : Test
     // sys
     sys := env.lib("sys")
     verifySame(env.lib("sys"), sys)
-    verifySame(env.type("sys::Dict"), sys.declared.get("Dict"))
+    verifySame(env.type("sys::Dict"), sys.slotOwn("Dict"))
 
     // bad libs
     verifyEq(env.lib("bad.one", false), null)
@@ -183,19 +183,19 @@ class DataEnvTest : Test
     verifySame(lib.type, env.type("sys::Lib"))
     verifySame(lib.spec, env.type("sys::Spec"))
 
-    verifyEq(lib.declared.get("Bad", false), null)
-    verifyErr(UnknownSpecErr#) { lib.declared.get("Bad") }
-    verifyErr(UnknownSpecErr#) { lib.declared.get("Bad", true) }
+    verifyEq(lib.slotOwn("Bad", false), null)
+    verifyErr(UnknownSpecErr#) { lib.slotOwn("Bad") }
+    verifyErr(UnknownSpecErr#) { lib.slotOwn("Bad", true) }
 
     return lib
   }
 
   DataSpec verifyLibType(DataLib lib, Str name, DataType? base)
   {
-    DataType type := lib.declared.get(name)
+    DataType type := lib.slotOwn(name)
     verifySame(type.env, env)
     verifySame(type.lib, lib)
-    verifySame(lib.declared.get(name), type)
+    verifySame(lib.slotOwn(name), type)
 //   verifyEq(lib.list.containsSame(type), true)
     verifySame(type.type, type)
     verifySame(type.base, base)
@@ -207,10 +207,10 @@ class DataEnvTest : Test
 
   DataSpec verifySlot(DataSpec parent, Str name, DataType type)
   {
-    slot := parent.declared.get(name)
+    slot := parent.slotOwn(name)
     verifyEq(slot.typeof.qname, "xeto2::MSpec") // not type
     verifySame(slot.env, env)
-    verifySame(parent.declared.get(name), slot)
+    verifySame(parent.slotOwn(name), slot)
 //    verifyEq(parent.list.containsSame(slot), true)
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
@@ -222,9 +222,9 @@ class DataEnvTest : Test
   Void dumpLib(DataLib lib)
   {
     echo("--- dump $lib.qname ---")
-    lib.declared.each |DataType t|
+    lib.slotsOwn.each |DataType t|
     {
-      hasSlots := !t.declared.isEmpty
+      hasSlots := !t.slotsOwn.isEmpty
       echo("$t.name: $t.type <$t>" + (hasSlots ? " {" : ""))
       //t.list.each |s| { echo("  $s.name: <$s.meta> $s.base") }
       if (hasSlots) echo("}")

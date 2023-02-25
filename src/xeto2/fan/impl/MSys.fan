@@ -17,7 +17,7 @@ internal const class MSys
 {
   new make(MLib lib)
   {
-    x := lib.declared
+    x := lib.slotsOwn
     this.obj      = x.get("Obj")
     this.none     = x.get("None")
     this.seq      = x.get("Seq")

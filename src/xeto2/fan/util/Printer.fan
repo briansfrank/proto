@@ -218,11 +218,11 @@ class Printer
     if (name != null) indent.w(name).colon
     w(spec.type.qname)
     meta(spec)
-    if (!spec.declared.isEmpty)
+    if (!spec.slotsOwn.isEmpty)
     {
       bracket(" {").nl
       indention++
-      spec.declared.each |s, n|
+      spec.slotsOwn.each |s, n|
       {
         if (indention == 1) nl
         this.spec(s, n)
@@ -275,7 +275,7 @@ class Printer
     }
     spec.each |v, n| { indent.quoted(n).colon.json(v).nl }
     if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl
-    slots := spec.declared
+    slots := spec.slotsOwn
     if (!slots.isEmpty)
     {
       indent.quoted("slots").colon.bracket("{").nl

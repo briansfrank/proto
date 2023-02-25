@@ -22,10 +22,16 @@ const mixin DataSpec : DataDict
   abstract DataType type()
 
   ** Get the declared children slots
-  abstract DataSlots declared()
+  abstract DataSlots slotsOwn()
 
   ** Get the effective children slots including inherited
   //abstract DataSlots slots()
+
+  ** Convenience for 'slots.get'
+  //abstract DataSpec? slot(Str name, Bool checked := true)
+
+  ** Convenience for 'slotsOwn.get'
+  abstract DataSpec? slotOwn(Str name, Bool checked := true)
 
   ** Scalar value or null
   abstract Obj? val()

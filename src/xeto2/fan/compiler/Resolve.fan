@@ -91,7 +91,7 @@ internal class Resolve : Step
 
     // match to external dependencies
     matches := MSpec[,]
-    depends.each |lib| { matches.addNotNull(lib.declared.get(n.name, false)) }
+    depends.each |lib| { matches.addNotNull(lib.slotOwn(n.name, false)) }
     if (matches.isEmpty)
       err("Unresolved type: $n", ref.loc)
     else if (matches.size > 1)
@@ -116,7 +116,7 @@ internal class Resolve : Step
     if (lib == null) return err("Spec lib '$n' is not included in depends", ref.loc)
 
     // resolve in lib
-    ref.resolvedRef = lib.declared.get(n.name, false)?.selfRef
+    ref.resolvedRef = lib.slotOwn(n.name, false)?.selfRef
     if (!ref.isResolved) return err("Unresolved spec '$n' in lib", ref.loc)
   }
 
