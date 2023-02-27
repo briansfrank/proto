@@ -150,6 +150,9 @@ class DataTestRunner
     {
       verifyMetaPair(spec, n, v)
     }
+
+    spec.each |v, n| { test.verify(expected[n] != null, n) }
+    spec.own.each |v, n| { test.verify(expected[n] != null && expected[n].toStr.startsWith("o"), n) }
   }
 
   Void verifyMetaPair(DataSpec spec, Str name, Str expected)
@@ -158,29 +161,17 @@ class DataTestRunner
 
     // parse "flag type val"
     flag := expected[0..0]
-    type := null
+    type := expected[2..-1].trim
     val := null
-    if (flag != "x")
+    sp := expected.index(" ", 2)
+    if (sp != null)
     {
-      type = expected[2..-1].trim
-      sp := expected.index(" ", 2)
-      if (sp != null)
-      {
-        type = expected[2..<sp].trim
-        val = expected[sp+1..-1].trim
-      }
+      type = expected[2..<sp].trim
+      val = expected[sp+1..-1].trim
     }
 
     switch (flag)
     {
-      case "x":
-        verifyEq(spec.has(name), false, what)
-        verifyEq(spec.missing(name), true, what)
-        verifyEq(spec.own.has(name), false, what)
-        verifyEq(spec.own.missing(name), true, what)
-        verifyEq(spec[name], null, what)
-        verifyEq(spec.own[name], null, what)
-
       case "o":
         verifyEq(spec.has(name), true, what)
         verifyEq(spec.missing(name), false, what)
@@ -192,6 +183,7 @@ class DataTestRunner
       default:
         throw Err("Invalid flag for verifyMeta: $flag.toCode; $expected")
     }
+
   }
 
   Void verifyScalar(Obj? actual, Str type, Str? val, Str what)

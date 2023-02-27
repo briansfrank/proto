@@ -22,7 +22,6 @@ withType: sys::Scalar
 verifyBase: sys::Obj
 verifyMeta:
   doc: "o sys::Str Scalar is an atomic value kind"
-  sealed: "x"
 ---
 name: marker
 withType: sys::Marker
@@ -73,7 +72,6 @@ verifyBase: sys::Scalar
 verifyVal: ""
 verifyMeta:
   doc: "o sys::Str Unicode string of characters"
-  sealed: "x"
 ---
 name: uri
 withType: sys::Uri
@@ -88,6 +86,7 @@ verifyBase: sys::Scalar
 verifyVal: "x"
 verifyMeta:
   doc: "o sys::Str Reference to another object.  The value must be either a\ndotted qualified name or an id value prefixed with \"@\"."
+  pattern: "o sys::Str [a-zA-Z\\d\\._~]*"
 ---
 name: version
 withType: sys::Version
@@ -95,6 +94,7 @@ verifyBase: sys::Scalar
 verifyVal: "0"
 verifyMeta:
   doc: "o sys::Str Version string formatted as decimal digits separated by a dot"
+  pattern: "o sys::Str \\d+(\\.\\d+)*"
 ---
 name: date
 withType: sys::Date
@@ -102,13 +102,15 @@ verifyBase: sys::Scalar
 verifyVal: "2000-01-01"
 verifyMeta:
   doc: "o sys::Str ISO 8601 date as year, month, day: '2011-06-07'"
+  pattern: "o sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\d"
 ---
-name: date
+name: time
 withType: sys::Time
 verifyBase: sys::Scalar
 verifyVal: "00:00:00"
 verifyMeta:
   doc: "o sys::Str ISO 8601 time as hour, minute, seconds: '09:51:27.354'"
+  pattern: "o sys::Str \\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"
 ---
 name: dateTime
 withType: sys::DateTime
@@ -116,5 +118,6 @@ verifyBase: sys::Scalar
 verifyVal: "2000-01-01T00:00:00Z UTC"
 verifyMeta:
   doc: "o sys::Str  ISO 8601 timestamp followed by timezone identifier"
+  pattern: "o sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"
 ---
 
