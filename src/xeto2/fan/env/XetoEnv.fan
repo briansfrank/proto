@@ -34,6 +34,15 @@ internal const class XetoEnv : DataEnv
 
   const override MDict emptyDict
 
+  override DataType? typeOf(Obj? val, Bool checked := true)
+  {
+    if (val == null) return sys.none
+    item := factory.fromFantom[val.typeof]
+    if (item != null) return type(item.xeto)
+    if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")
+    return null
+  }
+
   override DataSpec dictSpec() { sys.dict }
 
   override DataDict dict(Obj? val, DataSpec? spec := null)

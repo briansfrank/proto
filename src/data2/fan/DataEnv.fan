@@ -42,6 +42,9 @@ const abstract class DataEnv
   ** Return generic 'sys::Dict'
   @NoDoc abstract DataSpec dictSpec()
 
+  ** Data type for Fantom object
+  abstract DataType? typeOf(Obj? val, Bool checked := true)
+
   ** Create Dict from given value:
   **   - If null, return empty dict
   **   - If DataDict, return it

@@ -61,14 +61,15 @@ internal class Assemble : Step
     baseRef  := asmBase(obj)
     metaRef  := asmMetaRef(obj)
     declared := asmDeclared(obj, qname)
+    val      := asmSpecVal(qname, obj)
 
     MSpec? spec
     if (obj.isLib)
       spec = MLib(env, loc, libRef, qname, name, baseRef, metaRef, declared)
     else if (obj.isType)
-      spec = MType(env, loc, obj.asmRef, libRef, qname, name, baseRef, metaRef, declared, obj.val)
+      spec = MType(env, loc, obj.asmRef, libRef, qname, name, baseRef, metaRef, declared, val)
     else
-      spec = MSpec(env, loc, obj.asmRef, baseRef, metaRef, declared, obj.val)
+      spec = MSpec(env, loc, obj.asmRef, baseRef, metaRef, declared, val)
 
     obj.asmRef.val = spec
     return spec
@@ -126,6 +127,14 @@ internal class Assemble : Step
 //////////////////////////////////////////////////////////////////////////
 // Values
 //////////////////////////////////////////////////////////////////////////
+
+  private Obj? asmSpecVal(Str qname, AObj obj)
+  {
+    if (obj.val == null) return null
+    mapping := env.factory.fromXeto[qname]
+    if (mapping != null) return asmFantom(mapping, obj.val, obj.loc)
+    return obj.val
+  }
 
   private Obj? asmVal(AObj obj)
   {
