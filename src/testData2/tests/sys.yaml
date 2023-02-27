@@ -1,0 +1,120 @@
+#
+# Tests that verify sys lib structure
+#
+
+---
+name: obj
+withType: sys::Obj
+verifyBase: null
+verifyMeta:
+  doc: "o sys::Str Root type for all objects"
+  sealed: "o sys::Marker"
+---
+name: none
+withType: sys::None
+verifyBase: sys::Obj
+verifyMeta:
+  doc: "o sys::Str None is the bottom type with no values"
+  sealed: "o sys::Marker"
+---
+name: scalar
+withType: sys::Scalar
+verifyBase: sys::Obj
+verifyMeta:
+  doc: "o sys::Str Scalar is an atomic value kind"
+  sealed: "x"
+---
+name: marker
+withType: sys::Marker
+verifyBase: sys::Scalar
+verifyVal: "marker"
+verifyMeta:
+  doc: "o sys::Str Marker labels a dict with typing information"
+  sealed: "o sys::Marker"
+---
+name: bool
+withType: sys::Bool
+verifyBase: sys::Scalar
+verifyVal: "false"
+verifyMeta:
+  doc: "o sys::Str Boolean value either true or false"
+---
+name: number
+withType: sys::Number
+verifyBase: sys::Scalar
+verifyVal: "0"
+verifyMeta:
+  doc: "o sys::Str Integer or floating point numbers annotated with an optional unit"
+---
+name: int
+withType: sys::Int
+verifyBase: sys::Number
+verifyVal: "0"
+verifyMeta:
+  doc: "o sys::Str Unitless integer number"
+---
+name: float
+withType: sys::Float
+verifyBase: sys::Number
+verifyVal: "0.0"
+verifyMeta:
+  doc: "o sys::Str Unitless floating point number"
+---
+name: duration
+withType: sys::Duration
+verifyBase: sys::Number
+verifyVal: "0sec"
+verifyMeta:
+  doc: "o sys::Str  Number with a unit of time"
+---
+name: str
+withType: sys::Str
+verifyBase: sys::Scalar
+verifyVal: ""
+verifyMeta:
+  doc: "o sys::Str Unicode string of characters"
+  sealed: "x"
+---
+name: uri
+withType: sys::Uri
+verifyBase: sys::Scalar
+verifyVal: ""
+verifyMeta:
+  doc: "o sys::Str Universal resource identifier"
+---
+name: ref
+withType: sys::Ref
+verifyBase: sys::Scalar
+verifyVal: "x"
+verifyMeta:
+  doc: "o sys::Str Reference to another object.  The value must be either a\ndotted qualified name or an id value prefixed with \"@\"."
+---
+name: version
+withType: sys::Version
+verifyBase: sys::Scalar
+verifyVal: "0"
+verifyMeta:
+  doc: "o sys::Str Version string formatted as decimal digits separated by a dot"
+---
+name: date
+withType: sys::Date
+verifyBase: sys::Scalar
+verifyVal: "2000-01-01"
+verifyMeta:
+  doc: "o sys::Str ISO 8601 date as year, month, day: '2011-06-07'"
+---
+name: date
+withType: sys::Time
+verifyBase: sys::Scalar
+verifyVal: "00:00:00"
+verifyMeta:
+  doc: "o sys::Str ISO 8601 time as hour, minute, seconds: '09:51:27.354'"
+---
+name: dateTime
+withType: sys::DateTime
+verifyBase: sys::Scalar
+verifyVal: "2000-01-01T00:00:00Z UTC"
+verifyMeta:
+  doc: "o sys::Str  ISO 8601 timestamp followed by timezone identifier"
+---
+

@@ -36,13 +36,13 @@ Number: Scalar <
 > "0"
 
 // Unitless integer number
-Int: Number
+Int: Number "0"
 
 // Unitless floating point number
-Float: Number
+Float: Number "0"
 
 // Number with a unit of time
-Duration: Number
+Duration: Number "0sec"
 
 // Unicode string of characters
 Str: Scalar ""
@@ -52,7 +52,7 @@ Str: Scalar ""
 Ref: Scalar <
   of: Obj   // Item type for referent
   pattern: "[a-zA-Z\\d\\._~]*"
->
+> "x"
 
 // Version string formatted as decimal digits separated by a dot
 Version: Scalar <
@@ -60,7 +60,7 @@ Version: Scalar <
 > "0"
 
 // Universal resource identifier
-Uri: Scalar
+Uri: Scalar ""
 
 // ISO 8601 date as year, month, day: '2011-06-07'
 Date: Scalar <
