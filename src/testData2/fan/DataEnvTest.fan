@@ -31,15 +31,16 @@ class DataEnvTest : Test
     // types
     obj    := verifyLibType(sys, "Obj",    null)
     none   := verifyLibType(sys, "None",   obj)
+    self   := verifyLibType(sys, "Self",   obj)
     scalar := verifyLibType(sys, "Scalar", obj)
     str    := verifyLibType(sys, "Str",    scalar)
     uri    := verifyLibType(sys, "Uri",    scalar)
     seq    := verifyLibType(sys, "Seq",    obj)
     dict   := verifyLibType(sys, "Dict",   seq)
     list   := verifyLibType(sys, "List",   seq)
-    lib    := verifyLibType(sys, "Lib",    dict)
     spec   := verifyLibType(sys, "Spec",   dict)
     type   := verifyLibType(sys, "Type",   spec)
+    lib    := verifyLibType(sys, "Lib",    spec)
     org    := verifyLibType(sys, "LibOrg", dict)
 
     // slots

@@ -6,20 +6,72 @@
 //   18 Jul 2022  Brian Frank  Creation
 //
 
-// Qualified name
-QName: Scalar
+// Spec models a value specification
+Spec: Dict {
+
+  // Reference to value type if this spec is not a type
+  type: Type?
+
+  // Reference to super type if this spec is a type
+  inherits: Type?
+
+  // Scalar default value
+  val: Obj?
+
+  // Dict slot specs
+  slots: Dict<of:Spec>
+
+  // Item type used for containers like Maybe, Seq, and Ref
+  of: Spec?
+
+  // Types used in compound types like And and Or
+  // TODO: List<of:Spec>?
+  ofs: List?
+
+  // Documentation description
+  doc: Str
+
+  // Sealed types cannot be extended outside of their own lib
+  sealed: Marker?
+
+  // Marks spec as undocumented and not officially supported
+  nodoc: Marker?
+
+  // Regex pattern for scalar string encoding
+  pattern: Str?
+
+  // Inclusive minimum value
+  minVal: Self?
+
+  // Inclusive maximum value
+  maxVal: Self?
+
+  // Named path to traverse to execute query
+  via: Str?
+
+  // Inverse query to run against parent
+  inverse: Spec?
+}
+
+// Type is a named spec in a library
+Type: Spec
 
 // Library module meta data
-Lib: Dict <
-  version: Version           // Current version of the library
-  of: Type                   // Libraries are collections of types
-  depends: List <of:Depend>  // Library dependency
-  org: LibOrg                // Organization meta data for the library
->
+Lib: Spec {
+
+  // Current version of the library
+  version: Version
+
+  // Library dependency
+  depends: List <of:Depend>
+
+  // Organization meta data for the library
+  org: LibOrg
+}
 
 // Library dependency
 Depend: Dict {
-  lib: QName   // Library qualified dotted name
+  lib: Str   // Library qualified dotted name
 }
 
 // Organization meta data
@@ -28,10 +80,5 @@ LibOrg: Dict {
   uri: Uri     // URI for organization website
 }
 
-// Spec is a type and its associated meta data
-Spec: Dict
-
-// Type is a named spec in a library
-Type: Spec
 
 
