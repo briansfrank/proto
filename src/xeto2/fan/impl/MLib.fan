@@ -34,7 +34,11 @@ internal const class MLib : MSpec, DataLib
 
   override MType type() { envRef.sys.lib }
 
+  override MSlots slots() { super.slots }
+
   override MSlots slotsOwn() { super.slotsOwn }
+
+  override MSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
 
   override MSpec? slotOwn(Str name, Bool checked := true) { slotsOwnRef.get(name, checked) }
 

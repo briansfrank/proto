@@ -30,10 +30,10 @@ const mixin DataSpec : DataDict
   abstract DataSlots slotsOwn()
 
   ** Get the effective children slots including inherited
-  //abstract DataSlots slots()
+  abstract DataSlots slots()
 
   ** Convenience for 'slots.get'
-  //abstract DataSpec? slot(Str name, Bool checked := true)
+  abstract DataSpec? slot(Str name, Bool checked := true)
 
   ** Convenience for 'slotsOwn.get'
   abstract DataSpec? slotOwn(Str name, Bool checked := true)

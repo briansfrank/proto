@@ -39,7 +39,11 @@ internal const class MType : MSpec, DataType
 
   override MType? base() { typeRef.val }  // use MSpec.typeRef as our base type
 
+  override MSlots slots() { super.slots }
+
   override MSlots slotsOwn() { super.slotsOwn }
+
+  override MSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
 
   override MSpec? slotOwn(Str name, Bool checked := true) { slotsOwnRef.get(name, checked) }
 

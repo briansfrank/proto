@@ -37,8 +37,12 @@ internal const class MSpec : DataSpec
   override MType type() { typeRef.val }
   internal const AtomicRef typeRef
 
+  override MSlots slots() { slotsOwn }  // TODO
+
   override MSlots slotsOwn() { slotsOwnRef }
   const MSlots slotsOwnRef
+
+  override MSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
 
   override MSpec? slotOwn(Str name, Bool checked := true) { slotsOwnRef.get(name, checked) }
 
