@@ -111,6 +111,16 @@ class DataTestRunner
       runVerifies(type, def)
       return
     }
+
+    compileLib := def["compileLib"]
+    if (compileLib != null)
+    {
+      lib := env.compile(compileLib)
+      verify := def.getChecked("verifyTypes")
+      verifyTypes(lib, verify)
+      return
+    }
+
     throw Err("Test missing any verifies")
   }
 
@@ -124,9 +134,126 @@ class DataTestRunner
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Verify Types
+//////////////////////////////////////////////////////////////////////////
+
+  Void verifyTypes(DataLib lib, Str:Obj expectTypes)
+  {
+    expectTypes.each |expect, name|
+    {
+      verifyType(lib.slotOwn(name), expect)
+    }
+  }
+
+  Void verifyType(DataType type, Str:Obj expect)
+  {
+    verifyEq(type.qname, type.lib.qname + "::" + type.name)
+    verifySame(type.type, type)
+    verifyBase(type, expect["base"])
+    verifyMeta(type, expect["meta"])
+    verifySlots(type, expect["slots"])
+  }
+
+  Void verifyBase(DataType type, Str? expect)
+  {
+    verifyEq(type.base?.qname, expect)
+  }
+
+  Void verifyMeta(DataSpec spec, [Str:Obj?]? expect)
+  {
+    if (expect == null)
+    {
+      verifyEq(spec.own.isEmpty, true)
+      return
+    }
+
+    expect.each |e, n| { verifyMetaPair(spec, n, e) }
+    spec.each |v, n| { verify(expect.containsKey(n)) }
+    spec.own.each |v, n| { verify(expect.containsKey(n)) }
+  }
+
+  Void verifyMetaPair(DataSpec spec, Str name, Obj expect)
+  {
+    if (expect == "inherit")
+      verifyMetaInherit(spec, name)
+    else
+      verifyMetaOwn(spec, name, expect)
+  }
+
+  Void verifyMetaInherit(DataSpec spec, Str name)
+  {
+    verifyEq(spec.own.has(name), false)
+    verifyEq(spec.own.missing(name), true)
+    verifyEq(spec.own[name], null)
+    verifyErr(UnknownDataErr#) { spec.own.trap(name) }
+
+    verifyEq(spec.has(name), true)
+    verifyEq(spec.missing(name), false)
+    verifySame(spec.get(name), spec.type.base.get(name))
+  }
+
+  Void verifyMetaOwn(DataSpec spec, Str name, Str:Obj expect)
+  {
+    verifyEq(spec.own.has(name), true)
+    verifyEq(spec.own.missing(name), false)
+    verifyVal(spec.own[name], expect)
+
+    verifyEq(spec.has(name), true)
+    verifyEq(spec.missing(name), false)
+    verifySame(spec.get(name), spec.own.get(name))
+  }
+
+
+  Void verifySlots(DataSpec spec, [Str:Obj?]? expect)
+  {
+    if (expect == null)
+    {
+      verifyEq(spec.slotsOwn.isEmpty, true)
+      verifyEq(spec.slots.isEmpty, true)
+      return
+    }
+    expect.each |e, n| { verifySlot(spec, n, e) }
+    spec.slots.each |v, n| { verify(expect.containsKey(n)) }
+    spec.slotsOwn.each |v, n| { verify(expect.containsKey(n)) }
+  }
+
+  Void verifySlot(DataSpec spec, Str name, Str:Obj expect)
+  {
+    slot := spec.slot(name)
+    verifySame(spec.slotOwn(name), slot)
+    verifySame(spec.slots.get(name), slot)
+    verifySame(spec.slotsOwn.get(name), slot)
+    verifyEq(slot.type.qname, expect.getChecked("type"))
+  }
+
+  Void verifyVal(Obj? val, Str:Obj expect)
+  {
+    type := expect.getChecked("type")
+    if (type == "sys::Marker")
+    {
+      verifySame(val, env.marker)
+      return
+    }
+
+    verifyValType(val, type)
+    verifyValStr(val, expect.getChecked("val"))
+  }
+
+  Void verifyValType(Obj? val, Str expect)
+  {
+    verifyEq(env.typeOf(val).qname, expect)
+  }
+
+  Void verifyValStr(Obj? val, Str expect)
+  {
+    verifyEq(val.toStr, expect)
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Verify Methods
 //////////////////////////////////////////////////////////////////////////
 
+/*
   Void verifyBase(DataType type, Str? expected)
   {
     verifyEq(type.base?.qname, expected)
@@ -180,6 +307,14 @@ class DataTestRunner
         verifySame(spec[name], spec.own[name], what)
         verifyScalar(spec.own[name], type, val, what)
 
+      case "i":
+        verifyEq(spec.has(name), true, what)
+        verifyEq(spec.missing(name), false, what)
+        verifyEq(spec.own.has(name), false, what)
+        verifyEq(spec.own.missing(name), true, what)
+        verifyScalar(spec[name], type, val, what)
+        verifyEq(spec.own[name], null, what)
+
       default:
         throw Err("Invalid flag for verifyMeta: $flag.toCode; $expected")
     }
@@ -190,8 +325,22 @@ class DataTestRunner
   {
     //echo("     $what: $actual [$actual.typeof] ?= $type $val")
     verifyEq(env.typeOf(actual).qname, type, what)
-    if (val != null) verifyEq(actual.toStr, val, what)
+    if (val != null)
+    {
+      if (val.startsWith("\$"))
+        verifyEq(actual.toStr, macro(val), what)
+      else
+        verifyEq(actual.toStr, val, what)
+    }
   }
+
+  Str macro(Str x)
+  {
+    toks := x[1..-1].split('.')
+    if (toks.size != 2) throw Err("macro: $x")
+    return env.lib("sys").slotOwn(toks[0]).get(toks[1])
+  }
+*/
 
 //////////////////////////////////////////////////////////////////////////
 // Utils
@@ -234,6 +383,16 @@ class DataTestRunner
         echo("   " + s)
       }
     }
+  }
+
+  Void verify(Bool cond, Str? msg := null)
+  {
+    test.verify(cond, msg)
+  }
+
+  Void verifyErr(Type? errType, |Test| c)
+  {
+    test.verifyErr(errType, c)
   }
 
   Void verifyEq(Obj? a, Obj? b, Str? msg := null)

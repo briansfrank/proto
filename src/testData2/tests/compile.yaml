@@ -1,0 +1,68 @@
+#
+# Tests that compile libs and new types
+#
+
+---
+name: simple
+compileLib: |
+  Foo: Dict
+verifyTypes:
+  Foo:
+    base: "sys::Dict"
+    meta:
+      doc: "inherit"
+---
+name: metaMarker
+compileLib: |
+  Foo: Dict <bar>
+verifyTypes:
+  Foo:
+    base: "sys::Dict"
+    meta:
+      doc: "inherit"
+      bar:
+        type: "sys::Marker"
+---
+name: metaDoc
+compileLib: |
+  // Foo doc
+  Foo: Dict
+verifyTypes:
+  Foo:
+    base: "sys::Dict"
+    meta:
+      doc:
+        type: "sys::Str"
+        val: "Foo doc"
+---
+name: metaComplex
+compileLib: |
+  // Foo doc
+  Foo: Dict <bar, baz:"hi!">
+verifyTypes:
+  Foo:
+    base: "sys::Dict"
+    meta:
+      doc:
+        type: "sys::Str"
+        val: "Foo doc"
+      bar:
+        type: "sys::Marker"
+      baz:
+        type: "sys::Str"
+        val: "hi!"
+---
+name: slotMarker
+compileLib: |
+  Foo: Dict { bar }
+verifyTypes:
+  Foo:
+    base: "sys::Dict"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Marker"
+
+---
+
