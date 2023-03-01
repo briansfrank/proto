@@ -103,8 +103,10 @@ class Printer
       w(n)
       if (isMarker(v)) return
       colon
-      if (v is DataSpec)
+      if (v is DataType)
         w(v.toStr)
+      else if (v is DataSpec)
+        spec(v, null, false)
       else
         val(v)
     }
@@ -206,7 +208,7 @@ class Printer
 //////////////////////////////////////////////////////////////////////////
 
   ** Print data type and its slots
-  This spec(DataSpec spec, Str? name)
+  This spec(DataSpec spec, Str? name, Bool comments := true)
   {
     if (name == null)
     {
@@ -214,7 +216,7 @@ class Printer
       else if (spec is DataType) name = ((DataType)spec).name
     }
 
-    doc(spec["doc"])
+    if (comments) doc(spec["doc"])
     if (name != null) indent.w(name).colon
     w(spec.type.qname)
     meta(spec.own)
@@ -231,7 +233,8 @@ class Printer
       indent.bracket("}")
     }
     if (spec.val != null && !isMarker(spec.val)) sp.quoted(spec.val.toStr)
-    return nl
+    if (comments) nl
+    return this
   }
 
   ** Meta data

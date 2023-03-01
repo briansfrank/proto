@@ -21,18 +21,17 @@ Productions [#productions]
   <children>         :=  "{" <objs> "}"
   <val>              :=  double quoted string literal
 
-  <spec>             :=  <type> [<meta>]
+  <spec>             :=  <type> [<meta>] "?"
   <meta>             :=  "<" <objs> ">"
-  <type>             :=  <typeAnd> | <typeOr> | <typeMaybe> | <typeSimple>
+  <type>             :=  <typeAnd> | <typeOr> | <typeSimple>
   <typeAnd>          :=  <typeSimple> ("&" <typeSimple>)+
   <typeOr>           :=  <typeSimple> ("|" <typeSimple>)+
-  <typeMaybe>        :=  <typeSimple> "?"
   <typeSimple>       :=  <qname>
 
   <leadingDoc>       := (<lineComment>)*
   <trailingDoc>      := <lineComment>
 
-  <qname>            :=  <name> ("." <name>)*
+  <qname>            :=  <name> ("." <name>)* ["::" <name>]
   <name>             :=  <alpha> (<nameRest>)*
   <markerName>       :=  <alphaLower> (<nameRest>)*
   <nameRest>         :=  alpha | digit | '_'

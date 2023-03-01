@@ -157,6 +157,9 @@ internal class Parser
     if (cur === Token.lt)
       parseChildren(p.spec.meta, Token.lt, Token.gt)
 
+    if (cur === Token.question)
+      p.spec = parseTypeMaybe(p.spec)
+
     return true
   }
 
@@ -165,13 +168,12 @@ internal class Parser
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)      return parseTypeCompound(compiler.sys.and, meta, type)
-    if (cur === Token.pipe)     return parseTypeCompound(compiler.sys.or,  meta, type)
-    if (cur === Token.question) return parseTypeMaybe(meta, type)
+    if (cur === Token.amp)  return parseTypeCompound("And", compiler.sys.and, meta, type)
+    if (cur === Token.pipe) return parseTypeCompound("Or", compiler.sys.or,  meta, type)
     return type
   }
 
-  private ARef parseTypeCompound(ARef compoundType, AMap meta, ARef first)
+  private ARef parseTypeCompound(Str dis, ARef compoundType, AMap meta, ARef first)
   {
     sepToken := cur
     ofs := ARef[,].add(first)
@@ -179,7 +181,7 @@ internal class Parser
     {
       consume
       skipNewlines
-      ofs.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
+      ofs.add(parseTypeSimple("Expecting next '$dis' type after $sepToken"))
     }
 
     loc := ofs.first.loc
@@ -190,13 +192,26 @@ internal class Parser
     return compoundType
   }
 
-  private ARef parseTypeMaybe(AMap meta, ARef of)
+  private ASpec parseTypeMaybe(ASpec oldSpec)
   {
     consume(Token.question)
-    x := AObj(of.loc)
-    x.val = of
-    meta.add(compiler, "of", x)
-    return compiler.sys.maybe
+
+    loc := oldSpec.loc
+    oldType := oldSpec.type
+
+    // if spec is just a type ref, just add into the old's meta
+    if (oldSpec.isTypeOnly)
+    {
+      oldSpec.meta.add(compiler, "of", AObj(loc, oldType))
+      oldSpec.type = compiler.sys.maybe
+      return oldSpec
+    }
+
+    // otherwise we need to wrap the entire old spec inside a maybe
+    wrap := ASpec()
+    wrap.type = compiler.sys.maybe
+    wrap.meta.add(compiler, "of", AObj(loc, oldSpec))
+    return wrap
   }
 
   private ARef parseTypeSimple(Str errMsg)

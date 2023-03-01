@@ -137,6 +137,8 @@ internal class Assemble : Step
   private Obj? asmVal(AObj obj)
   {
     if (obj.val != null) return asmScalar(obj)
+// TODO
+if (obj.isSpec) return obj.spec.type.resolved.val
     return asmDict(obj)
   }
 
@@ -145,6 +147,7 @@ internal class Assemble : Step
     // AST ref is whatever it resolves to
     val := obj.val
     if (val is ARef) return ((ARef)val).resolved.val
+    if (val is ASpec) return asmNestedSpec(val)
 
     // Recurse if value is a list
     if (val is List)
@@ -164,6 +167,22 @@ internal class Assemble : Step
 
     // fallback to string
     return val
+  }
+
+  private MSpec asmNestedSpec(ASpec spec)
+  {
+spec.meta.each |v, n|
+{
+  v.isSpec = true
+}
+
+    if (spec.isTypeOnly) return spec.type.resolved.val
+
+    shim := AObj(spec.type.loc)
+    shim.spec = spec
+    asm := asmSpec(shim, "unused", "unused")
+    asmMeta(shim)
+    return asm
   }
 
   private DataDict asmDict(AObj obj)

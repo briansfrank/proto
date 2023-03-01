@@ -57,10 +57,15 @@ internal class Resolve : Step
 
   private Void resolveObj(AObj obj)
   {
-    resolveRef(obj.spec.type)
-    resolveMap(obj.spec.meta)
+    resolveSpec(obj.spec)
     resolveMap(obj.slots)
     resolveVal(obj.val)
+  }
+
+  private Void resolveSpec(ASpec spec)
+  {
+    resolveRef(spec.type)
+    resolveMap(spec.meta)
   }
 
   private Void resolveMap(AMap map)
@@ -71,6 +76,7 @@ internal class Resolve : Step
   private Void resolveVal(Obj? val)
   {
     if (val is ARef) { resolveRef(val); return }
+    if (val is ASpec) { resolveSpec(val); return }
     if (val is List) { ((List)val).each |x| { resolveVal(x) }; return }
   }
 

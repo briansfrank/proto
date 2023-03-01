@@ -71,13 +71,12 @@ internal class AMap
   override Str toStr()
   {
     s := StrBuf()
-    s.add("{")
     map.each |v, n|
     {
       if (s.size > 1) s.add(", ")
-      s.add(n).add(": ...")
+      s.add(n).add(": $v.val")
     }
-    return s.add("}").toStr
+    return s.toStr
   }
 
   static const Str:AObj empty := [:]

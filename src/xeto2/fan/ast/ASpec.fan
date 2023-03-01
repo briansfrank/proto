@@ -17,4 +17,16 @@ internal class ASpec
 {
   ARef? type
   AMap meta := AMap()
+
+  FileLoc loc() { type?.loc ?: FileLoc.unknown }
+
+  Bool isTypeOnly() { meta.isEmpty }
+
+  override Str toStr()
+  {
+    if (isTypeOnly && type != null)
+      return type.toStr
+    else
+      return "$type <$meta>"
+  }
 }

@@ -15,7 +15,11 @@ using util
 @Js
 internal class AObj
 {
-  new make(FileLoc loc) { this.loc = loc }
+  new make(FileLoc loc, Obj? val := null)
+  {
+    this.loc = loc
+    this.val = val
+  }
 
   const FileLoc loc
   ASpec spec := ASpec()
@@ -23,6 +27,7 @@ internal class AObj
   Obj? val
   Bool isLib
   Bool isType
+  Bool isSpec
 
   const AtomicRef asmRef := AtomicRef()
 
