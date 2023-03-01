@@ -121,6 +121,15 @@ class DataTestRunner
       return
     }
 
+    compileData := def["compileData"]
+    if (compileData != null)
+    {
+      data := env.compileData(compileData)
+      expect := def.getChecked("verifyData")
+      verifyData(data, expect)
+      return
+    }
+
     throw Err("Test missing any verifies")
   }
 
@@ -247,6 +256,37 @@ class DataTestRunner
   Void verifyValStr(Obj? val, Str expect)
   {
     verifyEq(val.toStr, expect)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Verify Data
+//////////////////////////////////////////////////////////////////////////
+
+  Void verifyData(Obj val, Obj expect)
+  {
+echo
+echo("-- verifyData: $val [$val.typeof]")
+    type := env.typeOf(val)
+    if (type.isaScalar)
+      verifyScalar(val, type, expect)
+    else
+      throw Err("Unhandled type: $type")
+  }
+
+  Void verifyScalar(Obj val, DataType type, Str expect)
+  {
+    // scalar expect format is "<type> <val>"
+    expectType := expect
+    expectVal := null
+    sp := expect.index(" ")
+    if (sp != null)
+    {
+      expectType = expect[0..<sp]
+      expectVal  = expect[sp+1..-1].trim
+    }
+
+    verifyEq(type.qname, expectType)
+    if (expectVal != null) verifyEq(val.toStr, expectVal)
   }
 
 //////////////////////////////////////////////////////////////////////////

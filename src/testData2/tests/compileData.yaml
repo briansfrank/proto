@@ -1,0 +1,80 @@
+#
+# Tests for compiling data
+#
+
+##########################################################################
+## Scalars
+##########################################################################
+
+---
+name: strInfer
+compileData: |
+  "hi"
+verifyData: "sys::Str hi"
+---
+name: str
+compileData: |
+  Str "hi"
+verifyData: "sys::Str hi"
+---
+name: strQual
+compileData: |
+  sys::Str "hi"
+verifyData: "sys::Str hi"
+---
+name: bool
+compileData: |
+  Bool "true"
+verifyData: "sys::Bool true"
+---
+name: number
+compileData: |
+  Number "123kW"
+verifyData: "sys::Number 123kW"
+---
+name: int
+compileData: |
+  Int "123"
+verifyData: "sys::Int 123"
+---
+name: duration
+compileData: |
+  Duration "5min"
+verifyData: "sys::Duration 5min"
+---
+name: uri
+compileData: |
+  Ref "xyz-123"
+verifyData: "sys::Ref xyz-123"
+---
+name: ref
+compileData: |
+  Ref "xyz-123"
+verifyData: "sys::Ref xyz-123"
+---
+name: version
+compileData: |
+  Version "4.5.6"
+verifyData: "sys::Version 4.5.6"
+---
+name: date
+compileData: |
+  Date "2023-03-01"
+verifyData: "sys::Date 2023-03-01"
+---
+name: dateQual
+compileData: |
+  sys::Date "2023-03-01"
+verifyData: "sys::Date 2023-03-01"
+---
+name: time
+compileData: |
+  Time "14:56:02"
+verifyData: "sys::Time 14:56:02"
+---
+name: dateTime
+compileData: |
+  DateTime "2023-03-01T09:04:38.844-05:00 New_York"
+verifyData: "sys::DateTime 2023-03-01T09:04:38.844-05:00 New_York"
+---
+
