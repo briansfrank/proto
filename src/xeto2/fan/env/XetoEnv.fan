@@ -39,6 +39,7 @@ internal const class XetoEnv : DataEnv
     if (val == null) return sys.none
     item := factory.fromFantom[val.typeof]
     if (item != null) return type(item.xeto)
+    if (val is DataDict) return ((DataDict)val).spec.type
     if (checked) throw UnknownTypeErr("No DataType mapped for '$val.typeof'")
     return null
   }

@@ -262,13 +262,13 @@ class DataTestRunner
 // Verify Data
 //////////////////////////////////////////////////////////////////////////
 
-  Void verifyData(Obj val, Obj expect)
+  Void verifyData(Obj? val, Obj expect)
   {
-echo
-echo("-- verifyData: $val [$val.typeof]")
     type := env.typeOf(val)
     if (type.isaScalar)
       verifyScalar(val, type, expect)
+    else if (type.isaDict)
+      verifyDict(val, expect)
     else
       throw Err("Unhandled type: $type")
   }
@@ -287,6 +287,22 @@ echo("-- verifyData: $val [$val.typeof]")
 
     verifyEq(type.qname, expectType)
     if (expectVal != null) verifyEq(val.toStr, expectVal)
+  }
+
+  Void verifyDict(DataDict dict, Str:Obj expect)
+  {
+    verifyDictSpec(dict.spec, expect.getChecked("spec"))
+    expect.each |e, n|
+    {
+      if (n == "spec") return
+      verifyData(dict[n], e)
+    }
+    dict.each |v, n| { verify(expect[n] != null) }
+  }
+
+  Void verifyDictSpec(DataSpec spec, Str expect)
+  {
+    verifyEq(spec.type.qname, expect)
   }
 
 //////////////////////////////////////////////////////////////////////////

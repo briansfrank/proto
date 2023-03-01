@@ -78,3 +78,63 @@ compileData: |
 verifyData: "sys::DateTime 2023-03-01T09:04:38.844-05:00 New_York"
 ---
 
+##########################################################################
+## Dicts
+##########################################################################
+
+---
+name: dictInferWithStr
+compileData: |
+  { foo:"bar" }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Str bar"
+---
+name: dictWithStr
+compileData: |
+  Dict { foo:"bar" }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Str bar"
+---
+name: dictQualWithStr
+compileData: |
+  sys::Dict { foo:"bar" }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Str bar"
+---
+name: dictWithMarker
+compileData: |
+  { foo }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Marker"
+---
+name: dictWithMarkers
+compileData: |
+  { foo, bar
+    baz
+  }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Marker"
+  bar: "sys::Marker"
+  baz: "sys::Marker"
+---
+name: dictWithMulti
+compileData: |
+  Dict {
+    foo, bar
+    str: "hi"
+    date: Date "1996-09-15"
+  }
+verifyData:
+  spec: "sys::Dict"
+  foo: "sys::Marker"
+  bar: "sys::Marker"
+  str: "sys::Str hi"
+  date: "sys::Date 1996-09-15"
+---
+
+

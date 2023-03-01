@@ -74,8 +74,8 @@ internal class XetoCompiler
       }
       t2 := Duration.now
       duration = t2 - t1
-      if (isLib) info("Compile lib $qname.toCode [$duration.toLocale]")
-      else info("Parse data [$duration.toLocale]")
+      //if (isLib) info("Compile lib $qname.toCode [$duration.toLocale]")
+      //else info("Parse data [$duration.toLocale]")
       return this
     }
     catch (XetoCompilerErr e)
