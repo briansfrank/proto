@@ -23,7 +23,6 @@ internal class Parse : Step
 
     // parse into root object
     root := AObj(FileLoc(input))
-    root.slots = AMap(root.loc)
     if (input.isDir)
     {
       input.list.each |f|

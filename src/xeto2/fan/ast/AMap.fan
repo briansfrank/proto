@@ -14,17 +14,17 @@ using util
 @Js
 internal class AMap
 {
-  new make(FileLoc loc)
-  {
-    this.loc = loc
-    this.map = Str:AObj[:]
-    this.map.ordered = true
-  }
 
   Bool isEmpty() { map.isEmpty }
 
   Void add(XetoCompiler c, AObj child)
   {
+    if (map.isEmpty)
+    {
+      map = Str:AObj[:]
+      map.ordered = true
+    }
+
     // auto-assign name if unnamed
     if (child.name == null) child.name = autoName
     name := child.name
@@ -68,6 +68,7 @@ internal class AMap
     out.print(indent).print(brackets[1..1])
   }
 
-  const FileLoc loc
-  private Str:AObj map
+  static const Str:AObj empty := [:]
+
+  private Str:AObj map := empty
 }

@@ -38,7 +38,7 @@ internal class Parser
   {
     try
     {
-      if (root == null) root = AMap(curToLoc)
+      if (root == null) root = AMap()
       parseObjs(root)
       verify(Token.eof)
       return root
@@ -128,13 +128,13 @@ internal class Parser
 
   private AMap parseChildren(Token open, Token close)
   {
-    map := AMap(curToLoc)
+    map := AMap()
     consume(open)
     skipNewlines
     parseObjs(map)
     if (cur !== close)
     {
-      throw err("Unmatched closing '$close.symbol'", map.loc)
+      throw err("Unmatched closing '$close.symbol'")
     }
     consume(close)
     return map
@@ -252,7 +252,7 @@ internal class Parser
   private Void addDoc(AObj p, Str? docStr)
   {
     if (docStr == null) return
-    if (p.meta != null && p.meta.get("doc") != null) return
+    if (p.meta.get("doc") != null) return
 
     loc := p.loc
 
@@ -261,7 +261,6 @@ internal class Parser
     docVal.type = compiler.sys.str
     docVal.val = docStr
 
-    if (p.meta == null) p.meta = AMap(loc)
     p.meta.add(compiler, docVal)
   }
 

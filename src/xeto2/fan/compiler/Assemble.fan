@@ -83,7 +83,7 @@ internal class Assemble : Step
 
   private AtomicRef asmMetaRef(AObj obj)
   {
-    if (obj.meta == null || obj.meta.isEmpty) return emptyMetaRef
+    if (obj.meta.isEmpty) return emptyMetaRef
     obj.metaRef = AtomicRef()
     return obj.metaRef
   }
@@ -91,7 +91,7 @@ internal class Assemble : Step
   private MSlots asmDeclared(AObj obj, Str qname)
   {
     slots := obj.slots
-    if (slots == null || slots.isEmpty) return MSlots.empty
+    if (slots.isEmpty) return MSlots.empty
     acc := Str:MSpec[:]
     acc.ordered = true
     slots.each |kid|
@@ -107,7 +107,7 @@ internal class Assemble : Step
   {
     asmMeta(obj)
 
-    if (obj.slots != null) obj.slots.each |kid| { asmFinalize(kid) }
+    if (!obj.slots.isEmpty) obj.slots.each |kid| { asmFinalize(kid) }
   }
 
   private Void asmMeta(AObj obj)
@@ -170,10 +170,10 @@ internal class Assemble : Step
 
   private DataDict asmDict(AObj obj)
   {
-    if (obj.slots == null || obj.slots.isEmpty && obj.type == null) return env.emptyDict
+    if (obj.slots.isEmpty && obj.type == null) return env.emptyDict
 
     spec := obj.type?.resolvedType
-    if (obj.meta != null) err("Data spec with meta not supported", obj.loc)
+    if (!obj.meta.isEmpty) err("Data spec with meta not supported", obj.loc)
 
     acc := Str:Obj[:]
     acc.ordered = true

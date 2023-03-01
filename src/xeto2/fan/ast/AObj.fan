@@ -20,8 +20,8 @@ internal class AObj
   const FileLoc loc
   Str? name
   ARef? type
-  AMap? meta
-  AMap? slots
+  AMap meta := AMap()
+  AMap slots := AMap()
   Obj? val
   Str? doc
   Bool isLib
@@ -33,7 +33,7 @@ internal class AObj
 
   Void setMeta(XetoCompiler c, AMap m)
   {
-    if (meta == null || meta.isEmpty)
+    if (meta.isEmpty)
     {
       meta = m
     }
@@ -45,7 +45,6 @@ internal class AObj
 
   Void addOf(XetoCompiler c, ARef of)
   {
-    if (meta == null) meta = AMap(of.loc)
     x := AObj(of.loc)
     x.name = "of"
     x.val = of
@@ -55,7 +54,6 @@ internal class AObj
   Void addOfs(XetoCompiler c, ARef[] ofs)
   {
     loc := ofs.first.loc
-    if (meta == null) meta = AMap(loc)
     x := AObj(loc)
     x.name = "ofs"
     x.val = ofs
@@ -67,9 +65,9 @@ internal class AObj
     out.print(indent)
     if (name != null) out.print(name).print(":")
     if (type != null) out.print(" ").print(type)
-    if (meta != null) meta.dump(out, indent, "<>")
+    if (!meta.isEmpty) meta.dump(out, indent, "<>")
     if (val != null) out.print(" ").print(val.toStr.toCode)
-    if (slots != null) slots.dump(out, indent, "{}")
+    if (!slots.isEmpty) slots.dump(out, indent, "{}")
     out.printLine
   }
 
