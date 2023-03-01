@@ -69,6 +69,18 @@ internal class AMap
     out.print(indent).print(brackets[1..1])
   }
 
+  override Str toStr()
+  {
+    s := StrBuf()
+    s.add("{")
+    map.each |v, n|
+    {
+      if (s.size > 1) s.add(", ")
+      s.add(n).add(": ...")
+    }
+    return s.add("}").toStr
+  }
+
   static const Str:AObj empty := [:]
 
   private Str:AObj map := empty

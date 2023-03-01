@@ -42,12 +42,27 @@ class DataEnvTest : Test
     type   := verifyLibType(sys, "Type",   spec)
     lib    := verifyLibType(sys, "Lib",    spec)
     org    := verifyLibType(sys, "LibOrg", dict)
+    maybe  := verifyLibType(sys, "Maybe",  obj)
 
     // slots
     orgDis := verifySlot(org, "dis", str)
     orgUri := verifySlot(org, "uri", uri)
 
-    // env.print(sys)
+  // env.print(sys)
+
+    // Spec.of: Spec?
+    specOf := verifySlot(spec, "of", maybe)
+    verifyEq(specOf["doc"], "Item type used for containers like Maybe, Seq, and Ref")
+    verifySame(specOf["of"], spec)
+
+    // Spec.ofs: List<of:Spec>?
+    specOfs := verifySlot(spec, "ofs", maybe)
+    verifyEq(specOfs["doc"], "Types used in compound types like And and Or")
+    x := specOfs["of"] as DataSpec
+    verifyEq(x.typeof.qname, "xeto2::MSpec")
+echo(">>>> $x [$x.typeof]")
+    verifySame(x.type, list)
+    verifySame(x["of"], spec)
   }
 
 //////////////////////////////////////////////////////////////////////////

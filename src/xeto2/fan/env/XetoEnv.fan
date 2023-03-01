@@ -53,7 +53,7 @@ internal const class XetoEnv : DataEnv
     map := val as Str:Obj? ?: throw ArgErr("Unsupported dict arg: $val.typeof")
     if (map.isEmpty)
     {
-      if (spec == null || spec === dictSpec) return emptyDict
+      if (spec == null || spec === ((MSys?)sys)?.dict) return emptyDict
     }
     return MDict(map, spec)
   }

@@ -118,7 +118,6 @@ internal class Assemble : Step
     acc := Str:Obj[:]
     obj.spec.meta.each |kid|
     {
-      if (kid.val == null) return // TODO
       acc.add(kid.name, asmVal(kid))
     }
     obj.metaRef.val = env.dict(acc)
@@ -179,7 +178,7 @@ internal class Assemble : Step
     acc.ordered = true
     obj.slots.each |kid|
     {
-       acc.addNotNull(kid.name, asmVal(kid))
+      acc.addNotNull(kid.name, asmVal(kid))
     }
 
     return env.dict(acc, spec)

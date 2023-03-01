@@ -136,5 +136,42 @@ verifyData:
   str: "sys::Str hi"
   date: "sys::Date 1996-09-15"
 ---
+name: libOrg
+compileData: |
+  LibOrg {
+    dis: "Acme"
+    uri: Uri "https://acme.com/"
+  }
+verifyData:
+  spec: "sys::LibOrg"
+  dis: "sys::Str Acme"
+  uri: "sys::Uri https://acme.com/"
+---
+# name: libOrgInfer
+# compileData: |
+#   LibOrg {
+#     dis: "Acme"
+#     uri: "https://acme.com/"
+#   }
+# verifyData:
+#   spec: "sys::LibOrg"
+#   dis: "sys::Str Acme"
+#   uri: "sys::Uri https://acme.com/"
+---
+
+##########################################################################
+## Dicts With Specs
+##########################################################################
+
+---
+# name: dictWithSpec
+# compileData: |
+#   Dict <extra> { foo }
+# verifyData:
+#   spec:
+#     type: "sys::Dict"
+#     extra: "sys::Marker"
+#   foo: "sys::Str bar"
+---
 
 
