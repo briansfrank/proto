@@ -77,13 +77,13 @@ internal class Assemble : Step
 
   private AtomicRef asmBase(AObj obj)
   {
-    if (obj.type == null) return AtomicRef()  // sys::Obj
-    return obj.type.resolved
+    if (obj.spec.type == null) return AtomicRef()  // sys::Obj
+    return obj.spec.type.resolved
   }
 
   private AtomicRef asmMetaRef(AObj obj)
   {
-    if (obj.meta.isEmpty) return emptyMetaRef
+    if (obj.spec.meta.isEmpty) return emptyMetaRef
     obj.metaRef = AtomicRef()
     return obj.metaRef
   }
@@ -116,7 +116,7 @@ internal class Assemble : Step
     if (obj.metaRef == null) return
 
     acc := Str:Obj[:]
-    obj.meta.each |kid|
+    obj.spec.meta.each |kid|
     {
       if (kid.val == null) return // TODO
       acc.add(kid.name, asmVal(kid))
@@ -157,10 +157,10 @@ internal class Assemble : Step
     }
 
     // TODO: every object should have type at some point
-    if (obj.type == null) return val
+    if (obj.spec.type == null) return val
 
     // map to Fantom type if still a string
-    qname := obj.type.resolvedType.qname
+    qname := obj.spec.type.resolvedType.qname
     mapping := env.factory.fromXeto[qname]
     if (mapping != null) return asmFantom(mapping, val, obj.loc)
 
@@ -170,10 +170,10 @@ internal class Assemble : Step
 
   private DataDict asmDict(AObj obj)
   {
-    if (obj.slots.isEmpty && obj.type == null) return env.emptyDict
+    if (obj.slots.isEmpty && obj.spec.type == null) return env.emptyDict
 
-    spec := obj.type?.resolvedType
-    if (!obj.meta.isEmpty) err("Data spec with meta not supported", obj.loc)
+    spec := obj.spec.type?.resolvedType
+    if (!obj.spec.meta.isEmpty) err("Data spec with meta not supported", obj.loc)
 
     acc := Str:Obj[:]
     acc.ordered = true

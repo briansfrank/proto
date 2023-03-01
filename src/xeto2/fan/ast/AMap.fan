@@ -43,7 +43,8 @@ internal class AMap
 
   AObj? remove(Str name)
   {
-    map.remove(name)
+    if (map.isEmpty) return null
+    return map.remove(name)
   }
 
   private Str autoName()

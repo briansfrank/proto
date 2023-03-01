@@ -36,7 +36,7 @@ internal class Parse : Step
     }
 
     pragma := root.slots.remove("pragma")
-    if (isLib && pragma != null) root.meta = pragma.meta
+    if (isLib && pragma != null) root.spec.meta = pragma.spec.meta
 
     bombIfErr
 

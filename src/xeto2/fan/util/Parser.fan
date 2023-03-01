@@ -92,7 +92,7 @@ internal class Parser
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot && peek !== Token.doubleColon)
     {
       p.name = consumeName
-      p.type = compiler.sys.marker
+      p.spec.type = compiler.sys.marker
       p.val = env.marker
     }
     else
@@ -116,19 +116,16 @@ internal class Parser
   private Bool parseChildrenOrVal(AObj p)
   {
     if (cur === Token.lbrace)
-    {
-      p.slots = parseChildren(Token.lbrace, Token.rbrace)
-      return true
-    }
+      return parseChildren(p.slots, Token.lbrace, Token.rbrace)
 
-    if (cur.isVal) return parseVal(p)
+    if (cur.isVal)
+      return parseVal(p)
 
     return false
   }
 
-  private AMap parseChildren(Token open, Token close)
+  private Bool parseChildren(AMap map, Token open, Token close)
   {
-    map := AMap()
     consume(open)
     skipNewlines
     parseObjs(map)
@@ -137,7 +134,7 @@ internal class Parser
       throw err("Unmatched closing '$close.symbol'")
     }
     consume(close)
-    return map
+    return true
   }
 
   private Bool parseVal(AObj p)
@@ -149,33 +146,33 @@ internal class Parser
 
   private Bool parseSpec(AObj p)
   {
-    // type
-    p.type = parseType(p)
-    if (p.type == null)
+    p.spec.type = parseType(p.spec.meta)
+
+    if (p.spec.type == null)
     {
       // allow <meta> without type only for sys::Obj
-      if (cur == Token.lt && !compiler.isSys) throw err("Must specify type name before <meta>")
+      if (cur !== Token.lt) return false
+      if (!compiler.isSys) throw err("Must specify type name before <meta>")
     }
 
-    // meta
     if (cur === Token.lt)
-      p.setMeta(compiler, parseChildren(Token.lt, Token.gt))
+      parseChildren(p.spec.meta, Token.lt, Token.gt)
 
     return true
   }
 
-  ARef? parseType(AObj p)
+  ARef? parseType(AMap meta)
   {
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)      return parseTypeAnd(p, type)
-    if (cur === Token.pipe)     return parseTypeOr(p, type)
-    if (cur === Token.question) return parseTypeMaybe(p, type)
+    if (cur === Token.amp)      return parseTypeAnd(meta, type)
+    if (cur === Token.pipe)     return parseTypeOr(meta, type)
+    if (cur === Token.question) return parseTypeMaybe(meta, type)
     return type
   }
 
-  private ARef parseTypeAnd(AObj p, ARef first)
+  private ARef parseTypeAnd(AMap meta, ARef first)
   {
     ofs := ARef[,].add(first)
     while (cur === Token.amp)
@@ -184,11 +181,11 @@ internal class Parser
       skipNewlines
       ofs.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
     }
-    p.addOfs(compiler, ofs)
+    addOfs(meta, ofs)
     return compiler.sys.and
   }
 
-  private ARef parseTypeOr(AObj p, ARef first)
+  private ARef parseTypeOr(AMap meta, ARef first)
   {
     ofs := ARef[,].add(first)
     while (cur === Token.pipe)
@@ -197,14 +194,14 @@ internal class Parser
       skipNewlines
       ofs.add(parseTypeSimple("Expecting next type name after '|' or symbol"))
     }
-    p.addOfs(compiler, ofs)
+    addOfs(meta, ofs)
     return compiler.sys.or
   }
 
-  private ARef parseTypeMaybe(AObj p, ARef of)
+  private ARef parseTypeMaybe(AMap meta, ARef of)
   {
     consume(Token.question)
-    p.addOf(compiler, of)
+    addOf(meta, of)
     return compiler.sys.maybe
   }
 
@@ -238,6 +235,23 @@ internal class Parser
     throw err("Expecting end of object: comma or newline, not $curToStr")
   }
 
+  private Void addOf(AMap meta, ARef of)
+  {
+    x := AObj(of.loc)
+    x.name = "of"
+    x.val = of
+    meta.add(compiler, x)
+  }
+
+  private Void addOfs(AMap meta, ARef[] ofs)
+  {
+    loc := ofs.first.loc
+    x := AObj(loc)
+    x.name = "ofs"
+    x.val = ofs
+    meta.add(compiler, x)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
@@ -252,16 +266,16 @@ internal class Parser
   private Void addDoc(AObj p, Str? docStr)
   {
     if (docStr == null) return
-    if (p.meta.get("doc") != null) return
+    if (p.spec.meta.get("doc") != null) return
 
     loc := p.loc
 
     docVal := AObj(loc)
     docVal.name = "doc"
-    docVal.type = compiler.sys.str
+    docVal.spec.type = compiler.sys.str
     docVal.val = docStr
 
-    p.meta.add(compiler, docVal)
+    p.spec.meta.add(compiler, docVal)
   }
 
 //////////////////////////////////////////////////////////////////////////

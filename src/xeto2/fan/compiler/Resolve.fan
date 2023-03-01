@@ -29,7 +29,7 @@ internal class Resolve : Step
     if (isSys) return
 
     // import dependencies from pragma
-    astDepends := pragma?.meta?.get("depends") ?: AObj(FileLoc.unknown)
+    astDepends := pragma?.spec?.meta?.get("depends") ?: AObj(FileLoc.unknown)
     astDepends.slots.each |astDepend|
     {
       // get library name from depend formattd as "{lib:<qname>}"
@@ -57,15 +57,14 @@ internal class Resolve : Step
 
   private Void resolveObj(AObj obj)
   {
-    resolveRef(obj.type)
-    resolveMap(obj.meta)
+    resolveRef(obj.spec.type)
+    resolveMap(obj.spec.meta)
     resolveMap(obj.slots)
     resolveVal(obj.val)
   }
 
-  private Void resolveMap(AMap? map)
+  private Void resolveMap(AMap map)
   {
-    if (map == null) return
     map.each |kid| { resolveObj(kid) }
   }
 
