@@ -165,42 +165,37 @@ internal class Parser
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)      return parseTypeAnd(meta, type)
-    if (cur === Token.pipe)     return parseTypeOr(meta, type)
+    if (cur === Token.amp)      return parseTypeCompound(compiler.sys.and, meta, type)
+    if (cur === Token.pipe)     return parseTypeCompound(compiler.sys.or,  meta, type)
     if (cur === Token.question) return parseTypeMaybe(meta, type)
     return type
   }
 
-  private ARef parseTypeAnd(AMap meta, ARef first)
+  private ARef parseTypeCompound(ARef compoundType, AMap meta, ARef first)
   {
+    sepToken := cur
     ofs := ARef[,].add(first)
-    while (cur === Token.amp)
+    while (cur === sepToken)
     {
       consume
       skipNewlines
       ofs.add(parseTypeSimple("Expecting next type name after '&' and symbol"))
     }
-    addOfs(meta, ofs)
-    return compiler.sys.and
-  }
 
-  private ARef parseTypeOr(AMap meta, ARef first)
-  {
-    ofs := ARef[,].add(first)
-    while (cur === Token.pipe)
-    {
-      consume
-      skipNewlines
-      ofs.add(parseTypeSimple("Expecting next type name after '|' or symbol"))
-    }
-    addOfs(meta, ofs)
-    return compiler.sys.or
+    loc := ofs.first.loc
+    x := AObj(loc)
+    x.val = ofs
+    meta.add(compiler, "ofs", x)
+
+    return compoundType
   }
 
   private ARef parseTypeMaybe(AMap meta, ARef of)
   {
     consume(Token.question)
-    addOf(meta, of)
+    x := AObj(of.loc)
+    x.val = of
+    meta.add(compiler, "of", x)
     return compiler.sys.maybe
   }
 
@@ -232,21 +227,6 @@ internal class Parser
     if (cur === Token.eof) return
 
     throw err("Expecting end of object: comma or newline, not $curToStr")
-  }
-
-  private Void addOf(AMap meta, ARef of)
-  {
-    x := AObj(of.loc)
-    x.val = of
-    meta.add(compiler, "of", x)
-  }
-
-  private Void addOfs(AMap meta, ARef[] ofs)
-  {
-    loc := ofs.first.loc
-    x := AObj(loc)
-    x.val = ofs
-    meta.add(compiler, "ofs", x)
   }
 
 //////////////////////////////////////////////////////////////////////////
