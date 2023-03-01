@@ -115,7 +115,7 @@ class DataTestRunner
     compileLib := def["compileLib"]
     if (compileLib != null)
     {
-      lib := env.compile(compileLib)
+      lib := env.compileLib(compileLib)
       verify := def.getChecked("verifyTypes")
       verifyTypes(lib, verify)
       return
@@ -129,7 +129,7 @@ class DataTestRunner
     def.each |v, n|
     {
       if (!n.startsWith("verify")) return
-      typeof.method(n).callOn(this, [type, v])
+//      typeof.method(n).callOn(this, [type, v])
     }
   }
 

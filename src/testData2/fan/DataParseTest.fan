@@ -14,7 +14,7 @@ using haystack
 ** DataParseTest
 **
 @Js
-class DataParseTest : Test
+class DataParseTest : AbstractDataTest
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ class DataParseTest : Test
 
   Void verifyScalar(Str src, Obj? expected)
   {
-    actual := parse(src)
+    actual := compileData(src)
     // echo("$actual [$actual.typeof]")
     verifyEq(actual, expected)
   }
@@ -67,7 +67,7 @@ class DataParseTest : Test
 
   Void verifyDict(Str src, Str:Obj expected, Str type := "sys::Dict")
   {
-    DataDict actual := parse(src)
+    DataDict actual := compileData(src)
     // echo("-- $actual [$actual.spec]")
     verifySame(actual.spec, env.type(type))
     if (expected.isEmpty && type == "sys::Dict")
@@ -79,56 +79,4 @@ class DataParseTest : Test
     verifyDictEq(actual, expected)
   }
 
-//////////////////////////////////////////////////////////////////////////
-// HaystackTest (TODO)
-//////////////////////////////////////////////////////////////////////////
-
-  static Number? n(Num? val, Obj? unit := null)
-  {
-    if (val == null) return null
-    if (unit is Str) unit = Number.loadUnit(unit)
-    return Number(val.toFloat, unit)
-  }
-
-  static const Marker m := Marker.val
-
-  Void verifyDictEq(DataDict a, Obj bx)
-  {
-    b := env.dict(bx)
-    bnames := Str:Str[:]; b.each |v, n| { bnames[n] = n }
-
-    a.each |v, n|
-    {
-      try
-      {
-        verifyValEq(v, b[n])
-      }
-      catch (TestErr e)
-      {
-        echo("TAG FAILED: $n")
-        throw e
-      }
-      bnames.remove(n)
-    }
-    verifyEq(bnames.size, 0, bnames.keys.toStr)
-  }
-
-
-  Void verifyValEq(Obj? a, Obj? b)
-  {
-    //if (a is Ref && b is Ref)   return verifyRefEq(a, b)
-    //if (a is List && b is List) return verifyListEq(a, b)
-    if (a is Dict && b is Dict) return verifyDictEq(a, b)
-    //if (a is Grid && b is Grid) return verifyGridEq(a, b)
-    //if (a is Buf && b is Buf)   return verifyBufEq(a, b)
-    verifyEq(a, b)
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// Utils
-//////////////////////////////////////////////////////////////////////////
-
-  DataEnv env() { DataEnv.cur }
-
-  Obj? parse(Str s) { env.parse(s) }
 }

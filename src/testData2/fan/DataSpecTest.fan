@@ -13,7 +13,7 @@ using data2
 ** DataSpecTest
 **
 @Js
-class DataSpecTest : Test
+class DataSpecTest : AbstractDataTest
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ class DataSpecTest : Test
 
   Void testMeta()
   {
-    lib := compile(
+    lib := compileLib(
       Str<|Foo: Dict <a:"A", b:"B">
            Bar: Foo <b:"B2", c:"C">
            Baz: Bar <c:"C2", d:"D">
@@ -112,7 +112,7 @@ class DataSpecTest : Test
 
   Void testMaybe()
   {
-    lib := compile(
+    lib := compileLib(
       Str<|Foo: Dict {
              bar: Str?
              baz: Foo?
@@ -139,7 +139,7 @@ class DataSpecTest : Test
 
   Void testAnd()
   {
-    lib := compile(
+    lib := compileLib(
       Str<|Foo: Dict
            Bar: Dict
            FooBar : Foo & Bar
@@ -199,14 +199,6 @@ class DataSpecTest : Test
     verifyEq(slots.size, expected.size)
   }
   */
-
-//////////////////////////////////////////////////////////////////////////
-// Utils
-//////////////////////////////////////////////////////////////////////////
-
-  DataEnv env() { DataEnv.cur }
-
-  DataLib compile(Str s) { env.compile(s) }
 
 }
 
