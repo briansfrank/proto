@@ -34,7 +34,6 @@ internal const class MSys
     this.uri      = x.get("Uri")
     this.number   = x.get("Number")
     this.int      = x.get("Int")
-    this.float    = x.get("Float")
     this.duration = x.get("Duration")
     this.date     = x.get("Date")
     this.time     = x.get("Time")
@@ -62,7 +61,6 @@ internal const class MSys
   const MType uri
   const MType number
   const MType int
-  const MType float
   const MType duration
   const MType date
   const MType time

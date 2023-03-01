@@ -21,8 +21,8 @@ Scalar: Obj
 // Marker labels a dict with typing information
 Marker: Scalar <sealed> "marker"
 
-// Closed enumerated choice
-Enum: Scalar
+// Unicode string of characters
+Str: Scalar ""
 
 // Boolean value either true or false
 Bool: Scalar "false"
@@ -33,23 +33,17 @@ Number: Scalar "0"
 // Unitless integer number
 Int: Number
 
-// Unitless floating point number
-Float: Number
-
 // Number with a unit of time
 Duration: Number
 
-// Unicode string of characters
-Str: Scalar ""
+// Universal resource identifier
+Uri: Scalar ""
 
 // Reference to another dict.
 Ref: Scalar <pattern: "[a-zA-Z\\d\\._~]*"> "x"
 
 // Version string formatted as decimal digits separated by a dot
 Version: Scalar <pattern: "\\d+(\\.\\d+)*"> "0"
-
-// Universal resource identifier
-Uri: Scalar ""
 
 // ISO 8601 date as year, month, day: '2011-06-07'
 Date: Scalar <pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"> "2000-01-01"
@@ -59,6 +53,9 @@ Time: Scalar <pattern: "\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"> "00:00:00"
 
 // ISO 8601 timestamp followed by timezone identifier
 DateTime: Scalar <pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]* [-+a-zA-Z_\\d]*"> "2000-01-01T00:00:00Z UTC"
+
+// Closed enumerated choice
+Enum: Scalar
 
 // Sequence is base type for all collections
 Seq: Obj
