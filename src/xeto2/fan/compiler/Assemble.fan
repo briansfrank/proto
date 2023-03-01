@@ -94,9 +94,8 @@ internal class Assemble : Step
     if (slots.isEmpty) return MSlots.empty
     acc := Str:MSpec[:]
     acc.ordered = true
-    slots.each |kid|
+    slots.each |kid, name|
     {
-      name := kid.name
       sep := obj.isLib ? "::" : "."
       acc.add(name, asmSpec(kid, qname + sep + name, name))
     }
@@ -116,9 +115,9 @@ internal class Assemble : Step
     if (obj.metaRef == null) return
 
     acc := Str:Obj[:]
-    obj.spec.meta.each |kid|
+    obj.spec.meta.each |kid, name|
     {
-      acc.add(kid.name, asmVal(kid))
+      acc.add(name, asmVal(kid))
     }
     obj.metaRef.val = env.dict(acc)
   }
@@ -176,9 +175,9 @@ internal class Assemble : Step
 
     acc := Str:Obj[:]
     acc.ordered = true
-    obj.slots.each |kid|
+    obj.slots.each |kid, name|
     {
-      acc.addNotNull(kid.name, asmVal(kid))
+      acc.addNotNull(name, asmVal(kid))
     }
 
     return env.dict(acc, spec)

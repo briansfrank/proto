@@ -17,7 +17,7 @@ internal class AMap
 
   Bool isEmpty() { map.isEmpty }
 
-  Void add(XetoCompiler c, AObj child)
+  Void add(XetoCompiler c, Str? name, AObj child)
   {
     if (map.isEmpty)
     {
@@ -26,8 +26,7 @@ internal class AMap
     }
 
     // auto-assign name if unnamed
-    if (child.name == null) child.name = autoName
-    name := child.name
+    if (name == null) name = autoName
 
     // report duplicate
     dup := map[name]
@@ -59,7 +58,7 @@ internal class AMap
 
   AObj? get(Str name) { map[name] }
 
-  Void each(|AObj| f) { map.each(f) }
+  Void each(|AObj, Str| f) { map.each(f) }
 
   Void dump(OutStream out, Str indent, Str brackets)
   {

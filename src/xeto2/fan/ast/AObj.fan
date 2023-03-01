@@ -18,11 +18,9 @@ internal class AObj
   new make(FileLoc loc) { this.loc = loc }
 
   const FileLoc loc
-  Str? name
   ASpec spec := ASpec()
   AMap slots := AMap()
   Obj? val
-  Str? doc
   Bool isLib
   Bool isType
 
@@ -33,7 +31,6 @@ internal class AObj
   Void dump(OutStream out := Env.cur.out, Str indent := "")
   {
     out.print(indent)
-    if (name != null) out.print(name).print(":")
     if (spec.type != null) out.print(" ").print(spec.type)
     if (!spec.meta.isEmpty) spec.meta.dump(out, indent, "<>")
     if (val != null) out.print(" ").print(val.toStr.toCode)

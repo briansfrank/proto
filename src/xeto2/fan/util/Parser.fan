@@ -57,41 +57,39 @@ internal class Parser
 // Parsing
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parseObjs(AMap map)
+  private Void parseObjs(AMap parent)
   {
     while (true)
     {
-      child := parseObj
-      if (child == null) break
+      if (!parseObj(parent)) break
       parseEndOfObj
-      addToMap(map, child)
     }
   }
 
-  private AObj? parseObj()
+  private Bool parseObj(AMap parent)
   {
     // leading comment
     doc := parseLeadingDoc
 
     // end of file or closing symbols
-    if (cur === Token.eof) return null
-    if (cur === Token.rbrace) return null
-    if (cur === Token.gt) return null
+    if (cur === Token.eof) return false
+    if (cur === Token.rbrace) return false
+    if (cur === Token.gt) return false
 
     // this token is start of our object production
     p := AObj(curToLoc)
-    p.doc = doc
 
     // <markerOnly> | <named> | <unnamed>
+    Str? name := null
     if (cur === Token.id && peek === Token.colon)
     {
-      p.name = consumeName
+      name = consumeName
       consume(Token.colon)
       parseBody(p)
     }
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot && peek !== Token.doubleColon)
     {
-      p.name = consumeName
+      name = consumeName
       p.spec.type = compiler.sys.marker
       p.val = env.marker
     }
@@ -101,9 +99,10 @@ internal class Parser
     }
 
     // trailing comment
-    parseTrailingDoc(p)
+    parseTrailingDoc(doc)
 
-    return p
+    addToMap(parent, name, p, doc)
+    return true
   }
 
   private Void parseBody(AObj p)
@@ -238,30 +237,27 @@ internal class Parser
   private Void addOf(AMap meta, ARef of)
   {
     x := AObj(of.loc)
-    x.name = "of"
     x.val = of
-    meta.add(compiler, x)
+    meta.add(compiler, "of", x)
   }
 
   private Void addOfs(AMap meta, ARef[] ofs)
   {
     loc := ofs.first.loc
     x := AObj(loc)
-    x.name = "ofs"
     x.val = ofs
-    meta.add(compiler, x)
+    meta.add(compiler, "ofs", x)
   }
 
 //////////////////////////////////////////////////////////////////////////
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private Void addToMap(AMap map, AObj child)
+  private Void addToMap(AMap map, Str? name, AObj child, Str? doc)
   {
-    addDoc(child, child.doc)
-    map.add(compiler, child)
+    addDoc(child, doc)
+    map.add(compiler, name, child)
   }
-
 
   private Void addDoc(AObj p, Str? docStr)
   {
@@ -271,11 +267,10 @@ internal class Parser
     loc := p.loc
 
     docVal := AObj(loc)
-    docVal.name = "doc"
     docVal.spec.type = compiler.sys.str
     docVal.val = docStr
 
-    p.spec.meta.add(compiler, docVal)
+    p.spec.meta.add(compiler, "doc", docVal)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -313,14 +308,15 @@ internal class Parser
     return doc
   }
 
-  private Void parseTrailingDoc(AObj p)
+  private Str? parseTrailingDoc(Str? doc)
   {
     if (cur === Token.comment)
     {
       // leading trumps trailing
-      if (p.doc == null) p.doc = curVal.toStr.trimToNull
+      if (doc == null) doc = curVal.toStr.trimToNull
       consume
     }
+    return doc
   }
 
 //////////////////////////////////////////////////////////////////////////
