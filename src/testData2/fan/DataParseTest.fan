@@ -26,7 +26,6 @@ class DataParseTest : AbstractDataTest
     verifyScalar(Str<|"hi"|>, "hi")
     verifyScalar(Str<|Bool "true"|>, true)
     verifyScalar(Str<|Int "123"|>, 123)
-    verifyScalar(Str<|Float "123"|>, 123f)
     verifyScalar(Str<|Duration "123sec"|>, 123sec)
     verifyScalar(Str<|Number "123kW"|>, n(123, "kW"))
     verifyScalar(Str<|Str "123"|>, "123")

@@ -68,7 +68,7 @@ class DataSpecTest : AbstractDataTest
     verifyIsa("sys::Int", "sys::Scalar", true)
     verifyIsa("sys::Int", "sys::Number", true)
     verifyIsa("sys::Int", "sys::Int",    true)
-    verifyIsa("sys::Int", "sys::Float",  false)
+    verifyIsa("sys::Int", "sys::Duration",false)
 
     verifyIsa("sys::Seq", "sys::Seq",  true)
     verifyIsa("sys::Seq", "sys::Dict", false)

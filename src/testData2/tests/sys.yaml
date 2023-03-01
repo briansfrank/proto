@@ -52,13 +52,6 @@ verifyVal: "0"
 verifyMeta:
   doc: "o sys::Str Unitless integer number"
 ---
-name: float
-withType: sys::Float
-verifyBase: sys::Number
-verifyVal: "0.0"
-verifyMeta:
-  doc: "o sys::Str Unitless floating point number"
----
 name: duration
 withType: sys::Duration
 verifyBase: sys::Number
