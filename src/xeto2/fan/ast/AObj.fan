@@ -22,7 +22,7 @@ internal class AObj
   }
 
   const FileLoc loc
-  ASpec spec := ASpec()
+  ASpecX spec := ASpecX()
   AMap slots := AMap()
   Obj? val
   Bool isLib

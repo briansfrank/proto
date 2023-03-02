@@ -147,7 +147,7 @@ if (obj.isSpec) return obj.spec.type.resolved.val
     // AST ref is whatever it resolves to
     val := obj.val
     if (val is ARef) return ((ARef)val).resolved.val
-    if (val is ASpec) return asmNestedSpec(val)
+    if (val is ASpecX) return asmNestedSpec(val)
 
     // Recurse if value is a list
     if (val is List)
@@ -169,7 +169,7 @@ if (obj.isSpec) return obj.spec.type.resolved.val
     return val
   }
 
-  private MSpec asmNestedSpec(ASpec spec)
+  private MSpec asmNestedSpec(ASpecX spec)
   {
 spec.meta.each |v, n|
 {

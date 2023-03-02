@@ -62,7 +62,7 @@ internal class Resolve : Step
     resolveVal(obj.val)
   }
 
-  private Void resolveSpec(ASpec spec)
+  private Void resolveSpec(ASpecX spec)
   {
     resolveRef(spec.type)
     resolveMap(spec.meta)
@@ -76,7 +76,7 @@ internal class Resolve : Step
   private Void resolveVal(Obj? val)
   {
     if (val is ARef) { resolveRef(val); return }
-    if (val is ASpec) { resolveSpec(val); return }
+    if (val is ASpecX) { resolveSpec(val); return }
     if (val is List) { ((List)val).each |x| { resolveVal(x) }; return }
   }
 

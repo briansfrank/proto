@@ -192,7 +192,7 @@ internal class Parser
     return compoundType
   }
 
-  private ASpec parseTypeMaybe(ASpec oldSpec)
+  private ASpecX parseTypeMaybe(ASpecX oldSpec)
   {
     consume(Token.question)
 
@@ -208,7 +208,7 @@ internal class Parser
     }
 
     // otherwise we need to wrap the entire old spec inside a maybe
-    wrap := ASpec()
+    wrap := ASpecX()
     wrap.type = compiler.sys.maybe
     wrap.meta.add(compiler, "of", AObj(loc, oldSpec))
     return wrap

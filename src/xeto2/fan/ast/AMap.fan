@@ -9,7 +9,7 @@
 using util
 
 **
-** AST map of children objects (meta or slots)
+** AST map of name/value pairs - dict, spec meta, or spec slots
 **
 @Js
 internal class AMap
