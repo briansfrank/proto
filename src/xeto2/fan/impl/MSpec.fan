@@ -10,8 +10,9 @@ using concurrent
 using util
 using data2
 
+
 **
-** Implementation of DataLib
+** Implementation of DataSpec wrapped by XetoSpec
 **
 @Js
 internal const class MSpec : DataSpec
@@ -113,4 +114,53 @@ internal const class MSpec : DataSpec
     return false
   }
 
+}
+
+**************************************************************************
+** XetoSpec
+**************************************************************************
+
+**
+** XetoSpec is the referential proxy for MSpec
+**
+@Js
+internal const class XetoSpec : DataSpec
+{
+  override DataEnv env() { m.env }
+
+  override DataType type() { m.type }
+
+  override DataDict own() { m.own }
+
+  override DataSlots slotsOwn() { m.slotsOwn }
+
+  override DataSlots slots() { m.slots }
+
+  override DataSpec? slot(Str n, Bool c := true) { m.slot(n, c) }
+
+  override DataSpec? slotOwn(Str n, Bool c := true) { m.slot(n, c) }
+
+  override Obj? val() { m.val }
+
+  override Bool isa(DataSpec x) { m.isa(x) }
+
+  override FileLoc loc() { m.loc }
+
+  override DataSpec spec() { m.spec }
+
+  override Bool isEmpty() { m.isEmpty }
+
+  @Operator override Obj? get(Str n, Obj? d := null) { m.get(n, d) }
+
+  override Bool has(Str n) { m.has(n) }
+
+  override Bool missing(Str n) { m.missing(n) }
+
+  override Void each(|Obj val, Str name| f) { m.each(f) }
+
+  override Obj? eachWhile(|Obj,Str->Obj?| f) { m.eachWhile(f) }
+
+  override Obj? trap(Str n, Obj?[]? a := null) { m.trap(n, a) }
+
+  const MSpec? m
 }

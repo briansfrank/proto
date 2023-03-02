@@ -11,7 +11,7 @@ using util
 using data2
 
 **
-** Implementation of DataLib
+** Implementation of DataType wrapped by XetoType
 **
 @Js
 internal const class MType : MSpec, DataType
@@ -61,10 +61,53 @@ internal const class MType : MSpec, DataType
 
   Bool inheritsFrom(DataType that)
   {
+    isaX(that)
+  }
+
+  Bool isaX(DataType that)
+  {
     if (this === that) return true
     base := this.base
     if (base == null) return false
     return base.inheritsFrom(that)
   }
+}
 
+**************************************************************************
+** XetoType
+**************************************************************************
+
+**
+** XetoType is the referential proxy for MType
+**
+@Js
+internal const class XetoType : XetoSpec, DataType
+{
+  override DataLib lib() { mt.lib }
+
+  override DataType? base() { mt.base }
+
+  override Str qname() { mt.qname }
+
+  override Str name() { mt.name }
+
+  override Bool isaScalar() { mt.isaX(mt.env.sys.scalar) }
+
+  override Bool isaMarker() { mt.isaX(mt.env.sys.marker) }
+
+  override Bool isaSeq()    { mt.isaX(mt.env.sys.seq) }
+
+  override Bool isaDict()   { mt.isaX(mt.env.sys.dict) }
+
+  override Bool isaList()   { mt.isaX(mt.env.sys.list) }
+
+  override Bool isaMaybe()  { mt.isaX(mt.env.sys.maybe) }
+
+  override Bool isaAnd()    { mt.isaX(mt.env.sys.and) }
+
+  override Bool isaOr()     { mt.isaX(mt.env.sys.or) }
+
+  override Bool isaQuery()  { mt.isaX(mt.env.sys.query) }
+
+  const MType? mt
 }

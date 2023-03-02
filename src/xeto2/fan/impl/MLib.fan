@@ -11,7 +11,7 @@ using util
 using data2
 
 **
-** Implementation of DataLib
+** Implementation of DataLib wrapped by XetoLib
 **
 @Js
 internal const class MLib : MSpec, DataLib
@@ -45,3 +45,21 @@ internal const class MLib : MSpec, DataLib
   override Str toStr() { qname }
 
 }
+
+**************************************************************************
+** XetoLib
+**************************************************************************
+
+**
+** XetoLib is the referential proxy for MLib
+**
+@Js
+internal const class XetoLib : XetoSpec, DataLib
+{
+  override Str qname() { ml.qname }
+
+  override Version version() { ml.version }
+
+  const MLib? ml
+}
+
