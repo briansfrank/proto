@@ -145,7 +145,7 @@ class DataSpecTest : AbstractDataTest
            FooBar : Foo & Bar
            |>)
 
-    //env.print(lib)
+     //env.print(lib)
 
      and := env.type("sys::And")
      foo := lib.slotOwn("Foo")

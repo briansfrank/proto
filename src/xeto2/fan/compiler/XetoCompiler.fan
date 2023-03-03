@@ -122,6 +122,18 @@ internal class XetoCompiler
     return err
   }
 
+  ** Generate an auto name of "_0", "_1", etc
+  Str autoName(Int i)
+  {
+    // optimize to reuse "_0", "_1", etc per compilation
+    if (i < autoNames.size) return autoNames[i]
+    if (i != autoNames.size) throw Err(i.toStr)
+    s := i.toStr
+    n := StrBuf(1+s.size).addChar('_').add(s).toStr
+    autoNames.add(n)
+    return n
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
@@ -134,6 +146,7 @@ internal class XetoCompiler
   internal AObj? ast                   // Parse (lib or data)
   internal ALib? lib                   // Parse (compileLib only)
   internal AObj? pragma                // Parse
+  private Str[] autoNames := [,]       // autoName
 }
 
 **************************************************************************

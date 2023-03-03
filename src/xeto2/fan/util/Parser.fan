@@ -7,6 +7,7 @@
 //
 
 using util
+using data2
 
 **
 ** Parser for the Xeto data type language
@@ -23,6 +24,7 @@ internal class Parser
   {
     this.compiler = c
     this.env = c.env
+    this.sys = c.sys
     this.marker = env.marker
     this.fileLoc = fileLoc
     this.tokenizer = Tokenizer(in) { it.keepComments = true }
@@ -92,7 +94,7 @@ internal class Parser
     {
       name = consumeName
       obj = parent.makeChild(loc, name)
-      obj.type = compiler.sys.marker
+      obj.type = sys.marker
       obj.val = AScalar(loc, marker.toStr, marker)
     }
     else
@@ -177,23 +179,37 @@ internal class Parser
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)  return parseTypeCompound("And", compiler.sys.and, obj, type)
-    if (cur === Token.pipe) return parseTypeCompound("Or", compiler.sys.or,  obj, type)
+    if (cur === Token.amp)  return parseTypeCompound("And", sys.and, obj, type)
+    if (cur === Token.pipe) return parseTypeCompound("Or", sys.or,  obj, type)
     return type
   }
 
   private ARef parseTypeCompound(Str dis, ARef compoundType, AObj obj, ARef first)
   {
+    // add 'ofs' as list of type refs to the obj.meta
+    ofs := AVal(first.loc, "ofs")
+    ofs.type = sys.list
+    ofs.initSlots
+    ofs.asmToListOf = DataSpec#
+    add(obj.initMeta, ofs)
+
+    // parse Type <sep> Type <sep> Type ...
     sepToken := cur
-    ofs := ARef[,].add(first)
+    addCompoundType(ofs, first)
     while (cur === sepToken)
     {
       consume
       skipNewlines
-      ofs.add(parseTypeSimple("Expecting next '$dis' type after $sepToken"))
+      addCompoundType(ofs, parseTypeSimple("Expecting next '$dis' type after $sepToken"))
     }
+    return compoundType
+  }
 
-throw Err("TODO: $dis $ofs")
+  private Void addCompoundType(AObj ofs, ARef type)
+  {
+    typeRef := AVal(type.loc, compiler.autoName(ofs.slots.size))
+    typeRef.type = type
+    ofs.slots.add(typeRef)
   }
 
   private Void parseTypeMaybe(AObj obj)
@@ -204,7 +220,7 @@ throw Err("TODO: $dis $ofs")
     of := obj.wrapSpec("of")
 
     // replace type with Maybe and set of meta
-    obj.type = compiler.sys.maybe
+    obj.type = sys.maybe
     add(obj.initMeta, of)
   }
 
@@ -264,7 +280,7 @@ throw Err("TODO: $dis $ofs")
     parent.initSlots
     for (i := 0; i<1_000_000; ++i)
     {
-      name := "_" + i.toStr
+      name := compiler.autoName(i)
       if (parent.slots.get(name) == null) return name
     }
     throw Err("Too many children")
@@ -285,7 +301,7 @@ throw Err("TODO: $dis $ofs")
     // add it to meta
     loc := obj.loc
     docObj := AVal(loc, "doc")
-    docObj.type = compiler.sys.str
+    docObj.type = sys.str
     docObj.val = AScalar(loc, docStr, docStr)
     meta.add(docObj)
   }
@@ -421,10 +437,12 @@ throw Err("TODO: $dis $ofs")
 //////////////////////////////////////////////////////////////////////////
 
   private XetoCompiler compiler
+  private ASys sys
   private XetoEnv env
   private FileLoc fileLoc
   private Tokenizer tokenizer
   private const Obj marker
+  private Str[]? autoNames
 
   private Token cur      // current token
   private Obj? curVal    // current token value

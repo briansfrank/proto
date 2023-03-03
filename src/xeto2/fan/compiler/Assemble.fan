@@ -47,26 +47,36 @@ internal class Assemble : Step
 
   private Void asmVal(AVal x)
   {
-    // TODO: for now assume no val/slots is DataType ref
-    if (x.val == null && x.slots == null)
+    switch (x.valType)
     {
-      if (x.type == null) throw err("wtf", x.loc)
-      if (x.meta != null) throw err("wtf-2", x.loc)
-      x.asmRef = x.type.asm
-      return
+      case AValType.scalar:  x.asmRef = x.val.asm
+      case AValType.typeRef: x.asmRef = asmTypeRef(x)
+      case AValType.list:    x.asmRef = asmList(x)
+      case AValType.dict:    x.asmRef = asmDict(x)
+      default: throw Err(x.valType.name)
     }
+  }
 
-    if (x.val != null)
-    {
-      x.asmRef = x.val.asm
-    }
-    else
-    {
-      acc := Str:Obj[:]
-      acc.ordered = true
-      x.slots.each |obj, name| { acc[name] = obj.asm }
-      x.asmRef = env.dict(acc)
-    }
+  private XetoType asmTypeRef(AVal x)
+  {
+    if (x.type == null) throw err("wtf-1", x.loc)
+    if (x.meta != null) throw err("wtf-2", x.loc)
+    return x.type.asm
+  }
+
+  private Obj?[] asmList(AVal x)
+  {
+    list := List(x.asmToListOf, x.slots.size)
+    x.slots.each |obj| { list.add(obj.asm) }
+    return list
+  }
+
+  private DataDict asmDict(AVal x)
+  {
+    acc := Str:Obj[:]
+    acc.ordered = true
+    x.slots.each |obj, name| { acc[name] = obj.asm }
+    return env.dict(acc)
   }
 
   private Void asmLib(ALib x)
