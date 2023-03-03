@@ -389,8 +389,7 @@ ReturnFanSpeedCmd : FanSpeedCmd { return }
 //////////////////////////////////////////////////////////////////////////
 
 // Point associated with the primary on/off state for running equipment such as motors
-RunPoint : BoolPoint <abstract>
-{
+RunPoint : BoolPoint <abstract> {
   run
   enum: "off,on"
 }
@@ -402,8 +401,7 @@ RunSensor : RunPoint & Sensor <abstract>
 RunCmd : RunPoint & Cmd <abstract>
 
 // Point associated with the secondary on/off state for running equipment such as motors
-EnablePoint : BoolPoint & Sensor <abstract>
-{
+EnablePoint : BoolPoint & Sensor <abstract> {
   enable
   enum: "off,on"
 }
@@ -418,8 +416,7 @@ EnableCmd : EnablePoint & Cmd <abstract>
 AlarmSensor : BoolPoint & Sensor <abstract> { alarm }
 
 // Point associated with VFD frequency measured in Hertz
-VfdFreqPoint : NumberPoint & Sensor <abstract>
-{
+VfdFreqPoint : NumberPoint & Sensor <abstract> {
   vfd
   freq
   unit: "Hz"
@@ -432,8 +429,7 @@ VfdFreqSensor : VfdFreqPoint & Sensor <abstract>
 VfdFreqCmd : VfdFreqPoint & Cmd <abstract>
 
 // Point associated with VFD speed as percentage where 0% is off, 100% if full speed
-VfdSpeedPoint : VfdFreqPoint & Sensor <abstract>
-{
+VfdSpeedPoint : VfdFreqPoint & Sensor <abstract> {
   vfd
   speed
   unit: "%"

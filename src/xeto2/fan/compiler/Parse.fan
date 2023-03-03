@@ -45,7 +45,7 @@ internal class Parse : Step
 
     // make pragma the lib meta
     if (lib.meta != null) throw err("Lib meta not null", lib.loc)
-    lib.initMeta
+    lib.initMeta(sys)
     pragma.meta.slots.each |obj| { lib.meta.slots.add(obj) }
 
     compiler.lib    = lib

@@ -47,11 +47,12 @@ internal abstract class AObj : ANode
   AScalar? val
 
   ** Initialize meta data dict
-  AVal initMeta()
+  AVal initMeta(ASys sys)
   {
     if (meta == null)
     {
       meta = AVal(loc, "meta")
+      meta.type = sys.dict
       meta.initSlots
     }
     return meta

@@ -44,6 +44,7 @@ internal class XetoCompiler
       InitLib(),
       Parse(),
       Resolve(),
+      Infer(),
       Assemble(),
     ])
     return lib.asm

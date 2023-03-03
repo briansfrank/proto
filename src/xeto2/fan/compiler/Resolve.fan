@@ -21,6 +21,9 @@ internal class Resolve : Step
     // resolve the dependencies
     resolveDepends
 
+    // resolve the sys types (we might use them in later steps)
+    sys.each |x| { resolveRef(x) }
+
     // resolve the ARefs
     ast.walk |x|
     {

@@ -171,7 +171,7 @@ internal class Parser
 
   private Void parseMeta(AObj obj)
   {
-    parseChildren(obj.initMeta, Token.lt, Token.gt)
+    parseChildren(obj.initMeta(sys), Token.lt, Token.gt)
   }
 
   ARef? parseType(AObj obj)
@@ -191,7 +191,7 @@ internal class Parser
     ofs.type = sys.list
     ofs.initSlots
     ofs.asmToListOf = DataSpec#
-    add(obj.initMeta, ofs)
+    add(obj.initMeta(sys), ofs)
 
     // parse Type <sep> Type <sep> Type ...
     sepToken := cur
@@ -221,7 +221,7 @@ internal class Parser
 
     // replace type with Maybe and set of meta
     obj.type = sys.maybe
-    add(obj.initMeta, of)
+    add(obj.initMeta(sys), of)
   }
 
   private ARef parseTypeSimple(Str errMsg)
@@ -295,7 +295,7 @@ internal class Parser
     if (!obj.isSpec) return
 
     // if already present skip it
-    meta := obj.initMeta.initSlots
+    meta := obj.initMeta(sys).initSlots
     if (meta.get("doc") != null) return
 
     // add it to meta

@@ -22,9 +22,16 @@ internal class ASys
   ARef and    := init("And")
   ARef or     := init("Or")
   ARef maybe  := init("Maybe")
-  ARef spec   := init("Spec")
   ARef lib    := init("Lib")
-  ARef type   := init("Type")
+
+  Void each(|ARef| f)
+  {
+    typeof.fields.each |field|
+    {
+      ref := field.get(this) as ARef
+      if (ref != null) f(ref)
+    }
+  }
 
   private static ARef init(Str name) { ARef(FileLoc.synthetic, AName("sys", name)) }
 

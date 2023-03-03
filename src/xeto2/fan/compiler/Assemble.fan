@@ -95,8 +95,6 @@ internal class Assemble : Step
 
   private Void asmSpec(ASpec x)
   {
-// TODO: need inference
-if (x.type == null) x.type = sys.obj
     m := MSpec(env, x.loc, x.type.asm, asmMeta(x), asmSlots(x), x.val?.asm)
     mField->setConst(x.asm, m)
   }
