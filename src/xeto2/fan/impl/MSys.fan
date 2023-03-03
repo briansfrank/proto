@@ -15,7 +15,7 @@ using data2
 @Js
 internal const class MSys
 {
-  new make(MLib lib)
+  new make(XetoLib lib)
   {
     x := lib.slotsOwn
     this.obj      = x.get("Obj")
@@ -45,29 +45,29 @@ internal const class MSys
     this.query    = x.get("Query")
   }
 
-  const MType obj
-  const MType none
-  const MType dict
-  const MType seq
-  const MType list
-  const MType dataset
-  const MType lib
-  const MType spec
-  const MType type
-  const MType scalar
-  const MType marker
-  const MType bool
-  const MType str
-  const MType uri
-  const MType number
-  const MType int
-  const MType duration
-  const MType date
-  const MType time
-  const MType dateTime
-  const MType ref
-  const MType maybe
-  const MType and
-  const MType or
-  const MType query
+  const XetoType obj
+  const XetoType none
+  const XetoType dict
+  const XetoType seq
+  const XetoType list
+  const XetoType dataset
+  const XetoType lib
+  const XetoType spec
+  const XetoType type
+  const XetoType scalar
+  const XetoType marker
+  const XetoType bool
+  const XetoType str
+  const XetoType uri
+  const XetoType number
+  const XetoType int
+  const XetoType duration
+  const XetoType date
+  const XetoType time
+  const XetoType dateTime
+  const XetoType ref
+  const XetoType maybe
+  const XetoType and
+  const XetoType or
+  const XetoType query
 }

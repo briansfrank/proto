@@ -23,6 +23,7 @@ internal class Parser
   {
     this.compiler = c
     this.env = c.env
+    this.marker = env.marker
     this.fileLoc = fileLoc
     this.tokenizer = Tokenizer(in) { it.keepComments = true }
     this.cur = this.peek = Token.eof
@@ -34,14 +35,12 @@ internal class Parser
 // Public
 //////////////////////////////////////////////////////////////////////////
 
-  AMap parse(AMap? root := null)
+  Void parse(AObj root)
   {
     try
     {
-      if (root == null) root = AMap()
       parseObjs(root)
       verify(Token.eof)
-      return root
     }
     catch (ParseErr e)
     {
@@ -57,7 +56,7 @@ internal class Parser
 // Parsing
 //////////////////////////////////////////////////////////////////////////
 
-  private Void parseObjs(AMap parent)
+  private Void parseObjs(AObj parent)
   {
     while (true)
     {
@@ -66,7 +65,7 @@ internal class Parser
     }
   }
 
-  private Bool parseObj(AMap parent)
+  private Bool parseObj(AObj parent)
   {
     // leading comment
     doc := parseLeadingDoc
@@ -77,57 +76,62 @@ internal class Parser
     if (cur === Token.gt) return false
 
     // this token is start of our object production
-    p := AObj(curToLoc)
-
-    // <markerOnly> | <named> | <unnamed>
+    loc := curToLoc
     Str? name := null
+    AObj? obj := null
+
+    // <named> | <markerOnly> | <unnamed>
     if (cur === Token.id && peek === Token.colon)
     {
       name = consumeName
       consume(Token.colon)
-      parseBody(p)
+      obj = parent.makeChild(loc, name)
+      parseBody(obj)
     }
     else if (cur === Token.id && curVal.toStr[0].isLower && peek !== Token.dot && peek !== Token.doubleColon)
     {
       name = consumeName
-      p.spec.type = compiler.sys.marker
-      p.val = env.marker
+      obj = parent.makeChild(loc, name)
+      obj.type = compiler.sys.marker
+      obj.val = AScalar(loc, marker.toStr, marker)
     }
     else
     {
-      parseBody(p)
+      obj = parent.makeChild(loc, autoName(parent))
+      parseBody(obj)
     }
 
     // trailing comment
-    parseTrailingDoc(doc)
+    doc = parseTrailingDoc(doc)
 
-    addToMap(parent, name, p, doc)
+    add(parent, obj, doc)
     return true
   }
 
-  private Void parseBody(AObj p)
+  private AObj parseBody(AObj obj)
   {
-    a := parseSpec(p)
-    b := parseChildrenOrVal(p)
+    a := parseSpec(obj)
+    b := parseChildrenOrVal(obj)
     if (!a && !b) throw err("Expecting object body not $curToStr")
+    return obj
   }
 
-  private Bool parseChildrenOrVal(AObj p)
+  private Bool parseChildrenOrVal(AObj obj)
   {
     if (cur === Token.lbrace)
-      return parseChildren(p.slots, Token.lbrace, Token.rbrace)
+      return parseChildren(obj, Token.lbrace, Token.rbrace)
 
     if (cur.isVal)
-      return parseVal(p)
+      return parseVal(obj)
 
     return false
   }
 
-  private Bool parseChildren(AMap map, Token open, Token close)
+  private Bool parseChildren(AObj obj, Token open, Token close)
   {
     consume(open)
     skipNewlines
-    parseObjs(map)
+    parseObjs(obj)
     if (cur !== close)
     {
       throw err("Unmatched closing '$close.symbol'")
@@ -136,18 +140,18 @@ internal class Parser
     return true
   }
 
-  private Bool parseVal(AObj p)
+  private Bool parseVal(AObj obj)
   {
-    p.val = curVal
+    obj.val = AScalar(curToLoc, curVal, null)
     consume
     return true
   }
 
-  private Bool parseSpec(AObj p)
+  private Bool parseSpec(AObj obj)
   {
-    p.spec.type = parseType(p.spec.meta)
+    obj.type = parseType(obj)
 
-    if (p.spec.type == null)
+    if (obj.type == null)
     {
       // allow <meta> without type only for sys::Obj
       if (cur !== Token.lt) return false
@@ -155,25 +159,30 @@ internal class Parser
     }
 
     if (cur === Token.lt)
-      parseChildren(p.spec.meta, Token.lt, Token.gt)
+      parseMeta(obj)
 
     if (cur === Token.question)
-      p.spec = parseTypeMaybe(p.spec)
+      parseTypeMaybe(obj)
 
     return true
   }
 
-  ARef? parseType(AMap meta)
+  private Void parseMeta(AObj obj)
+  {
+    parseChildren(obj.initMeta, Token.lt, Token.gt)
+  }
+
+  ARef? parseType(AObj obj)
   {
     if (cur !== Token.id) return null
 
     type := parseTypeSimple("Expecting type name")
-    if (cur === Token.amp)  return parseTypeCompound("And", compiler.sys.and, meta, type)
-    if (cur === Token.pipe) return parseTypeCompound("Or", compiler.sys.or,  meta, type)
+    if (cur === Token.amp)  return parseTypeCompound("And", compiler.sys.and, obj, type)
+    if (cur === Token.pipe) return parseTypeCompound("Or", compiler.sys.or,  obj, type)
     return type
   }
 
-  private ARef parseTypeCompound(Str dis, ARef compoundType, AMap meta, ARef first)
+  private ARef parseTypeCompound(Str dis, ARef compoundType, AObj obj, ARef first)
   {
     sepToken := cur
     ofs := ARef[,].add(first)
@@ -184,34 +193,19 @@ internal class Parser
       ofs.add(parseTypeSimple("Expecting next '$dis' type after $sepToken"))
     }
 
-    loc := ofs.first.loc
-    x := AObj(loc)
-    x.val = ofs
-    meta.add(compiler, "ofs", x)
-
-    return compoundType
+throw Err("TODO: $dis $ofs")
   }
 
-  private ASpecX parseTypeMaybe(ASpecX oldSpec)
+  private Void parseTypeMaybe(AObj obj)
   {
     consume(Token.question)
 
-    loc := oldSpec.loc
-    oldType := oldSpec.type
+    // wrap obj's type+meta into new of object
+    of := obj.wrapSpec("of")
 
-    // if spec is just a type ref, just add into the old's meta
-    if (oldSpec.isTypeOnly)
-    {
-      oldSpec.meta.add(compiler, "of", AObj(loc, oldType))
-      oldSpec.type = compiler.sys.maybe
-      return oldSpec
-    }
-
-    // otherwise we need to wrap the entire old spec inside a maybe
-    wrap := ASpecX()
-    wrap.type = compiler.sys.maybe
-    wrap.meta.add(compiler, "of", AObj(loc, oldSpec))
-    return wrap
+    // replace type with Maybe and set of meta
+    obj.type = compiler.sys.maybe
+    add(obj.initMeta, of)
   }
 
   private ARef parseTypeSimple(Str errMsg)
@@ -248,24 +242,52 @@ internal class Parser
 // AST Manipulation
 //////////////////////////////////////////////////////////////////////////
 
-  private Void addToMap(AMap map, Str? name, AObj child, Str? doc)
+  private Void add(AObj parent, AObj child, Str? doc := null)
   {
+    // add doc to object meta if its a spec
     addDoc(child, doc)
-    map.add(compiler, name, child)
+
+    // allocate slots if first add
+    slots := parent.initSlots
+
+    // check for duplicate or add
+    name := child.name
+    dup := slots.get(name)
+    if (dup != null)
+      compiler.err2("Duplicate name '$name'", dup.loc, child.loc)
+    else
+      slots.add(child)
   }
 
-  private Void addDoc(AObj p, Str? docStr)
+  private Str autoName(AObj parent)
   {
+    parent.initSlots
+    for (i := 0; i<1_000_000; ++i)
+    {
+      name := "_" + i.toStr
+      if (parent.slots.get(name) == null) return name
+    }
+    throw Err("Too many children")
+  }
+
+  private Void addDoc(AObj obj, Str? docStr)
+  {
+    // short circuit if null
     if (docStr == null) return
-    if (p.spec.meta.get("doc") != null) return
 
-    loc := p.loc
+    // don't add docs to data values, specs only
+    if (!obj.isSpec) return
 
-    docVal := AObj(loc)
-    docVal.spec.type = compiler.sys.str
-    docVal.val = docStr
+    // if already present skip it
+    meta := obj.initMeta.initSlots
+    if (meta.get("doc") != null) return
 
-    p.spec.meta.add(compiler, "doc", docVal)
+    // add it to meta
+    loc := obj.loc
+    docObj := AVal(loc, "doc")
+    docObj.type = compiler.sys.str
+    docObj.val = AScalar(loc, docStr, docStr)
+    meta.add(docObj)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -402,6 +424,7 @@ internal class Parser
   private XetoEnv env
   private FileLoc fileLoc
   private Tokenizer tokenizer
+  private const Obj marker
 
   private Token cur      // current token
   private Obj? curVal    // current token value

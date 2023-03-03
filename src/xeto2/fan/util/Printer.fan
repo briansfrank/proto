@@ -6,8 +6,8 @@
 //   28 Dec 2022  Brian Frank  Creation
 //
 
-using util
 using concurrent
+using util
 using data2
 
 **

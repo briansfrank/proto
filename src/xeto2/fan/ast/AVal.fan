@@ -3,22 +3,31 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2 Mar 2023  Brian Frank  Creation
+//   3 Mar 2023  Brian Frank  Creation
 //
 
 using util
+using data2
 
 **
-** AST value that is assembled into a reflection API dict value.
+** AST value type compiles into either scalar, list, or dict
 **
 @Js
-internal abstract class AVal
+internal class AVal: AObj
 {
+   ** Constructor
+  new make(FileLoc loc, Str name) : super(loc, name) {}
 
-  ** Source code location
-  abstract FileLoc loc()
+  ** Node type
+  override ANodeType nodeType() { ANodeType.val }
 
   ** Assembled value - raise exception if not assembled yet
-  abstract Obj? asmVal()
+  override Obj asm() { asmRef ?: throw NotAssembledErr() }
+
+  ** Construct nested value
+  override AObj makeChild(FileLoc loc, Str name) { AVal(loc, name) }
+
+  ** Assembled dict
+  Obj? asmRef
 
 }

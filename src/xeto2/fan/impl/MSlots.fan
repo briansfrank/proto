@@ -14,18 +14,18 @@ using data2
 @Js
 internal const class MSlots : DataSlots
 {
-  static const MSlots empty := MSlots(Str:MSpec[:])
+  static const MSlots empty := MSlots(Str:XetoSpec[:])
 
-  new make(Str:MSpec map) { this.map = map }
+  new make(Str:XetoSpec map) { this.map = map }
 
-  const Str:MSpec map
+  const Str:XetoSpec map
 
   override Bool isEmpty()
   {
     map.isEmpty
   }
 
-  override MSpec? get(Str name, Bool checked := true)
+  override XetoSpec? get(Str name, Bool checked := true)
   {
     kid := map[name]
     if (kid != null) return kid

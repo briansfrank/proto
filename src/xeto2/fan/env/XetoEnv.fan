@@ -62,7 +62,7 @@ internal const class XetoEnv : DataEnv
 
   override Bool isLibLoaded(Str qname) { libMgr.isLoaded(qname) }
 
-  override MLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
+  override XetoLib? lib(Str qname, Bool checked := true) { libMgr.load(qname, checked) }
 
   override Void print(Obj? val, OutStream out := Env.cur.out, Obj? opts := null)
   {
@@ -98,7 +98,7 @@ internal const class XetoEnv : DataEnv
     return c.compileData
   }
 
-  override MType? type(Str qname, Bool checked := true)
+  override XetoType? type(Str qname, Bool checked := true)
   {
     colon := qname.index("::") ?: throw ArgErr("Invalid qname: $qname")
     libName := qname[0..<colon]

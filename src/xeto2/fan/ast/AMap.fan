@@ -9,77 +9,55 @@
 using util
 
 **
-** AST map of name/value pairs - dict, spec meta, or spec slots
+** AST map of name/object pairs
 **
 @Js
 internal class AMap
 {
 
+  ** Empty map means we parsed an empty "<>" or "{}"
   Bool isEmpty() { map.isEmpty }
 
-  Void add(XetoCompiler c, Str? name, AObj child)
+  ** Number of pairs
+  Int size() { map.size }
+
+  ** Add a name/object pair - should check for duplicates before
+  ** calling this method to properly report the duplicate name error
+  Void add(AObj obj)
   {
     if (map.isEmpty)
     {
       map = Str:AObj[:]
       map.ordered = true
     }
-
-    // auto-assign name if unnamed
-    if (name == null) name = autoName
-
-    // report duplicate
-    dup := map[name]
-    if (dup != null)
-    {
-      c.err2("Duplicate name '$name'", dup.loc, child.loc)
-      return
-    }
-
-    // add it
-    map[name] = child
+    map.add(obj.name, obj)
   }
 
+  ** Get a pair by name or null
+  AObj? get(Str name) { map[name] }
+
+  ** Remove object by name
   AObj? remove(Str name)
   {
     if (map.isEmpty) return null
     return map.remove(name)
   }
 
-  private Str autoName()
-  {
-    for (i := 0; i<1_000_000; ++i)
-    {
-      name := "_" + i.toStr
-      if (map[name] == null) return name
-    }
-    throw Err("Too many children")
-  }
-
-  AObj? get(Str name) { map[name] }
-
+  ** Iterate the name/object pairs
   Void each(|AObj, Str| f) { map.each(f) }
 
-  Void dump(OutStream out, Str indent, Str brackets)
-  {
-    kidIndent := indent + "  "
-    out.print(" ").printLine(brackets[0..0])
-    map.each |kid| { kid.dump(out, kidIndent) }
-    out.print(indent).print(brackets[1..1])
-  }
+  ** Walk the AST objects
+  Void walk(|AObj| f) { map.each |x| { x.walk(f) } }
 
+  ** Debug string
   override Str toStr()
   {
     s := StrBuf()
-    map.each |v, n|
-    {
-      if (s.size > 1) s.add(", ")
-      s.add(n).add(": $v.val")
-    }
+    map.each |v, n| { s.join(n, ", ").add(":").add(v) }
     return s.toStr
   }
 
-  static const Str:AObj empty := [:]
+  private static const Str:AObj empty := [:]
 
   private Str:AObj map := empty
 }

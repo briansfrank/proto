@@ -34,6 +34,8 @@ abstract internal class Step
 
   AObj ast() { compiler.ast }
 
+  ALib lib() { compiler.lib }
+
   AObj? pragma() { compiler.pragma }
 
   Void info(Str msg) { compiler.info(msg) }

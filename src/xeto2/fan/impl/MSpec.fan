@@ -15,46 +15,39 @@ using data2
 ** Implementation of DataSpec wrapped by XetoSpec
 **
 @Js
-internal const class MSpec : DataSpec
+internal const class MSpec
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef typeRef, AtomicRef ownRef, MSlots slotsOwn, Obj? val)
+  new make(XetoEnv env, FileLoc loc, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
   {
-    this.envRef      = env
-    this.loc         = loc
-    this.selfRef     = selfRef
-    this.typeRef     = typeRef
-    this.ownRef      = ownRef
-    this.slotsOwnRef = slotsOwn
-    this.val         = val
+    this.env      = env
+    this.loc      = loc
+    this.type     = type
+    this.own      = own
+    this.slotsOwn = slotsOwn
+    this.val      = val
   }
 
-  override XetoEnv env() { envRef }
-  const XetoEnv envRef
+  const XetoEnv env
 
-  const AtomicRef selfRef
+  const FileLoc loc
 
-  const override FileLoc loc
+  const XetoType type
 
-  override MType type() { typeRef.val }
-  internal const AtomicRef typeRef
+  MSlots slots() { slotsOwn } // TODO
 
-  override MSlots slots() { slotsOwn }  // TODO
+  const MSlots slotsOwn
 
-  override MSlots slotsOwn() { slotsOwnRef }
-  const MSlots slotsOwnRef
+  XetoSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
 
-  override MSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
+  XetoSpec? slotOwn(Str name, Bool checked := true) { slotsOwn.get(name, checked) }
 
-  override MSpec? slotOwn(Str name, Bool checked := true) { slotsOwnRef.get(name, checked) }
-
-  const override Obj? val
+  const Obj? val
 
   override Str toStr() { type.qname }
 
-  override DataDict own() { ownRef.val }
-  private const AtomicRef ownRef
+  const DataDict own
 
-  override DataSpec spec() { env.sys.spec }
+  virtual DataSpec spec() { env.sys.spec }
 
 //////////////////////////////////////////////////////////////////////////
 // Effective Meta
@@ -69,26 +62,26 @@ internal const class MSpec : DataSpec
   }
   private const AtomicRef metaRef := AtomicRef()
 
-  override Bool isEmpty() { meta.isEmpty }
-  @Operator override Obj? get(Str name, Obj? def := null) { meta.get(name, def) }
-  override Bool has(Str name) { meta.has(name) }
-  override Bool missing(Str name) { meta.missing(name) }
-  override Void each(|Obj val, Str name| f) { meta.each(f) }
-  override Obj? eachWhile(|Obj val, Str name->Obj?| f) { meta.eachWhile(f) }
+  Bool isEmpty() { meta.isEmpty }
+  Obj? get(Str name, Obj? def := null) { meta.get(name, def) }
+  Bool has(Str name) { meta.has(name) }
+  Bool missing(Str name) { meta.missing(name) }
+  Void each(|Obj val, Str name| f) { meta.each(f) }
+  Obj? eachWhile(|Obj val, Str name->Obj?| f) { meta.eachWhile(f) }
   override Obj? trap(Str name, Obj?[]? args := null) { meta.trap(name, args) }
 
 //////////////////////////////////////////////////////////////////////////
 // Is-A
 //////////////////////////////////////////////////////////////////////////
 
-  override Bool isa(DataSpec that)
+  Bool isa(XetoSpec that)
   {
     thisType := this.type
     thatType := that.type
 
     // check type tree
     // TODO: need to check of covariance
-    if (thisType.inheritsFrom(thatType))
+    if (thisType.mt.isaX(thatType))
       return true
 
     /*
@@ -101,7 +94,7 @@ internal const class MSpec : DataSpec
 
     if (thisType.isaMaybe)
     {
-      of := this["of"] as DataType
+      of := get("of") as DataType
       if (of != null) return of.isa(that)
     }
 
@@ -161,6 +154,8 @@ internal const class XetoSpec : DataSpec
   override Obj? eachWhile(|Obj,Str->Obj?| f) { m.eachWhile(f) }
 
   override Obj? trap(Str n, Obj?[]? a := null) { m.trap(n, a) }
+
+  override Str toStr() { m?.toStr ?: super.toStr }
 
   const MSpec? m
 }

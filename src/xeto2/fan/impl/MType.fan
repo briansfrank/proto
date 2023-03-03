@@ -6,7 +6,6 @@
 //   23 Feb 2023  Brian Frank  Creation
 //
 
-using concurrent
 using util
 using data2
 
@@ -14,62 +13,35 @@ using data2
 ** Implementation of DataType wrapped by XetoType
 **
 @Js
-internal const class MType : MSpec, DataType
+internal const class MType : MSpec
 {
-  new make(XetoEnv env, FileLoc loc, AtomicRef selfRef, AtomicRef libRef, Str qname, Str name, AtomicRef baseRef, AtomicRef ownRef, MSlots declared, Obj? val)
-    : super(env, loc, selfRef, baseRef, ownRef, declared, val)
+  new make(XetoEnv env, FileLoc loc, XetoLib lib, Str qname, Str name, XetoType self, XetoType? base, DataDict own, MSlots declared, Obj? val)
+    : super(env, loc, self, own, declared, val)
   {
-    this.libRef = libRef
-    this.qname  = qname
-    this.name   = name
+    this.lib   = lib
+    this.qname = qname
+    this.name  = name
+    this.base  = base
   }
 
-  override XetoEnv env() { envRef }
+  const XetoLib lib
 
-  override MLib lib() { libRef.val }
-  private const AtomicRef libRef
+  const Str qname
 
-  const override Str qname
-
-  const override Str name
+  const Str name
 
   override DataSpec spec() { env.sys.type }
 
-  override MType type() { this }
-
-  override MType? base() { typeRef.val }  // use MSpec.typeRef as our base type
-
-  override MSlots slots() { super.slots }
-
-  override MSlots slotsOwn() { super.slotsOwn }
-
-  override MSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
-
-  override MSpec? slotOwn(Str name, Bool checked := true) { slotsOwnRef.get(name, checked) }
+  const XetoType? base
 
   override Str toStr() { qname }
 
-  override Bool isaScalar() { inheritsFrom(env.sys.scalar) }
-  override Bool isaMarker() { inheritsFrom(env.sys.marker) }
-  override Bool isaSeq()    { inheritsFrom(env.sys.seq) }
-  override Bool isaDict()   { inheritsFrom(env.sys.dict) }
-  override Bool isaList()   { inheritsFrom(env.sys.list) }
-  override Bool isaMaybe()  { inheritsFrom(env.sys.maybe) }
-  override Bool isaAnd()    { inheritsFrom(env.sys.and) }
-  override Bool isaOr()     { inheritsFrom(env.sys.or) }
-  override Bool isaQuery()  { inheritsFrom(env.sys.query) }
-
-  Bool inheritsFrom(DataType that)
+  Bool isaX(XetoType that)
   {
-    isaX(that)
-  }
-
-  Bool isaX(DataType that)
-  {
-    if (this === that) return true
+    if (this === that.mt) return true
     base := this.base
     if (base == null) return false
-    return base.inheritsFrom(that)
+    return base.mt.isaX(that)
   }
 }
 

@@ -12,6 +12,7 @@
 @Js
 internal const class AName
 {
+  ** Construct name which might or might not be qualified
   new make(Str s)
   {
     colon := s.index("::")
@@ -28,6 +29,7 @@ internal const class AName
     this.toStr = s
   }
 
+  ** Construct qualified name
   new makeQualified(Str? lib, Str name)
   {
     this.lib = lib
@@ -35,8 +37,15 @@ internal const class AName
     this.toStr = lib == null ? name : StrBuf(lib.size+2+name.size).add(lib).add("::").add(name).toStr
   }
 
+  ** Library name if qualified
   const Str? lib
+
+  ** Simple name if unqualified
   const Str name
+
+  ** Is this a qualified name
   Bool isQualified() { lib != null }
+
+  ** Simple or qualified name
   const override Str toStr
 }

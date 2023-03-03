@@ -6,32 +6,43 @@
 //   19 Feb 2023  Brian Frank  Creation
 //
 
-using concurrent
 using util
 
 **
-** AST object reference
+** AST object reference to a named DataSpec
 **
 @Js
-internal class ARef
+internal class ARef : ANode
 {
+  ** Constructor
   new make(FileLoc loc, AName name)
   {
     this.loc = loc
     this.name = name
   }
 
-  override Str toStr() { name.toStr }
+  ** Node type
+  override ANodeType nodeType() { ANodeType.ref }
 
-  const FileLoc loc
+  ** Source code location
+  const override FileLoc loc
+
+  ** Qualified/unqualified name
   const AName name
 
-  Bool isResolved() { resolvedRef != null }
+  ** Resolved reference or raise UnresolvedErr
+  override XetoSpec asm() { referent ?: throw UnresolvedErr("$name [$loc]") }
 
-  AtomicRef resolved() { resolvedRef ?: throw Err("Unresolved: $name [$loc]") }
+  ** Resolved reference
+  XetoSpec? referent
 
-  MType resolvedType() { resolved.val }
+  ** Is this reference already resolved
+  Bool isResolved() { referent != null }
 
-  AtomicRef? resolvedRef
+  ** Walk myself
+  override Void walk(|ANode| f) { f(this) }
+
+  ** Return qualified/unqualified name
+  override Str toStr() { name.toStr }
 
 }

@@ -46,7 +46,7 @@ internal class XetoCompiler
       Resolve(),
       Assemble(),
     ])
-    return lib
+    return lib.asm
   }
 
   ** Compile input to instance data
@@ -58,7 +58,7 @@ internal class XetoCompiler
       Resolve(),
       Assemble(),
     ])
-    return data
+    return ast.asm
   }
 
   ** Run the pipeline with the given steps
@@ -131,10 +131,9 @@ internal class XetoCompiler
   internal Duration? duration          // run
   internal Bool isLib                  // Init (false isData)
   internal Bool isSys                  // Init
-  internal AObj? ast                   // Parse
+  internal AObj? ast                   // Parse (lib or data)
+  internal ALib? lib                   // Parse (compileLib only)
   internal AObj? pragma                // Parse
-  internal MLib? lib                   // Assemble
-  internal Obj? data                   // Assemble
 }
 
 **************************************************************************

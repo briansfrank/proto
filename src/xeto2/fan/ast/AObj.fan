@@ -3,44 +3,122 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   29 Jan 2023  Brian Frank  Creation
+//   2 Mar 2023  Brian Frank  Creation
 //
 
-using concurrent
 using util
 
 **
-** AST object - used to model both dicts and scalars
+** AST base class for object productions:
+**    - AVal: compiles into scalar/list/dict for values
+**    - ASpec: compiles into slot/nested XetoSpec
+**    - AType: compiles into named XetoType
+**    - ALib:  compiles into named XetoLib
 **
 @Js
-internal class AObj
+internal abstract class AObj : ANode
 {
-  new make(FileLoc loc, Obj? val := null)
+  ** Constructor
+  new make(FileLoc loc, Str name)
   {
     this.loc = loc
-    this.val = val
+    this.name = name
   }
 
-  const FileLoc loc
-  ASpecX spec := ASpecX()
-  AMap slots := AMap()
-  Obj? val
-  Bool isLib
-  Bool isType
-  Bool isSpec
+  ** Source code location
+  const override FileLoc loc
 
-  const AtomicRef asmRef := AtomicRef()
+  ** Simple name
+  const Str name
 
-  AtomicRef? metaRef
+  ** Is this an spec subtype including type/lib
+  virtual Bool isSpec() { false }
 
+  ** Type ref for this object.  Null if this is Obj or we need to infer type
+  ARef? type
+
+  ** Meta tags if there was '<>'
+  AVal? meta { private set }
+
+  ** Children slots if there was '{}'
+  AMap? slots { private set }
+
+  ** Scalar value
+  AScalar? val
+
+  ** Initialize meta data dict
+  AVal initMeta()
+  {
+    if (meta == null)
+    {
+      meta = AVal(loc, "meta")
+      meta.initSlots
+    }
+    return meta
+  }
+
+  ** Create new AVal with this's type+meta, then clear this's type+meta.
+  AObj wrapSpec(Str name)
+  {
+    of := this.meta == null ? AVal(loc, name) : ASpec(loc, name)
+    of.type = this.type
+    of.meta = this.meta
+    this.type = null
+    this.meta = null
+    return of
+  }
+
+  ** Initialize slots map
+  AMap initSlots()
+  {
+    if (slots == null) slots = AMap()
+    return slots
+  }
+
+  ** Lookup a slot by name
+  AObj? slot(Str name) { slots?.get(name) }
+
+  ** Construct proper child object for parser to use
+  abstract AObj makeChild(FileLoc loc, Str name)
+
+  ** Walk AST tree
+  override Void walk(|ANode| f)
+  {
+    type?.walk(f)
+    meta?.walk(f)
+    slots?.walk(f)
+    val?.walk(f)
+    f(this)
+  }
+
+  ** Debug string
+  override final Str toStr()
+  {
+    s := StrBuf()
+    s.add(name).add(":")
+    if (type != null) s.join(type, " ")
+    if (val != null) s.join(val, " ")
+    //s.add("[").add(nodeType).add(", ").add(loc).add("]")
+    return s.toStr
+  }
+
+  ** Dump
   Void dump(OutStream out := Env.cur.out, Str indent := "")
   {
-    out.print(indent)
-    if (spec.type != null) out.print(" ").print(spec.type)
-    if (!spec.meta.isEmpty) spec.meta.dump(out, indent, "<>")
-    if (val != null) out.print(" ").print(val.toStr.toCode)
-    if (!slots.isEmpty) slots.dump(out, indent, "{}")
-    out.printLine
+    out.print(indent).printLine(this)
+    if (meta != null)
+    {
+      out.print(indent).printLine("<")
+      meta.slots.each |kid| { kid.dump(out, indent+"  ") }
+      out.print(indent).printLine(">")
+    }
+    if (slots != null)
+    {
+      out.print(indent).printLine("{")
+      slots.each |kid| { kid.dump(out, indent+"  ") }
+      out.print(indent).printLine("}")
+    }
+    if (nodeType === ANodeType.type) out.printLine
   }
 
 }

@@ -15,22 +15,29 @@ using util
 internal class AType : ASpec
 {
   ** Constructor
-  new make(FileLoc loc, ARef type, ALib lib, Str name)
-    : super(loc, type, XetoType())
+  new make(FileLoc loc, ALib lib, Str name)
+    : super(loc, name, XetoType())
   {
+    this.lib   = lib
     this.qname = lib.qname + "::" + name
     this.name  = name
   }
 
+  ** Node type
+  override ANodeType nodeType() { ANodeType.type }
+
   ** Assembled DataType reference
-  override XetoType asm() { asmRef }
+  override XetoType asm() { super.asm }
+
+  ** Construct slot spec
+  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, name) }
+
+  ** Parent library
+  ALib lib
 
   ** Qualified name "foo.bar::Baz"
   const Str qname
 
-  ** Simple name
-  const Str name
-
-  ** Return qname
-  override Str toStr() { qname }
+  ** We use AObj.type to model the base type
+  ARef? base() { type }
 }

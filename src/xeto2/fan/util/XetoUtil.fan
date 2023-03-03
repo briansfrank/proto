@@ -18,6 +18,7 @@ internal const class XetoUtil
   {
     own := spec.own
 
+/*
     inherit := spec.type
     if (inherit === spec)
     {
@@ -38,6 +39,9 @@ internal const class XetoUtil
       acc[n] = v
     }
     return spec.env.dict(acc)
+    */
+// TODO
+return own
   }
 
   static Bool isMetaInherited(Str name)

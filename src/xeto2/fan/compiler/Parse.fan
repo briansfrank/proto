@@ -21,39 +21,91 @@ internal class Parse : Step
     if (input == null) throw err("Compiler input not configured", FileLoc.inputs)
     if (!input.exists) throw err("Input file not found: $input", FileLoc.inputs)
 
-    // parse into root object
-    root := AObj(FileLoc(input))
+    // parse lib of types or data value
+    if (isLib)
+      parseLib(input)
+    else
+      parseData(input)
+  }
+
+  private Void parseLib(File input)
+  {
+    // create ALib as our root object
+    lib := ALib(FileLoc(input), qname)
+    lib.type = sys.lib
+    lib.initSlots
+
+    // parse directory into root lib
+    parseDir(input, lib)
+    bombIfErr
+
+    // remove pragma object from lib slots
+    pragma := validatePragma(lib)
+    bombIfErr
+
+    // make pragma the lib meta
+    if (lib.meta != null) throw err("Lib meta not null", lib.loc)
+    lib.initMeta
+    pragma.meta.slots.each |obj| { lib.meta.slots.add(obj) }
+
+    compiler.lib    = lib
+    compiler.ast    = lib
+    compiler.pragma = pragma
+  }
+
+  private Void parseData(File input)
+  {
+    throw Err("TODO")
+    compiler.pragma = AVal(FileLoc.synthetic, "pragma")
+  }
+
+  private AObj? validatePragma(AObj root)
+  {
+    // remove object named "pragma" from root
+    pragma := root.slots?.remove("pragma")
+
+    // if not found
+    if (pragma == null)
+    {
+      // libs must have pragma
+      if (isLib) err("Lib '$compiler.qname' missing  pragma", root.loc)
+      return null
+    }
+
+    // libs must type their pragma as Lib
+    if (isLib)
+    {
+      if (pragma.type == null || pragma.type.name.name != "Lib") err("Pragma must have 'Lib' type", pragma.loc)
+    }
+
+    // must have meta, and no slots
+    if (pragma.meta == null) err("Pragma missing meta data", pragma.loc)
+    if (pragma.slots != null) err("Pragma cannot have slots", pragma.loc)
+    if (pragma.val != null) err("Pragma cannot scalar value", pragma.loc)
+    return pragma
+  }
+
+  private Void parseDir(File input, AObj root)
+  {
     if (input.isDir)
     {
-      input.list.each |f|
+      input.list.each |sub|
       {
-        if (f.ext == "xeto") parseFile(root.slots, f)
+        if (sub.ext == "xeto") parseFile(sub, root)
       }
     }
     else
     {
-      parseFile(root.slots, input)
+      parseFile(input, root)
     }
-
-    pragma := root.slots.remove("pragma")
-    if (isLib && pragma != null) root.spec.meta = pragma.spec.meta
-
-    bombIfErr
-
-    // root is library, and its children are types
-    root.isLib = true
-    root.slots.each |kid| { kid.isType = true }
-
-    compiler.ast = root
-    compiler.pragma = pragma
   }
 
-  private Void parseFile(AMap root, File file)
+  private Void parseFile(File input, AObj root)
   {
-    loc := FileLoc(file)
+    loc := FileLoc(input)
     try
     {
-      Parser(compiler, loc, file.in).parse(root)
+      Parser(compiler, loc, input.in).parse(root)
     }
     catch (FileLocErr e)
     {

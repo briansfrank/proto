@@ -71,7 +71,7 @@ internal const class MDict : DataDict
     {
       if (s.size > 1) s.add(", ")
       s.add(n)
-      if (v !== DataEnv.cur.marker) s.add(":").add(v)
+//      if (v !== DataEnv.cur.marker) s.add(":").add(v)
     }
     return s.add("}").toStr
   }

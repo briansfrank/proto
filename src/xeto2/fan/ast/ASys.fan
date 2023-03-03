@@ -9,7 +9,7 @@
 using util
 
 **
-** AST system references
+** AST system type references
 **
 @Js
 internal class ASys
@@ -22,6 +22,9 @@ internal class ASys
   ARef and    := init("And")
   ARef or     := init("Or")
   ARef maybe  := init("Maybe")
+  ARef spec   := init("Spec")
+  ARef lib    := init("Lib")
+  ARef type   := init("Type")
 
   private static ARef init(Str name) { ARef(FileLoc.synthetic, AName("sys", name)) }
 

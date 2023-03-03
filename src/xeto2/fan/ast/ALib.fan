@@ -15,14 +15,20 @@ using util
 internal class ALib : ASpec
 {
   ** Constructor
-  new make(FileLoc loc, ARef type, Str qname)
-    : super(loc, type, XetoLib())
+  new make(FileLoc loc, Str qname)
+    : super(loc, "lib", XetoLib())
   {
     this.qname = qname
   }
 
+  ** Node type
+  override ANodeType nodeType() { ANodeType.lib }
+
   ** Assembled DataLib reference
   override XetoLib asm() { asmRef }
+
+  ** Construct type
+  override AObj makeChild(FileLoc loc, Str name) { AType(loc, this, name) }
 
   ** Qualified name "foo.bar.baz"
   const Str qname

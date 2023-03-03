@@ -6,71 +6,35 @@
 //   1 Mar 2023  Brian Frank  Creation
 //
 
-using concurrent
 using util
 
 **
-** AST DataType
+** AST DataSpec
 **
 @Js
-internal class ASpec : AVal
+internal class ASpec : AObj
 {
   ** Constructor
-  new make(FileLoc loc, ARef? type, XetoSpec asm)
+  new make(FileLoc loc, Str name, XetoSpec asm := XetoSpec())
+    : super(loc, name)
   {
-    this.loc    = loc
-    this.type   = type
     this.asmRef = asm
   }
 
-  ** Source code location
-  const override FileLoc loc
+  ** Node type
+  override ANodeType nodeType() { ANodeType.spec }
 
-  ** Return 'asm' XetoSpec as the assembled value
-  override Obj? asmVal() { asm }
+  ** Return true
+  override Bool isSpec() { true }
 
-  ** Reference to the DataSpec - we backpatch the "m" field in Assemble step
-  virtual XetoSpec asm() { asmRef }
+  ** Return 'asm' XetoSpec as the assembled value.  This is the
+  ** reference to the DataSpec - we backpatch the "m" field in Assemble step
+  override XetoSpec asm() { asmRef }
   const XetoSpec asmRef
 
-  ** Type ref for this spec.  Null if this is Obj or we need to infer type
-  ARef? type
+  ** Construct nested spec
+  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, name) }
 
-  ** Additional meta-data fields for DataSpec.own
-  AMap meta := AMap()
-
-  ** Map of ASpecs for slot specs
-  AMap slots := AMap()
-
-  ** Default value for a scalar spec
-  AVal? val
-
-  ** Debug string
-  override Str toStr() { "$type <$meta>" }
 }
 
-**************************************************************************
-** TODO
-**************************************************************************
 
-**
-** AST spec - type and meta
-**
-@Js
-internal class ASpecX
-{
-  ARef? type
-  AMap meta := AMap()
-
-  FileLoc loc() { type?.loc ?: FileLoc.unknown }
-
-  Bool isTypeOnly() { meta.isEmpty }
-
-  override Str toStr()
-  {
-    if (isTypeOnly && type != null)
-      return type.toStr
-    else
-      return "$type <$meta>"
-  }
-}
