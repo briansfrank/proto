@@ -43,7 +43,7 @@ internal class Resolve : Step
     if (isSys) return
 
     // import dependencies from pragma
-    astDepends := pragma.meta.slot("depends")
+    astDepends := pragma?.meta?.slot("depends")
     if (astDepends != null)
     {
       astDepends.slots.each |astDepend| { resolveDepend(astDepend) }
@@ -88,8 +88,11 @@ internal class Resolve : Step
     if (n.isQualified) return resolveQualified(ref)
 
     // match to name within this AST which trumps depends
-    ref.referent = lib.slot(n.name)?.asm
-    if (ref.isResolved) return
+    if (isLib)
+    {
+      ref.referent = lib.slot(n.name)?.asm
+      if (ref.isResolved) return
+    }
 
     // match to external dependencies
     matches := XetoSpec[,]

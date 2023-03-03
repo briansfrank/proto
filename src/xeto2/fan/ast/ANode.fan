@@ -33,7 +33,7 @@ internal abstract class ANode
 **************************************************************************
 
 @Js
-internal enum class ANodeType { ref, scalar, val, spec, type, lib }
+internal enum class ANodeType { ref, val, spec, type, lib }
 
 **************************************************************************
 ** NotAsmErr

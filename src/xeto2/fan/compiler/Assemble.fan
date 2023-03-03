@@ -25,7 +25,6 @@ internal class Assemble : Step
     switch (x.nodeType)
     {
       case ANodeType.ref:    return asmRef(x)
-      case ANodeType.scalar: return asmScalar(x)
       case ANodeType.val:    return asmVal(x)
       case ANodeType.spec:   return asmSpec(x)
       case ANodeType.type:   return asmType(x)
@@ -39,21 +38,61 @@ internal class Assemble : Step
     x.asm
   }
 
-  private Void asmScalar(AScalar x)
-  {
-    if (x.isAsm) return
-    x.val = x.str // TODO
-  }
-
   private Void asmVal(AVal x)
   {
     switch (x.valType)
     {
-      case AValType.scalar:  x.asmRef = x.val.asm
+      case AValType.scalar:  x.asmRef = asmScalar(x)
       case AValType.typeRef: x.asmRef = asmTypeRef(x)
       case AValType.list:    x.asmRef = asmList(x)
       case AValType.dict:    x.asmRef = asmDict(x)
       default: throw Err(x.valType.name)
+    }
+  }
+
+  private Obj? asmScalar(AObj x)
+  {
+    // if value is null or already assembled
+    v := x.val
+    if (v == null) return null
+    if (v.isAsm) return v.asm
+
+    // map to Fantom type to parse
+qname := "todo" // x.type.qname
+    mapping := env.factory.fromXeto[qname]
+    if (mapping != null)
+    {
+      // parse to Fantom type
+      return v.val = asmFantom(mapping, v.str, v.loc)
+    }
+    else
+    {
+      // just fallback to a string value
+      return v.val = v.str
+    }
+  }
+
+  private Obj? asmFantom(XetoScalarType mapping, Str str, FileLoc loc)
+  {
+    // if string type
+    if (mapping.isStr) return str
+
+    // lookup fromStr method
+    fromStr := mapping.fantom.method("fromStr", false)
+    if (fromStr == null)
+    {
+      err("Fantom type '$mapping.fantom' missing fromStr", loc)
+      return str
+    }
+
+    try
+    {
+      return fromStr.call(str)
+    }
+    catch (Err e)
+    {
+      err("Invalid '$mapping.xeto' value: $str.toCode", loc)
+      return str
     }
   }
 
@@ -88,14 +127,14 @@ internal class Assemble : Step
 
   private Void asmType(AType x)
   {
-    m := MType(env, x.loc, x.lib.asm, x.qname, x.name, x.asm, x.supertype?.asm, asmMeta(x), asmSlots(x), x.val?.asm)
+    m := MType(env, x.loc, x.lib.asm, x.qname, x.name, x.asm, x.supertype?.asm, asmMeta(x), asmSlots(x), asmScalar(x))
     mField->setConst(x.asm, m)
     mtField->setConst(x.asm, m)
   }
 
   private Void asmSpec(ASpec x)
   {
-    m := MSpec(env, x.loc, x.type.asm, asmMeta(x), asmSlots(x), x.val?.asm)
+    m := MSpec(env, x.loc, x.type.asm, asmMeta(x), asmSlots(x), asmScalar(x))
     mField->setConst(x.asm, m)
   }
 

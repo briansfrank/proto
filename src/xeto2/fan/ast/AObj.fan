@@ -88,7 +88,6 @@ internal abstract class AObj : ANode
     type?.walk(f)
     meta?.walk(f)
     slots?.walk(f)
-    val?.walk(f)
     f(this)
   }
 

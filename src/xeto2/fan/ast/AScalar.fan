@@ -12,7 +12,7 @@ using util
 ** AST scalar value
 **
 @Js
-internal class AScalar : ANode
+internal class AScalar
 {
   ** Constructor
   new make(FileLoc loc, Str str, Obj? val := null)
@@ -22,11 +22,8 @@ internal class AScalar : ANode
     this.val = val
   }
 
-  ** Node type
-  override ANodeType nodeType() { ANodeType.scalar }
-
   ** Source code location
-  const override FileLoc loc
+  const FileLoc loc
 
   ** Encoded string
   const Str str
@@ -35,13 +32,10 @@ internal class AScalar : ANode
   Bool isAsm() { val != null }
 
   ** Assembled value - raise exception if not assembled yet
-  override Obj asm() { val ?: throw NotAssembledErr() }
+  Obj asm() { val ?: throw NotAssembledErr() }
 
   ** Assembled value either passed in constructor or parsed in Assemble
   Obj? val
-
-  ** Walk myself
-  override Void walk(|ANode| f) { f(this) }
 
   ** Return quoted string encoding
   override Str toStr() { str.toCode }
