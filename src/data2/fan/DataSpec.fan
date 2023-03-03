@@ -23,6 +23,11 @@ const mixin DataSpec : DataDict
   ** Type of this spec.   If this spec is a DataType itself then return self.
   abstract DataType type()
 
+  ** Super type this specs inherits from.  If this spec is not a DataType
+  ** itself, then this method returns `type`.  If this spec is a DataType,
+  ** then return this type's supertype or null if 'sys::Obj' itself.
+  abstract DataType? supertype()
+
   ** Get my own declared meta-data
   abstract DataDict own()
 

@@ -274,7 +274,7 @@ class Printer
     type := spec.type
     if (type === spec)
     {
-      if (type.base != null) indent.quoted("type").colon.quoted(type.base.qname).nl
+      if (type.supertype != null) indent.quoted("type").colon.quoted(type.supertype.qname).nl
     }
     spec.each |v, n| { indent.quoted(n).colon.json(v).nl }
     if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl

@@ -196,6 +196,7 @@ class DataEnvTest : Test
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
     verifySame(lib.type, env.type("sys::Lib"))
+    verifySame(lib.supertype, env.type("sys::Lib"))
     verifySame(lib.spec, env.type("sys::Lib"))
 
     verifyEq(lib.slotOwn("Bad", false), null)
@@ -205,7 +206,7 @@ class DataEnvTest : Test
     return lib
   }
 
-  DataSpec verifyLibType(DataLib lib, Str name, DataType? base)
+  DataSpec verifyLibType(DataLib lib, Str name, DataType? supertype)
   {
     DataType type := lib.slotOwn(name)
     verifySame(type.env, env)
@@ -213,7 +214,7 @@ class DataEnvTest : Test
     verifySame(lib.slotOwn(name), type)
 //   verifyEq(lib.list.containsSame(type), true)
     verifySame(type.type, type)
-    verifySame(type.base, base)
+    verifySame(type.supertype, supertype)
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
     verifySame(type.spec, env.type("sys::Type"))
@@ -230,6 +231,7 @@ class DataEnvTest : Test
 //    verifyEq(slot.qname, parent.qname + "." + name)
 //    verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
+    verifySame(slot.supertype, type)
     verifySame(slot.spec, env.type("sys::Spec"))
     return slot
   }

@@ -22,9 +22,6 @@ const mixin DataType : DataSpec
   ** Parent library for type
   abstract DataLib lib()
 
-  ** Base type this type inherits from or null if this is 'sys::Obj' itself
-  abstract DataType? base()
-
   ** Full qualified name of this type
   abstract Str qname()
 

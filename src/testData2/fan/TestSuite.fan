@@ -158,14 +158,14 @@ class DataTestRunner
   {
     verifyEq(type.qname, type.lib.qname + "::" + type.name)
     verifySame(type.type, type)
-    verifyBase(type, expect["base"])
+    verifySupertype(type, expect["supertype"])
     verifyMeta(type, expect["meta"])
     verifySlots(type, expect["slots"])
   }
 
-  Void verifyBase(DataType type, Str? expect)
+  Void verifySupertype(DataType type, Str? expect)
   {
-    verifyEq(type.base?.qname, expect)
+    verifyEq(type.supertype?.qname, expect)
   }
 
   Void verifyMeta(DataSpec spec, [Str:Obj?]? expect)
@@ -198,7 +198,7 @@ class DataTestRunner
 
     verifyEq(spec.has(name), true)
     verifyEq(spec.missing(name), false)
-    verifySame(spec.get(name), spec.type.base.get(name))
+    verifySame(spec.get(name), spec.type.supertype.get(name))
   }
 
   Void verifyMetaOwn(DataSpec spec, Str name, Str:Obj expect)

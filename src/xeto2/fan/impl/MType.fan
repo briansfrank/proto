@@ -15,13 +15,13 @@ using data2
 @Js
 internal const class MType : MSpec
 {
-  new make(XetoEnv env, FileLoc loc, XetoLib lib, Str qname, Str name, XetoType self, XetoType? base, DataDict own, MSlots declared, Obj? val)
+  new make(XetoEnv env, FileLoc loc, XetoLib lib, Str qname, Str name, XetoType self, XetoType? supertype, DataDict own, MSlots declared, Obj? val)
     : super(env, loc, self, own, declared, val)
   {
-    this.lib   = lib
-    this.qname = qname
-    this.name  = name
-    this.base  = base
+    this.lib       = lib
+    this.qname     = qname
+    this.name      = name
+    this.supertype = supertype
   }
 
   const XetoLib lib
@@ -32,16 +32,15 @@ internal const class MType : MSpec
 
   override DataSpec spec() { env.sys.type }
 
-  const XetoType? base
+  const override XetoType? supertype
 
   override Str toStr() { qname }
 
   Bool isaX(XetoType that)
   {
     if (this === that.mt) return true
-    base := this.base
-    if (base == null) return false
-    return base.mt.isaX(that)
+    if (supertype == null) return false
+    return supertype.mt.isaX(that)
   }
 }
 
@@ -56,8 +55,6 @@ internal const class MType : MSpec
 internal const class XetoType : XetoSpec, DataType
 {
   override DataLib lib() { mt.lib }
-
-  override DataType? base() { mt.base }
 
   override Str qname() { mt.qname }
 

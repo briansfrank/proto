@@ -33,6 +33,8 @@ internal const class MSpec
 
   const XetoType type
 
+  virtual DataType? supertype() { type }
+
   MSlots slots() { slotsOwn } // TODO
 
   const MSlots slotsOwn
@@ -122,6 +124,8 @@ internal const class XetoSpec : DataSpec
   override DataEnv env() { m.env }
 
   override DataType type() { m.type }
+
+  override DataType? supertype() { m.supertype }
 
   override DataDict own() { m.own }
 

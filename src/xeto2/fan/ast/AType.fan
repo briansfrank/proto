@@ -38,6 +38,6 @@ internal class AType : ASpec
   ** Qualified name "foo.bar::Baz"
   const Str qname
 
-  ** We use AObj.type to model the base type
-  ARef? base() { type }
+  ** We use AObj.type to model the supertype type
+  ARef? supertype() { type }
 }

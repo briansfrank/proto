@@ -18,19 +18,13 @@ internal const class XetoUtil
   {
     own := spec.own
 
-/*
-    inherit := spec.type
-    if (inherit === spec)
-    {
-      base := inherit.base
-      if (base == null) return own
-      inherit = base
-    }
+    supertype := spec.supertype as XetoType
+    if (supertype == null) return own
 
-    if (own.isEmpty) return inherit.meta
+    if (own.isEmpty) return supertype.m.meta
 
     acc := Str:Obj[:]
-    inherit.meta.each |v, n|
+    supertype.m.meta.each |v, n|
     {
       if (isMetaInherited(n)) acc[n] = v
     }
@@ -39,9 +33,6 @@ internal const class XetoUtil
       acc[n] = v
     }
     return spec.env.dict(acc)
-    */
-// TODO
-return own
   }
 
   static Bool isMetaInherited(Str name)
