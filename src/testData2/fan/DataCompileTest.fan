@@ -11,10 +11,10 @@ using data2
 using haystack
 
 **
-** DataParseTest
+** DataCompileTest
 **
 @Js
-class DataParseTest : AbstractDataTest
+class DataCompileTest : AbstractDataTest
 {
 
 //////////////////////////////////////////////////////////////////////////
