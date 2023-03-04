@@ -40,4 +40,7 @@ internal class AType : ASpec
 
   ** We use AObj.type to model the supertype type
   ARef? supertype() { type }
+
+  ** Value type is myself
+  override Str valParseType() { qname }
 }

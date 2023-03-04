@@ -57,15 +57,17 @@ internal class Assemble : Step
     if (v == null) return null
     if (v.isAsm) return v.asm
 
+// TODO
 if (x.type == null) return v.str
 
+
     // map to Fantom type to parse
-    qname := x.type.qname
-    mapping := env.factory.fromXeto[qname]
-    if (mapping != null)
+    qname := x.valParseType
+    item := env.factory.fromXeto[qname]
+    if (item != null)
     {
       // parse to Fantom type
-      return v.val = mapping.parse(compiler, v.str, v.loc)
+      return v.val = item.parse(compiler, v.str, v.loc)
     }
     else
     {

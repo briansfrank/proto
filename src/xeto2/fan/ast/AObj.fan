@@ -46,6 +46,9 @@ internal abstract class AObj : ANode
   ** Scalar value
   AScalar? val
 
+  ** Return value type qname for parsing
+  virtual Str valParseType() { type.qname }
+
   ** Initialize meta data dict
   AVal initMeta(ASys sys)
   {

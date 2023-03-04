@@ -8,6 +8,7 @@
 
 using util
 using data2
+using haystack::Ref
 
 **
 ** DataEnvTest
@@ -31,20 +32,24 @@ class DataEnvTest : Test
     // env.print(sys)
 
     // types
-    obj    := verifyLibType(sys, "Obj",    null)
-    none   := verifyLibType(sys, "None",   obj)
-    self   := verifyLibType(sys, "Self",   obj)
-    scalar := verifyLibType(sys, "Scalar", obj)
-    str    := verifyLibType(sys, "Str",    scalar)
-    uri    := verifyLibType(sys, "Uri",    scalar)
-    seq    := verifyLibType(sys, "Seq",    obj)
-    dict   := verifyLibType(sys, "Dict",   seq)
-    list   := verifyLibType(sys, "List",   seq)
-    spec   := verifyLibType(sys, "Spec",   dict)
-    type   := verifyLibType(sys, "Type",   spec)
-    lib    := verifyLibType(sys, "Lib",    spec)
-    org    := verifyLibType(sys, "LibOrg", dict)
-    maybe  := verifyLibType(sys, "Maybe",  obj)
+    obj    := verifyLibType(sys, "Obj",      null)
+    none   := verifyLibType(sys, "None",     obj)
+    self   := verifyLibType(sys, "Self",     obj)
+    scalar := verifyLibType(sys, "Scalar",   obj)
+    str    := verifyLibType(sys, "Str",      scalar, "")
+    uri    := verifyLibType(sys, "Uri",      scalar, ``)
+    ref    := verifyLibType(sys, "Ref",      scalar, Ref("x"))
+    time   := verifyLibType(sys, "Time",     scalar, Time.defVal)
+    date   := verifyLibType(sys, "Date",     scalar, Date.defVal)
+    dt     := verifyLibType(sys, "DateTime", scalar, DateTime.defVal)
+    seq    := verifyLibType(sys, "Seq",      obj)
+    dict   := verifyLibType(sys, "Dict",     seq)
+    list   := verifyLibType(sys, "List",     seq)
+    spec   := verifyLibType(sys, "Spec",     dict)
+    type   := verifyLibType(sys, "Type",     spec)
+    lib    := verifyLibType(sys, "Lib",      spec)
+    org    := verifyLibType(sys, "LibOrg",   dict)
+    maybe  := verifyLibType(sys, "Maybe",    obj)
 
     // slots
     orgDis := verifySlot(org, "dis", str)
@@ -206,7 +211,7 @@ class DataEnvTest : Test
     return lib
   }
 
-  DataSpec verifyLibType(DataLib lib, Str name, DataType? supertype)
+  DataSpec verifyLibType(DataLib lib, Str name, DataType? supertype, Obj? val := null)
   {
     DataType type := lib.slotOwn(name)
     verifySame(type.env, env)
@@ -218,6 +223,7 @@ class DataEnvTest : Test
     verifyEq(type.qname, lib.qname + "::" + name)
     verifyEq(type.toStr, type.qname)
     verifySame(type.spec, env.type("sys::Type"))
+    verifyEq(type.val, val)
     return type
   }
 
