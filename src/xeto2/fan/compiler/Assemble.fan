@@ -92,10 +92,22 @@ if (x.type == null) return v.str
 
   private DataDict asmDict(AVal x)
   {
+    // spec
+    DataSpec? spec := null
+    if (x.type != null)
+    {
+      if (x.meta != null)
+        err("Dict type with meta not supported", x.loc)
+      else
+        spec = x.type.asm
+    }
+
+    // name/value pairs
     acc := Str:Obj[:]
     acc.ordered = true
     x.slots.each |obj, name| { acc[name] = obj.asm }
-    return env.dict(acc)
+
+    return env.dict(acc, spec)
   }
 
   private Void asmLib(ALib x)

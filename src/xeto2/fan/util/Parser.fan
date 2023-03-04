@@ -131,6 +131,7 @@ internal class Parser
 
   private Bool parseChildren(AObj obj, Token open, Token close)
   {
+    obj.initSlots
     consume(open)
     skipNewlines
     parseObjs(obj)
