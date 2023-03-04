@@ -57,9 +57,8 @@ internal class Assemble : Step
     if (v == null) return null
     if (v.isAsm) return v.asm
 
-// TODO
-if (x.type == null) return v.str
-
+    // sanity check
+    if (x.type == null) err("asmScalar without type", x.loc)
 
     // map to Fantom type to parse
     qname := x.valParseType
