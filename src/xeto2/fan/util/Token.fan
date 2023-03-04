@@ -14,7 +14,7 @@ internal enum class Token
 {
 
   id          ("identifier"),
-  str         ("Str", true),
+  val         ("value"),
   dot         ("."),
   colon       (":"),
   doubleColon ("::"),
@@ -34,16 +34,14 @@ internal enum class Token
   comment     ("comment"),
   eof         ("eof");
 
-  private new make(Str dis, Bool isVal := false)
+  private new make(Str dis)
   {
     this.symbol = dis
     this.dis  = dis.size <= 2 ? "'${dis}' $name" : dis
-    this.isVal = isVal
   }
 
   const Str dis
   const Str symbol
-  const Bool isVal
   override Str toStr() { dis }
 }
 

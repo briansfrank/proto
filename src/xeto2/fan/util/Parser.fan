@@ -120,10 +120,18 @@ internal class Parser
 
   private Bool parseChildrenOrVal(AObj obj)
   {
+    // skip newlines which preceed a "{" or value
+    while (cur === Token.nl)
+    {
+      if (peek === Token.nl) { consume; continue }
+      if (peek === Token.lbrace || peek === Token.val) { consume; break }
+      return false
+    }
+
     if (cur === Token.lbrace)
       return parseChildren(obj, Token.lbrace, Token.rbrace)
 
-    if (cur.isVal)
+    if (cur === Token.val)
       return parseVal(obj)
 
     return false
@@ -407,7 +415,7 @@ internal class Parser
 
   private Str consumeVal()
   {
-    verify(Token.str)
+    verify(Token.val)
     val := curVal
     consume
     return val

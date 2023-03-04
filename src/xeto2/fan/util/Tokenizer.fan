@@ -149,7 +149,7 @@ internal class Tokenizer
       s.addChar(ch)
     }
     this.val = s.toStr
-    return Token.str
+    return Token.val
   }
 
   private Int escape()

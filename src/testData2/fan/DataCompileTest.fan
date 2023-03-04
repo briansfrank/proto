@@ -39,6 +39,17 @@ class DataCompileTest : AbstractDataTest
     verifyScalar("sys::DateTime", Str<|DateTime "2023-02-24T10:51:47.21-05:00 New_York"|>, DateTime("2023-02-24T10:51:47.21-05:00 New_York"))
     verifyScalar("sys::DateTime", Str<|DateTime "2023-03-04T12:26:41.495Z"|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
 
+    // whitespace
+    verifyScalar("sys::Date",
+         Str<|Date
+                 "2023-03-04"
+              |>, Date("2023-03-04"))
+    verifyScalar("sys::Date",
+         Str<|Date
+
+
+              "2023-03-04"
+              |>, Date("2023-03-04"))
   }
 
   Void verifyScalar(Str qname, Str src, Obj? expected)
@@ -50,7 +61,7 @@ class DataCompileTest : AbstractDataTest
     verifyEq(type.qname, qname)
 
     pattern := type.get("pattern")
-    if (pattern != null)
+    if (pattern != null && !src.contains("\n"))
     {
       sp := src.index(" ")
       if (src[sp+1] != '"' || src[-1] != '"') fail(src)
@@ -78,6 +89,18 @@ class DataCompileTest : AbstractDataTest
     verifyDict(Str<|sys::LibOrg {}|>, [:], "sys::LibOrg")
     verifyDict(Str<|LibOrg { dis:"Acme" }|>, ["dis":"Acme"], "sys::LibOrg")
     verifyDict(Str<|LibOrg { dis:"Acme", uri:Uri "http://acme.com" }|>, ["dis":"Acme", "uri":`http://acme.com`], "sys::LibOrg")
+
+    // whitespace
+    verifyDict(Str<|LibOrg
+                    {
+
+                    }|>, [:], "sys::LibOrg")
+    verifyDict(Str<|LibOrg
+
+
+                                   {
+
+                    }|>, [:], "sys::LibOrg")
   }
 
   Void verifyDict(Str src, Str:Obj expected, Str type := "sys::Dict")
