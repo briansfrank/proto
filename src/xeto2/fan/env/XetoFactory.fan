@@ -22,8 +22,8 @@ internal const class XetoFactory
     this.marker = fromXeto["sys::Marker"].fantom.field("val").get(null)
   }
 
-  const Str:XetoScalarType fromXeto
-  const Type:XetoScalarType fromFantom
+  const Str:XetoScalarItem fromXeto
+  const Type:XetoScalarItem fromFantom
   const Obj marker
 }
 
@@ -36,64 +36,110 @@ internal class XetoFactoryBuilder
 {
   new make()
   {
+    // sys pod
     pod := Pod.find("sys")
-    mapScalar("sys::Str",      pod.type("Str"))
-    mapScalar("sys::Bool",     pod.type("Bool"))
-    mapScalar("sys::Int",      pod.type("Int"))
-    mapScalar("sys::Float",    pod.type("Float"))
-    mapScalar("sys::Duration", pod.type("Duration"))
-    mapScalar("sys::Date",     pod.type("Date"))
-    mapScalar("sys::Time",     pod.type("Time"))
-    mapScalar("sys::DateTime", pod.type("DateTime"))
-    mapScalar("sys::Uri",      pod.type("Uri"))
-    mapScalar("sys::Version",  pod.type("Version"))
+    add(XetoStrItem("sys::Str", pod.type("Str")))
+    add(XetoDateTimeItem("sys::DateTime", pod.type("DateTime")))
+    addScalar("sys::Bool",     pod.type("Bool"))
+    addScalar("sys::Int",      pod.type("Int"))
+    addScalar("sys::Float",    pod.type("Float"))
+    addScalar("sys::Duration", pod.type("Duration"))
+    addScalar("sys::Date",     pod.type("Date"))
+    addScalar("sys::Time",     pod.type("Time"))
+    addScalar("sys::Uri",      pod.type("Uri"))
+    addScalar("sys::Version",  pod.type("Version"))
 
+    // haystack
     pod = Pod.find("haystack")
-    mapScalar("sys::Marker",   pod.type("Marker"))
-    mapScalar("sys::Number",   pod.type("Number"))
-    mapScalar("sys::Ref",      pod.type("Ref"))
-    mapScalar("ph::NA",        pod.type("NA"))
-    mapScalar("ph::Remove",    pod.type("Remove"))
-    mapScalar("ph::Coord",     pod.type("Coord"))
-    mapScalar("ph::XStr",      pod.type("XStr"))
-    mapScalar("ph::Symbol",    pod.type("Symbol"))
+    addScalar("sys::Marker",   pod.type("Marker"))
+    addScalar("sys::Number",   pod.type("Number"))
+    addScalar("sys::Ref",      pod.type("Ref"))
+    addScalar("ph::NA",        pod.type("NA"))
+    addScalar("ph::Remove",    pod.type("Remove"))
+    addScalar("ph::Coord",     pod.type("Coord"))
+    addScalar("ph::XStr",      pod.type("XStr"))
+    addScalar("ph::Symbol",    pod.type("Symbol"))
 
+    // graphics
     pod = Pod.find("graphics")
-    mapScalar("ion.ui::Color",       pod.type("Color"))
-    mapScalar("ion.ui::FontStyle",   pod.type("FontStyle"))
-    mapScalar("ion.ui::FontWeight",  pod.type("FontWeight"))
-    mapScalar("ion.ui::Insets",      pod.type("Insets"))
-    mapScalar("ion.ui::Point",       pod.type("Point"))
-    mapScalar("ion.ui::Size",        pod.type("Size"))
-    mapScalar("ion.ui::Stroke",      pod.type("Stroke"))
+    addScalar("ion.ui::Color",       pod.type("Color"))
+    addScalar("ion.ui::FontStyle",   pod.type("FontStyle"))
+    addScalar("ion.ui::FontWeight",  pod.type("FontWeight"))
+    addScalar("ion.ui::Insets",      pod.type("Insets"))
+    addScalar("ion.ui::Point",       pod.type("Point"))
+    addScalar("ion.ui::Size",        pod.type("Size"))
+    addScalar("ion.ui::Stroke",      pod.type("Stroke"))
   }
 
-  private Void mapScalar(Str xeto, Type fantom)
+  private Void addScalar(Str xeto, Type fantom)
   {
-    x := XetoScalarType(xeto, fantom)
+    add(XetoScalarItem(xeto, fantom))
+  }
+
+  private Void add(XetoScalarItem x)
+  {
     fromXeto.add(x.xeto, x)
     fromFantom.add(x.fantom, x)
   }
 
-  Str:XetoScalarType fromXeto := [:]
-  Type:XetoScalarType fromFantom := [:]
+  Str:XetoScalarItem fromXeto := [:]
+  Type:XetoScalarItem fromFantom := [:]
 }
 
 **************************************************************************
-** XetoScalarType
+** XetoScalarItem
 **************************************************************************
 
 @Js
-internal const class XetoScalarType
+internal const class XetoScalarItem
 {
   new make(Str xeto, Type fantom)
   {
     this.xeto   = xeto
     this.fantom = fantom
-    this.isStr  = xeto == "sys::Str"
   }
 
   const Str xeto
   const Type fantom
-  const Bool isStr
+
+  virtual Obj? parse(XetoCompiler c, Str str, FileLoc loc)
+  {
+    fromStr := fantom.method("fromStr", false)
+    if (fromStr == null)
+    {
+      c.err("Fantom type '$fantom' missing fromStr", loc)
+      return str
+    }
+
+    try
+    {
+      return fromStr.call(str)
+    }
+    catch (Err e)
+    {
+      c.err("Invalid '$xeto' value: $str.toCode", loc)
+      return str
+    }
+  }
+
+  override Str toStr() { "$xeto <=> $fantom" }
+}
+
+@Js
+internal const class XetoStrItem : XetoScalarItem
+{
+  new make(Str xeto, Type fantom) : super(xeto, fantom) {}
+  override Obj? parse(XetoCompiler c, Str str, FileLoc loc) { str }
+}
+
+@Js
+internal const class XetoDateTimeItem : XetoScalarItem
+{
+  new make(Str xeto, Type fantom) : super(xeto, fantom) {}
+  override Obj? parse(XetoCompiler c, Str str, FileLoc loc)
+  {
+    // allow UTC timezone to be omitted if "Z" offset
+    if (str.endsWith("Z")) str += " UTC"
+    return super.parse(c, str, loc)
+  }
 }

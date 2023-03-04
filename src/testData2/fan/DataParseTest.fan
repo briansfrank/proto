@@ -35,12 +35,13 @@ class DataParseTest : AbstractDataTest
     verifyScalar(Str<|Version "1.2.3"|>, Version("1.2.3"))
     verifyScalar(Str<|Uri "file.txt"|>, `file.txt`)
     verifyScalar(Str<|DateTime "2023-02-24T10:51:47.21-05:00 New_York"|>, DateTime("2023-02-24T10:51:47.21-05:00 New_York"))
+    verifyScalar(Str<|DateTime "2023-03-04T12:26:41.495Z"|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
+
   }
 
   Void verifyScalar(Str src, Obj? expected)
   {
     actual := compileData(src)
-    // echo("$actual [$actual.typeof]")
     verifyEq(actual, expected)
   }
 

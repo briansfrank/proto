@@ -57,42 +57,20 @@ internal class Assemble : Step
     if (v == null) return null
     if (v.isAsm) return v.asm
 
+if (x.type == null) return v.str
+
     // map to Fantom type to parse
-qname := "todo" // x.type.qname
+    qname := x.type.qname
     mapping := env.factory.fromXeto[qname]
     if (mapping != null)
     {
       // parse to Fantom type
-      return v.val = asmFantom(mapping, v.str, v.loc)
+      return v.val = mapping.parse(compiler, v.str, v.loc)
     }
     else
     {
       // just fallback to a string value
       return v.val = v.str
-    }
-  }
-
-  private Obj? asmFantom(XetoScalarType mapping, Str str, FileLoc loc)
-  {
-    // if string type
-    if (mapping.isStr) return str
-
-    // lookup fromStr method
-    fromStr := mapping.fantom.method("fromStr", false)
-    if (fromStr == null)
-    {
-      err("Fantom type '$mapping.fantom' missing fromStr", loc)
-      return str
-    }
-
-    try
-    {
-      return fromStr.call(str)
-    }
-    catch (Err e)
-    {
-      err("Invalid '$mapping.xeto' value: $str.toCode", loc)
-      return str
     }
   }
 

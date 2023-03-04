@@ -30,19 +30,39 @@ internal class ARef : ANode
   ** Qualified/unqualified name
   const AName name
 
-  ** Resolved reference or raise UnresolvedErr
-  override XetoSpec asm() { referent ?: throw UnresolvedErr("$name [$loc]") }
-
-  ** Resolved reference
-  XetoSpec? referent
-
-  ** Is this reference already resolved
-  Bool isResolved() { referent != null }
-
   ** Walk myself
   override Void walk(|ANode| f) { f(this) }
 
   ** Return qualified/unqualified name
-  override Str toStr() { name.toStr }
+  override Str toStr() { qnameRef?.toStr ?: name.toStr }
+
+  ** Is this reference already resolved
+  Bool isResolved() { referent != null }
+
+  ** Resolved reference or raise UnresolvedErr
+  override XetoType asm() { referent ?: throw UnresolvedErr("$name [$loc]") }
+
+  ** Resolved qname UnresolvedErr
+  Str qname() { qnameRef ?: throw UnresolvedErr("$name [$loc]") }
+
+  ** Resolve via an internal AST type
+  Void resolveAst(AType x)
+  {
+    this.referent = x.asm
+    this.qnameRef = x.qname
+  }
+
+  ** Resolve via an external dependency type
+  Void resolveDepend(XetoType x)
+  {
+    this.referent = x
+    this.qnameRef = x.qname
+  }
+
+  ** Resolved reference
+  private XetoType? referent
+
+  ** Resolved qualified name
+  private Str? qnameRef
 
 }

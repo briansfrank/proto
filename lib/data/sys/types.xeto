@@ -16,7 +16,7 @@ None: Obj <sealed>
 Self: Obj <sealed>
 
 // Scalar is an atomic value kind
-Scalar: Obj
+Scalar: Obj <abstract>
 
 // Marker labels a dict with typing information
 Marker: Scalar <sealed> "marker"

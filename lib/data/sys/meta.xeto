@@ -19,19 +19,22 @@ Spec: Dict {
   val: Obj?
 
   // Dict slot specs
-  slots: Dict<of:Spec>
+  slots: Dict <of:Spec>
 
   // Item type used for containers like Maybe, Seq, and Ref
   of: Spec?
 
   // Types used in compound types like And and Or
-  ofs: List<of:Spec>?
+  ofs: List <of:Spec>?
 
   // Documentation description
   doc: Str
 
+  // Abstract types cannot be implemented directly by instance data
+  abstract: Marker <noInherit>?
+
   // Sealed types cannot be extended outside of their own lib
-  sealed: Marker?
+  sealed: Marker <noInherit>?
 
   // Marks spec as undocumented and not officially supported
   nodoc: Marker?
