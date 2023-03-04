@@ -28,16 +28,25 @@ class DataCompileTest : AbstractDataTest
     verifyScalar("sys::Str",      Str<|sys::Str "123"|>, "123")
     verifyScalar("sys::Bool",     Str<|Bool "true"|>, true)
     verifyScalar("sys::Int",      Str<|Int "123"|>, 123)
+    verifyScalar("sys::Int",      Str<|Int 123|>, 123)
+    verifyScalar("sys::Int",      Str<|Int -123|>, -123)
     verifyScalar("sys::Duration", Str<|Duration "123sec"|>, 123sec)
     verifyScalar("sys::Number",   Str<|Number "123kW"|>, n(123, "kW"))
+    verifyScalar("sys::Number",   Str<|Number 123kW|>, n(123, "kW"))
+    verifyScalar("sys::Number",   Str<|Number -89m/s|>, n(-89, "m/s"))
+    verifyScalar("sys::Number",   Str<|Number 100$|>, n(100, "\$"))
+    verifyScalar("sys::Number",   Str<|Number 50%|>, n(50, "%"))
     verifyScalar("sys::Date",     Str<|Date "2023-02-24"|>, Date("2023-02-24"))
+    verifyScalar("sys::Date",     Str<|Date 2023-03-04|>, Date("2023-03-04"))
     verifyScalar("sys::Time",     Str<|Time "02:30:00"|>, Time("02:30:00"))
+    verifyScalar("sys::Time",     Str<|Time 02:30:00|>, Time("02:30:00"))
     verifyScalar("sys::Ref",      Str<|Ref "abc"|>, Ref("abc"))
     verifyScalar("sys::Version",  Str<|Version "1.2.3"|>, Version("1.2.3"))
     verifyScalar("sys::Version",  Str<|sys::Version "1.2.3"|>, Version("1.2.3"))
     verifyScalar("sys::Uri",      Str<|Uri "file.txt"|>, `file.txt`)
     verifyScalar("sys::DateTime", Str<|DateTime "2023-02-24T10:51:47.21-05:00 New_York"|>, DateTime("2023-02-24T10:51:47.21-05:00 New_York"))
     verifyScalar("sys::DateTime", Str<|DateTime "2023-03-04T12:26:41.495Z"|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
+    verifyScalar("sys::DateTime", Str<|DateTime 2023-03-04T12:26:41.495Z|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
 
     // whitespace
     verifyScalar("sys::Date",
@@ -48,7 +57,7 @@ class DataCompileTest : AbstractDataTest
          Str<|Date
 
 
-              "2023-03-04"
+              2023-03-04
               |>, Date("2023-03-04"))
   }
 
@@ -64,10 +73,12 @@ class DataCompileTest : AbstractDataTest
     if (pattern != null && !src.contains("\n"))
     {
       sp := src.index(" ")
-      if (src[sp+1] != '"' || src[-1] != '"') fail(src)
-      str := src[sp+2..-2]
-      regex := Regex(pattern)
-      verifyEq(regex.matches(str), true)
+      if (src[sp+1] == '"' || src[-1] == '"')
+      {
+        str := src[sp+2..-2]
+        regex := Regex(pattern)
+        verifyEq(regex.matches(str), true)
+      }
     }
   }
 

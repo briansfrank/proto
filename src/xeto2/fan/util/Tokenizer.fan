@@ -85,6 +85,8 @@ internal class Tokenizer
     // handle various starting chars
     if (cur.isAlpha) return tok = id
     if (cur == '"')  return tok = str
+    if (cur.isDigit) return tok = num
+    if (cur == '-' && peek.isDigit) return tok = num
 
     // operator
     return tok = operator
@@ -185,6 +187,23 @@ internal class Tokenizer
     }
 
     throw err("Invalid escape sequence")
+  }
+
+  private Token num()
+  {
+    s := StrBuf()
+    while (isNum(cur))
+    {
+      s.addChar(cur)
+      consume
+    }
+    this.val = s.toStr
+    return Token.val
+  }
+
+  private static Bool isNum(Int c)
+  {
+    c.isAlphaNum || c == '-' || c == '.' || c == '$' || c == ':' || c == '/' || c == '%' || c > 128
   }
 
   ** Parse a symbol token (typically into an operator).
