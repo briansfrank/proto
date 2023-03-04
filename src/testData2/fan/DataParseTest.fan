@@ -23,26 +23,41 @@ class DataParseTest : AbstractDataTest
 
   Void testScalars()
   {
-    verifyScalar(Str<|"hi"|>, "hi")
-    verifyScalar(Str<|Bool "true"|>, true)
-    verifyScalar(Str<|Int "123"|>, 123)
-    verifyScalar(Str<|Duration "123sec"|>, 123sec)
-    verifyScalar(Str<|Number "123kW"|>, n(123, "kW"))
-    verifyScalar(Str<|Str "123"|>, "123")
-    verifyScalar(Str<|Date "2023-02-24"|>, Date("2023-02-24"))
-    verifyScalar(Str<|Time "02:30:00"|>, Time("02:30:00"))
-    verifyScalar(Str<|Ref "abc"|>, Ref("abc"))
-    verifyScalar(Str<|Version "1.2.3"|>, Version("1.2.3"))
-    verifyScalar(Str<|Uri "file.txt"|>, `file.txt`)
-    verifyScalar(Str<|DateTime "2023-02-24T10:51:47.21-05:00 New_York"|>, DateTime("2023-02-24T10:51:47.21-05:00 New_York"))
-    verifyScalar(Str<|DateTime "2023-03-04T12:26:41.495Z"|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
+    verifyScalar("sys::Str",      Str<|"hi"|>, "hi")
+    verifyScalar("sys::Str",      Str<|Str "123"|>, "123")
+    verifyScalar("sys::Str",      Str<|sys::Str "123"|>, "123")
+    verifyScalar("sys::Bool",     Str<|Bool "true"|>, true)
+    verifyScalar("sys::Int",      Str<|Int "123"|>, 123)
+    verifyScalar("sys::Duration", Str<|Duration "123sec"|>, 123sec)
+    verifyScalar("sys::Number",   Str<|Number "123kW"|>, n(123, "kW"))
+    verifyScalar("sys::Date",     Str<|Date "2023-02-24"|>, Date("2023-02-24"))
+    verifyScalar("sys::Time",     Str<|Time "02:30:00"|>, Time("02:30:00"))
+    verifyScalar("sys::Ref",      Str<|Ref "abc"|>, Ref("abc"))
+    verifyScalar("sys::Version",  Str<|Version "1.2.3"|>, Version("1.2.3"))
+    verifyScalar("sys::Version",  Str<|sys::Version "1.2.3"|>, Version("1.2.3"))
+    verifyScalar("sys::Uri",      Str<|Uri "file.txt"|>, `file.txt`)
+    verifyScalar("sys::DateTime", Str<|DateTime "2023-02-24T10:51:47.21-05:00 New_York"|>, DateTime("2023-02-24T10:51:47.21-05:00 New_York"))
+    verifyScalar("sys::DateTime", Str<|DateTime "2023-03-04T12:26:41.495Z"|>, DateTime("2023-03-04T12:26:41.495Z UTC"))
 
   }
 
-  Void verifyScalar(Str src, Obj? expected)
+  Void verifyScalar(Str qname, Str src, Obj? expected)
   {
     actual := compileData(src)
     verifyEq(actual, expected)
+
+    type := env.typeOf(actual)
+    verifyEq(type.qname, qname)
+
+    pattern := type.get("pattern")
+    if (pattern != null)
+    {
+      sp := src.index(" ")
+      if (src[sp+1] != '"' || src[-1] != '"') fail(src)
+      str := src[sp+2..-2]
+      regex := Regex(pattern)
+      verifyEq(regex.matches(str), true)
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
