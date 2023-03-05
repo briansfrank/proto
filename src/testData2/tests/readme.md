@@ -4,20 +4,85 @@ The Xeto test suite is provided as a directory of YAML files.
 Each file tests one major feature of the infrastructure.  A test
 file contains one or more test cases as YAML documents.
 
-# Verify Fields
+# Test Case
 
-The following verify fields are supported:
+Each test case is a YAML document.  A test case must specify a `name`
+field which uniquely defines the test within its YAML file.  Names
+are used to run and report test cases.
 
-## verifyBase
+The remainder of the test case fields define a step within the test.
+The field name identifies the step type, and the value is the argument
+to the step.  Steps come in two flavors: setup and verifies.  Setup
+performs some action such as compiling Xeto source code into a library.
+Verifies are used to verify the setup steps.
 
-Verify the base qnamne of a data type.
+The following are the step types discussed in further detail below:
+  - **loadLib**: load a predefined library by name
+  - **compileLib**: compile a library from source code
+  - **compileData**: compile a data from from source code
+  - **verifyType**: verify a type from the current library
+  - **verifyTypes**: convenience to verify a list of types
+  - **verifyData**: verify the data value from compileData
 
-## verifyVal
+# Test Steps
 
-Verify the scalar default value of a data type as "type encoding"
+## loadLib
 
-## verifyMeta
+Load a library by name.  This library becomes the active library for
+use with steps such as `verifyType`.
 
-Verify the declared and inherited meta data fields of a spec as "flag type encoding".
-Flags are "o" for own and "i" for inherited"
+Examples:
+
+    loadLib: "sys"
+
+## compileLib
+
+Compile a library from source.  This library becomes the active library for
+use with steps such as `verifyType`.
+Examples:
+
+    compileLib: |
+      Foo: Dict { someMarker }
+      Bar: Foo
+
+## compileData
+
+Compile a data value from source.  This value becomes the active data for
+use with steps such as `verifyData`.
+
+    compileData: |
+      Date "2023-03-05"
+
+## verifyType
+
+Verify a type by name from the active library (see `loadLib` and `compileLib`).
+The value is a map with the following fields:
+
+  - **name**: simple name of the type within the library
+  - **supertype**: qname of the supertype
+  - **meta**: map of the effective meta formatted as `verifyData`
+  - **slots** map of the effective slots
+
+## verifyTypes
+
+This is a convenience for verifying a list of types in the active library
+using a map of type names.  It follows the exact same conditions as `verifyType`
+with the exception that `name` is omitted.
+
+## verifyData
+
+Verify a data value.
+
+Scalars are verified using the syntax "type value".  If the type is marker
+then the value is omitted:
+
+    "sys::Str hello world"
+    "sys::Marker"
+    "sys::Number 123"
+
+Dicts are verified as a map where the keys specify the expected value type:
+
+    str: ""sys::Str hello world"
+    marker:  "sys::Marker"
+
 
