@@ -22,37 +22,37 @@ Scalar: Obj <abstract>
 Marker: Scalar <sealed> "marker"
 
 // Unicode string of characters
-Str: Scalar ""
+Str: Scalar <sealed> ""
 
 // Boolean value either true or false
-Bool: Scalar "false"
+Bool: Scalar <sealed> "false"
 
 // Integer or floating point numbers annotated with an optional unit
-Number: Scalar "0"
+Number: Scalar <sealed> "0"
 
 // Unitless integer number
-Int: Number
+Int: Number <sealed>
 
 // Number with a unit of time
-Duration: Number
+Duration: Number <sealed>
 
 // Universal resource identifier
-Uri: Scalar ""
+Uri: Scalar <sealed>  ""
 
 // Reference to another dict.
-Ref: Scalar <pattern: "[a-zA-Z\\d\\._~]*"> "x"
+Ref: Scalar <sealed, pattern: "[a-zA-Z\\d\\._~]*"> "x"
 
 // Version string formatted as decimal digits separated by a dot
-Version: Scalar <pattern: "\\d+(\\.\\d+)*"> "0"
+Version: Scalar <sealed, pattern: "\\d+(\\.\\d+)*"> "0"
 
 // ISO 8601 date as year, month, day: '2011-06-07'
-Date: Scalar <pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"> "2000-01-01"
+Date: Scalar <sealed, pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d"> "2000-01-01"
 
 // ISO 8601 time as hour, minute, seconds: '09:51:27.354'
-Time: Scalar <pattern: "\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"> "00:00:00"
+Time: Scalar <sealed, pattern: "\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"> "00:00:00"
 
 // ISO 8601 timestamp followed by timezone identifier
-DateTime: Scalar <pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]*[ ]*[-+a-zA-Z_\\d]*"> "2000-01-01T00:00:00Z UTC"
+DateTime: Scalar <sealed, pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]*[ ]*[-+a-zA-Z_\\d]*"> "2000-01-01T00:00:00Z UTC"
 
 // Closed enumerated choice
 Enum: Scalar
