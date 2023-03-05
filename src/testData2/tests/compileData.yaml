@@ -7,72 +7,72 @@
 ##########################################################################
 
 ---
-name: strInfer
+name: "strInfer"
 compileData: |
   "hi"
 verifyData: "sys::Str hi"
 ---
-name: str
+name: "str"
 compileData: |
   Str "hi"
 verifyData: "sys::Str hi"
 ---
-name: strQual
+name: "strQual"
 compileData: |
   sys::Str "hi"
 verifyData: "sys::Str hi"
 ---
-name: bool
+name: "bool"
 compileData: |
   Bool "true"
 verifyData: "sys::Bool true"
 ---
-name: number
+name: "number"
 compileData: |
   Number "123kW"
 verifyData: "sys::Number 123kW"
 ---
-name: int
+name: "int"
 compileData: |
   Int "123"
 verifyData: "sys::Int 123"
 ---
-name: duration
+name: "duration"
 compileData: |
   Duration "5min"
 verifyData: "sys::Duration 5min"
 ---
-name: uri
+name: "uri"
 compileData: |
   Ref "xyz-123"
 verifyData: "sys::Ref xyz-123"
 ---
-name: ref
+name: "ref"
 compileData: |
   Ref "xyz-123"
 verifyData: "sys::Ref xyz-123"
 ---
-name: version
+name: "version"
 compileData: |
   Version "4.5.6"
 verifyData: "sys::Version 4.5.6"
 ---
-name: date
+name: "date"
 compileData: |
   Date "2023-03-01"
 verifyData: "sys::Date 2023-03-01"
 ---
-name: dateQual
+name: "dateQual"
 compileData: |
   sys::Date "2023-03-01"
 verifyData: "sys::Date 2023-03-01"
 ---
-name: time
+name: "time"
 compileData: |
   Time "14:56:02"
 verifyData: "sys::Time 14:56:02"
 ---
-name: dateTime
+name: "dateTime"
 compileData: |
   DateTime "2023-03-01T09:04:38.844-05:00 New_York"
 verifyData: "sys::DateTime 2023-03-01T09:04:38.844-05:00 New_York"
@@ -83,35 +83,35 @@ verifyData: "sys::DateTime 2023-03-01T09:04:38.844-05:00 New_York"
 ##########################################################################
 
 ---
-name: dictInferWithStr
+name: "dictInferWithStr"
 compileData: |
   { foo:"bar" }
 verifyData:
   spec: "sys::Dict"
   foo: "sys::Str bar"
 ---
-name: dictWithStr
+name: "dictWithStr"
 compileData: |
   Dict { foo:"bar" }
 verifyData:
   spec: "sys::Dict"
   foo: "sys::Str bar"
 ---
-name: dictQualWithStr
+name: "dictQualWithStr"
 compileData: |
   sys::Dict { foo:"bar" }
 verifyData:
   spec: "sys::Dict"
   foo: "sys::Str bar"
 ---
-name: dictWithMarker
+name: "dictWithMarker"
 compileData: |
   { foo }
 verifyData:
   spec: "sys::Dict"
   foo: "sys::Marker"
 ---
-name: dictWithMarkers
+name: "dictWithMarkers"
 compileData: |
   { foo, bar
     baz
@@ -122,7 +122,7 @@ verifyData:
   bar: "sys::Marker"
   baz: "sys::Marker"
 ---
-name: dictWithMulti
+name: "dictWithMulti"
 compileData: |
   Dict {
     foo, bar
@@ -136,7 +136,7 @@ verifyData:
   str: "sys::Str hi"
   date: "sys::Date 1996-09-15"
 ---
-name: libOrg
+name: "libOrg"
 compileData: |
   LibOrg {
     dis: "Acme"

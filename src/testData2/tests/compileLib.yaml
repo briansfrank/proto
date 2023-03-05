@@ -3,7 +3,7 @@
 #
 
 ---
-name: simple
+name: "simple"
 compileLib: |
   Foo: Dict
 verifyTypes:
@@ -12,7 +12,7 @@ verifyTypes:
     meta:
       doc: "inherit"
 ---
-name: metaMarker
+name: "metaMarker"
 compileLib: |
   Foo: Dict <bar>
 verifyTypes:
@@ -20,10 +20,9 @@ verifyTypes:
     supertype: "sys::Dict"
     meta:
       doc: "inherit"
-      bar:
-        type: "sys::Marker"
+      bar: "sys::Marker"
 ---
-name: metaDoc
+name: "metaDoc"
 compileLib: |
   // Foo doc
   Foo: Dict
@@ -31,11 +30,9 @@ verifyTypes:
   Foo:
     supertype: "sys::Dict"
     meta:
-      doc:
-        type: "sys::Str"
-        val: "Foo doc"
+      doc: "sys::Str Foo doc"
 ---
-name: metaComplex
+name: "metaComplex"
 compileLib: |
   // Foo doc
   Foo: Dict <bar, baz:"hi!">
@@ -43,16 +40,11 @@ verifyTypes:
   Foo:
     supertype: "sys::Dict"
     meta:
-      doc:
-        type: "sys::Str"
-        val: "Foo doc"
-      bar:
-        type: "sys::Marker"
-      baz:
-        type: "sys::Str"
-        val: "hi!"
+      doc: "sys::Str Foo doc"
+      bar: "sys::Marker"
+      baz: "sys::Str hi!"
 ---
-name: slotMarker
+name: "slotMarker"
 compileLib: |
   Foo: Dict { bar }
 verifyTypes:
@@ -61,8 +53,6 @@ verifyTypes:
     meta:
       doc: "inherit"
     slots:
-      bar:
-        type: "sys::Marker"
-
+      bar: "sys::Marker"
 ---
 

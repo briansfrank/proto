@@ -46,10 +46,6 @@ class DataTestRunner
     this.verbose  = args.contains("-v")
   }
 
-//////////////////////////////////////////////////////////////////////////
-// Run
-//////////////////////////////////////////////////////////////////////////
-
   This runDir(File dir)
   {
     dir.list.each |file|
@@ -78,83 +74,127 @@ class DataTestRunner
   This runTest(FileLoc loc, Str:Obj? def)
   {
     name := def["name"] ?: "unknown"
-    qname := loc.file.toUri.basename + "." + name
+    testName := loc.file.toUri.basename + "." + name
 
-    if (skip(qname)) return this
+    if (skip(testName)) return this
 
-    cur = qname
-    echo("   - $qname [Line $loc.line]")
+    echo("   - $testName [Line $loc.line]")
 
     try
     {
-      doRunTest(def)
+      DataTestCase(this, testName, def).run
     }
     catch (Err e)
     {
-      fail("$qname failed", e)
+      fail(testName, e)
     }
     return this
   }
 
-  Bool skip(Str qname)
+  Bool skip(Str testName)
   {
     if (runAll) return false
-    return !args.any { qname.contains(it) }
+    return !args.any { testName.contains(it) }
   }
 
-  Void doRunTest(Str:Obj? def)
+  Void fail(Str testName, Err? e)
   {
-    withType := def["withType"]
-    if (withType != null)
-    {
-      type := env.type(withType)
-      runVerifies(type, def)
-      return
-    }
-
-    compileLib := def["compileLib"]
-    if (compileLib != null)
-    {
-      lib := env.compileLib(compileLib)
-      verify := def.getChecked("verifyTypes")
-      verifyTypes(lib, verify)
-      return
-    }
-
-    compileData := def["compileData"]
-    if (compileData != null)
-    {
-      data := env.compileData(compileData)
-      expect := def.getChecked("verifyData")
-      verifyData(data, expect)
-      return
-    }
-
-    throw Err("Test missing any verifies")
+    numFails++
+    echo
+    echo("TEST FAILED: $testName")
+    e?.trace
+    echo
+    failed.add(testName)
   }
 
-  Void runVerifies(DataType type, Str:Obj? def)
+  DataEnv env := DataEnv.cur
+  Str[] args
+  Bool runAll
+  Bool verbose
+  Test test
+  Int numFails
+  Str[] failed := [,]
+}
+
+**************************************************************************
+** DataTestCase
+**************************************************************************
+
+class DataTestCase
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  new make(DataTestRunner runner, Str testName, Str:Obj? def)
+  {
+    this.runner   = runner
+    this.test     = runner.test
+    this.env      = runner.env
+    this.testName = testName
+    this.def      = def
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Run
+//////////////////////////////////////////////////////////////////////////
+
+  Void run()
   {
     def.each |v, n|
     {
-      if (!n.startsWith("verify")) return
-//      typeof.method(n).callOn(this, [type, v])
+      if (n == "name") return
+      runStep(n, v)
     }
+    if (numVerifies == 0) echo("     WARN: no verifies")
   }
 
-//////////////////////////////////////////////////////////////////////////
-// Verify Types
-//////////////////////////////////////////////////////////////////////////
-
-  Void verifyTypes(DataLib lib, Str:Obj expectTypes)
+  Void runStep(Str name, Obj? val)
   {
-    expectTypes.each |expect, name|
-    {
-      verifyType(lib.slotOwn(name), expect)
-    }
+    m := typeof.method(name)
+    m.callOn(this, [val])
   }
 
-  Void verifyType(DataType type, Str:Obj expect)
+//////////////////////////////////////////////////////////////////////////
+// Steps
+//////////////////////////////////////////////////////////////////////////
+
+  Void loadLib(Str qname)
+  {
+    this.libRef = env.lib(qname)
+  }
+
+  Void compileLib(Str src)
+  {
+    this.libRef = env.compileLib(src)
+  }
+
+  Void compileData(Str src)
+  {
+     this.dataRef = env.compileData(src)
+  }
+
+  Void verifyType(Str:Obj? expect)
+  {
+    doVerifyType(lib.slot(expect.getChecked("name")), expect)
+  }
+
+  Void verifyTypes(Str:Obj? expect)
+  {
+    expect.each |e, n| { doVerifyType(lib.slot(n), e) }
+  }
+
+  Void verifyData(Obj expect)
+  {
+    verifyVal(data, expect)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// DataSpec Verifies
+//////////////////////////////////////////////////////////////////////////
+
+  Void doVerifyType(DataType type, Str:Obj? expect)
   {
     verifyEq(type.qname, type.lib.qname + "::" + type.name)
     verifySame(type.type, type)
@@ -177,8 +217,8 @@ class DataTestRunner
     }
 
     expect.each |e, n| { verifyMetaPair(spec, n, e) }
-    spec.each |v, n| { verify(expect.containsKey(n)) }
-    spec.own.each |v, n| { verify(expect.containsKey(n)) }
+    spec.each |v, n| { verify(expect.containsKey(n), n) }
+    spec.own.each |v, n| { verify(expect.containsKey(n), n) }
   }
 
   Void verifyMetaPair(DataSpec spec, Str name, Obj expect)
@@ -201,7 +241,7 @@ class DataTestRunner
     verifySame(spec.get(name), spec.type.supertype.get(name))
   }
 
-  Void verifyMetaOwn(DataSpec spec, Str name, Str:Obj expect)
+  Void verifyMetaOwn(DataSpec spec, Str name, Obj expect)
   {
     verifyEq(spec.own.has(name), true)
     verifyEq(spec.own.missing(name), false)
@@ -210,8 +250,9 @@ class DataTestRunner
     verifyEq(spec.has(name), true)
     verifyEq(spec.missing(name), false)
     verifySame(spec.get(name), spec.own.get(name))
-  }
 
+    verifyVal(spec.get(name), expect)
+  }
 
   Void verifySlots(DataSpec spec, [Str:Obj?]? expect)
   {
@@ -226,44 +267,22 @@ class DataTestRunner
     spec.slotsOwn.each |v, n| { verify(expect.containsKey(n)) }
   }
 
-  Void verifySlot(DataSpec spec, Str name, Str:Obj expect)
+  Void verifySlot(DataSpec spec, Str name, Obj expect)
   {
     slot := spec.slot(name)
     verifySame(spec.slotOwn(name), slot)
     verifySame(spec.slots.get(name), slot)
     verifySame(spec.slotsOwn.get(name), slot)
-    verifyEq(slot.type.qname, expect.getChecked("type"))
-  }
-
-  Void verifyVal(Obj? val, Str:Obj expect)
-  {
-    type := expect.getChecked("type")
-    if (type == "sys::Marker")
-    {
-      verifySame(val, env.marker)
-      return
-    }
-
-    verifyValType(val, type)
-    verifyValStr(val, expect.getChecked("val"))
-  }
-
-  Void verifyValType(Obj? val, Str expect)
-  {
-    verifyEq(env.typeOf(val).qname, expect)
-  }
-
-  Void verifyValStr(Obj? val, Str expect)
-  {
-    verifyEq(val.toStr, expect)
+    // TODO
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Verify Data
+// Data Verifies
 //////////////////////////////////////////////////////////////////////////
 
-  Void verifyData(Obj? val, Obj expect)
+  Void verifyVal(Obj? val, Obj? expect)
   {
+    if (expect == null) return
     type := env.typeOf(val)
     if (type.isaScalar)
       verifyScalar(val, type, expect)
@@ -286,7 +305,7 @@ class DataTestRunner
     }
 
     verifyEq(type.qname, expectType)
-    if (expectVal != null) verifyEq(val.toStr, expectVal)
+    if (expectVal != null) verifyStr(val.toStr, expectVal)
   }
 
   Void verifyDict(DataDict dict, Str:Obj expect)
@@ -295,7 +314,7 @@ class DataTestRunner
     expect.each |e, n|
     {
       if (n == "spec") return
-      verifyData(dict[n], e)
+      verifyVal(dict[n], e)
     }
     dict.each |v, n| { verify(expect[n] != null) }
   }
@@ -306,111 +325,28 @@ class DataTestRunner
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Verify Methods
-//////////////////////////////////////////////////////////////////////////
-
-/*
-  Void verifyBase(DataType type, Str? expected)
-  {
-    verifyEq(type.base?.qname, expected)
-  }
-
-  Void verifyVal(DataSpec spec, Str expected)
-  {
-    what := "${spec}.val"
-    val := spec.val
-
-    verifyEq(env.typeOf(val), spec.type, what)
-    if (val.toStr == expected)
-      verifyEq(val.toStr, expected)
-    else
-      verifyEq(val.typeof.method("fromStr").call(expected), val)
-  }
-
-  Void verifyMeta(DataSpec spec, Str:Obj? expected)
-  {
-    expected.each |v, n|
-    {
-      verifyMetaPair(spec, n, v)
-    }
-
-    spec.each |v, n| { test.verify(expected[n] != null, n) }
-    spec.own.each |v, n| { test.verify(expected[n] != null && expected[n].toStr.startsWith("o"), n) }
-  }
-
-  Void verifyMetaPair(DataSpec spec, Str name, Str expected)
-  {
-    what := "${spec}.${name}"
-
-    // parse "flag type val"
-    flag := expected[0..0]
-    type := expected[2..-1].trim
-    val := null
-    sp := expected.index(" ", 2)
-    if (sp != null)
-    {
-      type = expected[2..<sp].trim
-      val = expected[sp+1..-1].trim
-    }
-
-    switch (flag)
-    {
-      case "o":
-        verifyEq(spec.has(name), true, what)
-        verifyEq(spec.missing(name), false, what)
-        verifyEq(spec.own.has(name), true, what)
-        verifyEq(spec.own.missing(name), false, what)
-        verifySame(spec[name], spec.own[name], what)
-        verifyScalar(spec.own[name], type, val, what)
-
-      case "i":
-        verifyEq(spec.has(name), true, what)
-        verifyEq(spec.missing(name), false, what)
-        verifyEq(spec.own.has(name), false, what)
-        verifyEq(spec.own.missing(name), true, what)
-        verifyScalar(spec[name], type, val, what)
-        verifyEq(spec.own[name], null, what)
-
-      default:
-        throw Err("Invalid flag for verifyMeta: $flag.toCode; $expected")
-    }
-
-  }
-
-  Void verifyScalar(Obj? actual, Str type, Str? val, Str what)
-  {
-    //echo("     $what: $actual [$actual.typeof] ?= $type $val")
-    verifyEq(env.typeOf(actual).qname, type, what)
-    if (val != null)
-    {
-      if (val.startsWith("\$"))
-        verifyEq(actual.toStr, macro(val), what)
-      else
-        verifyEq(actual.toStr, val, what)
-    }
-  }
-
-  Str macro(Str x)
-  {
-    toks := x[1..-1].split('.')
-    if (toks.size != 2) throw Err("macro: $x")
-    return env.lib("sys").slotOwn(toks[0]).get(toks[1])
-  }
-*/
-
-//////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
+
+  DataLib lib()
+  {
+    libRef ?: throw Err("Missing loadLib/compileLib")
+  }
+
+  Obj data()
+  {
+    dataRef ?: throw Err("Missing compileData")
+  }
 
   Void verifyStr(Str actual, Str expected)
   {
     actual = actual.trim
     expected = expected.trim
 
-    if (verbose || actual != expected)
+    if (runner.verbose || actual != expected)
     {
       echo
-      echo("--- Str [$cur] ---")
+      echo("--- Str [$testName] ---")
       dump(actual, expected)
     }
     verifyEq(actual, expected)
@@ -441,49 +377,47 @@ class DataTestRunner
     }
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Test Verifies
+//////////////////////////////////////////////////////////////////////////
+
   Void verify(Bool cond, Str? msg := null)
   {
+    numVerifies++
     test.verify(cond, msg)
   }
 
   Void verifyErr(Type? errType, |Test| c)
   {
+    numVerifies++
     test.verifyErr(errType, c)
   }
 
   Void verifyEq(Obj? a, Obj? b, Str? msg := null)
   {
-    if (a != b) echo("  FAIL: $a [${a?.typeof}] ?= $b [${b?.typeof}] | $msg")
+    // if (a != b) echo("  FAIL: $a [${a?.typeof}] ?= $b [${b?.typeof}] | $msg")
+    numVerifies++
     test.verifyEq(a, b, msg)
   }
 
   Void verifySame(Obj? a, Obj? b, Str? msg := null)
   {
+    numVerifies++
     test.verifySame(a, b, msg)
-  }
-
-  Void fail(Str msg, Err? e)
-  {
-    numFails++
-    if (e is FileLocErr) msg += " " + ((FileLocErr)e).loc
-    echo
-    echo("TEST FAILED: $msg")
-    e?.trace
-    echo
-    failed.add(cur)
   }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  DataEnv env := DataEnv.cur
-  Str[] args
-  Bool runAll
-  Bool verbose
-  Test test
-  Int numFails
-  Str cur := "?"
-  Str[] failed := [,]
+  DataTestRunner runner   // make
+  DataEnv env             // make
+  Test test               // make
+  Str testName            // make
+  Str:Obj? def            // make
+  DataLib? libRef         // compileLib, loadLib
+  Obj? dataRef            // compileData
+  Int numVerifies         // verifyX
 }
+
 

@@ -38,6 +38,7 @@ internal const class XetoUtil
   static Bool isMetaInherited(Str name)
   {
     // we need to make this use reflection at some point
+    if (name == "abstract") return false
     if (name == "sealed") return false
     return true
   }
