@@ -177,12 +177,12 @@ class DataTestCase
 
   Void verifyType(Str:Obj? expect)
   {
-    doVerifyType(lib.slot(expect.getChecked("name")), expect)
+    verifySpec(lib.slot(expect.getChecked("name")), expect)
   }
 
   Void verifyTypes(Str:Obj? expect)
   {
-    expect.each |e, n| { doVerifyType(lib.slot(n), e) }
+    expect.each |e, n| { verifySpec(lib.slot(n), e) }
   }
 
   Void verifyData(Obj expect)
@@ -194,18 +194,21 @@ class DataTestCase
 // DataSpec Verifies
 //////////////////////////////////////////////////////////////////////////
 
-  Void doVerifyType(DataType type, Str:Obj? expect)
+  Void verifySpec(DataSpec spec, Str:Obj? expect)
   {
-    verifyEq(type.qname, type.lib.qname + "::" + type.name)
-    verifySame(type.type, type)
-    verifySupertype(type, expect["supertype"])
-    verifyMeta(type, expect["meta"])
-    verifySlots(type, expect["slots"])
-  }
-
-  Void verifySupertype(DataType type, Str? expect)
-  {
-    verifyEq(type.supertype?.qname, expect)
+    type := spec as DataType
+    if (type != null)
+    {
+      verifyEq(type.qname, type.lib.qname + "::" + type.name)
+      verifySame(type.type, type)
+      verifyEq(type.supertype?.qname, expect["supertype"])
+    }
+    else
+    {
+      verifyEq(spec.type.qname, expect.getChecked("type"))
+    }
+    verifyMeta(spec, expect["meta"])
+    verifySlots(spec, expect["slots"])
   }
 
   Void verifyMeta(DataSpec spec, [Str:Obj?]? expect)
@@ -217,7 +220,7 @@ class DataTestCase
     }
 
     expect.each |e, n| { verifyMetaPair(spec, n, e) }
-    spec.each |v, n| { verify(expect.containsKey(n), n) }
+    spec.each |v, n| { verify(expect.containsKey(n), "$spec $n missing") }
     spec.own.each |v, n| { verify(expect.containsKey(n), n) }
   }
 
@@ -238,7 +241,7 @@ class DataTestCase
 
     verifyEq(spec.has(name), true)
     verifyEq(spec.missing(name), false)
-    verifySame(spec.get(name), spec.type.supertype.get(name))
+    verifySame(spec.get(name), spec.supertype.get(name))
   }
 
   Void verifyMetaOwn(DataSpec spec, Str name, Obj expect)
@@ -273,7 +276,7 @@ class DataTestCase
     verifySame(spec.slotOwn(name), slot)
     verifySame(spec.slots.get(name), slot)
     verifySame(spec.slotsOwn.get(name), slot)
-    // TODO
+    verifySpec(slot, expect)
   }
 
 //////////////////////////////////////////////////////////////////////////

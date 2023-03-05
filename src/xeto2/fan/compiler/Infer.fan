@@ -33,7 +33,7 @@ internal class Infer : Step
     {
       t := (AType)x
       if (t.qname == "sys::Obj") return
-      throw err(t.qname, t.loc)
+      throw err("No supertype: $t.qname", t.loc)
     }
 
     // TODO: fallback to Str/Dict

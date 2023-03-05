@@ -19,8 +19,8 @@ Verifies are used to verify the setup steps.
 The following are the step types discussed in further detail below:
   - **loadLib**: load a predefined library by name
   - **compileLib**: compile a library from source code
-  - **compileData**: compile a data from from source code
-  - **verifyType**: verify a type from the current library
+  - **compileData**: compile data from from source code
+  - **verifyType**: verify a type from the active library
   - **verifyTypes**: convenience to verify a list of types
   - **verifyData**: verify the data value from compileData
 
@@ -63,6 +63,9 @@ The value is a map with the following fields:
   - **meta**: map of the effective meta formatted as `verifyData`
   - **slots** map of the effective slots
 
+The slot map is the expected slot spec which follows the same rules
+as `verifyType` with the exception that `supertype` is replaced with `type`.
+
 ## verifyTypes
 
 This is a convenience for verifying a list of types in the active library
@@ -80,9 +83,12 @@ then the value is omitted:
     "sys::Marker"
     "sys::Number 123"
 
-Dicts are verified as a map where the keys specify the expected value type:
+Dicts are verified as a map where the keys specify the expected value type.
+Plus each Dict value should have a 'spec' field with the qname of the dict's
+type:
 
-    str: ""sys::Str hello world"
-    marker:  "sys::Marker"
+    spec: "sys::Dict"
+    str: "sys::Str hello world"
+    marker: "sys::Marker"
 
 

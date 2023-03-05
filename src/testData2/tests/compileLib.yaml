@@ -53,6 +53,31 @@ verifyTypes:
     meta:
       doc: "inherit"
     slots:
-      bar: "sys::Marker"
+      bar:
+        type: "sys::Marker"
+---
+name: "slotWithMeta"
+compileLib: |
+  Foo: Dict {
+    bar: Marker <baz>
+    qux: Str <corge : "garply", waldo: Date "2023-03-05">
+  }
+verifyTypes:
+  Foo:
+    supertype: "sys::Dict"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Marker"
+        meta:
+          baz: "sys::Marker"
+          doc: "inherit"
+      qux:
+        type: "sys::Str"
+        meta:
+          corge: "sys::Str garply"
+          waldo: "sys::Date 2023-03-05"
+          doc: "inherit"
 ---
 
