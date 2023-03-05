@@ -28,12 +28,13 @@ internal class Infer : Step
     // short circuit if type already specified
     if (x.type != null) return
 
-    // types must have supertype already except Obj
+    // types without a supertype are assumed to be sys::Dict
     if (x.nodeType === ANodeType.type)
     {
       t := (AType)x
       if (t.qname == "sys::Obj") return
-      throw err("No supertype: $t.qname", t.loc)
+      t.type = sys.dict
+      return
     }
 
     // TODO: fallback to Str/Dict

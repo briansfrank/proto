@@ -46,7 +46,7 @@ verifyTypes:
 ---
 name: "slotMarker"
 compileLib: |
-  Foo: Dict { bar }
+  Foo: { bar }
 verifyTypes:
   Foo:
     supertype: "sys::Dict"
@@ -79,5 +79,30 @@ verifyTypes:
           corge: "sys::Str garply"
           waldo: "sys::Date 2023-03-05"
           doc: "inherit"
+---
+name: "slotWithMetaAndDoc"
+compileLib: |
+  Foo: Dict {
+    bar: Marker <baz>  // bar doc
+    // qux doc
+    qux: Str <corge : "garply", waldo: Date "2023-03-05">
+  }
+verifyTypes:
+  Foo:
+    supertype: "sys::Dict"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Marker"
+        meta:
+          baz: "sys::Marker"
+          doc: "sys::Str bar doc"
+      qux:
+        type: "sys::Str"
+        meta:
+          corge: "sys::Str garply"
+          waldo: "sys::Date 2023-03-05"
+          doc: "sys::Str qux doc"
 ---
 
