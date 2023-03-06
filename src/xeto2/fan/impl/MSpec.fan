@@ -17,19 +17,21 @@ using data2
 @Js
 internal const class MSpec
 {
-  new make(XetoEnv env, FileLoc loc, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
+  new make(FileLoc loc, XetoSpec? parent, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
   {
-    this.env      = env
     this.loc      = loc
+    this.parent   = parent
     this.type     = type
     this.own      = own
     this.slotsOwn = slotsOwn
     this.val      = val
   }
 
-  const XetoEnv env
+  virtual XetoEnv env() { parent.env }
 
   const FileLoc loc
+
+  const XetoSpec? parent
 
   const XetoType type
 
@@ -126,6 +128,8 @@ internal const class XetoSpec : DataSpec
   new makem(MSpec m) { this.m = m }
 
   override DataEnv env() { m.env }
+
+  override DataSpec? parent() { m.parent }
 
   override DataType type() { m.type }
 

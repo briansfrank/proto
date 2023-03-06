@@ -20,6 +20,10 @@ const mixin DataSpec : DataDict
   ** Environment for spec
   abstract DataEnv env()
 
+  ** Parent spec which contains the this spec definition and scopes name.
+  ** Returns null for a lib.
+  abstract DataSpec? parent()
+
   ** Type of this spec.   If this spec is a DataType itself then return self.
   abstract DataType type()
 

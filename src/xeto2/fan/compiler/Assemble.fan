@@ -118,14 +118,14 @@ internal class Assemble : Step
 
   private Void asmType(AType x)
   {
-    m := MType(env, x.loc, x.lib.asm, x.qname, x.name, x.asm, x.supertype?.asm, asmMeta(x), asmSlots(x), asmScalar(x))
+    m := MType(x.loc, x.lib.asm, x.qname, x.name, x.asm, x.supertype?.asm, asmMeta(x), asmSlots(x), asmScalar(x))
     mField->setConst(x.asm, m)
     mtField->setConst(x.asm, m)
   }
 
   private Void asmSpec(ASpec x)
   {
-    m := MSpec(env, x.loc, x.type.asm, asmMeta(x), asmSlots(x), asmScalar(x))
+    m := MSpec(x.loc, x.parent.asm, x.type.asm, asmMeta(x), asmSlots(x), asmScalar(x))
     mField->setConst(x.asm, m)
   }
 

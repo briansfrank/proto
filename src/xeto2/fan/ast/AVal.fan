@@ -20,7 +20,7 @@ using data2
 internal class AVal: AObj
 {
    ** Constructor
-  new make(FileLoc loc, Str name) : super(loc, name) {}
+  new make(FileLoc loc, AObj? parent, Str name) : super(loc, parent, name) {}
 
   ** Node type
   override ANodeType nodeType() { ANodeType.val }
@@ -38,7 +38,7 @@ internal class AVal: AObj
   override Obj asm() { asmRef ?: throw NotAssembledErr() }
 
   ** Construct nested value
-  override AObj makeChild(FileLoc loc, Str name) { AVal(loc, name) }
+  override AObj makeChild(FileLoc loc, Str name) { AVal(loc, this, name) }
 
   ** Assembled dict
   Obj? asmRef

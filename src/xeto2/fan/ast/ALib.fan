@@ -16,7 +16,7 @@ internal class ALib : ASpec
 {
   ** Constructor
   new make(FileLoc loc, Str qname)
-    : super(loc, "lib", XetoLib())
+    : super(loc, null, "", XetoLib())
   {
     this.qname = qname
   }

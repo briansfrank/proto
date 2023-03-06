@@ -196,7 +196,7 @@ internal class Parser
   private ARef parseTypeCompound(Str dis, ARef compoundType, AObj obj, ARef first)
   {
     // add 'ofs' as list of type refs to the obj.meta
-    ofs := AVal(first.loc, "ofs")
+    ofs := AVal(first.loc, obj, "ofs")
     ofs.type = sys.list
     ofs.initSlots
     ofs.asmToListOf = DataSpec#
@@ -216,7 +216,7 @@ internal class Parser
 
   private Void addCompoundType(AObj ofs, ARef type)
   {
-    typeRef := AVal(type.loc, compiler.autoName(ofs.slots.size))
+    typeRef := AVal(type.loc, ofs, compiler.autoName(ofs.slots.size))
     typeRef.type = type
     ofs.slots.add(typeRef)
   }
@@ -304,15 +304,15 @@ internal class Parser
     if (!obj.isSpec) return
 
     // if already present skip it
-    meta := obj.initMeta(sys).initSlots
-    if (meta.get("doc") != null) return
+    meta := obj.initMeta(sys)
+    if (meta.slot("doc") != null) return
 
     // add it to meta
     loc := obj.loc
-    docObj := AVal(loc, "doc")
+    docObj := AVal(loc, meta, "doc")
     docObj.type = sys.str
     docObj.val = AScalar(loc, docStr, docStr)
-    meta.add(docObj)
+    meta.initSlots.add(docObj)
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -198,6 +198,7 @@ class DataEnvTest : Test
 
     verifySame(env.lib(qname), lib)
     verifySame(lib.env, env)
+    verifyEq(lib.parent, null)
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
     verifySame(lib.type, env.type("sys::Lib"))
@@ -215,6 +216,7 @@ class DataEnvTest : Test
   {
     DataType type := lib.slotOwn(name)
     verifySame(type.env, env)
+    verifySame(type.parent, lib)
     verifySame(type.lib, lib)
     verifySame(lib.slotOwn(name), type)
 //   verifyEq(lib.list.containsSame(type), true)
@@ -231,6 +233,7 @@ class DataEnvTest : Test
   {
     slot := parent.slotOwn(name)
     verifyEq(slot.typeof.qname, "xeto2::XetoSpec") // not type
+    verifySame(slot.parent, parent)
     verifySame(slot.env, env)
     verifySame(parent.slotOwn(name), slot)
 //    verifyEq(parent.list.containsSame(slot), true)

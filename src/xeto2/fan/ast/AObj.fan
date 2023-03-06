@@ -19,10 +19,11 @@ using util
 internal abstract class AObj : ANode
 {
   ** Constructor
-  new make(FileLoc loc, Str name)
+  new make(FileLoc loc, AObj? parent, Str name)
   {
-    this.loc = loc
-    this.name = name
+    this.loc    = loc
+    this.parent = parent
+    this.name   = name
   }
 
   ** Source code location
@@ -30,6 +31,9 @@ internal abstract class AObj : ANode
 
   ** Simple name
   const Str name
+
+  ** Parent spec (null for lib, root data)
+  AObj? parent { private set }
 
   ** Is this an spec subtype including type/lib
   virtual Bool isSpec() { false }
@@ -54,7 +58,7 @@ internal abstract class AObj : ANode
   {
     if (meta == null)
     {
-      meta = AVal(loc, "meta")
+      meta = AVal(loc, this, "meta")
       meta.type = sys.dict
       meta.initSlots
     }
@@ -64,7 +68,7 @@ internal abstract class AObj : ANode
   ** Create new AVal with this's type+meta, then clear this's type+meta.
   AObj wrapSpec(Str name)
   {
-    of := this.meta == null ? AVal(loc, name) : ASpec(loc, name)
+    of := this.meta == null ? AVal(loc, parent, name) : ASpec(loc, parent, name)
     of.type = this.type
     of.meta = this.meta
     this.type = null

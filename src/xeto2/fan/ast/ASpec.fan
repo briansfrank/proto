@@ -15,8 +15,8 @@ using util
 internal class ASpec : AObj
 {
   ** Constructor
-  new make(FileLoc loc, Str name, XetoSpec asm := XetoSpec())
-    : super(loc, name)
+  new make(FileLoc loc, ASpec? parent, Str name, XetoSpec asm := XetoSpec())
+    : super(loc, parent, name)
   {
     this.asmRef = asm
   }
@@ -33,7 +33,7 @@ internal class ASpec : AObj
   const XetoSpec asmRef
 
   ** Construct nested spec
-  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, name) }
+  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, this, name) }
 
 }
 

@@ -16,10 +16,13 @@ using data2
 internal const class MLib : MSpec
 {
   new make(XetoEnv env, FileLoc loc, Str qname, XetoType libType, DataDict own, MSlots declared)
-    : super(env, loc, libType, own, declared, null)
+    : super(loc, null, libType, own, declared, null)
   {
+    this.env   = env
     this.qname = qname
   }
+
+  const override XetoEnv env
 
   const Str qname
 

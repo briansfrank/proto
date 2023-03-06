@@ -16,7 +16,7 @@ internal class AType : ASpec
 {
   ** Constructor
   new make(FileLoc loc, ALib lib, Str name)
-    : super(loc, name, XetoType())
+    : super(loc, lib, name, XetoType())
   {
     this.lib   = lib
     this.qname = lib.qname + "::" + name
@@ -30,7 +30,7 @@ internal class AType : ASpec
   override XetoType asm() { super.asm }
 
   ** Construct slot spec
-  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, name) }
+  override AObj makeChild(FileLoc loc, Str name) { ASpec(loc, this, name) }
 
   ** Parent library
   ALib lib

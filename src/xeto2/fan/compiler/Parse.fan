@@ -56,7 +56,7 @@ internal class Parse : Step
   private Void parseData(File input)
   {
     // create dict as root object
-    root := AVal(FileLoc(input), "root")
+    root := AVal(FileLoc(input), null, "root")
     root.type = sys.dict
     root.initSlots
 
