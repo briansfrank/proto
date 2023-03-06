@@ -208,7 +208,6 @@ class DataTestCase
     {
       verifyQName(spec.type, expect.getChecked("type"))
     }
-    verifyVal(spec.val, expect["val"])
     verifyMeta(spec, expect["meta"])
     verifySlots(spec, expect["slots"])
   }
@@ -217,7 +216,7 @@ class DataTestCase
   {
     if (expect == null)
     {
-      verifyEq(spec.own.isEmpty, true)
+      verifyEq(spec.own.isEmpty, true, spec.qname)
       return
     }
 

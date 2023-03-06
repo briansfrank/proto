@@ -56,9 +56,6 @@ const mixin DataSpec : DataDict
   ** Convenience for 'slotsOwn.get'
   abstract DataSpec? slotOwn(Str name, Bool checked := true)
 
-  ** Scalar value or null
-  abstract Obj? val()
-
   ** Return if this specs inherits from that from a nominal type perspective.
   abstract Bool isa(DataSpec that)
 

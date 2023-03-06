@@ -40,6 +40,9 @@ internal class Assemble : Step
 
   private Void asmVal(AVal x)
   {
+    // check if already assembled
+    if (x.asmRef != null) return
+
     switch (x.valType)
     {
       case AValType.scalar:  x.asmRef = asmScalar(x)
@@ -118,22 +121,33 @@ internal class Assemble : Step
 
   private Void asmType(AType x)
   {
-    m := MType(x.loc, x.lib.asm, x.qname, x.name, x.supertype?.asm, x.asm, asmMeta(x), asmSlots(x), asmScalar(x))
+    m := MType(x.loc, x.lib.asm, x.qname, x.name, x.supertype?.asm, x.asm, asmMeta(x), asmSlots(x))
     mField->setConst(x.asm, m)
     mtField->setConst(x.asm, m)
   }
 
   private Void asmSpec(ASpec x)
   {
-    m := MSpec(x.loc, x.parent.asm, x.name, x.type.asm, asmMeta(x), asmSlots(x), asmScalar(x))
+    m := MSpec(x.loc, x.parent.asm, x.name, x.type.asm, asmMeta(x), asmSlots(x))
     mField->setConst(x.asm, m)
   }
 
   private DataDict asmMeta(ASpec x)
   {
-    if (x.meta == null) return env.emptyDict
-    asmVal(x.meta)
-    return x.meta.asm
+    if (x.meta == null && x.val == null) return env.emptyDict
+
+    DataDict dict := x.meta == null ? env.emptyDict : asmDict(x.meta)
+
+    // TODO: just temp hack for now
+    if (x.val != null)
+    {
+      acc := Str:Obj[:]
+      dict.each |v, n| { acc[n] = v }
+      acc.add("val", asmScalar(x))
+      dict = env.dict(acc)
+    }
+
+    return dict
   }
 
   private MSlots asmSlots(ASpec x)

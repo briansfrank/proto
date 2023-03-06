@@ -38,120 +38,121 @@ verifyType:
   meta:
     doc: "sys::Str Marker labels a dict with typing information"
     sealed: "sys::Marker"
+    val: "sys::Marker"
 ---
 name: "str"
 loadLib: "sys"
 verifyType:
   name: "Str"
   base: "sys::Scalar"
-  val: "sys::Str "
   meta:
     doc: "sys::Str Unicode string of characters"
     sealed: "sys::Marker"
+    val: "sys::Str "
 ---
 name: "bool"
 loadLib: "sys"
 verifyType:
   name: "Bool"
   base: "sys::Scalar"
-  val: "sys::Bool false"
   meta:
     doc: "sys::Str Boolean value either true or false"
     sealed: "sys::Marker"
+    val: "sys::Bool false"
 ---
 name: "number"
 loadLib: "sys"
 verifyType:
   name: "Number"
   base: "sys::Scalar"
-  val: "sys::Number 0"
   meta:
     doc: "sys::Str Integer or floating point numbers annotated with an optional unit"
     sealed: "sys::Marker"
+    val: "sys::Number 0"
 ---
 name: "int"
 loadLib: "sys"
 verifyType:
   name: "Int"
   base: "sys::Number"
-  val: "sys::Int 0"
   meta:
     doc: "sys::Str Unitless integer number"
     sealed: "sys::Marker"
+    val: "sys::Int 0"
 ---
 name: "duration"
 loadLib: "sys"
 verifyType:
   name : "Duration"
   base: "sys::Number"
-  val: "sys::Duration 0sec"
   meta:
     doc: "sys::Str  Number with a unit of time"
     sealed: "sys::Marker"
+    val: "sys::Duration 0sec"
 ---
 name: "uri"
 loadLib: "sys"
 verifyType:
   name: "Uri"
   base: "sys::Scalar"
-  val: "sys::Uri "
   meta:
     doc: "sys::Str Universal resource identifier"
     sealed: "sys::Marker"
+    val: "sys::Uri "
 ---
 name: "ref"
 loadLib: "sys"
 verifyType:
   name: "Ref"
   base: "sys::Scalar"
-  val: "sys::Ref x"
   meta:
     doc: "sys::Str Reference to another dict."
     pattern: "sys::Str [a-zA-Z\\d\\._~]*"
     sealed: "sys::Marker"
+    val: "sys::Ref x"
 ---
 name: "version"
 loadLib: "sys"
 verifyType:
   name: "Version"
   base: "sys::Scalar"
-  val: "sys::Version 0"
   meta:
     doc: "sys::Str Version string formatted as decimal digits separated by a dot"
     pattern: "sys::Str \\d+(\\.\\d+)*"
     sealed: "sys::Marker"
+    val: "sys::Version 0"
 ---
 name: "date"
 loadLib: "sys"
 verifyType:
   name: "Date"
   base: "sys::Scalar"
-  val: "sys::Date 2000-01-01"
   meta:
     doc: "sys::Str ISO 8601 date as year, month, day: '2011-06-07'"
     pattern: "sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\d"
     sealed: "sys::Marker"
+    val: "sys::Date 2000-01-01"
 ---
 name: "time"
 loadLib: "sys"
 verifyType:
   name: "Time"
   base: "sys::Scalar"
-  val: "sys::Time 00:00:00"
   meta:
     doc: "sys::Str ISO 8601 time as hour, minute, seconds: '09:51:27.354'"
     pattern: "sys::Str \\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"
     sealed: "sys::Marker"
+    val: "sys::Time 00:00:00"
 ---
 name: "dateTime"
 loadLib: "sys"
 verifyType:
   name: "DateTime"
   base: "sys::Scalar"
-  val: "sys::DateTime 2000-01-01T00:00:00Z UTC"
   meta:
     doc: "sys::Str  ISO 8601 timestamp followed by timezone identifier"
     pattern: "sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]*[ ]*[-+a-zA-Z_\\d]*"
     sealed: "sys::Marker"
+    val: "sys::DateTime 2000-01-01T00:00:00Z UTC"
 ---
 

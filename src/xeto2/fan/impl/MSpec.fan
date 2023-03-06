@@ -17,7 +17,7 @@ using data2
 @Js
 internal const class MSpec
 {
-  new make(FileLoc loc, XetoSpec? parent, Str name, XetoSpec? base, DataDict own, MSlots slotsOwn, Obj? val)
+  new make(FileLoc loc, XetoSpec? parent, Str name, XetoSpec? base, DataDict own, MSlots slotsOwn)
   {
     this.loc      = loc
     this.parent   = parent
@@ -25,7 +25,6 @@ internal const class MSpec
     this.base     = base
     this.own      = own
     this.slotsOwn = slotsOwn
-    this.val      = val
   }
 
   virtual XetoEnv env() { parent.env }
@@ -49,8 +48,6 @@ internal const class MSpec
   XetoSpec? slot(Str name, Bool checked := true) { slots.get(name, checked) }
 
   XetoSpec? slotOwn(Str name, Bool checked := true) { slotsOwn.get(name, checked) }
-
-  const Obj? val
 
   override Str toStr() { qname }
 
@@ -153,8 +150,6 @@ internal const class XetoSpec : DataSpec
   override DataSpec? slot(Str n, Bool c := true) { m.slot(n, c) }
 
   override DataSpec? slotOwn(Str n, Bool c := true) { m.slotOwn(n, c) }
-
-  override Obj? val() { m.val }
 
   override Bool isa(DataSpec x) { m.isa(x) }
 

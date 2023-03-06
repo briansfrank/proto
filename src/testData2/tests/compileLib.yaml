@@ -8,7 +8,7 @@ compileLib: |
   Foo: Dict
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
 ---
@@ -17,7 +17,7 @@ compileLib: |
   Foo: Dict <bar>
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
       bar: "sys::Marker"
@@ -28,7 +28,7 @@ compileLib: |
   Foo: Dict
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "sys::Str Foo doc"
 ---
@@ -38,7 +38,7 @@ compileLib: |
   Foo: Dict <bar, baz:"hi!">
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "sys::Str Foo doc"
       bar: "sys::Marker"
@@ -49,12 +49,15 @@ compileLib: |
   Foo: { bar }
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
     slots:
       bar:
         type: "sys::Marker"
+        meta:
+          doc: "inherit"
+          val: "sys::Marker"
 ---
 name: "slotWithMeta"
 compileLib: |
@@ -64,7 +67,7 @@ compileLib: |
   }
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
     slots:
@@ -73,12 +76,14 @@ verifyTypes:
         meta:
           baz: "sys::Marker"
           doc: "inherit"
+          val: "inherit"
       qux:
         type: "sys::Str"
         meta:
           corge: "sys::Str garply"
           waldo: "sys::Date 2023-03-05"
           doc: "inherit"
+          val: "inherit"
 ---
 name: "slotWithMetaAndDoc"
 compileLib: |
@@ -89,7 +94,7 @@ compileLib: |
   }
 verifyTypes:
   Foo:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
     slots:
@@ -98,12 +103,14 @@ verifyTypes:
         meta:
           baz: "sys::Marker"
           doc: "sys::Str bar doc"
+          val: "inherit"
       qux:
         type: "sys::Str"
         meta:
           corge: "sys::Str garply"
           waldo: "sys::Date 2023-03-05"
           doc: "sys::Str qux doc"
+          val: "inherit"
 ---
 name: "slotInherit"
 compileLib: |
@@ -113,19 +120,19 @@ compileLib: |
   B : A
 verifyTypes:
   A:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
     slots:
       bar:
         type: "sys::Date"
-        val: "sys::Date 2023-02-05"
         meta:
           doc: "inherit"
           pattern: "inherit"
           qux: "sys::Marker"
+          val: "sys::Date 2023-02-05"
   B:
-    supertype: "test::A"
+    base: "test::A"
     meta:
       doc: "inherit"
     slots:
@@ -141,7 +148,7 @@ compileLib: |
   }
 verifyTypes:
   A:
-    supertype: "sys::Dict"
+    base: "sys::Dict"
     meta:
       doc: "inherit"
     slots:
@@ -153,7 +160,7 @@ verifyTypes:
           pattern: "inherit"
           qux: "sys::Marker"
   B:
-    supertype: "test::A"
+    base: "test::A"
     meta:
       doc: "inherit"
     slots:

@@ -232,7 +232,7 @@ echo("### $x")
     verifySame(type.base, base)
     verifyEq(type.toStr, type.qname)
     verifySame(type.spec, env.type("sys::Type"))
-    verifyEq(type.val, val)
+    verifyEq(type["val"], val)
     return type
   }
 

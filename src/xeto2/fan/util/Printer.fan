@@ -232,7 +232,7 @@ class Printer
       indention--
       indent.bracket("}")
     }
-    if (spec.val != null && !isMarker(spec.val)) sp.quoted(spec.val.toStr)
+//    if (spec.val != null && !isMarker(spec.val)) sp.quoted(spec.val.toStr)
     if (comments) nl
     return this
   }
@@ -277,7 +277,7 @@ class Printer
       if (type.base != null) indent.quoted("type").colon.quoted(type.base.qname).nl
     }
     spec.each |v, n| { indent.quoted(n).colon.json(v).nl }
-    if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl
+//    if (spec.val != null) indent.quoted("val").colon.quoted(spec.val.toStr).nl
     slots := spec.slotsOwn
     if (!slots.isEmpty)
     {

@@ -80,7 +80,7 @@ internal const class XetoUtil
     b.each |v, n| { acc[n] = v }
     meta := a.env.dict(acc)
 
-    return XetoSpec(MSpec(b.loc, b.parent, b.name, b.base, meta, b.slotsOwn, b.val ?: a.val))
+    return XetoSpec(MSpec(b.loc, b.parent, b.name, b.base, meta, b.slotsOwn))
   }
 
 }
