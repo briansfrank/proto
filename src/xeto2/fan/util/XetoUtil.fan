@@ -19,7 +19,7 @@ internal const class XetoUtil
   {
     own := spec.own
 
-    supertype := spec.supertype as XetoType
+    supertype := spec.base as XetoType
     if (supertype == null) return own
 
     if (own.isEmpty) return supertype.m.meta
@@ -48,7 +48,7 @@ internal const class XetoUtil
   static MSlots inheritSlots(MSpec spec)
   {
     own := spec.slotsOwn
-    supertype := spec.supertype
+    supertype := spec.base
 
     if (supertype == null) return own
     if (own.isEmpty) return supertype.slots
@@ -80,7 +80,7 @@ internal const class XetoUtil
     b.each |v, n| { acc[n] = v }
     meta := a.env.dict(acc)
 
-    return XetoSpec(MSpec(b.loc, b.parent, b.name, b.type, meta, b.slotsOwn, b.val ?: a.val))
+    return XetoSpec(MSpec(b.loc, b.parent, b.name, b.base, meta, b.slotsOwn, b.val ?: a.val))
   }
 
 }

@@ -202,7 +202,7 @@ class DataTestCase
     {
       verifyEq(type.qname, type.lib.qname + "::" + type.name)
       verifySame(type.type, type)
-      verifyQName(type.supertype, expect["supertype"])
+      verifyQName(type.base, expect["base"])
     }
     else
     {
@@ -238,7 +238,7 @@ class DataTestCase
   {
     name := expect
     sp := expect.index(" ")
-    inheritFrom := spec.supertype
+    inheritFrom := spec.base
     if (sp != null)
     {
       throw Err("not done")

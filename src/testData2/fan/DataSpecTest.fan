@@ -152,7 +152,7 @@ class DataSpecTest : AbstractDataTest
      bar := lib.slotOwn("Bar")
 
      fooBar := lib.slotOwn("FooBar")
-     verifySame(fooBar.type.supertype, and)
+     verifySame(fooBar.type.base, and)
      verifySame(fooBar.type.isaAnd, true)
      verifyEq(fooBar["ofs"], DataSpec[foo,bar])
    }

@@ -57,13 +57,17 @@ class DataEnvTest : Test
 
     // Spec.of: Spec?
     specOf := verifySlot(spec, "of", maybe)
+    verifyEq(specOf.qname, "sys::Spec.of")
+    verifySame(specOf.parent, spec)
     verifyEq(specOf["doc"], "Item type used for containers like Maybe, Seq, and Ref")
     verifySame(specOf["of"], spec)
 
     // Spec.ofs: List<of:Spec>?
     specOfs := verifySlot(spec, "ofs", maybe)
+echo("### $specOfs")
     verifyEq(specOfs["doc"], "Types used in compound types like And and Or")
     x := specOfs["of"] as DataSpec
+echo("### $x")
     verifyEq(x.typeof.qname, "xeto2::XetoSpec")
     verifySame(x.type, list)
     verifySame(x["of"], spec)
@@ -203,7 +207,7 @@ class DataEnvTest : Test
     verifyEq(lib.qname, qname)
     verifyEq(lib.version, version)
     verifySame(lib.type, env.type("sys::Lib"))
-    verifySame(lib.supertype, env.type("sys::Lib"))
+    verifySame(lib.base, env.type("sys::Lib"))
     verifySame(lib.spec, env.type("sys::Lib"))
 
     verifyEq(lib.slotOwn("Bad", false), null)
@@ -213,7 +217,7 @@ class DataEnvTest : Test
     return lib
   }
 
-  DataSpec verifyLibType(DataLib lib, Str name, DataType? supertype, Obj? val := null)
+  DataSpec verifyLibType(DataLib lib, Str name, DataType? base, Obj? val := null)
   {
     DataType type := lib.slotOwn(name)
     verifySame(type.env, env)
@@ -225,7 +229,7 @@ class DataEnvTest : Test
     verifySame(lib.slotOwn(name), type)
     verifyEq(lib.slots.names.contains(name), true)
     verifySame(type.type, type)
-    verifySame(type.supertype, supertype)
+    verifySame(type.base, base)
     verifyEq(type.toStr, type.qname)
     verifySame(type.spec, env.type("sys::Type"))
     verifyEq(type.val, val)
@@ -246,7 +250,7 @@ class DataEnvTest : Test
     verifyEq(parent.slots.names.contains(name), true)
     verifyEq(slot.toStr, slot.qname)
     verifySame(slot.type, type)
-    verifySame(slot.supertype, type)
+    verifySame(slot.base, type)
     verifySame(slot.spec, env.type("sys::Spec"))
     return slot
   }

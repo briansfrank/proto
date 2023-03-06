@@ -17,12 +17,12 @@ using data2
 @Js
 internal const class MSpec
 {
-  new make(FileLoc loc, XetoSpec? parent, Str name, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
+  new make(FileLoc loc, XetoSpec? parent, Str name, XetoSpec? base, DataDict own, MSlots slotsOwn, Obj? val)
   {
     this.loc      = loc
     this.parent   = parent
     this.name     = name
-    this.type     = type
+    this.base     = base
     this.own      = own
     this.slotsOwn = slotsOwn
     this.val      = val
@@ -38,9 +38,9 @@ internal const class MSpec
 
   virtual Str qname() { parent.qname + "." + name }
 
-  const XetoType type
+  virtual XetoType type() { base.type }
 
-  virtual DataType? supertype() { type }
+  const XetoSpec? base
 
   once MSlots slots() { XetoUtil.inheritSlots(this) }
 
@@ -142,7 +142,7 @@ internal const class XetoSpec : DataSpec
 
   override DataType type() { m.type }
 
-  override DataType? supertype() { m.supertype }
+  override DataSpec? base() { m.base }
 
   override DataDict own() { m.own }
 
