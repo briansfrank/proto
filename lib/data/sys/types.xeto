@@ -31,10 +31,10 @@ Bool: Scalar <sealed> "false"
 Number: Scalar <sealed> "0"
 
 // Unitless integer number
-Int: Number <sealed>
+Int: Number <sealed> "0"
 
 // Number with a unit of time
-Duration: Number <sealed>
+Duration: Number <sealed> "0sec"
 
 // Universal resource identifier
 Uri: Scalar <sealed>  ""

@@ -119,7 +119,7 @@ verifyTypes:
     slots:
       bar:
         type: "sys::Date"
-        val: "2023-02-05"
+        val: "sys::Date 2023-02-05"
         meta:
           doc: "inherit"
           pattern: "inherit"
@@ -130,5 +130,40 @@ verifyTypes:
       doc: "inherit"
     slots:
       bar: "inherit A"
+---
+name: "slotOverride"
+compileLib: |
+  A: {
+    bar: Date <qux> "2023-02-05"
+  }
+  B : A {
+    bar: Date <bar>
+  }
+verifyTypes:
+  A:
+    supertype: "sys::Dict"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Date"
+        val: "sys::Date 2023-02-05"
+        meta:
+          doc: "inherit"
+          pattern: "inherit"
+          qux: "sys::Marker"
+  B:
+    supertype: "test::A"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Date"
+        val: "sys::Date 2023-02-05"
+        meta:
+          doc: "sys::Str ISO 8601 date as year, month, day: '2011-06-07'"
+          pattern: "sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\d"
+          qux: "sys::Marker"
+          baz: "sys::Marker"
 ---
 

@@ -121,6 +121,10 @@ internal const class MSpec
 @Js
 internal const class XetoSpec : DataSpec
 {
+  new make() {}
+
+  new makem(MSpec m) { this.m = m }
+
   override DataEnv env() { m.env }
 
   override DataType type() { m.type }

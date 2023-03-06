@@ -208,6 +208,7 @@ class DataTestCase
     {
       verifyQName(spec.type, expect.getChecked("type"))
     }
+    verifyVal(spec.val, expect["val"])
     verifyMeta(spec, expect["meta"])
     verifySlots(spec, expect["slots"])
   }
@@ -227,14 +228,22 @@ class DataTestCase
 
   Void verifyMetaPair(DataSpec spec, Str name, Obj expect)
   {
-    if (expect == "inherit")
+    if (expect is Str && expect.toStr.startsWith("inherit"))
       verifyMetaInherit(spec, name)
     else
       verifyMetaOwn(spec, name, expect)
   }
 
-  Void verifyMetaInherit(DataSpec spec, Str name)
+  Void verifyMetaInherit(DataSpec spec, Str expect)
   {
+    name := expect
+    sp := expect.index(" ")
+    inheritFrom := spec.supertype
+    if (sp != null)
+    {
+      throw Err("not done")
+    }
+
     verifyEq(spec.own.has(name), false, name)
     verifyEq(spec.own.missing(name), true)
     verifyEq(spec.own[name], null)
@@ -242,16 +251,16 @@ class DataTestCase
 
     verifyEq(spec.has(name), true, name)
     verifyEq(spec.missing(name), false)
-    verifySame(spec.get(name), spec.supertype.get(name))
+    verifySame(spec.get(name), inheritFrom.get(name))
   }
 
   Void verifyMetaOwn(DataSpec spec, Str name, Obj expect)
   {
-    verifyEq(spec.own.has(name), true)
+    verifyEq(spec.own.has(name), true, name)
     verifyEq(spec.own.missing(name), false)
     verifyVal(spec.own[name], expect)
 
-    verifyEq(spec.has(name), true)
+    verifyEq(spec.has(name), true, name)
     verifyEq(spec.missing(name), false)
     verifySame(spec.get(name), spec.own.get(name))
 
@@ -275,9 +284,17 @@ class DataTestCase
   Void verifySlot(DataSpec spec, Str name, Obj expect)
   {
     if (expect is Str && expect.toStr.startsWith("inherit"))
+    {
       verifySlotInherit(spec, name, expect)
+    }
+    else if (spec.slot(name, false) !== spec.slotOwn(name, false))
+    {
+      verifySlotOverride(spec, name, expect)
+    }
     else
+    {
       verifySlotOwn(spec, name, expect)
+    }
   }
 
   Void verifySlotOwn(DataSpec spec, Str name, Obj expect)
@@ -295,6 +312,16 @@ class DataTestCase
     verifySame(spec.slotOwn(name, false), null)
     verifySame(spec.slots.get(name), slot)
     verifySame(spec.slotsOwn.get(name, false), null)
+  }
+
+  Void verifySlotOverride(DataSpec spec, Str name, Obj expect)
+  {
+    slot := spec.slot(name)
+    own := spec.slotOwn(name)
+    verifyNotSame(slot, own)
+    verifySame(spec.slots.get(name), slot)
+    verifySame(spec.slotsOwn.get(name), own)
+    verifySpec(slot, expect)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -326,7 +353,14 @@ class DataTestCase
     }
 
     verifyQName(type, expectType)
-    if (expectVal != null) verifyStr(val.toStr, expectVal)
+    if (expectVal != null)
+    {
+      // this is really ugly
+      if (type.qname == "sys::Duration" && expectVal == "0sec")
+        verifyEq(val, 0ns)
+      else
+        verifyStr(val.toStr, expectVal)
+    }
   }
 
   Void verifyDict(DataDict dict, Str:Obj expect)
@@ -433,6 +467,12 @@ class DataTestCase
   {
     numVerifies++
     test.verifySame(a, b, msg)
+  }
+
+  Void verifyNotSame(Obj? a, Obj? b, Str? msg := null)
+  {
+    numVerifies++
+    test.verifyNotSame(a, b, msg)
   }
 
 //////////////////////////////////////////////////////////////////////////

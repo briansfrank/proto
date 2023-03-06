@@ -54,6 +54,8 @@ internal const class MType : MSpec
 @Js
 internal const class XetoType : XetoSpec, DataType
 {
+  new make() : super() {}
+
   override DataLib lib() { mt.lib }
 
   override Str qname() { mt.qname }

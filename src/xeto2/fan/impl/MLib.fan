@@ -45,6 +45,8 @@ internal const class MLib : MSpec
 @Js
 internal const class XetoLib : XetoSpec, DataLib
 {
+  new make() : super() {}
+
   override Str qname() { ml.qname }
 
   override Version version() { ml.version }

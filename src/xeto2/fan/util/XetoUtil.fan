@@ -64,12 +64,24 @@ internal const class XetoUtil
     // add in my own slots
     own.each |s, n|
     {
-      dup := acc[n]
-      if (dup != null) throw Err("TODO")
+      inherit := acc[n]
+      if (inherit != null) s = overrideSlot(inherit, s)
       acc[n] = s
     }
 
     return MSlots(acc)
   }
+
+  ** Merge inherited slot 'a' with override slot 'b'
+  static XetoSpec overrideSlot(XetoSpec a, XetoSpec b)
+  {
+    acc := Str:Obj[:]
+    a.each |v, n| { acc[n] = v }
+    b.each |v, n| { acc[n] = v }
+    meta := a.env.dict(acc)
+
+    return XetoSpec(MSpec(b.env, b.loc, b.type, meta, b.slotsOwn, b.val ?: a.val))
+  }
+
 }
 

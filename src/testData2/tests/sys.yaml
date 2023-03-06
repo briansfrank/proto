@@ -44,7 +44,7 @@ loadLib: "sys"
 verifyType:
   name: "Str"
   supertype: "sys::Scalar"
-  val: ""
+  val: "sys::Str "
   meta:
     doc: "sys::Str Unicode string of characters"
     sealed: "sys::Marker"
@@ -54,7 +54,7 @@ loadLib: "sys"
 verifyType:
   name: "Bool"
   supertype: "sys::Scalar"
-  val: "false"
+  val: "sys::Bool false"
   meta:
     doc: "sys::Str Boolean value either true or false"
     sealed: "sys::Marker"
@@ -64,7 +64,7 @@ loadLib: "sys"
 verifyType:
   name: "Number"
   supertype: "sys::Scalar"
-  val: "0"
+  val: "sys::Number 0"
   meta:
     doc: "sys::Str Integer or floating point numbers annotated with an optional unit"
     sealed: "sys::Marker"
@@ -74,7 +74,7 @@ loadLib: "sys"
 verifyType:
   name: "Int"
   supertype: "sys::Number"
-  val: "0"
+  val: "sys::Int 0"
   meta:
     doc: "sys::Str Unitless integer number"
     sealed: "sys::Marker"
@@ -84,7 +84,7 @@ loadLib: "sys"
 verifyType:
   name : "Duration"
   supertype: "sys::Number"
-  val: "0sec"
+  val: "sys::Duration 0sec"
   meta:
     doc: "sys::Str  Number with a unit of time"
     sealed: "sys::Marker"
@@ -94,7 +94,7 @@ loadLib: "sys"
 verifyType:
   name: "Uri"
   supertype: "sys::Scalar"
-  val: ""
+  val: "sys::Uri "
   meta:
     doc: "sys::Str Universal resource identifier"
     sealed: "sys::Marker"
@@ -104,7 +104,7 @@ loadLib: "sys"
 verifyType:
   name: "Ref"
   supertype: "sys::Scalar"
-  val: "x"
+  val: "sys::Ref x"
   meta:
     doc: "sys::Str Reference to another dict."
     pattern: "sys::Str [a-zA-Z\\d\\._~]*"
@@ -115,7 +115,7 @@ loadLib: "sys"
 verifyType:
   name: "Version"
   supertype: "sys::Scalar"
-  val: "0"
+  val: "sys::Version 0"
   meta:
     doc: "sys::Str Version string formatted as decimal digits separated by a dot"
     pattern: "sys::Str \\d+(\\.\\d+)*"
@@ -126,7 +126,7 @@ loadLib: "sys"
 verifyType:
   name: "Date"
   supertype: "sys::Scalar"
-  val: "2000-01-01"
+  val: "sys::Date 2000-01-01"
   meta:
     doc: "sys::Str ISO 8601 date as year, month, day: '2011-06-07'"
     pattern: "sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\d"
@@ -137,7 +137,7 @@ loadLib: "sys"
 verifyType:
   name: "Time"
   supertype: "sys::Scalar"
-  val: "00:00:00"
+  val: "sys::Time 00:00:00"
   meta:
     doc: "sys::Str ISO 8601 time as hour, minute, seconds: '09:51:27.354'"
     pattern: "sys::Str \\d\\d:\\d\\d:\\d\\d(\\.\\d+)*"
@@ -148,7 +148,7 @@ loadLib: "sys"
 verifyType:
   name: "DateTime"
   supertype: "sys::Scalar"
-  val: "2000-01-01T00:00:00Z UTC"
+  val: "sys::DateTime 2000-01-01T00:00:00Z UTC"
   meta:
     doc: "sys::Str  ISO 8601 timestamp followed by timezone identifier"
     pattern: "sys::Str \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)*[Z+-][\\d:]*[ ]*[-+a-zA-Z_\\d]*"
