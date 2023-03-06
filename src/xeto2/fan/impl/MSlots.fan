@@ -33,6 +33,11 @@ internal const class MSlots : DataSlots
     throw UnknownSpecErr(name)
   }
 
+  override Str[] names()
+  {
+    map.keys
+  }
+
   override Void each(|DataSpec,Str| f)
   {
     map.each(f)

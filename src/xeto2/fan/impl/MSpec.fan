@@ -35,7 +35,7 @@ internal const class MSpec
 
   virtual DataType? supertype() { type }
 
-  MSlots slots() { slotsOwn } // TODO
+  once MSlots slots() { XetoUtil.inheritSlots(this) }
 
   const MSlots slotsOwn
 
@@ -135,7 +135,7 @@ internal const class XetoSpec : DataSpec
 
   override DataSpec? slot(Str n, Bool c := true) { m.slot(n, c) }
 
-  override DataSpec? slotOwn(Str n, Bool c := true) { m.slot(n, c) }
+  override DataSpec? slotOwn(Str n, Bool c := true) { m.slotOwn(n, c) }
 
   override Obj? val() { m.val }
 

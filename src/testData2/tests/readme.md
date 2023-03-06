@@ -24,6 +24,9 @@ The following are the step types discussed in further detail below:
   - **verifyTypes**: convenience to verify a list of types
   - **verifyData**: verify the data value from compileData
 
+Any test that uses a qname from `compileLib` can assume the library
+is called "test" (but in reality it is likely something like "temp123").
+
 # Test Steps
 
 ## loadLib

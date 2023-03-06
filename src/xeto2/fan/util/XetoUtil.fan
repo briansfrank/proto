@@ -14,6 +14,7 @@ using data2
 @Js
 internal const class XetoUtil
 {
+  ** Inherit spec meta data
   static DataDict inheritMeta(MSpec spec)
   {
     own := spec.own
@@ -41,6 +42,34 @@ internal const class XetoUtil
     if (name == "abstract") return false
     if (name == "sealed") return false
     return true
+  }
+
+  ** Inherit spec slots
+  static MSlots inheritSlots(MSpec spec)
+  {
+    own := spec.slotsOwn
+    supertype := spec.supertype
+
+    if (supertype == null) return own
+    if (own.isEmpty) return supertype.slots
+
+    // add supertype slots
+    acc := Str:XetoSpec[:]
+    acc.ordered = true
+    supertype.slots.each |s, n|
+    {
+      acc[n] = s
+    }
+
+    // add in my own slots
+    own.each |s, n|
+    {
+      dup := acc[n]
+      if (dup != null) throw Err("TODO")
+      acc[n] = s
+    }
+
+    return MSlots(acc)
   }
 }
 

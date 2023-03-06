@@ -105,4 +105,30 @@ verifyTypes:
           waldo: "sys::Date 2023-03-05"
           doc: "sys::Str qux doc"
 ---
+name: "slotInherit"
+compileLib: |
+  A: {
+    bar: Date <qux> "2023-02-05"
+  }
+  B : A
+verifyTypes:
+  A:
+    supertype: "sys::Dict"
+    meta:
+      doc: "inherit"
+    slots:
+      bar:
+        type: "sys::Date"
+        val: "2023-02-05"
+        meta:
+          doc: "inherit"
+          pattern: "inherit"
+          qux: "sys::Marker"
+  B:
+    supertype: "test::A"
+    meta:
+      doc: "inherit"
+    slots:
+      bar: "inherit A"
+---
 

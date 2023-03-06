@@ -20,6 +20,9 @@ const mixin DataSlots
   ** Get the child slot spec
   abstract DataSpec? get(Str name, Bool checked := true)
 
+  ** Convenience to list the slots names; prefer `each`.
+  abstract Str[] names()
+
   ** Iterate through the children
   abstract Void each(|DataSpec val, Str name| f)
 

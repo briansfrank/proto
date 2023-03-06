@@ -168,6 +168,7 @@ class DataTestCase
   Void compileLib(Str src)
   {
     this.libRef = env.compileLib(src)
+    if (runner.verbose) env.print(libRef)
   }
 
   Void compileData(Str src)
@@ -201,11 +202,11 @@ class DataTestCase
     {
       verifyEq(type.qname, type.lib.qname + "::" + type.name)
       verifySame(type.type, type)
-      verifyEq(type.supertype?.qname, expect["supertype"])
+      verifyQName(type.supertype, expect["supertype"])
     }
     else
     {
-      verifyEq(spec.type.qname, expect.getChecked("type"))
+      verifyQName(spec.type, expect.getChecked("type"))
     }
     verifyMeta(spec, expect["meta"])
     verifySlots(spec, expect["slots"])
@@ -234,12 +235,12 @@ class DataTestCase
 
   Void verifyMetaInherit(DataSpec spec, Str name)
   {
-    verifyEq(spec.own.has(name), false)
+    verifyEq(spec.own.has(name), false, name)
     verifyEq(spec.own.missing(name), true)
     verifyEq(spec.own[name], null)
     verifyErr(UnknownDataErr#) { spec.own.trap(name) }
 
-    verifyEq(spec.has(name), true)
+    verifyEq(spec.has(name), true, name)
     verifyEq(spec.missing(name), false)
     verifySame(spec.get(name), spec.supertype.get(name))
   }
@@ -268,15 +269,32 @@ class DataTestCase
     expect.each |e, n| { verifySlot(spec, n, e) }
     spec.slots.each |v, n| { verify(expect.containsKey(n)) }
     spec.slotsOwn.each |v, n| { verify(expect.containsKey(n)) }
+    verifyEq(spec.slots.names.sort, Str[,].addAll(expect.keys.sort))
   }
 
   Void verifySlot(DataSpec spec, Str name, Obj expect)
+  {
+    if (expect is Str && expect.toStr.startsWith("inherit"))
+      verifySlotInherit(spec, name, expect)
+    else
+      verifySlotOwn(spec, name, expect)
+  }
+
+  Void verifySlotOwn(DataSpec spec, Str name, Obj expect)
   {
     slot := spec.slot(name)
     verifySame(spec.slotOwn(name), slot)
     verifySame(spec.slots.get(name), slot)
     verifySame(spec.slotsOwn.get(name), slot)
     verifySpec(slot, expect)
+  }
+
+  Void verifySlotInherit(DataSpec spec, Str name, Obj expect)
+  {
+    slot := spec.slot(name)
+    verifySame(spec.slotOwn(name, false), null)
+    verifySame(spec.slots.get(name), slot)
+    verifySame(spec.slotsOwn.get(name, false), null)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -307,7 +325,7 @@ class DataTestCase
       expectVal  = expect[sp+1..-1].trim
     }
 
-    verifyEq(type.qname, expectType)
+    verifyQName(type, expectType)
     if (expectVal != null) verifyStr(val.toStr, expectVal)
   }
 
@@ -339,6 +357,14 @@ class DataTestCase
   Obj data()
   {
     dataRef ?: throw Err("Missing compileData")
+  }
+
+  Void verifyQName(DataType? actual, Str? expected)
+  {
+    if (expected == null) { verifyEq(actual, null); return }
+    if (expected.startsWith("test::"))
+      expected = lib.qname + "::" + expected[expected.index(":")+2..-1]
+    verifyEq(actual.qname, expected)
   }
 
   Void verifyStr(Str actual, Str expected)
