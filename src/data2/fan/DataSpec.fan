@@ -20,9 +20,19 @@ const mixin DataSpec : DataDict
   ** Environment for spec
   abstract DataEnv env()
 
-  ** Parent spec which contains the this spec definition and scopes name.
+  ** Parent spec which contains this spec definition and scopes `name`.
   ** Returns null for a lib.
   abstract DataSpec? parent()
+
+  ** Return simple name scoped by `parent`.  This method returns the
+  ** empty string if parent is null (such as lib).
+  abstract Str name()
+
+  ** Return fully qualified name of this spec:
+  **   - DataLib will return "foo.bar"
+  **   - DataType will return "foo.bar::Baz"
+  **   - DataType slots will return "foo.bar::Baz.qux"
+  abstract Str qname()
 
   ** Type of this spec.   If this spec is a DataType itself then return self.
   abstract DataType type()

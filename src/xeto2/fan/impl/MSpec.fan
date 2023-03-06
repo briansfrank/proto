@@ -17,10 +17,11 @@ using data2
 @Js
 internal const class MSpec
 {
-  new make(FileLoc loc, XetoSpec? parent, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
+  new make(FileLoc loc, XetoSpec? parent, Str name, XetoType type, DataDict own, MSlots slotsOwn, Obj? val)
   {
     this.loc      = loc
     this.parent   = parent
+    this.name     = name
     this.type     = type
     this.own      = own
     this.slotsOwn = slotsOwn
@@ -32,6 +33,10 @@ internal const class MSpec
   const FileLoc loc
 
   const XetoSpec? parent
+
+  const Str name
+
+  virtual Str qname() { parent.qname + "." + name }
 
   const XetoType type
 
@@ -47,7 +52,7 @@ internal const class MSpec
 
   const Obj? val
 
-  override Str toStr() { type.qname }
+  override Str toStr() { qname }
 
   const DataDict own
 
@@ -130,6 +135,10 @@ internal const class XetoSpec : DataSpec
   override DataEnv env() { m.env }
 
   override DataSpec? parent() { m.parent }
+
+  override Str name() { m.name }
+
+  override Str qname() { m.qname }
 
   override DataType type() { m.type }
 

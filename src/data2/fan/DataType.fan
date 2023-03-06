@@ -22,12 +22,6 @@ const mixin DataType : DataSpec
   ** Parent library for type
   abstract DataLib lib()
 
-  ** Full qualified name of this type
-  abstract Str qname()
-
-  ** Simple name of the type within its library
-  abstract Str name()
-
 //////////////////////////////////////////////////////////////////////////
 // Is-A
 //////////////////////////////////////////////////////////////////////////
