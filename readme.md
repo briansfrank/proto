@@ -5,6 +5,8 @@ declare types and to exchange typed data.  It is designed to build and validate
 [Project Haystack](https://project-haystack.org/) data models.  But Xeto is general
 purpose enough to use with any structured data including CSV, JSON, or SQL data.
 
+NOTE: development for Xeto has moved to the [Haxall Repo](https://github.com/haxall/haxall).
+
 # Videos
 The following series of videos provide instructions on how to use this software to validate data:
 
