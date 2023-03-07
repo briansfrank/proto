@@ -15,44 +15,8 @@ using util
 const mixin DataType : DataSpec
 {
 
-//////////////////////////////////////////////////////////////////////////
-// Identity
-//////////////////////////////////////////////////////////////////////////
-
   ** Parent library for type
   abstract DataLib lib()
-
-//////////////////////////////////////////////////////////////////////////
-// Is-A
-//////////////////////////////////////////////////////////////////////////
-
-  ** Return if this type inherits from 'sys.Scalar'
-  @NoDoc abstract Bool isaScalar()
-
-  ** Return if this type inherits from 'sys.Marker'
-  @NoDoc abstract Bool isaMarker()
-
-  ** Return if this type inherits from 'sys.Seq'
-  @NoDoc abstract Bool isaSeq()
-
-  ** Return if this type inherits from 'sys.Dict'
-  @NoDoc abstract Bool isaDict()
-
-  ** Return if this type inherits from 'sys.List'
-  @NoDoc abstract Bool isaList()
-
-  ** Return if this type inherits from 'sys.Maybe'
-  @NoDoc abstract Bool isaMaybe()
-
-  ** Return if this type inherits from 'sys.And'
-  @NoDoc abstract Bool isaAnd()
-
-  ** Return if this type inherits from 'sys.Or'
-  @NoDoc abstract Bool isaOr()
-
-  ** Return if this type inherits from 'sys.Query'
-  @NoDoc abstract Bool isaQuery()
-
 
 }
 

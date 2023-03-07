@@ -331,9 +331,9 @@ class DataTestCase
   {
     if (expect == null) return
     type := env.typeOf(val)
-    if (type.isaScalar)
+    if (type.isa(env.type("sys::Scalar")))
       verifyScalar(val, type, expect)
-    else if (type.isaDict)
+    else if (type.isa(env.type("sys::Dict")))
       verifyDict(val, expect)
     else
       throw Err("Unhandled type: $type")

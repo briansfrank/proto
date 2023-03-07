@@ -123,7 +123,6 @@ internal class Assemble : Step
   {
     m := MType(x.loc, x.lib.asm, x.qname, x.name, x.supertype?.asm, x.asm, asmMeta(x), asmSlots(x))
     mField->setConst(x.asm, m)
-    mtField->setConst(x.asm, m)
   }
 
   private Void asmSpec(ASpec x)
@@ -160,6 +159,5 @@ internal class Assemble : Step
   }
 
   Field mField  := XetoSpec#m
-  Field mtField := XetoType#mt
   Field mlField := XetoLib#ml
 }

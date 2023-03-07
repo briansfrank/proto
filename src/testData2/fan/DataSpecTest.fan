@@ -63,6 +63,8 @@ class DataSpecTest : AbstractDataTest
     verifyIsa("sys::Str", "sys::Scalar", true)
     verifyIsa("sys::Str", "sys::Str",    true)
     verifyIsa("sys::Str", "sys::Int",    false)
+    verifyIsa("sys::Str", "sys::Dict",   false)
+    verifyIsa("sys::Str", "sys::And",    false)
 
     verifyIsa("sys::Int", "sys::Obj",    true)
     verifyIsa("sys::Int", "sys::Scalar", true)
@@ -88,12 +90,10 @@ class DataSpecTest : AbstractDataTest
     verifyIsa("ph.points::AirFlowSensor", "sys::And", true)
     verifyIsa("ph.points::AirFlowSensor", "ph::Point", true)
     verifyIsa("ph.points::AirFlowSensor", "ph.points::Sensor", true)
-    // TODO
-    //verifyIsa("ph.points::AirFlowSensor", "sys::Dict", true)
+    verifyIsa("ph.points::AirFlowSensor", "sys::Dict", true)
 
     verifyIsa("ph.points::ZoneAirTempSensor", "ph::Point", true)
-    // TODO
-    //verifyIsa("ph.points::ZoneAirTempSensor", "sys::Dict", true)
+    verifyIsa("ph.points::ZoneAirTempSensor", "sys::Dict", true)
   }
 
   Void verifyIsa(Str an, Str bn, Bool expected)
@@ -101,8 +101,9 @@ class DataSpecTest : AbstractDataTest
     a := env.type(an)
     b := env.type(bn)
     m := a.typeof.method("isa${b.name}", false)
-    // echo("$a isa $b = ${a.isa(b)} ?= $expected [$m]")
-    verifyEq(a.isa(b), expected)
+    isa := a.isa(b)
+    // echo("-> $a isa $b = $isa ?= $expected [$m]")
+    verifyEq(isa, expected)
     if (m != null) verifyEq(m.call(a), expected)
   }
 
@@ -127,10 +128,14 @@ class DataSpecTest : AbstractDataTest
      bar := foo.slotOwn("bar")
      verifySame(bar.type, maybe)
      verifySame(bar["of"], str)
+     verifyEq(bar.isa(maybe), true)
+     verifyEq(bar.isa(str), true)
 
      baz := foo.slotOwn("baz")
      verifySame(baz.type, maybe)
      verifySame(baz["of"], foo)
+     verifyEq(baz.isa(maybe), true)
+     verifyEq(baz.isa(foo), true)
    }
 
 //////////////////////////////////////////////////////////////////////////
@@ -153,7 +158,7 @@ class DataSpecTest : AbstractDataTest
 
      fooBar := lib.slotOwn("FooBar")
      verifySame(fooBar.type.base, and)
-     verifySame(fooBar.type.isaAnd, true)
+     verifyEq(fooBar.isa(and), true)
      verifyEq(fooBar["ofs"], DataSpec[foo,bar])
    }
 

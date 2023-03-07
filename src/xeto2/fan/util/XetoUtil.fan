@@ -14,6 +14,11 @@ using data2
 @Js
 internal const class XetoUtil
 {
+
+//////////////////////////////////////////////////////////////////////////
+// Inherit Meta
+//////////////////////////////////////////////////////////////////////////
+
   ** Inherit spec meta data
   static DataDict inheritMeta(MSpec spec)
   {
@@ -43,6 +48,10 @@ internal const class XetoUtil
     if (name == "sealed") return false
     return true
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Inherit Slots
+//////////////////////////////////////////////////////////////////////////
 
   ** Inherit spec slots
   static MSlots inheritSlots(MSpec spec)
@@ -76,6 +85,43 @@ internal const class XetoUtil
   static XetoSpec overrideSlot(XetoSpec a, XetoSpec b)
   {
     XetoSpec(MSpec(b.loc, b.parent, b.name, a, b.type, b.own, b.slotsOwn))
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Is-A
+//////////////////////////////////////////////////////////////////////////
+
+  ** Return if a is-a b
+  static Bool isa(XetoSpec a, XetoSpec b)
+  {
+    // check direct inheritance
+    and := a.m.env.sys.and
+    maybe := a.m.env.sys.maybe
+    isAnd := false
+    isMaybe := false
+    for (DataSpec? x := a; x != null; x = x.base)
+    {
+      if (x === b) return true
+
+      if (x === and) isAnd = true
+      else if (x === maybe) isMaybe = true
+    }
+
+    // if A is "maybe" type, then check his "of"
+    if (isMaybe)
+    {
+      of := a.get("of", null) as DataSpec
+      if (of != null) return of.isa(b)
+    }
+
+    // if A is "and" type, then check his "ofs"
+    if (isAnd)
+    {
+      ofs := a.get("ofs", null) as DataSpec[]
+      if (ofs != null && ofs.any |x| { x.isa(b) }) return true
+    }
+
+    return false
   }
 
 }
