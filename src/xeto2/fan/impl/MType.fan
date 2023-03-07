@@ -16,7 +16,7 @@ using data2
 internal const class MType : MSpec
 {
   new make(FileLoc loc, XetoLib lib, Str qname, Str name, XetoType? base, XetoType self, DataDict own, MSlots declared)
-    : super(loc, lib, name, base, own, declared)
+    : super(loc, lib, name, base, self, own, declared)
   {
     this.lib   = lib
     this.qname = qname
@@ -28,8 +28,6 @@ internal const class MType : MSpec
   const override Str qname
 
   override DataSpec spec() { env.sys.type }
-
-  const override XetoType type
 
   override Str toStr() { qname }
 

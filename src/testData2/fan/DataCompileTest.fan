@@ -128,4 +128,72 @@ class DataCompileTest : AbstractDataTest
     verifyDictEq(actual, expected)
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Inherit
+//////////////////////////////////////////////////////////////////////////
+
+  Void testInheritSlots()
+  {
+    lib := compileLib(
+      Str<|A: {
+             foo: Number <a> 123  // a-doc
+           }
+
+           B: A
+
+           C: A {
+             foo: Int <c>
+           }
+
+           D: A {
+             foo: Number 456 // d-doc
+           }
+           |>)
+
+    //env.print(lib)
+
+    num := env.type("sys::Number")
+    int := env.type("sys::Int")
+
+    a := lib.slot("A"); af := a.slot("foo")
+    b := lib.slot("B"); bf := b.slot("foo")
+    c := lib.slot("C"); cf := c.slot("foo")
+    d := lib.slot("D"); df := d.slot("foo")
+
+    verifyInheritSlot(a, af, num, num, ["a":m, "val":n(123), "doc":"a-doc"], "a,val,doc")
+    verifySame(bf, af)
+    verifyInheritSlot(c, cf, af, int, ["a":m, "val":n(123), "doc":"a-doc", "c":m], "c")
+    verifyInheritSlot(d, df, af, num, ["a":m, "val":n(456), "doc":"d-doc"], "val,doc")
+  }
+
+  Void verifyInheritSlot(DataType parent, DataSpec s, DataSpec base, DataType type, Str:Obj meta, Str ownNames)
+  {
+    // echo("-- testInheritSlot $s base:$s.base type:$s.type")
+    // s.each |v, n| { echo("  $n: $v [$v.typeof] " + (s.own.has(n) ? "own" : "inherit")) }
+
+    verifySame(s.parent, parent)
+    verifyEq(s.qname, parent.qname + "." + s.name)
+    verifySame(s.base, base)
+    verifySame(s.type, type)
+
+    own := ownNames.split(',')
+    meta.each |v, n|
+    {
+      verifyEq(s[n], v)
+      verifyEq(s.trap(n), v)
+      verifyEq(s.has(n), true)
+      verifyEq(s.missing(n), false)
+
+      isOwn := own.contains(n)
+      verifyEq(s.own[n], isOwn ? v : null)
+      verifyEq(s.own.has(n), isOwn)
+      verifyEq(s.own.missing(n), !isOwn)
+    }
+
+    s.each |v, n|
+    {
+      verifyEq(meta[n], v, n)
+    }
+  }
+
 }

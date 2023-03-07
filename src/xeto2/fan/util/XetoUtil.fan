@@ -19,13 +19,13 @@ internal const class XetoUtil
   {
     own := spec.own
 
-    supertype := spec.base as XetoType
-    if (supertype == null) return own
+    base := spec.base as XetoSpec
+    if (base == null) return own
 
-    if (own.isEmpty) return supertype.m.meta
+    if (own.isEmpty) return base.m.meta
 
     acc := Str:Obj[:]
-    supertype.m.meta.each |v, n|
+    base.m.meta.each |v, n|
     {
       if (isMetaInherited(n)) acc[n] = v
     }
@@ -75,12 +75,7 @@ internal const class XetoUtil
   ** Merge inherited slot 'a' with override slot 'b'
   static XetoSpec overrideSlot(XetoSpec a, XetoSpec b)
   {
-    acc := Str:Obj[:]
-    a.each |v, n| { acc[n] = v }
-    b.each |v, n| { acc[n] = v }
-    meta := a.env.dict(acc)
-
-    return XetoSpec(MSpec(b.loc, b.parent, b.name, b.base, meta, b.slotsOwn))
+    XetoSpec(MSpec(b.loc, b.parent, b.name, a, b.type, b.own, b.slotsOwn))
   }
 
 }

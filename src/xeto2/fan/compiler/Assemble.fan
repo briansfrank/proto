@@ -128,7 +128,7 @@ internal class Assemble : Step
 
   private Void asmSpec(ASpec x)
   {
-    m := MSpec(x.loc, x.parent.asm, x.name, x.type.asm, asmMeta(x), asmSlots(x))
+    m := MSpec(x.loc, x.parent.asm, x.name, x.type.asm, x.type.asm, asmMeta(x), asmSlots(x))
     mField->setConst(x.asm, m)
   }
 
