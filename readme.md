@@ -22,6 +22,27 @@ The following series of videos provide instructions on how to use this software 
 
 - [Constrained Queries](https://youtu.be/jZcFVCxLGek): create equip types with required points
 
+# Change Log
+Important changes since videos were recorded:
+
+- Axon shell allows you to evaluate new specs on the fly
+
+- Qualified names now use double colon such as `ph.points::Sensor`
+
+- Can load database from http URIs now too
+
+- Query slot syntax is now `Equip.points` instead of `Equip->points`
+
+- Functions that have been renamed:
+   - `isa ->  is/specIs`
+   - `query ->  queryAll`
+   - `lintFit ->  fitsExplain`
+   - `lintFindAllFits -> fitsMatchAll`
+
+- New xeto command line tool to compile to JSON
+
+- Subset of docs show data type functions (data lib)
+
 # Setup
 
 Xeto is packaged as a simple zip file with a command line tool that
