@@ -2,7 +2,7 @@
 
 //
 // Load a data set, find all the records which match a given filter
-// then run the filtered fitsExplain for validation.  Output
+// then run the filtered data thru fitsExplain for validation.  Output
 // results as Zinc to stdout.
 //
 // Usage:

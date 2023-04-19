@@ -3,7 +3,7 @@
 //
 // Run the fitsMatchAll() function on a data set loaded from URI.
 // This script loads every library installed and then runs fitsMatchAll
-// on every record in the inputdata set.  The results are output as Zinc
+// on every record in the input data set.  The results are output as Zinc
 // to stdout.
 //
 // Usage:

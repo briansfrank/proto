@@ -1,7 +1,7 @@
 #! /usr/bin/env axon
 
 //
-// Simple script to compile lib to a JSON ast file.  This
+// Simple script to compile Xeto lib to a JSON AST file.  This
 // script provides similiar (but simpler) behavior in Axon
 // as the "xeto json-ast" command
 //
