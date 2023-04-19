@@ -1,0 +1,19 @@
+#! /usr/bin/env axon
+
+//
+// Simple script to compile lib to a JSON ast file.  This
+// script provides similiar (but simpler) behavior in Axon
+// as the "xeto json-ast" command
+//
+// Usage:
+//   lib-to-ast.axon <lib>
+//
+// Examples:
+//    lib-to-ast.axon ashrae.g36
+//
+
+if (args.isEmpty) throw "Must pass lib arg"
+qname: args.get(0)
+spec: spec(qname)
+ast: specAst(spec)
+print(ast, {json})

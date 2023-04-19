@@ -1,0 +1,23 @@
+#! /usr/bin/env axon
+
+//
+// Load a data set, find all the records which match a given filter
+// then run the filtered fitsExplain for validation.  Output
+// results as Zinc to stdout.
+//
+// Usage:
+//  validate-filtered.axon <data> <filter> <spec>
+//
+// Examples:
+//   validate-filtered.axon https://project-haystack.org/example/download/bravo.zinc vav ashrae.g36::G36ReheatVav
+//
+
+if (args.size < 3) throw "Must pass args"
+uri:    args[0].parseUri
+filter: args[1].parseFilter
+spec:   args[2].spec
+
+load(uri)
+results: readAll(filter).fitsExplain(spec)
+print(ioWriteZinc(results, ""), {text})
+

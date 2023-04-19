@@ -1,0 +1,22 @@
+#! /usr/bin/env axon
+
+//
+// Run the fitsMatchAll() function on a data set loaded from URI.
+// This script loads every library installed and then runs fitsMatchAll
+// on every record in the inputdata set.  The results are output as Zinc
+// to stdout.
+//
+// Usage:
+//   fits-match-all.axon <data>
+//
+// Examples:
+//   fits-match-all.axon https://project-haystack.org/example/download/bravo.zinc
+//
+
+if (args.isEmpty) throw "Must pass data arg"
+uri: args.get(0).parseUri
+load(uri)
+using("*")
+matches: readAll(id).fitsMatchAll
+print(ioWriteZinc(matches, ""), {text})
+
