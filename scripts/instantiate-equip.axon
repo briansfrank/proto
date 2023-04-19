@@ -1,0 +1,20 @@
+#! /usr/bin/env axon
+
+//
+// Generate instance data from an equip xeto type including
+// points found in its constrained query.  Output to stdout
+// as Trio file
+//
+// Usage:
+//   instantiate-equip.axon <qname>
+//
+// Examples:
+//    instantiate-equip.axon ashrae.g36::G36ReheatVav
+//
+
+if (args.isEmpty) throw "Must pass qname arg"
+qname: args.get(0)
+spec: spec(qname)
+equip: instantiate(spec, {graph})
+output: ioWriteTrio(equip, "")
+print(output, {text})
