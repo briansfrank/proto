@@ -1,0 +1,37 @@
+#! /usr/bin/env axon
+
+//
+// Transform all concrete ph.points specs to stdout as zinc file
+//
+// Usage:
+//  points-to-zinc.axon
+//
+// Examples:
+//   points-to-zinc
+//
+
+
+// find all the non-abstract points specs
+lib: spec("ph.points")
+points: specSlots(lib).vals.findAll(s => s.missing("abstract"))
+
+// map to zinc recs
+recs: points.map(spec=>do
+
+ // get list of marker tag names
+ markers: spec.specSlots
+           .findAll(v => v["val"] == marker())
+           .vals
+           .map(specName)
+
+ // map to this dict
+ {id: spec.specQName.parseRef,
+  dis: spec.specName,
+  markers: markers,
+  doc: spec["doc"],
+  pointSpec
+  }
+end)
+
+print(ioWriteZinc(recs, ""), {text})
+
