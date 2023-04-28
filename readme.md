@@ -25,6 +25,26 @@ The following series of videos provide instructions on how to use this software 
 # Change Log
 Important changes since videos were recorded:
 
+## Build 3.1.7.501 (28-Apr-2023)
+- Runtime uses lib/xeto zip files with xetolib file extension
+
+- Tools all work with src or zip (src is used if available)
+
+- Run bin/xeto env to see how given xeto lib is loaded
+
+- New bin/xeto json-pragma command to only parse lib meta into JSON
+
+- Dist zip file includes HTML docs for specs now
+
+- Start re-organization and enhancing ph.points
+
+- Major refactoring of compiler to process inheritance at compile time
+
+- Enhance instantiate() function with new graph option
+
+- Add unloadAll() function to Axon shell
+
+## Build 3.1.7.500 (24-Mar-2023)
 - Axon shell allows you to evaluate new specs on the fly
 
 - Qualified names now use double colon such as `ph.points::Sensor`
